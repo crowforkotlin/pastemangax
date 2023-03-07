@@ -5,6 +5,6 @@
 	app:startDestination="@id/appHomecontainerfragment">
 	<fragment
 		android:id="@+id/appHomecontainerfragment"
-		android:name="com.crow.module_home.ui.fragment.HomeContainerFragment"
+		android:name="com.crow.module_main.fragment.ContainerFragment"
 		android:label="HomeContainerFragment" />
 </navigation>

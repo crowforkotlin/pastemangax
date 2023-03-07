@@ -149,7 +149,7 @@ dependencies {
     implementation(project(mapOf("path" to ":lib_base")))
 
     // 模块 主页
-    implementation(project(mapOf("path" to ":module_home")))
+    implementation(project(mapOf("path" to ":module_main")))
 
     // 引入MultiDex依赖
     implementation(Dependencies.androidx_multidex)

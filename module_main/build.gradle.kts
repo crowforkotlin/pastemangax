@@ -72,4 +72,8 @@ dependencies {
     // 引入Base库
     implementation(project(mapOf("path" to ":lib_base")))
 
+    api(project(mapOf("path" to ":module_home")))
+    api(project(mapOf("path" to ":module_discovery")))
+    api(project(mapOf("path" to ":module_bookshelf")))
+
 }

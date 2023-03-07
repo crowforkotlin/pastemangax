@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/main_contaienr_appbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@+id/main_contaienr_toolbar"
+			app:subtitle="@string/main_settings"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:layout_scrollFlags="scroll|enterAlways"
+			app:navigationIcon="@drawable/main_ic_user_24dp"
+			app:collapseIcon="@drawable/ic_bookmark_24dp"
+			app:menu="@menu/main_container_menu"
+			app:title="@string/app_name" />
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+		<com.google.android.material.tabs.TabLayout
+			android:id="@+id/main_container_tab_layout"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			app:layout_constraintBottom_toBottomOf="@id/main_container_search_bar"
+			app:layout_constraintEnd_toStartOf="@+id/main_container_search_bar"
+			app:layout_constraintHorizontal_bias="0"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="@id/main_container_search_bar"
+			app:tabContentStart="@dimen/base_dp20"
+			app:tabIndicatorAnimationMode="elastic"
+			app:tabMode="scrollable"
+			app:tabUnboundedRipple="true">
+
+			<com.google.android.material.tabs.TabItem
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:icon="@drawable/ic_home_24dp"
+				android:text="@string/home_homepage" />
+
+			<com.google.android.material.tabs.TabItem
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:icon="@drawable/ic_discovery_24dp"
+				android:text="@string/home_recovery" />
+
+			<com.google.android.material.tabs.TabItem
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:icon="@drawable/ic_bookmark_24dp"
+				android:text="@string/home_bookshelf" />
+
+		</com.google.android.material.tabs.TabLayout>
+
+		<com.google.android.material.search.SearchBar
+			android:id="@+id/main_container_search_bar"
+			android:layout_width="@dimen/base_dp48"
+			android:layout_height="@dimen/base_dp48"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<com.google.android.material.search.SearchView
+			android:id="@+id/main_search_view"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" >
+
+			<include layout="@layout/main_search_layout"/>
+
+		</com.google.android.material.search.SearchView>
+
+		<androidx.viewpager2.widget.ViewPager2
+			android:id="@+id/main_view_pager"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/main_container_tab_layout" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<!--  <androidx.fragment.app.FragmentContainerView
+		android:id="@+id/home_container_content"
+		android:name="androidx.navigation.fragment.NavHostFragment"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:defaultNavHost="true"
+		app:navGraph="@navigation/main_nav" /> -->
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

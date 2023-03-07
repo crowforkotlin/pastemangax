@@ -1,6 +1,8 @@
 package com.crow.copymanga.di
 
+import com.crow.module_bookshelf.BookShelfViewModel
 import com.crow.module_home.ui.HomeViewModel
+import com.crow.module_main.viewmodel.ContainerViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -16,5 +18,7 @@ import org.koin.dsl.module
 val viewModelModule = module {
 
     viewModel { HomeViewModel(get()) }
+    viewModel { BookShelfViewModel() }
+    viewModel { ContainerViewModel() }
 
 }

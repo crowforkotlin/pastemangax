@@ -6,6 +6,12 @@
 	android:layout_height="match_parent"
 	tools:context=".ui.fragment.HomeHeaderFragment">
 
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:text="@string/BaseTodoTextView"
+		android:textSize="48sp"/>
+
 	<!--<androidx.cardview.widget.CardView
 		style="@style/Widget.Material3.CardView.Filled"
 		android:layout_width="match_parent"
