@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent" >
+
+	<com.google.android.material.card.MaterialCardView
+
+		android:id="@+id/banner_cardview"
+		style="@style/Widget.Material3.CardView.Filled"
+		android:layout_margin="@dimen/base_dp10"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:clickable="true"
+		android:focusable="true"
+		app:cardCornerRadius="20dp"
+		app:cardElevation="@dimen/base_dp4"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<ImageView
+			android:id="@+id/baneer_image"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:contentDescription="@string/BaseTodoTextView"
+			android:foreground="?android:attr/selectableItemBackground"
+			android:scaleType="centerCrop" />
+
+		<ImageView
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:background="@drawable/home_bg_banner_shadow"
+			android:contentDescription="@string/BaseTodoTextView"
+			android:scaleType="centerCrop" />
+
+		<TextView
+			android:id="@+id/banner_text"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top"
+			android:layout_margin="@dimen/base_dp10"
+			android:ellipsize="end"
+			android:maxLength="99"
+			android:maxLines="3"
+			android:textColor="#FFFFFF"
+			android:textColorHighlight="@color/base_purple_8f6af1"
+			android:textSize="@dimen/base_sp16"
+			android:textStyle="bold"
+			tools:text="@string/BaseTodoTextView" />
+
+	</com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

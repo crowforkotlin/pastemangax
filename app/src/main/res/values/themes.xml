@@ -1,0 +1,21 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+	<!-- Base application theme. -->
+	<style name="App.Theme.CopyManga" parent="Theme.Material3.DayNight.NoActionBar">
+		<item name="android:statusBarColor">@android:color/transparent</item>
+		<item name="android:windowLightStatusBar">true</item>
+		<item name="android:windowTranslucentNavigation">true</item>
+	</style>
+
+	<style name="App.Theme.CopyManga.Splash" parent="Theme.SplashScreen">
+
+		<!-- 指定App原来的主题，当SplashScreen结束时主题就能被复原，从而不影响APP的主题外观 -->
+		<item name="postSplashScreenTheme">@style/App.Theme.CopyManga</item>
+
+		<!-- SplashIcon -->
+		<item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
+
+		<!-- StatusBar背景 -->
+		<item name="statusBarBackground">@color/base_purple_8f6af1</item>
+		<item name="windowSplashScreenBackground">@color/base_purple_8f6af1</item>
+	</style>
+</resources>

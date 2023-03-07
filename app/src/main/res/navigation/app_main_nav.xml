@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/app_main_nav.xml"
+	app:startDestination="@id/appHomecontainerfragment">
+	<fragment
+		android:id="@+id/appHomecontainerfragment"
+		android:name="com.crow.module_home.ui.fragment.HomeContainerFragment"
+		android:label="HomeContainerFragment" />
+</navigation>
