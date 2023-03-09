@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/extensions
  * @Time: 2022/11/29 10:30
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: FragmentExt
  * @formatter:on
  **************************/

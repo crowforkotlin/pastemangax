@@ -962,6 +962,8 @@ layout base_dialog_loading
 layout base_dialog_original_loading
 layout base_loading_more
 layout base_textview
+string BaseAppName
+string BaseAppName_CH
 string BaseLoading
 string BaseTodoTextView
 style Base_LibBase_LoadingAnim

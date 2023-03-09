@@ -11,7 +11,7 @@ import com.crow.base.databinding.BaseTextviewBinding
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/view
  * @Time: 2022/11/20 10:43
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: ToolTipsView
  * @formatter:on
  **************************/

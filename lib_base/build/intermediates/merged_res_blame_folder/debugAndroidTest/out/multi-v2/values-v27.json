@@ -4,7 +4,7 @@
             "outputFile": "com.crow.base.test.lib_base-mergeDebugAndroidTestResources-2:/values-v27/values-v27.xml",
             "map": [
                 {
-                    "source": "D:\\Programing\\Tools\\Gradle\\caches\\transforms-3\\478cda360e69e1f70874f45c38abcdeb\\transformed\\jetified-core-splashscreen-1.0.0-beta02\\res\\values-v27\\values-v27.xml",
+                    "source": "D:\\Programing\\Tools\\Gradle\\caches\\transforms-3\\078f9d2c30dd2c81ac1add161f48bba0\\transformed\\jetified-core-splashscreen-1.0.0-beta02\\res\\values-v27\\values-v27.xml",
                     "from": {
                         "startLines": "2,3,4,7",
                         "startColumns": "4,4,4,4",

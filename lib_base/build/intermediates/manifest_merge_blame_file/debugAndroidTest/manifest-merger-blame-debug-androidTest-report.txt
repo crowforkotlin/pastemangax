@@ -3,184 +3,173 @@
 3    package="com.crow.base.test" >
 4
 5    <uses-sdk
-5-->D:\Programing\Android\2023\InterView\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15763069653045514157.xml:5:5-74
+5-->D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest3123317656737610367.xml:5:5-74
 6        android:minSdkVersion="23"
-6-->D:\Programing\Android\2023\InterView\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15763069653045514157.xml:5:15-41
+6-->D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest3123317656737610367.xml:5:15-41
 7        android:targetSdkVersion="33" />
-7-->D:\Programing\Android\2023\InterView\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15763069653045514157.xml:5:42-71
+7-->D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest3123317656737610367.xml:5:42-71
 8
 9    <instrumentation
-9-->D:\Programing\Android\2023\InterView\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15763069653045514157.xml:11:5-15:68
+9-->D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest3123317656737610367.xml:11:5-15:68
 10        android:name="android.test.InstrumentationTestRunner"
-10-->D:\Programing\Android\2023\InterView\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15763069653045514157.xml:11:22-75
+10-->D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest3123317656737610367.xml:11:22-75
 11        android:functionalTest="false"
-11-->D:\Programing\Android\2023\InterView\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15763069653045514157.xml:14:22-52
+11-->D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest3123317656737610367.xml:14:22-52
 12        android:handleProfiling="false"
-12-->D:\Programing\Android\2023\InterView\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15763069653045514157.xml:13:22-53
+12-->D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest3123317656737610367.xml:13:22-53
 13        android:label="Tests for com.crow.base.test"
-13-->D:\Programing\Android\2023\InterView\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15763069653045514157.xml:15:22-66
+13-->D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest3123317656737610367.xml:15:22-66
 14        android:targetPackage="com.crow.base.test" />
-14-->D:\Programing\Android\2023\InterView\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15763069653045514157.xml:12:22-64
+14-->D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest3123317656737610367.xml:12:22-64
 15
 16    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-16-->[:lib_base] D:\Programing\Android\2023\InterView\lib_base\build\intermediates\merged_manifest\debug\AndroidManifest.xml:7:5-79
-16-->[:lib_base] D:\Programing\Android\2023\InterView\lib_base\build\intermediates\merged_manifest\debug\AndroidManifest.xml:7:22-76
+16-->[:lib_base] D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\merged_manifest\debug\AndroidManifest.xml:7:5-79
+16-->[:lib_base] D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\merged_manifest\debug\AndroidManifest.xml:7:22-76
 17    <uses-permission android:name="android.permission.INTERNET" />
-17-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\d79d4001464785d5b34ea5c9ad88fcbc\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:10:5-67
-17-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\d79d4001464785d5b34ea5c9ad88fcbc\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:10:22-64
+17-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\3fdb4df722097baeab5dc74923c95968\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:10:5-67
+17-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\3fdb4df722097baeab5dc74923c95968\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:10:22-64
 18    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-18-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\d79d4001464785d5b34ea5c9ad88fcbc\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:12:5-14:40
-18-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\d79d4001464785d5b34ea5c9ad88fcbc\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:13:9-65
+18-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\3fdb4df722097baeab5dc74923c95968\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:12:5-14:40
+18-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\3fdb4df722097baeab5dc74923c95968\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:13:9-65
 19    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 20
 21    <permission
-21-->[androidx.core:core:1.9.0] D:\Programing\Tools\Gradle\caches\transforms-3\e027cedaabc3eafab9f42b61d47104e7\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
+21-->[androidx.core:core:1.9.0] D:\Programing\Tools\Gradle\caches\transforms-3\b0cd0abd3857ef8186ecef7db5abb72e\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
 22        android:name="com.crow.base.test.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-22-->[androidx.core:core:1.9.0] D:\Programing\Tools\Gradle\caches\transforms-3\e027cedaabc3eafab9f42b61d47104e7\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
+22-->[androidx.core:core:1.9.0] D:\Programing\Tools\Gradle\caches\transforms-3\b0cd0abd3857ef8186ecef7db5abb72e\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
 23        android:protectionLevel="signature" />
-23-->[androidx.core:core:1.9.0] D:\Programing\Tools\Gradle\caches\transforms-3\e027cedaabc3eafab9f42b61d47104e7\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
+23-->[androidx.core:core:1.9.0] D:\Programing\Tools\Gradle\caches\transforms-3\b0cd0abd3857ef8186ecef7db5abb72e\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
 24
 25    <uses-permission android:name="com.crow.base.test.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-25-->[androidx.core:core:1.9.0] D:\Programing\Tools\Gradle\caches\transforms-3\e027cedaabc3eafab9f42b61d47104e7\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
-25-->[androidx.core:core:1.9.0] D:\Programing\Tools\Gradle\caches\transforms-3\e027cedaabc3eafab9f42b61d47104e7\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
+25-->[androidx.core:core:1.9.0] D:\Programing\Tools\Gradle\caches\transforms-3\b0cd0abd3857ef8186ecef7db5abb72e\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
+25-->[androidx.core:core:1.9.0] D:\Programing\Tools\Gradle\caches\transforms-3\b0cd0abd3857ef8186ecef7db5abb72e\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
 26    <uses-permission android:name="android.permission.REORDER_TASKS" />
-26-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:24:5-72
-26-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:24:22-69
+26-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:24:5-72
+26-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:24:22-69
 27
 28    <queries>
-28-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\ca63df1dc6c90f4cb6e9350b6cc9d97c\transformed\runner-1.4.0\AndroidManifest.xml:24:5-28:15
+28-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\19b9c424b489dd9ff4bf9e84c536e0a0\transformed\runner-1.4.0\AndroidManifest.xml:24:5-28:15
 29        <package android:name="androidx.test.orchestrator" />
-29-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\ca63df1dc6c90f4cb6e9350b6cc9d97c\transformed\runner-1.4.0\AndroidManifest.xml:25:9-62
-29-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\ca63df1dc6c90f4cb6e9350b6cc9d97c\transformed\runner-1.4.0\AndroidManifest.xml:25:18-59
+29-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\19b9c424b489dd9ff4bf9e84c536e0a0\transformed\runner-1.4.0\AndroidManifest.xml:25:9-62
+29-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\19b9c424b489dd9ff4bf9e84c536e0a0\transformed\runner-1.4.0\AndroidManifest.xml:25:18-59
 30        <package android:name="androidx.test.services" />
-30-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\ca63df1dc6c90f4cb6e9350b6cc9d97c\transformed\runner-1.4.0\AndroidManifest.xml:26:9-58
-30-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\ca63df1dc6c90f4cb6e9350b6cc9d97c\transformed\runner-1.4.0\AndroidManifest.xml:26:18-55
+30-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\19b9c424b489dd9ff4bf9e84c536e0a0\transformed\runner-1.4.0\AndroidManifest.xml:26:9-58
+30-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\19b9c424b489dd9ff4bf9e84c536e0a0\transformed\runner-1.4.0\AndroidManifest.xml:26:18-55
 31        <package android:name="com.google.android.apps.common.testing.services" />
-31-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\ca63df1dc6c90f4cb6e9350b6cc9d97c\transformed\runner-1.4.0\AndroidManifest.xml:27:9-83
-31-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\ca63df1dc6c90f4cb6e9350b6cc9d97c\transformed\runner-1.4.0\AndroidManifest.xml:27:18-80
+31-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\19b9c424b489dd9ff4bf9e84c536e0a0\transformed\runner-1.4.0\AndroidManifest.xml:27:9-83
+31-->[androidx.test:runner:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\19b9c424b489dd9ff4bf9e84c536e0a0\transformed\runner-1.4.0\AndroidManifest.xml:27:18-80
 32    </queries>
 33
 34    <application
-34-->D:\Programing\Android\2023\InterView\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15763069653045514157.xml:7:5-9:19
+34-->D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest3123317656737610367.xml:7:5-9:19
 35        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-35-->[androidx.core:core:1.9.0] D:\Programing\Tools\Gradle\caches\transforms-3\e027cedaabc3eafab9f42b61d47104e7\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
+35-->[androidx.core:core:1.9.0] D:\Programing\Tools\Gradle\caches\transforms-3\b0cd0abd3857ef8186ecef7db5abb72e\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
 36        android:debuggable="true"
 37        android:extractNativeLibs="false" >
 38        <uses-library android:name="android.test.runner" />
-38-->D:\Programing\Android\2023\InterView\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15763069653045514157.xml:8:9-60
-38-->D:\Programing\Android\2023\InterView\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15763069653045514157.xml:8:23-57
+38-->D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest3123317656737610367.xml:8:9-60
+38-->D:\Programing\Android\2023\CopyManga\lib_base\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest3123317656737610367.xml:8:23-57
 39
 40        <activity
-40-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\d79d4001464785d5b34ea5c9ad88fcbc\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:17:9-19:57
+40-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\3fdb4df722097baeab5dc74923c95968\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:17:9-19:57
 41            android:name="cc.shinichi.library.view.ImagePreviewActivity"
-41-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\d79d4001464785d5b34ea5c9ad88fcbc\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:18:13-73
+41-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\3fdb4df722097baeab5dc74923c95968\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:18:13-73
 42            android:theme="@style/Theme.ImagePreview" />
-42-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\d79d4001464785d5b34ea5c9ad88fcbc\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:19:13-54
+42-->[com.github.SherlockGougou:BigImageViewPager:androidx-7.0.4] D:\Programing\Tools\Gradle\caches\transforms-3\3fdb4df722097baeab5dc74923c95968\transformed\jetified-BigImageViewPager-androidx-7.0.4\AndroidManifest.xml:19:13-54
 43
 44        <meta-data
-44-->[com.github.bumptech.glide:okhttp3-integration:4.11.0] D:\Programing\Tools\Gradle\caches\transforms-3\cc569dbc95aa1ebe346a18fe58f7bd0c\transformed\jetified-okhttp3-integration-4.11.0\AndroidManifest.xml:11:9-13:43
+44-->[com.github.bumptech.glide:okhttp3-integration:4.11.0] D:\Programing\Tools\Gradle\caches\transforms-3\c02f7dfe6cac1349a1d8348e7d94b24e\transformed\jetified-okhttp3-integration-4.11.0\AndroidManifest.xml:11:9-13:43
 45            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
-45-->[com.github.bumptech.glide:okhttp3-integration:4.11.0] D:\Programing\Tools\Gradle\caches\transforms-3\cc569dbc95aa1ebe346a18fe58f7bd0c\transformed\jetified-okhttp3-integration-4.11.0\AndroidManifest.xml:12:13-84
+45-->[com.github.bumptech.glide:okhttp3-integration:4.11.0] D:\Programing\Tools\Gradle\caches\transforms-3\c02f7dfe6cac1349a1d8348e7d94b24e\transformed\jetified-okhttp3-integration-4.11.0\AndroidManifest.xml:12:13-84
 46            android:value="GlideModule" />
-46-->[com.github.bumptech.glide:okhttp3-integration:4.11.0] D:\Programing\Tools\Gradle\caches\transforms-3\cc569dbc95aa1ebe346a18fe58f7bd0c\transformed\jetified-okhttp3-integration-4.11.0\AndroidManifest.xml:13:13-40
+46-->[com.github.bumptech.glide:okhttp3-integration:4.11.0] D:\Programing\Tools\Gradle\caches\transforms-3\c02f7dfe6cac1349a1d8348e7d94b24e\transformed\jetified-okhttp3-integration-4.11.0\AndroidManifest.xml:13:13-40
 47        <meta-data
-47-->[com.github.zjupure:webpdecoder:2.0.4.11.0] D:\Programing\Tools\Gradle\caches\transforms-3\afd2cac20d4b3b29d298315e58ecf1e8\transformed\jetified-webpdecoder-2.0.4.11.0\AndroidManifest.xml:10:9-12:43
+47-->[com.github.zjupure:webpdecoder:2.0.4.11.0] D:\Programing\Tools\Gradle\caches\transforms-3\d833de998fd3c6af578b11b1577f35e7\transformed\jetified-webpdecoder-2.0.4.11.0\AndroidManifest.xml:10:9-12:43
 48            android:name="com.bumptech.glide.integration.webp.WebpGlideModule"
-48-->[com.github.zjupure:webpdecoder:2.0.4.11.0] D:\Programing\Tools\Gradle\caches\transforms-3\afd2cac20d4b3b29d298315e58ecf1e8\transformed\jetified-webpdecoder-2.0.4.11.0\AndroidManifest.xml:11:13-79
+48-->[com.github.zjupure:webpdecoder:2.0.4.11.0] D:\Programing\Tools\Gradle\caches\transforms-3\d833de998fd3c6af578b11b1577f35e7\transformed\jetified-webpdecoder-2.0.4.11.0\AndroidManifest.xml:11:13-79
 49            android:value="GlideModule" />
-49-->[com.github.zjupure:webpdecoder:2.0.4.11.0] D:\Programing\Tools\Gradle\caches\transforms-3\afd2cac20d4b3b29d298315e58ecf1e8\transformed\jetified-webpdecoder-2.0.4.11.0\AndroidManifest.xml:12:13-40
+49-->[com.github.zjupure:webpdecoder:2.0.4.11.0] D:\Programing\Tools\Gradle\caches\transforms-3\d833de998fd3c6af578b11b1577f35e7\transformed\jetified-webpdecoder-2.0.4.11.0\AndroidManifest.xml:12:13-40
 50
 51        <provider
-51-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\216212370fa64ec2bafffdc3cd295c35\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+51-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\89e63ad3ca81e263704427cb86413a5e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
 52            android:name="androidx.startup.InitializationProvider"
-52-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\216212370fa64ec2bafffdc3cd295c35\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:25:13-67
+52-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\89e63ad3ca81e263704427cb86413a5e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:25:13-67
 53            android:authorities="com.crow.base.test.androidx-startup"
-53-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\216212370fa64ec2bafffdc3cd295c35\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:26:13-68
+53-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\89e63ad3ca81e263704427cb86413a5e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:26:13-68
 54            android:exported="false" >
-54-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\216212370fa64ec2bafffdc3cd295c35\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:27:13-37
+54-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\89e63ad3ca81e263704427cb86413a5e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:27:13-37
 55            <meta-data
-55-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\216212370fa64ec2bafffdc3cd295c35\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+55-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\89e63ad3ca81e263704427cb86413a5e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
 56                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-56-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\216212370fa64ec2bafffdc3cd295c35\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:30:17-75
+56-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\89e63ad3ca81e263704427cb86413a5e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:30:17-75
 57                android:value="androidx.startup" />
-57-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\216212370fa64ec2bafffdc3cd295c35\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:31:17-49
+57-->[androidx.emoji2:emoji2:1.2.0] D:\Programing\Tools\Gradle\caches\transforms-3\89e63ad3ca81e263704427cb86413a5e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:31:17-49
 58            <meta-data
-58-->[androidx.lifecycle:lifecycle-process:2.4.1] D:\Programing\Tools\Gradle\caches\transforms-3\33f247717b7b02992b7da94365e962b2\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
+58-->[androidx.lifecycle:lifecycle-process:2.4.1] D:\Programing\Tools\Gradle\caches\transforms-3\adc01c1a4757ad0eae699d202455803d\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
 59                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-59-->[androidx.lifecycle:lifecycle-process:2.4.1] D:\Programing\Tools\Gradle\caches\transforms-3\33f247717b7b02992b7da94365e962b2\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
+59-->[androidx.lifecycle:lifecycle-process:2.4.1] D:\Programing\Tools\Gradle\caches\transforms-3\adc01c1a4757ad0eae699d202455803d\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
 60                android:value="androidx.startup" />
-60-->[androidx.lifecycle:lifecycle-process:2.4.1] D:\Programing\Tools\Gradle\caches\transforms-3\33f247717b7b02992b7da94365e962b2\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
+60-->[androidx.lifecycle:lifecycle-process:2.4.1] D:\Programing\Tools\Gradle\caches\transforms-3\adc01c1a4757ad0eae699d202455803d\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
 61        </provider>
 62
 63        <uses-library
-63-->[androidx.window:window:1.0.0] D:\Programing\Tools\Gradle\caches\transforms-3\efad25f8309a47bc458191164c494e3a\transformed\jetified-window-1.0.0\AndroidManifest.xml:25:9-27:40
+63-->[androidx.window:window:1.0.0] D:\Programing\Tools\Gradle\caches\transforms-3\971298eb9a465ef1a0c2fd6fa48e8c9d\transformed\jetified-window-1.0.0\AndroidManifest.xml:25:9-27:40
 64            android:name="androidx.window.extensions"
-64-->[androidx.window:window:1.0.0] D:\Programing\Tools\Gradle\caches\transforms-3\efad25f8309a47bc458191164c494e3a\transformed\jetified-window-1.0.0\AndroidManifest.xml:26:13-54
+64-->[androidx.window:window:1.0.0] D:\Programing\Tools\Gradle\caches\transforms-3\971298eb9a465ef1a0c2fd6fa48e8c9d\transformed\jetified-window-1.0.0\AndroidManifest.xml:26:13-54
 65            android:required="false" />
-65-->[androidx.window:window:1.0.0] D:\Programing\Tools\Gradle\caches\transforms-3\efad25f8309a47bc458191164c494e3a\transformed\jetified-window-1.0.0\AndroidManifest.xml:27:13-37
+65-->[androidx.window:window:1.0.0] D:\Programing\Tools\Gradle\caches\transforms-3\971298eb9a465ef1a0c2fd6fa48e8c9d\transformed\jetified-window-1.0.0\AndroidManifest.xml:27:13-37
 66        <uses-library
-66-->[androidx.window:window:1.0.0] D:\Programing\Tools\Gradle\caches\transforms-3\efad25f8309a47bc458191164c494e3a\transformed\jetified-window-1.0.0\AndroidManifest.xml:28:9-30:40
+66-->[androidx.window:window:1.0.0] D:\Programing\Tools\Gradle\caches\transforms-3\971298eb9a465ef1a0c2fd6fa48e8c9d\transformed\jetified-window-1.0.0\AndroidManifest.xml:28:9-30:40
 67            android:name="androidx.window.sidecar"
-67-->[androidx.window:window:1.0.0] D:\Programing\Tools\Gradle\caches\transforms-3\efad25f8309a47bc458191164c494e3a\transformed\jetified-window-1.0.0\AndroidManifest.xml:29:13-51
+67-->[androidx.window:window:1.0.0] D:\Programing\Tools\Gradle\caches\transforms-3\971298eb9a465ef1a0c2fd6fa48e8c9d\transformed\jetified-window-1.0.0\AndroidManifest.xml:29:13-51
 68            android:required="false" />
-68-->[androidx.window:window:1.0.0] D:\Programing\Tools\Gradle\caches\transforms-3\efad25f8309a47bc458191164c494e3a\transformed\jetified-window-1.0.0\AndroidManifest.xml:30:13-37
+68-->[androidx.window:window:1.0.0] D:\Programing\Tools\Gradle\caches\transforms-3\971298eb9a465ef1a0c2fd6fa48e8c9d\transformed\jetified-window-1.0.0\AndroidManifest.xml:30:13-37
 69
 70        <activity
-70-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:27:9-34:20
+70-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:27:9-34:20
 71            android:name="androidx.test.core.app.InstrumentationActivityInvoker$BootstrapActivity"
-71-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:28:13-99
+71-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:28:13-99
 72            android:exported="true"
-72-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:29:13-36
+72-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:29:13-36
 73            android:theme="@android:style/Theme" >
-73-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:30:13-49
+73-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:30:13-49
 74            <intent-filter>
-74-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:31:13-33:29
+74-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:31:13-33:29
 75                <action android:name="android.intent.action.MAIN" />
-75-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:32:17-69
-75-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:32:25-66
+75-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:32:17-69
+75-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:32:25-66
 76            </intent-filter>
 77        </activity>
 78        <activity
-78-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:35:9-42:20
+78-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:35:9-42:20
 79            android:name="androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity"
-79-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:36:13-95
+79-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:36:13-95
 80            android:exported="true"
-80-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:37:13-36
+80-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:37:13-36
 81            android:theme="@android:style/Theme" >
-81-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:38:13-49
+81-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:38:13-49
 82            <intent-filter>
-82-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:31:13-33:29
+82-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:31:13-33:29
 83                <action android:name="android.intent.action.MAIN" />
-83-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:32:17-69
-83-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:32:25-66
+83-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:32:17-69
+83-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:32:25-66
 84            </intent-filter>
 85        </activity>
 86        <activity
-86-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:43:9-50:20
+86-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:43:9-50:20
 87            android:name="androidx.test.core.app.InstrumentationActivityInvoker$EmptyFloatingActivity"
-87-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:44:13-103
+87-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:44:13-103
 88            android:exported="true"
-88-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:45:13-36
+88-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:45:13-36
 89            android:theme="@android:style/Theme.Dialog" >
-89-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:46:13-56
+89-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:46:13-56
 90            <intent-filter>
-90-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:31:13-33:29
+90-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:31:13-33:29
 91                <action android:name="android.intent.action.MAIN" />
-91-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:32:17-69
-91-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\6b4f8c71e245db61b32153108c5274cf\transformed\jetified-core-1.4.0\AndroidManifest.xml:32:25-66
+91-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:32:17-69
+91-->[androidx.test:core:1.4.0] D:\Programing\Tools\Gradle\caches\transforms-3\7053df313660e7c4b41ab41fe75a881f\transformed\jetified-core-1.4.0\AndroidManifest.xml:32:25-66
 92            </intent-filter>
 93        </activity>
-94
-95        <provider
-95-->[com.github.JessYanCoding:AndroidAutoSize:v1.2.1] D:\Programing\Tools\Gradle\caches\transforms-3\54e591d6063b833821fea4428046f11b\transformed\jetified-AndroidAutoSize-v1.2.1\AndroidManifest.xml:12:9-16:43
-96            android:name="me.jessyan.autosize.InitProvider"
-96-->[com.github.JessYanCoding:AndroidAutoSize:v1.2.1] D:\Programing\Tools\Gradle\caches\transforms-3\54e591d6063b833821fea4428046f11b\transformed\jetified-AndroidAutoSize-v1.2.1\AndroidManifest.xml:13:13-60
-97            android:authorities="com.crow.base.test.autosize-init-provider"
-97-->[com.github.JessYanCoding:AndroidAutoSize:v1.2.1] D:\Programing\Tools\Gradle\caches\transforms-3\54e591d6063b833821fea4428046f11b\transformed\jetified-AndroidAutoSize-v1.2.1\AndroidManifest.xml:14:13-74
-98            android:exported="false"
-98-->[com.github.JessYanCoding:AndroidAutoSize:v1.2.1] D:\Programing\Tools\Gradle\caches\transforms-3\54e591d6063b833821fea4428046f11b\transformed\jetified-AndroidAutoSize-v1.2.1\AndroidManifest.xml:15:13-37
-99            android:multiprocess="true" />
-99-->[com.github.JessYanCoding:AndroidAutoSize:v1.2.1] D:\Programing\Tools\Gradle\caches\transforms-3\54e591d6063b833821fea4428046f11b\transformed\jetified-AndroidAutoSize-v1.2.1\AndroidManifest.xml:16:13-40
-100    </application>
-101
-102</manifest>
+94    </application>
+95
+96</manifest>

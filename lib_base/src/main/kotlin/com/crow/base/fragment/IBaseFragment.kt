@@ -9,7 +9,7 @@ import android.view.ViewGroup
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/fragment
  * @Time: 2022/10/4 16:37
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: Interface Base Fragment
  * @formatter:on
  **************************/

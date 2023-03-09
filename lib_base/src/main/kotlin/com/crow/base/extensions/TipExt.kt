@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.crow.base.extensions
 
 import android.util.Log
@@ -11,7 +13,7 @@ import com.orhanobut.logger.Logger
  * @Machine: RedmiBook Pro 15
  * @RelativePath: cn\barry\base\extensions\TipExt.kt
  * @Path: D:\Barry\B_study\Android\Android_Project\JetpackApp\lib_base\src\main\java\cn\barry\base\extensions\TipExt.kt
- * @Author: Barry
+ * @Author: CrowForKotlin
  * @Time: 2022/5/1 20:58 周日 下午
  * @Description: Tips Ext
  * @formatter:off
@@ -72,8 +74,6 @@ fun Any?.logMsg(level: Int = Logger.INFO, tag: String = TIPS_TAG) {
     }
 }
 
-
-
 private var mToast: Toast? = null
 private var mToastHide: Boolean = false
 
@@ -83,11 +83,6 @@ fun toast(msg: String, isShort: Boolean = true) {
     mToast?.cancel()
     mToast = Toast.makeText(appContext, msg, if (isShort) Toast.LENGTH_SHORT else Toast.LENGTH_LONG)
     mToast?.show()
-}
-
-fun tryToCancelToast() {
-    if (mToastHide) return
-    mToast?.cancel()
 }
 
 /* CharSequence Toast */

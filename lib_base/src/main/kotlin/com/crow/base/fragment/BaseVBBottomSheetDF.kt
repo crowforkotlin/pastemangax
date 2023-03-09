@@ -15,7 +15,7 @@ import com.crow.base.viewmodel.doOnSuccess
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/fragment
  * @Time: 2022/10/3 0:04
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description:Base BottomSheetDialogFragment
  * @formatter:on
  **************************/

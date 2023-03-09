@@ -11,7 +11,7 @@ import java.io.File
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/network
  * @Time: 2022/6/5 18:56
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: RequestExt
  * @formatter:on
  **************************/

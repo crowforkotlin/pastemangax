@@ -4,7 +4,7 @@
             "outputFile": "com.crow.base.test.lib_base-mergeDebugAndroidTestResources-2:/values-v19/values-v19.xml",
             "map": [
                 {
-                    "source": "D:\\Programing\\Tools\\Gradle\\caches\\transforms-3\\d79d4001464785d5b34ea5c9ad88fcbc\\transformed\\jetified-BigImageViewPager-androidx-7.0.4\\res\\values-v19\\values-v19.xml",
+                    "source": "D:\\Programing\\Tools\\Gradle\\caches\\transforms-3\\3fdb4df722097baeab5dc74923c95968\\transformed\\jetified-BigImageViewPager-androidx-7.0.4\\res\\values-v19\\values-v19.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

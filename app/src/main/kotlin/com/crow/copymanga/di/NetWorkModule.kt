@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: app/src/main/java/com/ssti/laser/app/module
  * @Time: 2022/5/29 1:48
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: NetWorkModule
  * @formatter:off
  **************************/

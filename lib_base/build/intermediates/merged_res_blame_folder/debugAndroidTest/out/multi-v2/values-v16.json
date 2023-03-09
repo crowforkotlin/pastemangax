@@ -4,7 +4,7 @@
             "outputFile": "com.crow.base.test.lib_base-mergeDebugAndroidTestResources-2:/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "D:\\Programing\\Tools\\Gradle\\caches\\transforms-3\\f5ac8e3b4672355b986d19f658065702\\transformed\\appcompat-1.5.1\\res\\values-v16\\values-v16.xml",
+                    "source": "D:\\Programing\\Tools\\Gradle\\caches\\transforms-3\\d298840abdee42982977434c7493a350\\transformed\\appcompat-1.5.1\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "D:\\Programing\\Tools\\Gradle\\caches\\transforms-3\\e027cedaabc3eafab9f42b61d47104e7\\transformed\\core-1.9.0\\res\\values-v16\\values-v16.xml",
+                    "source": "D:\\Programing\\Tools\\Gradle\\caches\\transforms-3\\b0cd0abd3857ef8186ecef7db5abb72e\\transformed\\core-1.9.0\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

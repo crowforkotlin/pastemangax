@@ -3,7 +3,7 @@
  * @Machine: RedmiBook Pro 15
  * @RelativePath: Configuration.kt
  * @Path: D:\Barry\B_study\Android\Android_Project\JetpackApp\buildSrc\src\main\kotlin\Configuration.kt
- * @Author: Barry
+ * @Author: CrowForKotlin
  * @Time: 2022/5/6 9:18 周五 上午
  * @Description: 版本
  * @formatter:off

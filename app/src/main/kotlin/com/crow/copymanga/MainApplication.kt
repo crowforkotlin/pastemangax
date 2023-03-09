@@ -18,13 +18,11 @@ import org.koin.core.context.startKoin
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: app/src/main/java/com/crow/interview
  * @Time: 2022/12/29 21:44
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: MyApplication
  * @formatter:on
  **************************/
 class MainApplication : BaseApp() {
-
-
     override fun onCreate() {
         super.onCreate()
 
@@ -40,8 +38,6 @@ class MainApplication : BaseApp() {
         CrashReport.initCrashReport(applicationContext, "b848968d52", false, strategy);
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
-
 
         startKoin {
             androidContext(this@MainApplication)

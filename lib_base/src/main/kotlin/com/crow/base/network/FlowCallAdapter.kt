@@ -13,7 +13,7 @@ import java.lang.reflect.Type
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/cn/barry/base/network
  * @Time: 2022/5/1 13:53
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description:
  **************************/
 class FlowCallAdapter<R>(private val responseType: Type) : CallAdapter<R, Flow<R?>> {

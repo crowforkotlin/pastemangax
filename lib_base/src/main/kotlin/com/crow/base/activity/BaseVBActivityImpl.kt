@@ -10,7 +10,7 @@ import com.crow.base.dialog.LoadingAnimDialog
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/activity
  * @Time: 2022/11/14 19:20
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: BaseViewBindingActivityImpl 实现
  * @formatter:on
  **************************/

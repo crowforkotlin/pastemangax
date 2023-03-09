@@ -10,7 +10,7 @@ import androidx.viewbinding.ViewBinding
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/cn/barry/base/adapter
  * @Time: 2022/5/6 18:08
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: BaseRvListAdapter
  * @formatter:off
  **************************/

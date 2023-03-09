@@ -14,7 +14,7 @@ import com.crow.base.fragment.IBaseFragment
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/dialog
  * @Time: 2022/11/14 20:57
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: BaseVBDialogFragmentImpl
  * @formatter:on
  **************************/

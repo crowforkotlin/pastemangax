@@ -1,18 +1,35 @@
+@file:Suppress("unused")
+
 package com.crow.base.extensions
 
+import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.preferencesDataStore
+import com.crow.base.R
+import com.crow.base.app.appContext
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/extensions
  * @Time: 2022/6/26 12:35
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: DataStoreExt
  * @formatter:on
  **************************/
+
+object DataStoreAgent {
+
+    val DATA_USER = stringPreferencesKey("data.user")
+    val USER_COOKIE = stringPreferencesKey("user.cookie")
+
+}
+
+val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(appContext.getString(R.string.BaseAppName))
 
 suspend fun DataStore<Preferences>.getIntData(name: String) =
     data.map { preferences -> preferences[intPreferencesKey(name)] ?: 0 }.first()
@@ -35,6 +52,25 @@ suspend fun DataStore<Preferences>.getStringData(name: String) =
 suspend fun DataStore<Preferences>.getStringSetData(name: String) =
     data.map { preferences -> preferences[stringSetPreferencesKey(name)] ?: emptySet() }.first()
 
-suspend fun <T> DataStore<Preferences>.setData(key: Preferences.Key<T>, value: T) {
+suspend fun <T> DataStore<Preferences>.asyncEncode(key: Preferences.Key<T>, value: T) {
     edit { it[key] = value }
+}
+
+suspend fun <T> DataStore<Preferences>.encode(key: Preferences.Key<T>, value: T) {
+    runBlocking { edit { it[key] = value } }
+}
+
+suspend fun <T> Preferences.Key<T>.asyncEncode(value: T) {
+    appContext.appDataStore.edit { it[this] = value }
+}
+
+suspend fun <T> Preferences.Key<T>.asyncDecode(): T? {
+    return appContext.appDataStore.data.map { it[this] }.firstOrNull()
+}
+fun <T> Preferences.Key<T>.encode(value: T) {
+    runBlocking { appContext.appDataStore.edit { it[this@encode] = value } }
+}
+
+fun <T> Preferences.Key<T>.decode(): T? {
+    return runBlocking { appContext.appDataStore.data.map { it[this@decode] }.firstOrNull() }
 }

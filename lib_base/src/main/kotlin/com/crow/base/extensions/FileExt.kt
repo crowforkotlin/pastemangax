@@ -6,7 +6,7 @@ import java.io.*
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/extensions
  * @Time: 2022/11/16 22:36
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: FileExt
  * @formatter:on
  **************************/

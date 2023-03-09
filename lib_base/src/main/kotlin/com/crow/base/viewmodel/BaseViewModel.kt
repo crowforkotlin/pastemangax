@@ -9,17 +9,12 @@ import com.crow.base.extensions.setState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import retrofit2.Response
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.resume
 
 /*************************
  * @ProjectName: JetpackApp
  * @Dir_Path: lib_base/src/main/java/cn/barry/base/viewmodel
  * @Time: 2022/4/26 9:37
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: ViewModel 父类
  * @formatter:off
  **************************/

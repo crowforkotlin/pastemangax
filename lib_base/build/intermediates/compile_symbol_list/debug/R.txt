@@ -961,6 +961,8 @@ int layout base_dialog_loading 0x0
 int layout base_dialog_original_loading 0x0
 int layout base_loading_more 0x0
 int layout base_textview 0x0
+int string BaseAppName 0x0
+int string BaseAppName_CH 0x0
 int string BaseLoading 0x0
 int string BaseTodoTextView 0x0
 int style Base_LibBase_LoadingAnim 0x0

@@ -7,7 +7,7 @@ import android.content.Intent
  * @ProjectName: JetpackApp
  * @Dir_Path: lib_base/src/main/java/cn/barry/base
  * @Time: 2022/3/8 10:37
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: Activity Ext
  **************************/
 inline fun <reified T> Context.startActivity() = startActivity(Intent(this, T::class.java))

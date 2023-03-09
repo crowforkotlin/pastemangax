@@ -11,14 +11,14 @@
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@+id/main_contaienr_toolbar"
-			app:subtitle="@string/main_settings"
+			app:subtitle="@string/BaseAppName_CH"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			app:layout_scrollFlags="scroll|enterAlways"
 			app:navigationIcon="@drawable/main_ic_user_24dp"
 			app:collapseIcon="@drawable/ic_bookmark_24dp"
 			app:menu="@menu/main_container_menu"
-			app:title="@string/app_name" />
+			app:title="@string/BaseAppName" />
 
 	</com.google.android.material.appbar.AppBarLayout>
 

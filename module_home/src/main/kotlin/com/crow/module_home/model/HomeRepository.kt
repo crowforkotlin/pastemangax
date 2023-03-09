@@ -6,7 +6,7 @@ import com.crow.module_home.network.HomeService
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: module_home/src/main/kotlin/com/crow/module_home/model
  * @Time: 2023/3/6 9:12
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: HomeRepository
  * @formatter:on
  **************************/

@@ -7,7 +7,7 @@ import com.crow.base.extensions.logError
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/cn/barry/base/app
  * @Time: 2022/5/8 18:11
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: BaseAppException
  **************************/
 class BaseAppException : Thread.UncaughtExceptionHandler {

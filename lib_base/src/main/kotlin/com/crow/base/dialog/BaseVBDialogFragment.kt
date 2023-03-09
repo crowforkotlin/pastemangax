@@ -15,7 +15,7 @@ import com.crow.base.viewmodel.doOnSuccess
  * @Machine: RedmiBook Pro 15
  * @RelativePath: cn\barry\base\dialog\BaseVBDialogFragment.kt
  * @Path: D:\Barry\B_study\Android\Android_Project\JetpackApp\lib_base\src\main\java\cn\barry\base\dialog\BaseVBDialogFragment.kt
- * @Author: Barry
+ * @Author: CrowForKotlin
  * @Time: 2022/5/2 9:41 周一 上午
  * @Description: 继承此Dialog等待有需要即可进行扩展
  * @formatter:on

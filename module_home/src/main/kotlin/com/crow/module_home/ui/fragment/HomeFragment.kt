@@ -3,12 +3,16 @@ package com.crow.module_home.ui.fragment
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
 import androidx.core.view.doOnLayout
 import com.crow.base.extensions.dp2px
-import com.crow.base.fragment.BaseVBFragment
+import com.crow.base.extensions.setAutoCancelRefreshing
+import com.crow.base.fragment.BaseMviFragment
+import com.crow.base.viewmodel.doOnResultWithLoading
 import com.crow.module_home.databinding.HomeFragmentBinding
+import com.crow.module_home.model.HomeEvent
 import com.crow.module_home.ui.HomeViewModel
 import com.crow.module_home.ui.adapter.HomeBannerAdapter
 import com.to.aboomy.pager2banner.IndicatorView
@@ -20,35 +24,47 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: module_home/src/main/kotlin/com/crow/module_home/view
  * @Time: 2023/3/6 0:14
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: HomeBodyFragment
  * @formatter:on
  **************************/
-class HomeFragment : BaseVBFragment<HomeFragmentBinding, HomeViewModel>() {
+class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
-    private val mContext by lazy { requireContext() }
-    private val mHomeBannerAdapter = HomeBannerAdapter(mutableListOf()) { _, _ ->
-
-    }
+    private val mHomeBannerAdapter = HomeBannerAdapter(mutableListOf()) { _, _ -> }
+    private val mViewModel by viewModel<HomeViewModel>()
 
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentBinding.inflate(inflater)
 
-    override fun getViewModel(): Lazy<HomeViewModel> = viewModel()
+
     override fun initData() {
-        mViewModel.getHomePage()
+        mViewModel.input(HomeEvent.GetHomePage())
     }
+
 
     @SuppressLint("NotifyDataSetChanged")
     override fun initObserver() {
-        super.initObserver()
-        mViewModel.mHomePageResp.observe(this) { datas ->
-            mHomeBannerAdapter.bannerList.clear()
-            mHomeBannerAdapter.bannerList.addAll(datas.mResults.mBanners.filter { it.mType <= 2 })
-            mHomeBannerAdapter.notifyDataSetChanged()
+        mViewModel.output { event ->
+            when(event) {
+                is HomeEvent.GetHomePage -> {
+                    event.mViewState.doOnResultWithLoading(parentFragmentManager) {
+                        val results = event.homePageData!!.mResults
+                        mBinding.root.animateFadeIn()
+                        mHomeBannerAdapter.bannerList.clear()
+                        mHomeBannerAdapter.bannerList.addAll(results.mBanners.filter { banner -> banner.mType <= 2 })
+                        mHomeBannerAdapter.notifyDataSetChanged()
+                        mBinding.homeRefresh.isRefreshing = false
+                    }
+                }
+            }
         }
     }
 
     override fun initView() {
+
+
+        mBinding.homeRefresh.setAutoCancelRefreshing(viewLifecycleOwner) {
+            mViewModel.input(HomeEvent.GetHomePage())
+        }
 
         mBinding.homeBanner.apply {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -77,4 +93,14 @@ class HomeFragment : BaseVBFragment<HomeFragmentBinding, HomeViewModel>() {
             )
             .adapter = mHomeBannerAdapter
     }
+
+    // 启动动画淡入方式
+    private fun View.animateFadeIn() {
+        view.apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate().alpha(1f).duration = 250L
+        }
+    }
+
 }

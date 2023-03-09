@@ -6,7 +6,7 @@ import android.os.Handler
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/activity
  * @Time: 2022/10/4 16:55
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: IBaseActivity 接口基类
  * @formatter:on
  **************************/

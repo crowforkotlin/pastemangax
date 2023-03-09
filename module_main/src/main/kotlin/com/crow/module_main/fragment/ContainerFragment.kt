@@ -7,8 +7,8 @@ import androidx.fragment.app.Fragment
 import com.crow.base.extensions.clickGap
 import com.crow.base.fragment.BaseVBFragment
 import com.crow.module_bookshelf.BookShelfFragment
+import com.crow.module_discovery.DiscoveryFragment
 import com.crow.module_home.ui.fragment.HomeFragment
-import com.crow.module_home.ui.fragment.HomeHeaderFragment
 import com.crow.module_main.adapter.ContainerAdapter
 import com.crow.module_main.databinding.MainFragmentContainerBinding
 import com.crow.module_main.ui.StereoPagerTransformer
@@ -22,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: module_home/src/main/kotlin/com/crow/module_home/ui/fragment
  * @Time: 2023/3/7 14:00
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: HomeContainerFragment
  * @formatter:on
  **************************/
@@ -30,7 +30,7 @@ class ContainerFragment : BaseVBFragment<MainFragmentContainerBinding, Container
 
     private val mContext by lazy { requireContext() }
     private var mContainerAdapter: ContainerAdapter? = null
-    private val fragmentList by lazy { mutableListOf<Fragment>(HomeFragment(), HomeHeaderFragment(), BookShelfFragment()) }
+    private val fragmentList by lazy { mutableListOf<Fragment>(HomeFragment(), DiscoveryFragment(), BookShelfFragment()) }
 
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
     override fun getViewModel(): Lazy<ContainerViewModel> = viewModel()
@@ -43,19 +43,19 @@ class ContainerFragment : BaseVBFragment<MainFragmentContainerBinding, Container
             mBinding.mainSearchView.show()
         }
 
+        mBinding.mainContaienrToolbar.menu[0].clickGap { _, _ ->
+            val dialog = MaterialAlertDialogBuilder(mContext)
+            dialog.setTitle("拷贝漫画")
+            dialog.setPositiveButton("知道了~", null)
+            dialog.show()
+        }
+
         mBinding.mainViewPager.apply {
             mContainerAdapter = ContainerAdapter(fragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
             adapter = mContainerAdapter
             offscreenPageLimit = 1
 
             setPageTransformer(StereoPagerTransformer(mContext.resources.displayMetrics.widthPixels.toFloat()))
-        }
-
-        mBinding.mainContaienrToolbar.menu[0].clickGap { _, _ ->
-            val dialog = MaterialAlertDialogBuilder(mContext)
-            dialog.setTitle("拷贝漫画")
-            dialog.setPositiveButton("知道了~", null)
-            dialog.show()
         }
 
         TabLayoutMediator(mBinding.mainContainerTabLayout, mBinding.mainViewPager) { tab, pos ->

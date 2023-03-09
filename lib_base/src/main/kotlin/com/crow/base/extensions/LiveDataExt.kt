@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.crow.base.extensions
 
 import androidx.lifecycle.LifecycleOwner
@@ -13,7 +15,7 @@ import kotlinx.coroutines.launch
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/extensions
  * @Time: 2022/11/30 11:12
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: LiveDataExt
  * @formatter:on
  **************************/
@@ -23,17 +25,11 @@ fun interface ILiveDataEvent<T> {
 }
 
 fun<T> LiveData<T>.doOnCoroutineObserver(lifecycleOwner: LifecycleOwner, iLiveDataEvent: ILiveDataEvent<T>) {
-    this.observe(lifecycleOwner) {
+    observe(lifecycleOwner) {
         lifecycleOwner.lifecycleScope.launch {
             iLiveDataEvent.doOnCoroutineScope(it, this)
         }
     }
 }
 
-suspend fun<T> MutableLiveData<T>.setState(state: T) {
-    if (currentCoroutineContext() == Dispatchers.Main) {
-        this.value = state
-    } else {
-        this.postValue(state)
-    }
-}
+suspend fun<T> MutableLiveData<T>.setState(state: T) = if (currentCoroutineContext() == Dispatchers.Main) value = state else postValue(state)

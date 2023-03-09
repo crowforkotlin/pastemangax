@@ -10,7 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/fragment
  * @Time: 2022/11/14 21:26
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: BaseVBBottomSheetDfImpl
  * @formatter:on
  **************************/

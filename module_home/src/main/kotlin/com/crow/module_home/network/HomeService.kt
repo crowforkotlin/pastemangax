@@ -8,7 +8,7 @@ import retrofit2.http.GET
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: module_home/src/main/kotlin/com/crow/module_home/network
  * @Time: 2023/3/6 9:13
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: HomeService
  * @formatter:on
  **************************/

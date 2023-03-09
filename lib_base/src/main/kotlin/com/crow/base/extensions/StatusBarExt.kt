@@ -1,5 +1,6 @@
 
 @file:SuppressLint("ALL")
+@file:Suppress("unused")
 
 package com.crow.base.extensions
 
@@ -20,7 +21,7 @@ import com.crow.base.app.appContext
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/cn/barry/base/view
  * @Time: 2022/5/16 21:37
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: StatusBarExt
  * @formatter:off
  **************************/

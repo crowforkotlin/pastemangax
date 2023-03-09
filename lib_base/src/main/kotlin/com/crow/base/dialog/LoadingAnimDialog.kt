@@ -14,7 +14,7 @@ import com.crow.base.extensions.setMaskAmount
  * @Machine: RedmiBook Pro 15
  * @RelativePath: cn\barry\base\dialog\LoadingAnimDialog.kt
  * @Path: D:\Barry\B_study\Android\Android_Project\JetpackApp\lib_base\src\main\java\cn\barry\base\dialog\LoadingAnimDialog.kt
- * @Author: Barry
+ * @Author: CrowForKotlin
  * @Time: 2022/5/2 12:23 周一 下午
  * @Description: 加载动画弹窗
  * @formatter:off
@@ -32,7 +32,7 @@ class LoadingAnimDialog : BaseVBDialogFragmentImpl() {
 
         private val TAG: String = this::class.java.simpleName
         private var showTime = 0L
-        private const val dismissFlagTime = 800L
+        private const val dismissFlagTime = 1000L
 
         @JvmStatic
         @Synchronized
@@ -40,19 +40,17 @@ class LoadingAnimDialog : BaseVBDialogFragmentImpl() {
             val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: LoadingAnimDialog()
             if (!dialog.isVisible) {
                 showTime = System.currentTimeMillis()
-                dialog.show(fragmentManager, TAG)
+                if (!fragmentManager.isStateSaved) dialog.show(fragmentManager, TAG)
             }
         }
 
         @JvmStatic
         @Synchronized
         fun dismiss(fragmentManager: FragmentManager) {
-            val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog
+            val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: return
             val consumeTime = System.currentTimeMillis() - showTime
-            if (dismissFlagTime > consumeTime)
-                dialog?.doAfterDelay(dismissFlagTime - consumeTime) { if (dialog.isVisible) dialog.dismiss() }
-            else
-                if (dialog?.isVisible == true) dialog.dismiss()
+            if (dismissFlagTime > consumeTime) dialog.doAfterDelay(dismissFlagTime - consumeTime) { if (dialog.isVisible) dialog.dismiss() }
+            else if (dialog.isVisible) dialog.dismissAllowingStateLoss()
         }
     }
 

@@ -9,7 +9,7 @@ import androidx.lifecycle.LifecycleService
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/cn/barry/base/services
  * @Time: 2022/5/8 20:16
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: BaseService
  * @formatter:off
  **************************/

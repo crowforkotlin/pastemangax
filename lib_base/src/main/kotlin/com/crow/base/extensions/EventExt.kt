@@ -1,7 +1,12 @@
+@file:Suppress("unused")
+
 package com.crow.base.extensions
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -14,7 +19,7 @@ import kotlin.math.absoluteValue
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/extensions
  * @Time: 2022/7/10 2:23
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: Event Extension
  * @formatter:on
  **************************/
@@ -44,15 +49,14 @@ enum class EventClick {
 open class EventExt internal constructor() {
 
     var FLAG_INIT_ONCE: Boolean = false
-    var FLAG_Failure = false
     var count = 0
 }
 
 /* 通用事件回调间隔类 扩展 存放标志位 与 数据 */
 class EventGapTime : EventExt() {
 
+    var clickGapTime: Long = 0L
     var backGapTime: Long = 0L
-    var clickGapTime = 0L
     var currentTime: Long = 0L
 
 }
@@ -168,14 +172,19 @@ inline fun EventGapTime.callbackGap(
     }
 }
 
-suspend inline fun SwipeRefreshLayout.setAutoCancelRefreshing(
+inline fun SwipeRefreshLayout.setAutoCancelRefreshing(
+    lifecycleOwner: LifecycleOwner,
     cancelTime: Long = 5_000L,
     crossinline block: () -> Unit,
 ) {
-    delay(cancelTime)
-    if (isRefreshing) {
-        isRefreshing = false
-        block()
+    setOnRefreshListener {
+        lifecycleOwner.lifecycleScope.launch {
+            block()
+            delay(cancelTime)
+            if (isRefreshing) {
+                isRefreshing = false
+            }
+        }
     }
 }
 
@@ -204,4 +213,17 @@ inline fun SwipeRefreshLayout.doOnCoroutineRefreshCancel(
         if (delayMs != 0L) delay(delayMs)
         isRefreshing = false
     }
+}
+
+/* Extension function to simplify setting an afterTextChanged action to EditText components. */
+fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
+    this.addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(editable: Editable?) {
+            afterTextChanged.invoke(editable.toString())
+        }
+
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+    })
 }

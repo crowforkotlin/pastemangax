@@ -8,7 +8,7 @@ import java.io.RandomAccessFile
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: app/src/main/java/com/ssti/laser/app/utils
  * @Time: 2022/11/10 16:05
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: FileUtils
  * @formatter:on
  **************************/

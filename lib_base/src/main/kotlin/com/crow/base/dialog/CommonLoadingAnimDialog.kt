@@ -13,7 +13,7 @@ import com.crow.base.viewmodel.BaseViewModel
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: lib_base/src/main/java/com/barry/base/dialog
  * @Time: 2022/7/10 13:53
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: Original LoadingAnim Dialog
  * @formatter:off
  **************************/

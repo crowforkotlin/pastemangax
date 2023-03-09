@@ -91,12 +91,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
-        <provider
-            android:name="me.jessyan.autosize.InitProvider"
-            android:authorities="com.crow.base.test.autosize-init-provider"
-            android:exported="false"
-            android:multiprocess="true" />
     </application>
 
 </manifest>

@@ -1,27 +1,26 @@
 package com.crow.module_home.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.crow.base.viewmodel.BaseViewModel
+import com.crow.base.viewmodel.mvi.BaseMviViewModel
+import com.crow.module_home.model.HomeEvent
 import com.crow.module_home.model.HomeRepository
-import com.crow.module_home.model.resp.HomePageResp
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: module_home/src/main/kotlin/com/crow/module_home/view
  * @Time: 2023/3/6 0:11
- * @Author: BarryAllen
+ * @Author: CrowForKotlin
  * @Description: HomeViewModel
  * @formatter:on
  **************************/
-class HomeViewModel(private val repository: HomeRepository) : BaseViewModel() {
+class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<HomeEvent>() {
 
-    private val _mHomePageData = MutableLiveData<HomePageResp>()
-    val mHomePageResp: LiveData<HomePageResp> get() = _mHomePageData
+    private fun getHomePage(event: HomeEvent.GetHomePage) {
+        flowResult(repository.getHomePage(), event) { value -> event.copy(homePageData = value) }
+    }
 
-    fun getHomePage() {
-        flowLaunch(repository.getHomePage()) {
-            _mHomePageData.value = it
+    override fun dispatcher(event: HomeEvent) {
+        when(event) {
+            is HomeEvent.GetHomePage -> getHomePage(event)
         }
     }
 }
