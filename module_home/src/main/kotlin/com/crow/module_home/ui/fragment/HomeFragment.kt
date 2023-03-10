@@ -8,13 +8,12 @@ import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
 import androidx.core.view.doOnLayout
 import com.crow.base.extensions.dp2px
-import com.crow.base.extensions.setAutoCancelRefreshing
 import com.crow.base.fragment.BaseMviFragment
 import com.crow.base.viewmodel.doOnResultWithLoading
 import com.crow.module_home.databinding.HomeFragmentBinding
 import com.crow.module_home.model.HomeEvent
-import com.crow.module_home.ui.HomeViewModel
 import com.crow.module_home.ui.adapter.HomeBannerAdapter
+import com.crow.module_home.ui.viewmodel.HomeViewModel
 import com.to.aboomy.pager2banner.IndicatorView
 import com.to.aboomy.pager2banner.ScaleInTransformer
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -52,7 +51,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                         mHomeBannerAdapter.bannerList.clear()
                         mHomeBannerAdapter.bannerList.addAll(results.mBanners.filter { banner -> banner.mType <= 2 })
                         mHomeBannerAdapter.notifyDataSetChanged()
-                        mBinding.homeRefresh.isRefreshing = false
                     }
                 }
             }
@@ -60,11 +58,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     }
 
     override fun initView() {
-
-
-        mBinding.homeRefresh.setAutoCancelRefreshing(viewLifecycleOwner) {
-            mViewModel.input(HomeEvent.GetHomePage())
-        }
 
         mBinding.homeBanner.apply {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -102,5 +95,4 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             animate().alpha(1f).duration = 250L
         }
     }
-
 }

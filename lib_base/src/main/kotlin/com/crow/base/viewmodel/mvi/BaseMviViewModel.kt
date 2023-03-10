@@ -2,11 +2,9 @@ package com.crow.base.viewmodel.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.crow.base.extensions.logMsg
 import com.crow.base.viewmodel.ViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
@@ -36,9 +34,7 @@ abstract class BaseMviViewModel<E : BaseMviEvent> : ViewModel() {
     fun <T> flowResult(flow: Flow<T>, event: E, context: CoroutineContext = Dispatchers.IO,  result: BaseMviFlowResult<E, T>) {
         viewModelScope.launch {
             flow
-                .onStart {
-                    currentCoroutineContext().logMsg()
-                    _sharedFlow.emit(event.also { it.mViewState = ViewState.Loading }) }
+                .onStart { _sharedFlow.emit(event.also { it.mViewState = ViewState.Loading }) }
                 .onCompletion { _sharedFlow.emit(event.also { it.mViewState = ViewState.Success(ViewState.Success.NO_ATTACH_VALUE) }) }
                 .catch { catch -> _sharedFlow.emit(event.also { it.mViewState = ViewState.Error(msg = catch.message ?: "") }) }
                 .flowOn(context)

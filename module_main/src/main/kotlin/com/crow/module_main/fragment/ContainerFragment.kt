@@ -53,7 +53,7 @@ class ContainerFragment : BaseVBFragment<MainFragmentContainerBinding, Container
         mBinding.mainViewPager.apply {
             mContainerAdapter = ContainerAdapter(fragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
             adapter = mContainerAdapter
-            offscreenPageLimit = 1
+            offscreenPageLimit = 3
 
             setPageTransformer(StereoPagerTransformer(mContext.resources.displayMetrics.widthPixels.toFloat()))
         }

@@ -1,5 +1,6 @@
 package com.crow.base.dialog
 
+import android.animation.Animator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -50,7 +51,18 @@ class LoadingAnimDialog : BaseVBDialogFragmentImpl() {
             val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: return
             val consumeTime = System.currentTimeMillis() - showTime
             if (dismissFlagTime > consumeTime) dialog.doAfterDelay(dismissFlagTime - consumeTime) { if (dialog.isVisible) dialog.dismiss() }
-            else if (dialog.isVisible) dialog.dismissAllowingStateLoss()
+            else if (dialog.isVisible) {
+                dialog.requireView().apply {
+                    alpha = 1f
+                    visibility = View.VISIBLE
+                    animate().alpha(0f).setListener(object : Animator.AnimatorListener {
+                        override fun onAnimationStart(animation: Animator){}
+                        override fun onAnimationEnd(animation: Animator){ dialog.dismissAllowingStateLoss() }
+                        override fun onAnimationCancel(animation: Animator){}
+                        override fun onAnimationRepeat(animation: Animator){}
+                    }).duration = 500L
+                }
+            }
         }
     }
 
@@ -63,6 +75,9 @@ class LoadingAnimDialog : BaseVBDialogFragmentImpl() {
             setBackgroundTransparent()
             setMaskAmount(0f)
             isCancelable = false
+            decorView.alpha = 0f
+            decorView.visibility = View.VISIBLE
+            decorView.animate().alpha(1f).duration = 500L
         }
     }
 

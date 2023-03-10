@@ -53,10 +53,7 @@ class MainActivity : AppCompatActivity() {
                 .setDuration(500L)
                 .setListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(animation: Animator) {}
-                    override fun onAnimationEnd(animation: Animator) {
-                        remove()
-                    }
-
+                    override fun onAnimationEnd(animation: Animator) { remove() }
                     override fun onAnimationCancel(animation: Animator) {}
                     override fun onAnimationRepeat(animation: Animator) {}
                 })

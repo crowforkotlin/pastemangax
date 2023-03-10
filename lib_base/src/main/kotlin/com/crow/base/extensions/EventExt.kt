@@ -178,12 +178,10 @@ inline fun SwipeRefreshLayout.setAutoCancelRefreshing(
     crossinline block: () -> Unit,
 ) {
     setOnRefreshListener {
+        block()
         lifecycleOwner.lifecycleScope.launch {
-            block()
             delay(cancelTime)
-            if (isRefreshing) {
-                isRefreshing = false
-            }
+            isRefreshing = false
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.crow.module_home.ui
+package com.crow.module_home.ui.viewmodel
 
 import com.crow.base.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_home.model.HomeEvent

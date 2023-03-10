@@ -25,7 +25,6 @@ import java.net.UnknownHostException
 internal fun <R> ProducerScope<R>.callEnqueueFlow(call: Call<R>) {
     call.enqueue(object : Callback<R> {
         override fun onResponse(call: Call<R>, response: Response<R>) {
-            response.logMsg()
             processing(response)
         }
 
