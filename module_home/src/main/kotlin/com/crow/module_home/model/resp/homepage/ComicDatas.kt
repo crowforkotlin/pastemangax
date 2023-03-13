@@ -14,14 +14,15 @@ import com.squareup.moshi.Json
  */
 data class ComicDatas<T>(
 
-    @Json(name = "limit")
-    val mLimit: Int,
 
     @Json(name = "list")
     val mResult: List<T>,
 
     @Json(name = "offset")
     val offset: Int,
+
+    @Json(name = "limit")
+    val mLimit: Int,
 
     @Json(name = "total")
     val total: Int

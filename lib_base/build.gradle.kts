@@ -107,7 +107,7 @@ dependencies {
 
     // debugApi(Dependencies.leakcanary) // 不支持在MinSdk 24以下的设备运行
     testApi(Dependencies.junit_junit)
-    androidTestApi(Dependencies.androidx_test_junit)
+    androidTestApi(Dependencies.androidx_test_junit_ktx)
     androidTestApi(Dependencies.androidx_test_espresso)
 
 

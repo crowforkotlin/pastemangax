@@ -21,6 +21,7 @@ interface IBaseFragment {
     // 隐藏加载动画
     fun dismissLoadingAnim()
 
+
     // 获取View
     fun getView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 

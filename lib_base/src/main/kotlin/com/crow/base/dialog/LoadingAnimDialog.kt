@@ -1,10 +1,10 @@
 package com.crow.base.dialog
 
-import android.animation.Animator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.crow.base.R
 import com.crow.base.extensions.doAfterDelay
@@ -23,10 +23,13 @@ import com.crow.base.extensions.setMaskAmount
 
 
 
-class LoadingAnimDialog : BaseVBDialogFragmentImpl() {
+class LoadingAnimDialog : DialogFragment() {
 
     init {
         setStyle(STYLE_NO_TITLE, R.style.Base_LibBase_LoadingAnim)
+    }
+    fun interface LoadingAnimCallBack {
+        fun onAnimEnd()
     }
 
     companion object {
@@ -47,38 +50,40 @@ class LoadingAnimDialog : BaseVBDialogFragmentImpl() {
 
         @JvmStatic
         @Synchronized
-        fun dismiss(fragmentManager: FragmentManager) {
+        fun dismiss(fragmentManager: FragmentManager, animCallBack: LoadingAnimCallBack? = null) {
             val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: return
             val consumeTime = System.currentTimeMillis() - showTime
-            if (dismissFlagTime > consumeTime) dialog.doAfterDelay(dismissFlagTime - consumeTime) { if (dialog.isVisible) dialog.dismiss() }
-            else if (dialog.isVisible) {
-                dialog.requireView().apply {
-                    alpha = 1f
-                    visibility = View.VISIBLE
-                    animate().alpha(0f).setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(animation: Animator){}
-                        override fun onAnimationEnd(animation: Animator){ dialog.dismissAllowingStateLoss() }
-                        override fun onAnimationCancel(animation: Animator){}
-                        override fun onAnimationRepeat(animation: Animator){}
-                    }).duration = 500L
+            if (dismissFlagTime > consumeTime) {
+                dialog.doAfterDelay(dismissFlagTime - consumeTime) {
+                    if (dialog.isVisible) {
+                        dialog.dismissAllowingStateLoss()
+                        animCallBack?.onAnimEnd()
+                    }
                 }
+            } else if (dialog.isVisible) {
+                val view = dialog.requireView()
+                view.alpha = 1f
+                view.visibility = View.VISIBLE
+                view.animate().alpha(0f).withEndAction {
+                    dialog.dismissAllowingStateLoss()
+                    animCallBack?.onAnimEnd()
+                }.duration = 250L
             }
         }
     }
 
-    override fun getView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.base_dialog_loading, container, false)
     }
+
     override fun onStart() {
         super.onStart()
-        dialog!!.window!!.apply {
-            setBackgroundTransparent()
-            setMaskAmount(0f)
-            isCancelable = false
-            decorView.alpha = 0f
-            decorView.visibility = View.VISIBLE
-            decorView.animate().alpha(1f).duration = 500L
-        }
+        isCancelable = false
+        val window = dialog!!.window!!
+        window.setBackgroundTransparent()
+        window.setMaskAmount(0f)
+        window.decorView.alpha = 0f
+        window.decorView.visibility = View.VISIBLE
+        window.decorView.animate().alpha(1f).duration = 200L
     }
-
 }

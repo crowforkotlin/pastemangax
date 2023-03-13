@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+	<color name="home_grey_400">#bdbdbd</color>
+	<color name="home_indigo">#e8eaf6</color>
 </resources>

@@ -19,11 +19,6 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseVBFragmentImpl() {
     override fun initListener() {}
     override fun initView() {}
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _mBinding = null
-    }
-
     override fun getView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return getViewBinding(inflater).also { _mBinding = it }.root
     }

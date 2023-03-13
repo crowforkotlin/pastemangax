@@ -28,6 +28,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  **************************/
 class ContainerFragment : BaseVBFragment<MainFragmentContainerBinding, ContainerViewModel>() {
 
+    private val mClickComicListener = HomeFragment.ClickComicListener {
+
+    }
     private val mContext by lazy { requireContext() }
     private var mContainerAdapter: ContainerAdapter? = null
     private val fragmentList by lazy { mutableListOf<Fragment>(HomeFragment(), DiscoveryFragment(), BookShelfFragment()) }
@@ -53,8 +56,7 @@ class ContainerFragment : BaseVBFragment<MainFragmentContainerBinding, Container
         mBinding.mainViewPager.apply {
             mContainerAdapter = ContainerAdapter(fragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
             adapter = mContainerAdapter
-            offscreenPageLimit = 3
-
+            offscreenPageLimit = 1
             setPageTransformer(StereoPagerTransformer(mContext.resources.displayMetrics.widthPixels.toFloat()))
         }
 
@@ -62,18 +64,23 @@ class ContainerFragment : BaseVBFragment<MainFragmentContainerBinding, Container
             when (pos) {
                 0 -> {
                     tab.text = getString(com.crow.module_home.R.string.home_homepage)
-                    tab.icon = ContextCompat.getDrawable(mContext, com.crow.module_home.R.drawable.ic_home_24dp)
+                    tab.icon = ContextCompat.getDrawable(mContext, com.crow.module_home.R.drawable.home_ic_home_24dp)
                 }
                 1 -> {
                     tab.text = getString(com.crow.module_home.R.string.home_recovery)
-                    tab.icon = ContextCompat.getDrawable(mContext, com.crow.module_home.R.drawable.ic_discovery_24dp)
+                    tab.icon = ContextCompat.getDrawable(mContext, com.crow.module_home.R.drawable.home_ic_discovery_24dp)
                 }
                 2 -> {
                     tab.text = getString(com.crow.module_home.R.string.home_bookshelf)
-                    tab.icon = ContextCompat.getDrawable(mContext, com.crow.module_home.R.drawable.ic_discovery_24dp)
+                    tab.icon = ContextCompat.getDrawable(mContext, com.crow.module_home.R.drawable.home_ic_discovery_24dp)
                 }
                 else -> { }
             }
         }.attach()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mContainerAdapter = null
     }
 }

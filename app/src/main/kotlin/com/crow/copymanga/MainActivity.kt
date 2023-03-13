@@ -34,6 +34,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
 
+        // 设置方向
+        // requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
+
         // 全屏布局
         WindowCompat.setDecorFitsSystemWindows(window, true)
         mBinding.root.setPadding(0, getStatusBarHeight(), 0, getNavigationBarHeight())
@@ -42,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         // supportFragmentManager.beginTransaction().replace(R.id.main_body, HomeBodyFragment()).commit()
 
     }
+
 
     // 启动动画淡出方式1
     private fun SplashScreenViewProvider.animateFadeOut_1() {

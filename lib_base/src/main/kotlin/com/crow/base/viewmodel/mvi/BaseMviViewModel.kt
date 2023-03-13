@@ -3,11 +3,11 @@ package com.crow.base.viewmodel.mvi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.crow.base.viewmodel.ViewState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -17,21 +17,25 @@ import kotlin.coroutines.CoroutineContext
  * @Description: BaseMviViewModel
  * @formatter:on
  **************************/
+
 abstract class BaseMviViewModel<E : BaseMviEvent> : ViewModel() {
 
     fun interface BaseMviFlowResult<E : BaseMviEvent, T> { fun onResult(value: T): E }
+    fun interface BaseMviSuspendResult<E> { suspend fun onResult(value: E) }
 
-    @PublishedApi internal val _sharedFlow: MutableSharedFlow<E> = MutableSharedFlow (extraBufferCapacity = 10, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    @PublishedApi internal val _sharedFlow: MutableSharedFlow<E> = MutableSharedFlow (1, 3, BufferOverflow.DROP_OLDEST)
 
     val sharedFlow: SharedFlow<E> get() = _sharedFlow
 
     open fun dispatcher(event: E) { }
 
     fun input(event: E) = dispatcher(event)
+    suspend fun output(baseMviSuspendResult: BaseMviSuspendResult<E>) {
+        _sharedFlow.collect { baseMviSuspendResult.onResult(it) }
+    }
 
-    inline fun output(crossinline observer: (E) -> Unit) = viewModelScope.launch { _sharedFlow.collect { observer.invoke(it) } }
 
-    fun <T> flowResult(flow: Flow<T>, event: E, context: CoroutineContext = Dispatchers.IO,  result: BaseMviFlowResult<E, T>) {
+    fun <T> flowResult(flow: Flow<T>, event: E, context: CoroutineContext = EmptyCoroutineContext,  result: BaseMviFlowResult<E, T>) {
         viewModelScope.launch {
             flow
                 .onStart { _sharedFlow.emit(event.also { it.mViewState = ViewState.Loading }) }

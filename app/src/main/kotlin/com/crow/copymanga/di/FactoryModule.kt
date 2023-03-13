@@ -1,6 +1,6 @@
 package com.crow.copymanga.di
 
-import com.crow.module_home.model.HomeRepository
+import com.crow.module_home.model.factory.HomeRepository
 import org.koin.dsl.module
 
 /*************************

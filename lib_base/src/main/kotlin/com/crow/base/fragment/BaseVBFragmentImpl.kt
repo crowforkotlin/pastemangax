@@ -1,8 +1,9 @@
 package com.crow.base.fragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +22,7 @@ import com.crow.base.extensions.permissionext.IBasePermission
  **************************/
 abstract class BaseVBFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
 
+    private val mHandler = Handler(Looper.getMainLooper())
     private val mPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
         if (it.containsValue(false)) iBasePerEvent?.onFailure()
         else iBasePerEvent?.onSccess()
@@ -35,14 +37,15 @@ abstract class BaseVBFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
     // 初始化数据
     override fun initData() { }
 
+
     override var iBasePerEvent: IBasePerEvent? = null
 
-    override fun showLoadingAnim() {
-        LoadingAnimDialog.show(parentFragmentManager)
-    }
+    override fun showLoadingAnim() { LoadingAnimDialog.show(parentFragmentManager) }
 
-    override fun dismissLoadingAnim() {
-        LoadingAnimDialog.dismiss(parentFragmentManager)
+    override fun dismissLoadingAnim() { LoadingAnimDialog.dismiss(parentFragmentManager) }
+
+    inline fun dismissLoadingAnim(crossinline animEnd: () -> Unit) {
+        LoadingAnimDialog.dismiss(parentFragmentManager) { animEnd()  }
     }
 
     override fun requestPermission(permissions: Array<String>, iBasePerEvent: IBasePerEvent) {
@@ -59,5 +62,10 @@ abstract class BaseVBFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
         initView()
         initData()
         initListener()
+    }
+
+    override fun onDestroy(){
+        super.onDestroy()
+        dismissLoadingAnim()
     }
 }

@@ -10,6 +10,4 @@ import com.crow.base.viewmodel.ViewState
  * @Description: BaseMviEvent
  * @formatter:on
  **************************/
-open class BaseMviEvent(var mViewState: ViewState = ViewState.Default, var mLaunchLoading: Boolean = true) {
-
-}
+open class BaseMviEvent(var mViewState: ViewState = ViewState.Default)

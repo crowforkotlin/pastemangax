@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	style="@style/Widget.Material3.CardView.Filled"
+	android:layout_width="match_parent"
+	app:cardBackgroundColor="@color/home_indigo"
+	android:layout_height="wrap_content"
+	android:layout_margin="@dimen/base_dp10"
+	app:cardCornerRadius="@dimen/base_dp20"
+	app:cardElevation="@dimen/base_dp10">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/home_item_constraint"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/home_item_bt"
+			style="@style/Widget.Material3.Button.IconButton"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:clickable="false"
+			android:gravity="start|center_vertical"
+			android:textSize="@dimen/base_sp18"
+			android:textStyle="bold"
+			app:iconPadding="@dimen/base_dp12"
+			app:iconSize="@dimen/base_dp48"
+			app:iconTint="@null"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:icon="@drawable/home_ic_new_24dp"
+			tools:text="@string/BaseAppName_CH" />
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/home_item_book_rv"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:nestedScrollingEnabled="false"
+			app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/home_item_bt"
+			app:spanCount="3"
+			tools:itemCount="9"
+			tools:listitem="@layout/home_rv_book_layout">
+
+		</androidx.recyclerview.widget.RecyclerView>
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

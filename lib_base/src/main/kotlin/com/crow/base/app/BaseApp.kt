@@ -15,6 +15,8 @@ import com.orhanobut.logger.Logger
 
 val appContext = BaseApp.context
 
+
+
 open class BaseApp : Application() {
 
     companion object { lateinit var context: Application }

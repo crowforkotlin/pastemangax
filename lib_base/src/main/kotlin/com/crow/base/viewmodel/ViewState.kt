@@ -38,14 +38,19 @@ sealed class ViewState {
 //自定义error 可以抛出来结束流的运行
 class ViewStateException(msg: String, throwable: Throwable? = null) : Exception(msg, throwable)
 
-class JsonFormatException(code: Int? = -1, msg: String? = null, throwable: Throwable? = null): Exception(msg, throwable)
-
-class ResultCodeException(code: Int? = -1, msg: String? = null, throwable: Throwable? = null): Exception(msg, throwable)
-
-inline fun ViewState.doOnResultWithLoading(fragmentManager: FragmentManager, crossinline onResult: () -> Unit) {
-    doOnLoading { LoadingAnimDialog.show(fragmentManager) }
-    doOnError { _, _ -> LoadingAnimDialog.dismiss(fragmentManager) }
-    doOnSuccess { if (it == ViewState.Success.ATTACH_VALUE) { onResult() } else { LoadingAnimDialog.dismiss(fragmentManager) } }
+inline fun ViewState.doOnResultWithLoading(fragmentManager: FragmentManager, crossinline onResult: () -> Unit, crossinline animEnd: () -> Unit) {
+    when(this) {
+        is ViewState.Default -> { }
+        is ViewState.Loading -> { LoadingAnimDialog.show(fragmentManager) }
+        is ViewState.Error -> { LoadingAnimDialog.dismiss(fragmentManager) { animEnd() } }
+        is ViewState.Success -> {
+            if (type == ViewState.Success.ATTACH_VALUE) {
+                onResult()
+                return
+            }
+            LoadingAnimDialog.dismiss(fragmentManager) { animEnd() }
+        }
+    }
 }
 
 inline fun ViewState.doOnLoading(crossinline block: () -> Unit) = apply {

@@ -39,6 +39,7 @@ class MainApplication : BaseApp() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+
         startKoin {
             androidContext(this@MainApplication)
             modules(listOf(netWorkModule, servicesModule, viewModelModule, factoryModule))

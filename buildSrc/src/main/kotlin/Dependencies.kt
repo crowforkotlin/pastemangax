@@ -32,7 +32,8 @@ object Dependencies {
     const val junit_junit = "junit:junit:4.13.2"
 
     /* 在 Android 中进行测试 */
-    const val androidx_test_junit = "androidx.test.ext:junit-ktx:1.1.3"
+
+    const val androidx_test_junit_ktx = "androidx.test.ext:junit-ktx:1.1.5"
     const val androidx_test_espresso = "androidx.test.espresso:espresso-core:3.4.0"
 
     /* androidx lifecycle */

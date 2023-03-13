@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/lib_base" />
             <option value="$PROJECT_DIR$/module_bookshelf" />
+            <option value="$PROJECT_DIR$/module_comic" />
             <option value="$PROJECT_DIR$/module_discovery" />
             <option value="$PROJECT_DIR$/module_home" />
             <option value="$PROJECT_DIR$/module_main" />
