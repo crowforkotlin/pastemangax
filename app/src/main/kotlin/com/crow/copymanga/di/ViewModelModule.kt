@@ -1,9 +1,10 @@
 package com.crow.copymanga.di
 
 import com.crow.module_bookshelf.BookShelfViewModel
+import com.crow.module_comic.ui.viewmodel.ComicViewModel
 import com.crow.module_discovery.DiscoveryViewModel
 import com.crow.module_home.ui.viewmodel.HomeViewModel
-import com.crow.module_main.viewmodel.ContainerViewModel
+import com.crow.module_main.ui.viewmodel.ContainerViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -20,7 +21,8 @@ val viewModelModule = module {
 
     viewModel { HomeViewModel(get()) }
     viewModel { BookShelfViewModel() }
-    viewModel { ContainerViewModel() }
+    viewModel { ContainerViewModel(get()) }
     viewModel { DiscoveryViewModel() }
+    viewModel { ComicViewModel(get()) }
 
 }

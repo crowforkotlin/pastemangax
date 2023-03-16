@@ -32,7 +32,12 @@ val netWorkModule = module {
                 else HttpLoggingInterceptor.Level.NONE
             })
             addInterceptor(Interceptor { chain: Interceptor.Chain ->
-                chain.proceed(chain.request().newBuilder().addHeader("User-Agent", "Dart/2.16 (dart:io)").build())
+                chain.proceed(chain.request().newBuilder()
+                    .addHeader("User-Agent", "Dart/2.16 (dart:io)")
+                    .addHeader("Platform", "1")
+                    .addHeader("region", "0")
+                    .build()
+                )
             })
             pingInterval(10, TimeUnit.SECONDS)
             connectTimeout(20, TimeUnit.SECONDS)

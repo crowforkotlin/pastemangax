@@ -30,9 +30,7 @@ internal fun <R> ProducerScope<R>.callEnqueueFlow(call: Call<R>) {
 
         override fun onFailure(call: Call<R>, t: Throwable) {
             t.stackTraceToString().logError()
-            if (t is UnknownHostException) {
-                close(ViewStateException("解析地址错误！请检查您的网络！", t))
-            }
+            if (t is UnknownHostException) { close(ViewStateException("解析地址错误！请检查您的网络！", t)) }
             close(t)
         }
     })

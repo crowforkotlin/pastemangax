@@ -5,32 +5,39 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.app.appContext
-import com.crow.module_home.R
+import com.crow.base.extensions.clickGap
 import com.crow.module_home.databinding.HomeRvBannerBinding
+import com.crow.module_home.model.ComicType
 import com.crow.module_home.model.resp.homepage.Banner
+import com.crow.module_home.ui.fragment.HomeFragment
 
 class HomeBannerAdapter(
     val bannerList: MutableList<Banner>,
-    inline val clickCallback: HomeBannerAdapter.(Banner, String) -> Unit,
+    val mClickComicListener: HomeFragment.ClickComicListener,
 ) : RecyclerView.Adapter<HomeBannerAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val rvBinding: HomeRvBannerBinding) :
-        RecyclerView.ViewHolder(rvBinding.root) {
+    private var mComicListener: HomeFragment.ClickComicListener? = null
 
+    inner class ViewHolder(val rvBinding: HomeRvBannerBinding) : RecyclerView.ViewHolder(rvBinding.root) {
+        var mPathword: String = ""
     }
 
     override fun getItemCount(): Int = bannerList.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(HomeRvBannerBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return ViewHolder(HomeRvBannerBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
+            vh.rvBinding.baneerImage.clickGap { _, _ -> mClickComicListener.onClick(ComicType.Banner, vh.mPathword) }
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = bannerList[position]
+    override fun onBindViewHolder(vh: ViewHolder, position: Int) {
+        val banner = bannerList[position]
         Glide.with(appContext)
-            .load(item.mImgUrl)
-            .placeholder(R.drawable.home_ic_search_24dp)
-            .into(holder.rvBinding.baneerImage)
-        holder.rvBinding.bannerText.text = item.mBrief
+            .load(banner.mImgUrl)
+            .into(vh.rvBinding.baneerImage)
+        vh.rvBinding.bannerText.text = banner.mBrief
+        vh.mPathword = banner.mComic!!.mPathWord
     }
+
+    fun setListener(clickListener: HomeFragment.ClickComicListener) { mComicListener = clickListener }
 
 }

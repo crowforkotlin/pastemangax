@@ -1,6 +1,5 @@
 package com.crow.base.viewmodel
 
-import androidx.annotation.IntRange
 import androidx.fragment.app.FragmentManager
 import com.crow.base.dialog.LoadingAnimDialog
 
@@ -16,21 +15,24 @@ import com.crow.base.dialog.LoadingAnimDialog
 sealed class ViewState {
 
     // 用于预构建
-    object Default: ViewState()
+    object Default : ViewState()
 
     // 正在加载中
     object Loading : ViewState()
 
     // 加载成功
-    class Success(@IntRange(from = 0L, to = 1L) val type: Int = NO_ATTACH_VALUE) : ViewState() {
-        companion object {
-            const val NO_ATTACH_VALUE = 0
-            const val ATTACH_VALUE = 1
-        }
-    }
+    object Success : ViewState()
+
+    // With结果
+    object Result : ViewState()
 
     // 加载失败
-    class Error(val type: Int = -1, val msg: String? = null) : ViewState()
+    class Error(val type: Int = DEFAULT, val msg: String? = null) : ViewState() {
+        companion object {
+            const val DEFAULT = -1
+            const val UNKNOW_HOST = -2
+        }
+    }
 
 
 }
@@ -38,41 +40,56 @@ sealed class ViewState {
 //自定义error 可以抛出来结束流的运行
 class ViewStateException(msg: String, throwable: Throwable? = null) : Exception(msg, throwable)
 
-inline fun ViewState.doOnResultWithLoading(fragmentManager: FragmentManager, crossinline onResult: () -> Unit, crossinline animEnd: () -> Unit) {
-    when(this) {
-        is ViewState.Default -> { }
-        is ViewState.Loading -> { LoadingAnimDialog.show(fragmentManager) }
-        is ViewState.Error -> { LoadingAnimDialog.dismiss(fragmentManager) { animEnd() } }
-        is ViewState.Success -> {
-            if (type == ViewState.Success.ATTACH_VALUE) {
-                onResult()
-                return
-            }
-            LoadingAnimDialog.dismiss(fragmentManager) { animEnd() }
-        }
+inline fun ViewState.doOnResultWithLoading(
+    fragmentManager: FragmentManager,
+    crossinline onResult: () -> Unit,
+    crossinline animEnd: () -> Unit,
+) {
+    when (this) {
+        is ViewState.Default -> {}
+        is ViewState.Loading -> LoadingAnimDialog.show(fragmentManager)
+        is ViewState.Error -> LoadingAnimDialog.dismiss(fragmentManager) { animEnd() }
+        is ViewState.Success -> LoadingAnimDialog.dismiss(fragmentManager) { animEnd() }
+        is ViewState.Result -> onResult()
     }
 }
 
-inline fun ViewState.doOnLoading(crossinline block: () -> Unit) = apply {
+inline fun ViewState.doOnLoading(crossinline block: () -> Unit): ViewState {
     if (this is ViewState.Loading) block()
+    return this
 }
 
-inline fun ViewState.doOnSuccess(crossinline block: (Int) -> Unit) = apply {
-    if (this is ViewState.Success) block(type)
+inline fun ViewState.doOnSuccess(crossinline block: () -> Unit): ViewState {
+    if (this is ViewState.Success) block()
+    return this
 }
 
-inline fun ViewState.doOnError(crossinline block: (Int, String?) -> Unit) = apply {
+inline fun ViewState.doOnError(crossinline block: (Int, String?) -> Unit): ViewState {
     if (this is ViewState.Error) block(type, msg)
+    return this
 }
 
-suspend inline fun ViewState.doOnLoadingInCoroutine (crossinline block: suspend () -> Unit) = apply {
+inline fun ViewState.doOnResult(crossinline block: () -> Unit): ViewState {
+    if (this is ViewState.Result) block()
+    return this
+}
+
+suspend inline fun ViewState.doOnLoadingInCoroutine(crossinline block: suspend () -> Unit): ViewState {
     if (this is ViewState.Loading) block()
+    return this
 }
 
-suspend inline fun ViewState.doOnSuccessInCoroutine (crossinline block: suspend (Int) -> Unit) = apply {
-    if (this is ViewState.Success) block(type)
+suspend inline fun ViewState.doOnSuccessInCoroutine(crossinline block: suspend () -> Unit): ViewState {
+    if (this is ViewState.Success) block()
+    return this
 }
 
-suspend inline fun ViewState.doOnErrorInCoroutine (crossinline block: suspend (Int, String?) -> Unit) = apply {
+suspend inline fun ViewState.doOnErrorInCoroutine(crossinline block: suspend (Int, String?) -> Unit): ViewState {
     if (this is ViewState.Error) block(type, msg)
+    return this
+}
+
+suspend inline fun ViewState.doOnResultInCoroutine(crossinline block: suspend () -> Unit): ViewState {
+    if (this is ViewState.Result) block()
+    return this
 }

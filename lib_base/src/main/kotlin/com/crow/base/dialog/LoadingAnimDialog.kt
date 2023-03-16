@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.crow.base.R
+import com.crow.base.extensions.animateFadeOut
 import com.crow.base.extensions.doAfterDelay
 import com.crow.base.extensions.setBackgroundTransparent
 import com.crow.base.extensions.setMaskAmount
@@ -35,16 +36,18 @@ class LoadingAnimDialog : DialogFragment() {
     companion object {
 
         private val TAG: String = this::class.java.simpleName
-        private var showTime = 0L
-        private const val dismissFlagTime = 1000L
+        private var mShowTime = 0L
+        private const val mDismissFlagTime = 1000L
+        private const val mAnimateDuration = 200L
 
         @JvmStatic
         @Synchronized
         fun show(fragmentManager: FragmentManager) {
             val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: LoadingAnimDialog()
+            if (dialog.isAdded) { return }
             if (!dialog.isVisible) {
-                showTime = System.currentTimeMillis()
-                if (!fragmentManager.isStateSaved) dialog.show(fragmentManager, TAG)
+                mShowTime = System.currentTimeMillis()
+                if (!fragmentManager.isStateSaved) { dialog.show(fragmentManager, TAG) }
             }
         }
 
@@ -52,22 +55,22 @@ class LoadingAnimDialog : DialogFragment() {
         @Synchronized
         fun dismiss(fragmentManager: FragmentManager, animCallBack: LoadingAnimCallBack? = null) {
             val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: return
-            val consumeTime = System.currentTimeMillis() - showTime
-            if (dismissFlagTime > consumeTime) {
-                dialog.doAfterDelay(dismissFlagTime - consumeTime) {
+            val consumeTime = System.currentTimeMillis() - mShowTime
+            // 判断 取消时间是否大于 显示超1S 时间
+            if (mDismissFlagTime > consumeTime) {
+                dialog.doAfterDelay(mDismissFlagTime - consumeTime) {
                     if (dialog.isVisible) {
-                        dialog.dismissAllowingStateLoss()
-                        animCallBack?.onAnimEnd()
+                        dialog.requireView().animateFadeOut(mAnimateDuration).withEndAction {
+                            dialog.dismissAllowingStateLoss()
+                            animCallBack?.onAnimEnd()
+                        }
                     }
                 }
             } else if (dialog.isVisible) {
-                val view = dialog.requireView()
-                view.alpha = 1f
-                view.visibility = View.VISIBLE
-                view.animate().alpha(0f).withEndAction {
+                dialog.requireView().animateFadeOut(mAnimateDuration).withEndAction {
                     dialog.dismissAllowingStateLoss()
                     animCallBack?.onAnimEnd()
-                }.duration = 250L
+                }
             }
         }
     }

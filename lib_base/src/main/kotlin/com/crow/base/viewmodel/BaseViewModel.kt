@@ -28,7 +28,7 @@ open class BaseViewModel : ViewModel(), IBaseViewModel {
         try {
             flow
                 .onStart { _viewState.setState(ViewState.Loading) }
-                .onCompletion { cause -> if (cause == null) _viewState.setState(ViewState.Success()) }
+                .onCompletion { cause -> if (cause == null) _viewState.setState(ViewState.Success) }
                 .catch {
                     _viewState.setState(ViewState.Error(msg = it.localizedMessage))
                     failureEvent.onFailure(it)
@@ -47,7 +47,7 @@ open class BaseViewModel : ViewModel(), IBaseViewModel {
         try {
             flow
                 .onStart { _viewState.setState(ViewState.Loading) }
-                .onCompletion { cause -> if (cause == null) _viewState.setState(ViewState.Success()) }
+                .onCompletion { cause -> if (cause == null) _viewState.setState(ViewState.Success) }
                 .catch { _viewState.setState(ViewState.Error(msg = it.localizedMessage)) }
                 .flowOn(Dispatchers.IO)
                 .collect { successEvent.onSuccess(it) }

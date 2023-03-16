@@ -2,9 +2,6 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/app_main_nav.xml"
-	app:startDestination="@id/appHomecontainerfragment">
-	<fragment
-		android:id="@+id/appHomecontainerfragment"
-		android:name="com.crow.module_main.fragment.ContainerFragment"
-		android:label="HomeContainerFragment" />
+	app:startDestination="@id/home_nav.xml">
+	<include app:graph="@navigation/main_nav" />
 </navigation>

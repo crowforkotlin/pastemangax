@@ -958,6 +958,7 @@ dimen base_sp9
 drawable base_bg_original_loading_radius
 drawable base_shape_textview_radius
 id loadingLottieAnimation
+id mainComicfragment
 id textview
 layout base_dialog_loading
 layout base_dialog_original_loading

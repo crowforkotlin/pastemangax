@@ -11,14 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.app.appContext
 import com.crow.base.extensions.clickGap
-import com.crow.base.view.ToolTipsView
+import com.crow.base.extensions.formatValue
 import com.crow.module_home.databinding.HomeRvBookLayoutBinding
 import com.crow.module_home.model.ComicType
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.AuthorResult
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.ui.fragment.HomeFragment
-import java.text.DecimalFormat
 import java.util.*
 
 /*************************
@@ -29,15 +28,11 @@ import java.util.*
  * @Description: HomeBookAdapter
  * @formatter:on
  **************************/
-
-private val formatter  = DecimalFormat.getInstance(Locale.US) as DecimalFormat
-
 class HomeBookAdapter<T>(
-    private var mData: T? = null,
+    var mData: T? = null,
     private val mType: ComicType,
-    private val mClickComicListener: HomeFragment.ClickComicListener?
-) :
-    RecyclerView.Adapter<HomeBookAdapter<T>.ViewHolder>() {
+    private val mClickComicListener: HomeFragment.ClickComicListener
+) : RecyclerView.Adapter<HomeBookAdapter<T>.ViewHolder>() {
 
     private val mCardHeight: Int = run {
         val width = appContext.resources.displayMetrics.widthPixels
@@ -49,28 +44,17 @@ class HomeBookAdapter<T>(
 
     private var mRootHeight: Int? = null
 
-    inner class ViewHolder(val rvBinding: HomeRvBookLayoutBinding) : RecyclerView.ViewHolder(rvBinding.root)
+    inner class ViewHolder(val rvBinding: HomeRvBookLayoutBinding) : RecyclerView.ViewHolder(rvBinding.root) {
+        var mPathWord: String = ""
+    }
 
     fun setData(value: T, size: Int? = null) {
         mData = value
         if (size != null) this.mSize = size
     }
 
-    fun getUpdateSize() = mSize
+    fun getDataSize() = mSize
 
-    fun formatValue(value: Int): String {
-        return when {
-            value >= 10000 -> {
-                formatter.applyPattern("#,#### W")
-                formatter.format(value)
-            }
-            value >= 1000 -> {
-                formatter.applyPattern("#,### K")
-                formatter.format(value)
-            }
-            else -> value.toString()
-        }
-    }
     private fun ViewHolder.initView(name: String, imageUrl: String, author: List<AuthorResult>, hot: Int) {
         Glide.with(itemView).load(imageUrl).into(rvBinding.homeBookImage)
         rvBinding.homeBookName.text = name
@@ -87,12 +71,11 @@ class HomeBookAdapter<T>(
                 it.layoutParams.height = mRootHeight!!
             }
 
-            vh.rvBinding.root.clickGap { _, _ -> }
-            vh.rvBinding.root.clickGap { _, _ -> mClickComicListener?.onClick(mType) }
-            vh.rvBinding.homeBookName.clickGap { _, _ -> }
-            vh.rvBinding.homeBookCard.clickGap { _, _ -> }
 
-            ToolTipsView.showToolTipsByLongClick(vh.rvBinding.homeBookName)
+            vh.rvBinding.root.clickGap { _, _ -> mClickComicListener.onClick(mType, vh.mPathWord) }
+            vh.rvBinding.homeBookCard.clickGap { _, _ -> mClickComicListener.onClick(mType, vh.mPathWord) }
+
+            // ToolTipsView.showToolTipsByLongClick(vh.rvBinding.homeBookName)
         }
     }
     override fun onBindViewHolder(vh: ViewHolder, pos: Int) {
@@ -101,22 +84,27 @@ class HomeBookAdapter<T>(
             ComicType.Rec -> {
                 val comic = (mData as ComicDatas<RecComicsResult>).mResult[pos].mComic
                 vh.initView(comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
+                vh.mPathWord = comic.mPathWord
             }
             ComicType.Hot -> {
                 val comic = (mData as List<HotComic>)[pos].mComic
                 vh.initView(comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
+                vh.mPathWord = comic.mPathWord
             }
             ComicType.New -> {
                 val comic = (mData as List<NewComic>)[pos].mComic
                 vh.initView(comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
+                vh.mPathWord = comic.mPathWord
             }
             ComicType.Commit -> {
                 val comic = (mData as FinishComicDatas).mResult[pos]
                 vh.initView(comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
+                vh.mPathWord = comic.mPathWord
             }
             ComicType.Topic -> {
                 val comic = (mData as ComicDatas<Topices>).mResult[pos]
                 Glide.with(vh.itemView).load(comic.mImageUrl).into(vh.rvBinding.homeBookImage)
+                vh.mPathWord = comic.mPathWord
                 vh.rvBinding.apply {
                     homeBookName.maxLines = 4
                     homeBookName.text = comic.mTitle
@@ -131,7 +119,9 @@ class HomeBookAdapter<T>(
             ComicType.Rank -> {
                 val comic = (mData as ComicDatas<RankComics>).mResult[pos].mComic
                 vh.initView(comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
+                vh.mPathWord = comic.mPathWord
             }
+            else -> { }
         }
     }
 }

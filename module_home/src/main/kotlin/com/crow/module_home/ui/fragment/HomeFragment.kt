@@ -10,36 +10,33 @@ import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTE
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.setMargins
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.crow.base.R.dimen
 import com.crow.base.extensions.animateFadeIn
 import com.crow.base.extensions.dp2px
-import com.crow.base.extensions.repeatOnLifecycle
+import com.crow.base.extensions.showSnackBar
+import com.crow.base.extensions.toast
 import com.crow.base.fragment.BaseMviFragment
 import com.crow.base.viewmodel.ViewState
 import com.crow.base.viewmodel.doOnError
 import com.crow.base.viewmodel.doOnLoading
-import com.crow.base.viewmodel.doOnSuccess
+import com.crow.base.viewmodel.doOnResult
 import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeFragmentBinding
 import com.crow.module_home.databinding.HomeRvItemLayoutBinding
 import com.crow.module_home.model.ComicType
-import com.crow.module_home.model.intent.HomeEvent
+import com.crow.module_home.model.intent.HomeIntent
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.model.resp.homepage.results.Results
 import com.crow.module_home.ui.adapter.HomeBannerAdapter
 import com.crow.module_home.ui.adapter.HomeBookAdapter
-import com.crow.module_home.ui.fragment.HomeFragment.ClickComicListener
 import com.crow.module_home.ui.viewmodel.HomeViewModel
 import com.google.android.material.R.attr.materialIconButtonStyle
 import com.google.android.material.button.MaterialButton
 import com.to.aboomy.pager2banner.IndicatorView
 import com.to.aboomy.pager2banner.ScaleInTransformer
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -53,87 +50,78 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  **************************/
 class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
 
-    constructor(clickListener: ClickComicListener? = null) : this() {
-        mClickComicListener = clickListener ?: ClickComicListener { }
+    constructor(clickListener: ClickComicListener) : this() { mClickComicCallback = clickListener }
+    interface ClickComicListener { fun onClick(type: ComicType, pathword: String) }
+
+    private var mClickComicCallback: ClickComicListener? = null
+    private var mCLickComicListener: ClickComicListener = object : ClickComicListener {
+        override fun onClick(type: ComicType, pathword: String) {
+            mClickComicCallback?.onClick(type, pathword)
+        }
     }
+    private var mRefreshListener: OnRefreshListener? = null
 
-    private var mClickComicListener: ClickComicListener? = null
+    private val mHomeVM by viewModel<HomeViewModel>()
+    private lateinit var mHomeBannerAdapter: HomeBannerAdapter
+    private lateinit var mHomeRecAdapter: HomeBookAdapter<ComicDatas<RecComicsResult>>
+    private lateinit var mHomeHotAdapter: HomeBookAdapter<List<HotComic>>
+    private lateinit var mHomeNewAdapter: HomeBookAdapter<List<NewComic>>
+    private lateinit var mHomeCommitAdapter: HomeBookAdapter<FinishComicDatas>
+    private lateinit var mHomeTopicAapter: HomeBookAdapter<ComicDatas<Topices>>
+    private lateinit var mHomeRankAapter: HomeBookAdapter<ComicDatas<RankComics>>
+    private lateinit var mRefreshButton : MaterialButton
 
-    fun interface ClickComicListener {
-        fun onClick(type: ComicType)
-    }
-
-    private val mViewModel by viewModel<HomeViewModel>()
-    private val mHomeBannerAdapter = HomeBannerAdapter(mutableListOf()) { _, _ -> }
-    private val mHomeRecAdapter = HomeBookAdapter<ComicDatas<RecComicsResult>>(null, ComicType.Rec, mClickComicListener)
-    private val mHomeHotAdapter = HomeBookAdapter<List<HotComic>>(null, ComicType.Hot, mClickComicListener)
-    private val mHomeNewAdapter = HomeBookAdapter<List<NewComic>>(null, ComicType.New, mClickComicListener)
-    private val mHomeCommitAdapter = HomeBookAdapter<FinishComicDatas>(null, ComicType.Commit, mClickComicListener)
-    private val mHomeTopicAapter = HomeBookAdapter<ComicDatas<Topices>>(null, ComicType.Topic, mClickComicListener)
-    private val mHomeRankAapter = HomeBookAdapter<ComicDatas<RankComics>>(null, ComicType.Rank, mClickComicListener)
-
-    private val mRefreshButton by lazy { initRefreshButton() }
+    private var mScrollY = 0
 
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentBinding.inflate(inflater)
 
     override fun initData() {
-        mViewModel.input(HomeEvent.GetHomePage())
+        if (mHomeVM.getResult() != null) return
+        mHomeVM.input(HomeIntent.GetHomePage())
     }
 
     override fun initObserver() {
-        repeatOnLifecycle(Lifecycle.State.STARTED) {
-            mViewModel.output { event ->
-                when (event) {
-                    is HomeEvent.GetHomePage -> {
-                        event.mViewState
-                            .doOnLoading { showLoadingAnim() }
-                            .doOnError { _, _ -> dismissLoadingAnim { mBinding.root.animateFadeIn() } }
-                            .doOnSuccess {
-                                if (it == ViewState.Success.ATTACH_VALUE) doOnLoadHomePage(event.homePageData!!.mResults)
-                                else dismissLoadingAnim { lifecycleScope.launch { showHomePage() } }
-                            }
-                    }
-                    is HomeEvent.GetRecPageByRefresh -> {
-                        event.mViewState
-                            .doOnSuccess {
-                                if (it == ViewState.Success.ATTACH_VALUE) {
-                                    mHomeRecAdapter.setData(event.recPageData!!.mResults)
-                                    mHomeRecAdapter.notifyItemRangeChanged(
-                                        0,
-                                        mHomeRecAdapter.getUpdateSize()
-                                    )
-                                    mRefreshButton.isEnabled = true
-                                }
-                            }
-                            .doOnError { _, _ ->
-                                mRefreshButton.isEnabled = true
-                            }
-                    }
+        mHomeVM.onOutput { intent ->
+            when (intent) {
+                is HomeIntent.GetHomePage -> {
+                    intent.mViewState
+                        .doOnLoading { if(mRefreshListener == null) showLoadingAnim() }
+                        .doOnResult {
+                            doOnLoadHomePage(intent.homePageData!!.mResults)
+                            if(mRefreshListener != null) showHomePage() else dismissLoadingAnim { showHomePage() }
+                        }
+                        .doOnError { code, msg ->
+                            if (code == ViewState.Error.UNKNOW_HOST) mBinding.root.showSnackBar(msg ?: "")
+                            if (mRefreshListener != null) { mRefreshListener?.onRefresh() }
+                            dismissLoadingAnim { mBinding.homeLinearLayout.animateFadeIn(300L) }
+                        }
+                }
+                is HomeIntent.GetRecPageByRefresh -> {
+                    intent.mViewState
+                        .doOnError { _, _ -> mRefreshButton.isEnabled = true }
+                        .doOnResult {
+                            mHomeRecAdapter.setData(intent.recPageData!!.mResults)
+                            mHomeRecAdapter.notifyItemRangeChanged(0, mHomeRecAdapter.getDataSize())
+                            mRefreshButton.isEnabled = true
+                        }
                 }
             }
         }
     }
 
-    private fun showHomePage() {
-        lifecycleScope.launch {
-            mBinding.root.animateFadeIn()
-            mHomeBannerAdapter.notifyItemRangeChanged(0, mHomeBannerAdapter.bannerList.size - 1)
-            delay(200L)
-            mHomeRecAdapter.notifyItemRangeChanged(0, mHomeRecAdapter.getUpdateSize())
-            delay(200L)
-            mHomeHotAdapter.notifyItemRangeChanged(0, mHomeHotAdapter.getUpdateSize())
-            delay(200L)
-            mHomeNewAdapter.notifyItemRangeChanged(0, mHomeNewAdapter.getUpdateSize())
-            delay(200L)
-            mHomeCommitAdapter.notifyItemRangeChanged(0, mHomeCommitAdapter.getUpdateSize())
-            delay(200L)
-            mHomeTopicAapter.notifyItemRangeChanged(0, mHomeTopicAapter.getUpdateSize())
-            delay(200L)
-            mHomeRankAapter.notifyItemRangeChanged(0, mHomeRankAapter.getUpdateSize())
-        }
-    }
-
     override fun initView() {
+
+        // 适配器可以作为局部成员，但不要直接初始化，不然会导致被View引用从而内存泄漏
+        mHomeBannerAdapter = HomeBannerAdapter(mutableListOf(), mCLickComicListener)
+        mHomeRecAdapter = HomeBookAdapter(null, ComicType.Rec, mCLickComicListener)
+        mHomeHotAdapter = HomeBookAdapter(null, ComicType.Hot, mCLickComicListener)
+        mHomeNewAdapter = HomeBookAdapter(null, ComicType.New, mCLickComicListener)
+        mHomeCommitAdapter = HomeBookAdapter(null, ComicType.Commit, mCLickComicListener)
+        mHomeTopicAapter = HomeBookAdapter(null, ComicType.Topic, mCLickComicListener)
+        mHomeRankAapter = HomeBookAdapter(null, ComicType.Rank, mCLickComicListener)
+
+        mRefreshButton = initRefreshButton()
+
         mBinding.homeBanner.doOnLayout { it.layoutParams.height = (it.width / 1.875 + 0.5).toInt() }
         mBinding.homeBanner.addPageTransformer(ScaleInTransformer())
             .setPageMargin(mContext.dp2px(20), mContext.dp2px(10))
@@ -149,41 +137,24 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
                         }
                     })
             .adapter = mHomeBannerAdapter
-        mBinding.homeItemRec.initHomeItem(
-            R.drawable.home_ic_recommed_24dp,
-            R.string.home_recommend_comic,
-            mHomeRecAdapter
-        ).also { it.homeItemConstraint.addView(mRefreshButton) }
-        mBinding.homeItemHot.initHomeItem(
-            R.drawable.home_ic_hot_24dp,
-            R.string.home_hot_comic,
-            mHomeHotAdapter
-        )
-        mBinding.homeItemNew.initHomeItem(
-            R.drawable.home_ic_new_24dp,
-            R.string.home_new_comic,
-            mHomeNewAdapter
-        )
-        mBinding.homeItemCommit.initHomeItem(
-            R.drawable.home_ic_commit_24dp,
-            R.string.home_commit_comic,
-            mHomeCommitAdapter
-        )
-        mBinding.homeItemTopic.initHomeItem(
-            R.drawable.home_ic_topic_24dp,
-            R.string.home_topic_comic,
-            mHomeTopicAapter
-        ).also {
-            it.homeItemBookRv.layoutManager = GridLayoutManager(mContext, 2)
-        }
-        mBinding.homeItemRank.initHomeItem(
-            R.drawable.home_ic_rank_24dp,
-            R.string.home_rank_comic,
-            mHomeRankAapter
-        )
+        mBinding.homeItemRec.initHomeItem(R.drawable.home_ic_recommed_24dp, R.string.home_recommend_comic, mHomeRecAdapter).also{ it.homeItemConstraint.addView(mRefreshButton) }
+        mBinding.homeItemHot.initHomeItem(R.drawable.home_ic_hot_24dp, R.string.home_hot_comic, mHomeHotAdapter)
+        mBinding.homeItemNew.initHomeItem(R.drawable.home_ic_new_24dp, R.string.home_new_comic, mHomeNewAdapter)
+        mBinding.homeItemCommit.initHomeItem(R.drawable.home_ic_commit_24dp, R.string.home_commit_comic, mHomeCommitAdapter)
+        mBinding.homeItemTopic.initHomeItem(R.drawable.home_ic_topic_24dp, R.string.home_topic_comic, mHomeTopicAapter).also { it.homeItemBookRv.layoutManager = GridLayoutManager(mContext, 2) }
+        mBinding.homeItemRank.initHomeItem(R.drawable.home_ic_rank_24dp, R.string.home_rank_comic, mHomeRankAapter)
+
+        doOnLoadHomePage(mHomeVM.getResult() ?: return)
+        showHomePage()
     }
 
-    private fun <T> HomeRvItemLayoutBinding.initHomeItem(@DrawableRes iconRes: Int, @StringRes iconText: Int, adapter: HomeBookAdapter<T>, ): HomeRvItemLayoutBinding {
+    override fun onPause() {
+        super.onPause()
+        mScrollY = mBinding.root.scrollY
+        mRefreshListener = null
+    }
+
+    private fun <T> HomeRvItemLayoutBinding.initHomeItem(@DrawableRes iconRes: Int, @StringRes iconText: Int, adapter: HomeBookAdapter<T>): HomeRvItemLayoutBinding {
         homeItemBt.setIconResource(iconRes)
         homeItemBt.text = mContext.getString(iconText)
         homeItemBookRv.adapter = adapter
@@ -206,8 +177,25 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
             text = mContext.getString(R.string.home_refresh)
             setOnClickListener {
                 isEnabled = false
-                mViewModel.input(HomeEvent.GetRecPageByRefresh())
+                mHomeVM.input(HomeIntent.GetRecPageByRefresh())
             }
+        }
+    }
+
+    private fun showHomePage() {
+
+        mHomeBannerAdapter.notifyItemRangeChanged(0, mHomeBannerAdapter.bannerList.size - 1)
+        mHomeRecAdapter.notifyItemRangeChanged(0, mHomeRecAdapter.getDataSize())
+        mHomeHotAdapter.notifyItemRangeChanged(0, mHomeHotAdapter.getDataSize())
+        mHomeNewAdapter.notifyItemRangeChanged(0, mHomeNewAdapter.getDataSize())
+        mHomeCommitAdapter.notifyItemRangeChanged(0, mHomeCommitAdapter.getDataSize())
+        mHomeTopicAapter.notifyItemRangeChanged(0, mHomeTopicAapter.getDataSize())
+        mHomeRankAapter.notifyItemRangeChanged(0, mHomeRankAapter.getDataSize())
+
+        if (mRefreshListener == null) mBinding.homeLinearLayout.animateFadeIn(300L)
+        mRefreshListener?.also {
+            it.onRefresh()
+            toast("刷新成功~")
         }
     }
 
@@ -220,5 +208,10 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
         mHomeCommitAdapter.setData(results.mFinishComicDatas, 6)
         mHomeTopicAapter.setData(results.mTopics, 4)
         mHomeRankAapter.setData(results.mRankDayComics, 6)
+    }
+
+    fun doOnRefresh(refreshListener: OnRefreshListener) {
+        mRefreshListener = refreshListener
+        mHomeVM.input(HomeIntent.GetHomePage())
     }
 }

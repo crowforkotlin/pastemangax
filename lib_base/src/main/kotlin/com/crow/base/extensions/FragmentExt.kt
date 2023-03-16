@@ -16,10 +16,13 @@ import kotlinx.coroutines.launch
  * @Description: FragmentExt
  * @formatter:on
  **************************/
-inline fun Fragment.repeatOnLifecycle(state: Lifecycle.State = Lifecycle.State.STARTED, crossinline block: suspend CoroutineScope.() -> Unit) {
-    viewLifecycleOwner.lifecycleScope.launch { repeatOnLifecycle(state) { block() } }
+fun interface LifecycleCallBack {
+    suspend fun onLifeCycle(scope: CoroutineScope)
 }
 
+fun Fragment.repeatOnLifecycle(state: Lifecycle.State = Lifecycle.State.CREATED, lifecycleCallBack: LifecycleCallBack) {
+    viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.repeatOnLifecycle(state) { lifecycleCallBack.onLifeCycle(this) } }
+}
 inline fun Fragment.doAfterDelay(delayMs: Long, crossinline block: suspend CoroutineScope.(Fragment) ->Unit) {
     lifecycleScope.launch {
         delay(delayMs)

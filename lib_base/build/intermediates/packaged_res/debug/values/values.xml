@@ -955,6 +955,7 @@
     <dimen name="base_sp7">7sp</dimen>
     <dimen name="base_sp8">8sp</dimen>
     <dimen name="base_sp9">9sp</dimen>
+    <item name="mainComicfragment" type="id"/>
     <string name="BaseAppName">CopyMangaX</string>
     <string name="BaseAppName_CH">拷贝漫画</string>
     <string name="BaseLoading" translatable="false">加载中...</string>

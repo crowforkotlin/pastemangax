@@ -2,12 +2,14 @@ package com.crow.base.viewmodel.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.crow.base.extensions.logMsg
 import com.crow.base.viewmodel.ViewState
+import com.crow.base.viewmodel.ViewStateException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -18,31 +20,47 @@ import kotlin.coroutines.EmptyCoroutineContext
  * @formatter:on
  **************************/
 
-abstract class BaseMviViewModel<E : BaseMviEvent> : ViewModel() {
+abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
 
-    fun interface BaseMviFlowResult<E : BaseMviEvent, T> { fun onResult(value: T): E }
-    fun interface BaseMviSuspendResult<E> { suspend fun onResult(value: E) }
+    fun interface BaseMviFlowResult<R : BaseMviIntent, T> { fun onResult(value: T): R }
+    fun interface BaseMviSuspendResult<T> { suspend fun onResult(value: T) }
 
-    @PublishedApi internal val _sharedFlow: MutableSharedFlow<E> = MutableSharedFlow (1, 3, BufferOverflow.DROP_OLDEST)
+    @PublishedApi internal val _sharedFlow: MutableSharedFlow<I> = MutableSharedFlow (1, 3, BufferOverflow.DROP_OLDEST)
 
-    val sharedFlow: SharedFlow<E> get() = _sharedFlow
+    val sharedFlow: SharedFlow<I> get() = _sharedFlow
 
-    open fun dispatcher(event: E) { }
+    open fun dispatcher(intent: I) { }
 
-    fun input(event: E) = dispatcher(event)
-    suspend fun output(baseMviSuspendResult: BaseMviSuspendResult<E>) {
+    fun input(intent: I) = dispatcher(intent)
+    suspend fun output(baseMviSuspendResult: BaseMviSuspendResult<I>) {
         _sharedFlow.collect { baseMviSuspendResult.onResult(it) }
     }
 
 
-    fun <T> flowResult(flow: Flow<T>, event: E, context: CoroutineContext = EmptyCoroutineContext,  result: BaseMviFlowResult<E, T>) {
-        viewModelScope.launch {
+    fun <T> I.flowResult(flow: Flow<T>, context: CoroutineContext = Dispatchers.IO, result: BaseMviFlowResult<I, T>) {
+        viewModelScope.launch(context) {
             flow
-                .onStart { _sharedFlow.emit(event.also { it.mViewState = ViewState.Loading }) }
-                .onCompletion { _sharedFlow.emit(event.also { it.mViewState = ViewState.Success(ViewState.Success.NO_ATTACH_VALUE) }) }
-                .catch { catch -> _sharedFlow.emit(event.also { it.mViewState = ViewState.Error(msg = catch.message ?: "") }) }
-                .flowOn(context)
-                .collect { _sharedFlow.emit(result.onResult(it).also { event -> event.mViewState = ViewState.Success(ViewState.Success.ATTACH_VALUE) }) }
+                .onStart {
+                    "(MviViewModel) onStart".logMsg()
+                    this@flowResult.mViewState = ViewState.Loading
+                    _sharedFlow.emit(this@flowResult)
+                }
+                .onCompletion {
+                    "(MviViewModel) onCompletion".logMsg()
+                    this@flowResult.mViewState = ViewState.Success
+                    _sharedFlow.emit(this@flowResult)
+                }
+                .catch { catch ->
+                    "(MviViewModel) Catch".logMsg()
+                    var code = ViewState.Error.DEFAULT
+                    if (catch is ViewStateException) code = ViewState.Error.UNKNOW_HOST
+                    this@flowResult.mViewState = ViewState.Error(code, msg = catch.message ?: "Unknow")
+                    _sharedFlow.emit(this@flowResult)
+                }
+                .collect {
+                    "(MviViewModel) collect".logMsg()
+                    _sharedFlow.emit(result.onResult(it).also { event -> event.mViewState = ViewState.Result })
+                }
         }
     }
 }

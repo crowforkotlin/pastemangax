@@ -1,3 +1,10 @@
 <resources>
-	<string name="app_name">module_comic</string>
+	<string name="ComicAuthor">作者：%s</string>
+	<string name="ComicHot">热度：%s</string>
+	<string name="ComicStatus">状态：%s</string>
+	<string name="ComicUpdate">更新时间：%s</string>
+	<string name="ComicNewChapter">最新一章：%s</string>
+	<string name="ComicAddToBookShelf">加入书架</string>
+	<string name="ComicDownLoad">下载章节</string>
+	<string name="ComicReadNow">开始阅读</string>
 </resources>

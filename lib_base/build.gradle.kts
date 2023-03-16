@@ -93,6 +93,7 @@ dependencies {
     api(Dependencies.androidx_constraintlayout)
     api(Dependencies.androidx_lifecycle_ktx)
     api(Dependencies.androidx_lifecycle_service)
+    api("androidx.recyclerview:recyclerview:1.2.1")
     api(Dependencies.androidx_lifecycle_livedata_ktx)
     api(Dependencies.androidx_lifecycle_viewmodel_ktx)
     api(Dependencies.androidx_swiperefreshlayout)
@@ -105,7 +106,7 @@ dependencies {
     api(Dependencies.androidx_paging_common_ktx)
     api(Dependencies.androidx_core_splash_screen)
 
-    // debugApi(Dependencies.leakcanary) // 不支持在MinSdk 24以下的设备运行
+    debugApi(Dependencies.leakcanary) // 不支持在MinSdk 24以下的设备运行
     testApi(Dependencies.junit_junit)
     androidTestApi(Dependencies.androidx_test_junit_ktx)
     androidTestApi(Dependencies.androidx_test_espresso)

@@ -4,9 +4,9 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	style="@style/Widget.Material3.CardView.Filled"
 	android:layout_width="match_parent"
-	app:cardBackgroundColor="@color/home_indigo"
 	android:layout_height="wrap_content"
 	android:layout_margin="@dimen/base_dp10"
+	app:cardBackgroundColor="@color/home_indigo"
 	app:cardCornerRadius="@dimen/base_dp20"
 	app:cardElevation="@dimen/base_dp10">
 

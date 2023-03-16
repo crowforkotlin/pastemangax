@@ -1,6 +1,8 @@
 package com.crow.copymanga.di
 
+import com.crow.module_comic.network.ComicService
 import com.crow.module_home.network.HomeService
+import com.crow.module_main.network.ContainerService
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
@@ -15,4 +17,6 @@ import retrofit2.Retrofit
 
 val servicesModule = module {
     single { get<Retrofit>().create(HomeService::class.java) }
+    single { get<Retrofit>().create(ContainerService::class.java) }
+    single { get<Retrofit>().create(ComicService::class.java) }
 }

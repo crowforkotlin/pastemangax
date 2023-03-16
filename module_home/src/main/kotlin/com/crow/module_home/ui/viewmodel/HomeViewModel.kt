@@ -2,7 +2,8 @@ package com.crow.module_home.ui.viewmodel
 
 import com.crow.base.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_home.model.factory.HomeRepository
-import com.crow.module_home.model.intent.HomeEvent
+import com.crow.module_home.model.intent.HomeIntent
+import com.crow.module_home.model.resp.homepage.results.Results
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -12,26 +13,32 @@ import com.crow.module_home.model.intent.HomeEvent
  * @Description: HomeViewModel
  * @formatter:on
  **************************/
-class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<HomeEvent>() {
+class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<HomeIntent>() {
 
-    var mRefreshStartIndex = 3
-        private set
+    private var mRefreshStartIndex = 3
 
-    private fun getHomePage(event: HomeEvent.GetHomePage) {
-        flowResult(repository.getHomePage(), event) { value -> event.copy(homePageData = value) }
-    }
+    private var mResult: Results? = null
 
-    private fun getRecPageByRefresh(event: HomeEvent.GetRecPageByRefresh) {
-        flowResult(repository.getRecPageByRefresh(3, mRefreshStartIndex), event) { value ->
-            mRefreshStartIndex += 3
-            event.copy(recPageData = value)
+    fun getResult() = mResult
+
+    private fun getHomePage(intent: HomeIntent.GetHomePage) {
+        intent.flowResult(repository.getHomePage()) { value ->
+            mResult = value.mResults
+            intent.copy(homePageData = value)
         }
     }
 
-    override fun dispatcher(event: HomeEvent) {
-        when (event) {
-            is HomeEvent.GetHomePage -> getHomePage(event)
-            is HomeEvent.GetRecPageByRefresh -> getRecPageByRefresh(event)
+    private fun getRecPageByRefresh(intent: HomeIntent.GetRecPageByRefresh) {
+        intent.flowResult(repository.getRecPageByRefresh(3, mRefreshStartIndex)) { value ->
+            mRefreshStartIndex += 3
+            intent.copy(recPageData = value)
+        }
+    }
+
+    override fun dispatcher(intent: HomeIntent) {
+        when (intent) {
+            is HomeIntent.GetHomePage -> getHomePage(intent)
+            is HomeIntent.GetRecPageByRefresh -> getRecPageByRefresh(intent)
         }
     }
 }

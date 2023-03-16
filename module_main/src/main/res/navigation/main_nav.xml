@@ -3,9 +3,15 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/home_nav.xml"
-	app:startDestination="@id/homeBodyFragment">
+	app:startDestination="@id/mainContainerfragment">
+
 	<fragment
-		android:id="@+id/homeBodyFragment"
-		android:name="com.crow.module_home.ui.fragment.HomeFragment"
-		android:label="HomeBodyFragment" />
+		android:id="@+id/mainContainerfragment"
+		android:name="com.crow.module_main.ui.fragment.ContainerFragment"
+		android:label="ContainerFragment" />
+	<fragment
+		android:id="@+id/mainComicfragment"
+		android:name="com.crow.module_comic.ui.fragment.ComicFragment"
+		android:label="ComicFragment" />
+
 </navigation>

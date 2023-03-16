@@ -1,7 +1,7 @@
 package com.crow.module_discovery
 
 import android.view.LayoutInflater
-import com.crow.base.fragment.BaseVBFragment
+import com.crow.base.fragment.BaseFragment
 import com.crow.module_discovery.databinding.DiscoveryFragmentBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -13,7 +13,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  * @Description: DiscoveryFragment
  * @formatter:on
  **************************/
-class DiscoveryFragment : BaseVBFragment<DiscoveryFragmentBinding, DiscoveryViewModel>() {
+class DiscoveryFragment : BaseFragment<DiscoveryFragmentBinding, DiscoveryViewModel>() {
 
     override fun getViewBinding(inflater: LayoutInflater) = DiscoveryFragmentBinding.inflate(inflater)
     override fun getViewModel(): Lazy<DiscoveryViewModel> = viewModel()
