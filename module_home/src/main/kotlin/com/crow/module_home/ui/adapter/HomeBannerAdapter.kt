@@ -13,10 +13,10 @@ import com.crow.module_home.ui.fragment.HomeFragment
 
 class HomeBannerAdapter(
     val bannerList: MutableList<Banner>,
-    val mClickComicListener: HomeFragment.ClickComicListener,
+    val mTapComicListener: HomeFragment.TapComicListener,
 ) : RecyclerView.Adapter<HomeBannerAdapter.ViewHolder>() {
 
-    private var mComicListener: HomeFragment.ClickComicListener? = null
+    private var mComicListener: HomeFragment.TapComicListener? = null
 
     inner class ViewHolder(val rvBinding: HomeRvBannerBinding) : RecyclerView.ViewHolder(rvBinding.root) {
         var mPathword: String = ""
@@ -25,7 +25,7 @@ class HomeBannerAdapter(
     override fun getItemCount(): Int = bannerList.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(HomeRvBannerBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
-            vh.rvBinding.baneerImage.clickGap { _, _ -> mClickComicListener.onClick(ComicType.Banner, vh.mPathword) }
+            vh.rvBinding.baneerImage.clickGap { _, _ -> mTapComicListener.onTap(ComicType.Banner, vh.mPathword) }
         }
     }
 
@@ -38,6 +38,6 @@ class HomeBannerAdapter(
         vh.mPathword = banner.mComic!!.mPathWord
     }
 
-    fun setListener(clickListener: HomeFragment.ClickComicListener) { mComicListener = clickListener }
+    fun setListener(clickListener: HomeFragment.TapComicListener) { mComicListener = clickListener }
 
 }

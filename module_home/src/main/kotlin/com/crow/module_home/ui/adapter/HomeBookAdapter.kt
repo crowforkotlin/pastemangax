@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.crow.base.app.appContext
 import com.crow.base.extensions.clickGap
 import com.crow.base.extensions.formatValue
+import com.crow.base.view.ToolTipsView
 import com.crow.module_home.databinding.HomeRvBookLayoutBinding
 import com.crow.module_home.model.ComicType
 import com.crow.module_home.model.resp.homepage.*
@@ -29,77 +30,63 @@ import java.util.*
  * @formatter:on
  **************************/
 class HomeBookAdapter<T>(
-    var mData: T? = null,
+    private var mData: T? = null,
     private val mType: ComicType,
-    private val mClickComicListener: HomeFragment.ClickComicListener
+    private val mTapComicListener: HomeFragment.TapComicListener
 ) : RecyclerView.Adapter<HomeBookAdapter<T>.ViewHolder>() {
 
-    private val mCardHeight: Int = run {
+    inner class ViewHolder(val rvBinding: HomeRvBookLayoutBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
+
+    // 漫画卡片高度
+    private val mChildCardHeight: Int = run {
         val width = appContext.resources.displayMetrics.widthPixels
         val height = appContext.resources.displayMetrics.heightPixels
         (width.toFloat() / (3 - width.toFloat() / height.toFloat())).toInt()
     }
 
+    // 适配器数据量
     private var mSize: Int = 0
 
-    private var mRootHeight: Int? = null
-
-    inner class ViewHolder(val rvBinding: HomeRvBookLayoutBinding) : RecyclerView.ViewHolder(rvBinding.root) {
-        var mPathWord: String = ""
-    }
-
-    fun setData(value: T, size: Int? = null) {
-        mData = value
-        if (size != null) this.mSize = size
-    }
-
-    fun getDataSize() = mSize
-
-    private fun ViewHolder.initView(name: String, imageUrl: String, author: List<AuthorResult>, hot: Int) {
-        Glide.with(itemView).load(imageUrl).into(rvBinding.homeBookImage)
-        rvBinding.homeBookName.text = name
-        rvBinding.homeBookAuthor.text = author.joinToString { it.name }
-        rvBinding.homeBookHot.text = formatValue(hot)
-    }
+    // 父布局高度
+    private var mParentHeight: Int? = null
 
     override fun getItemCount(): Int = if (mData == null) 0 else mSize
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(HomeRvBookLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
-            vh.rvBinding.root.doOnLayout {
-                vh.rvBinding.homeBookImage.layoutParams.height = mCardHeight
-                mRootHeight = mRootHeight ?: it.height
-                it.layoutParams.height = mRootHeight!!
+
+            // 漫画卡片高度
+            vh.rvBinding.homeBookImage.doOnLayout { vh.rvBinding.homeBookImage.layoutParams.height = mChildCardHeight }
+
+            // 设置父布局 固定高度 （因为最外层还有一个父布局卡片布局设置的时WRAP_CONTENT 根据 子控件决定高度的）
+            vh.rvBinding.root.doOnLayout { rooView ->
+                mParentHeight = mParentHeight ?: rooView.height
+                rooView.layoutParams.height = mParentHeight!!
             }
 
+            // 点击 父布局卡片 以及漫画卡片 事件 回调给上级 HomeFragment --> ContainerFragment
+            vh.rvBinding.root.clickGap { _, _ -> mTapComicListener.onTap(mType, vh.mPathWord) }
+            vh.rvBinding.homeBookCard.clickGap { _, _ -> mTapComicListener.onTap(mType, vh.mPathWord) }
 
-            vh.rvBinding.root.clickGap { _, _ -> mClickComicListener.onClick(mType, vh.mPathWord) }
-            vh.rvBinding.homeBookCard.clickGap { _, _ -> mClickComicListener.onClick(mType, vh.mPathWord) }
-
-            // ToolTipsView.showToolTipsByLongClick(vh.rvBinding.homeBookName)
+            ToolTipsView.showToolTipsByLongClick(vh.rvBinding.homeBookName)
         }
     }
     override fun onBindViewHolder(vh: ViewHolder, pos: Int) {
-
         when (mType) {
             ComicType.Rec -> {
                 val comic = (mData as ComicDatas<RecComicsResult>).mResult[pos].mComic
-                vh.initView(comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
-                vh.mPathWord = comic.mPathWord
+                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
             ComicType.Hot -> {
                 val comic = (mData as List<HotComic>)[pos].mComic
-                vh.initView(comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
-                vh.mPathWord = comic.mPathWord
+                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
             ComicType.New -> {
                 val comic = (mData as List<NewComic>)[pos].mComic
-                vh.initView(comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
-                vh.mPathWord = comic.mPathWord
+                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
             ComicType.Commit -> {
                 val comic = (mData as FinishComicDatas).mResult[pos]
-                vh.initView(comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
-                vh.mPathWord = comic.mPathWord
+                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
             ComicType.Topic -> {
                 val comic = (mData as ComicDatas<Topices>).mResult[pos]
@@ -118,10 +105,27 @@ class HomeBookAdapter<T>(
             }
             ComicType.Rank -> {
                 val comic = (mData as ComicDatas<RankComics>).mResult[pos].mComic
-                vh.initView(comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
-                vh.mPathWord = comic.mPathWord
+                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
             else -> { }
         }
     }
+
+    // 初始化卡片内部视图
+    private fun ViewHolder.initView(pathword: String, name: String, imageUrl: String, author: List<AuthorResult>, hot: Int) {
+        Glide.with(itemView).load(imageUrl).into(rvBinding.homeBookImage)   // 加载封面
+        rvBinding.homeBookName.text = name                                  // 漫画名
+        rvBinding.homeBookAuthor.text = author.joinToString { it.name }     // 作者 ：Crow
+        rvBinding.homeBookHot.text = formatValue(hot)                       // 热度 ： 12.3456 W
+        mPathWord = pathword                                                // 设置路径值 （用于后续请求）
+    }
+
+    // 对外暴露设置数据
+    fun setData(value: T, size: Int? = null) {
+        mData = value
+        if (size != null) this.mSize = size
+    }
+
+    // 对外暴露数据大小
+    fun getDataSize() = mSize
 }

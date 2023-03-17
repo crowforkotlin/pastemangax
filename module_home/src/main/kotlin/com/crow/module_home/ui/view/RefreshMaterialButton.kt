@@ -25,12 +25,10 @@ import com.google.android.material.button.MaterialButton
  * @Path: module_home/src/main/kotlin/com/crow/module_home/ui/view
  * @Time: 2023/3/12 14:12
  * @Author: CrowForKotlin
- * @Description: RefreshMaterialButton
+ * @Description: RefreshMaterialButton 刷新按钮 可用于登录，后期需改进 目前暂不使用
  * @formatter:off
  **************************/
-
 class RefreshMaterialButton : MaterialButton {
-
     fun interface AnimatorCallback {
         fun onAnimatorStart()
     }

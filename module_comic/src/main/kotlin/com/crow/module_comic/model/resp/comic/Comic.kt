@@ -6,12 +6,16 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class Comic(
+
     @Json(name = "name")
-    val name: String,
+    val mName: String,
+
     @Json(name = "path_word")
-    val pathWord: String,
+    val mPathWord: String,
+
     @Json(name = "restrict")
-    val restrict: Restrict,
+    val mRestrict: Restrict,
+
     @Json(name = "uuid")
-    val uuid: String
+    val mUuid: String
 )

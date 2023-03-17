@@ -71,5 +71,6 @@ class ComicFragment : BaseMviFragment<ComicFragmentBinding>(){
     override fun onDestroyView() {
         super.onDestroyView()
         mOnBackCallback.remove()
+        mComicVM.clearAllData()
     }
 }

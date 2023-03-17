@@ -21,9 +21,6 @@ import com.crow.base.extensions.setMaskAmount
  * @Description: 加载动画弹窗
  * @formatter:off
  *************************/
-
-
-
 class LoadingAnimDialog : DialogFragment() {
 
     init {

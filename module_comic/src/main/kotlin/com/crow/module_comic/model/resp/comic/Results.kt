@@ -7,23 +7,23 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Results(
     @Json(name = "chapter")
-    val chapter: Chapter,
+    val mChapter: Chapter,
 
     @Json(name = "comic")
-    val comic: Comic,
+    val mComic: Comic,
 
     @Json(name = "is_lock")
-    val isLock: Boolean,
+    val mIsLock: Boolean,
 
     @Json(name = "is_login")
-    val isLogin: Boolean,
+    val mIsLogin: Boolean,
 
     @Json(name = "is_mobile_bind")
-    val isMobileBind: Boolean,
+    val mIsMobileBind: Boolean,
 
     @Json(name = "is_vip")
-    val isVip: Boolean,
+    val mIsVip: Boolean,
 
     @Json(name = "show_app")
-    val showApp: Boolean
+    val mShowApp: Boolean
 )

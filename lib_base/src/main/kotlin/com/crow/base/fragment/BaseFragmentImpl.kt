@@ -37,7 +37,6 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
     // 初始化数据
     override fun initData() { }
 
-
     override var iBasePerEvent: IBasePerEvent? = null
 
     override fun showLoadingAnim() { LoadingAnimDialog.show(parentFragmentManager) }

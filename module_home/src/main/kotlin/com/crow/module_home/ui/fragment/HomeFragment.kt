@@ -50,18 +50,16 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  **************************/
 class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
 
-    constructor(clickListener: ClickComicListener) : this() { mClickComicCallback = clickListener }
-    interface ClickComicListener { fun onClick(type: ComicType, pathword: String) }
+    constructor(clickListener: TapComicListener) : this() { mTapComicParentListener = clickListener }
 
-    private var mClickComicCallback: ClickComicListener? = null
-    private var mCLickComicListener: ClickComicListener = object : ClickComicListener {
-        override fun onClick(type: ComicType, pathword: String) {
-            mClickComicCallback?.onClick(type, pathword)
-        }
-    }
+    interface TapComicListener { fun onTap(type: ComicType, pathword: String) }
+
+    private var mTapComicChildListener = object : TapComicListener { override fun onTap(type: ComicType, pathword: String) { mTapComicParentListener?.onTap(type, pathword) } }
+    private var mTapComicParentListener: TapComicListener? = null
     private var mRefreshListener: OnRefreshListener? = null
-
     private val mHomeVM by viewModel<HomeViewModel>()
+
+    // 主页数据量较多 后期看看可不可以改成双Rv实现 适配器太多了
     private lateinit var mHomeBannerAdapter: HomeBannerAdapter
     private lateinit var mHomeRecAdapter: HomeBookAdapter<ComicDatas<RecComicsResult>>
     private lateinit var mHomeHotAdapter: HomeBookAdapter<List<HotComic>>
@@ -71,18 +69,15 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
     private lateinit var mHomeRankAapter: HomeBookAdapter<ComicDatas<RankComics>>
     private lateinit var mRefreshButton : MaterialButton
 
+    // 记录已经滑动的Y位置 用于View重建时定位
     private var mScrollY = 0
 
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentBinding.inflate(inflater)
 
-    override fun initData() {
-        if (mHomeVM.getResult() != null) return
-        mHomeVM.input(HomeIntent.GetHomePage())
-    }
-
     override fun initObserver() {
         mHomeVM.onOutput { intent ->
             when (intent) {
+                // （获取主页）（根据 刷新事件 来决定是否启用加载动画） 正常加载数据、反馈View
                 is HomeIntent.GetHomePage -> {
                     intent.mViewState
                         .doOnLoading { if(mRefreshListener == null) showLoadingAnim() }
@@ -96,6 +91,8 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
                             dismissLoadingAnim { mBinding.homeLinearLayout.animateFadeIn(300L) }
                         }
                 }
+
+                // （刷新获取）不启用 加载动画 正常加载数据 反馈View
                 is HomeIntent.GetRecPageByRefresh -> {
                     intent.mViewState
                         .doOnError { _, _ -> mRefreshButton.isEnabled = true }
@@ -109,19 +106,30 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
         }
     }
 
+    override fun initData() {
+
+        // 重建View的同时 判断是否已获取数据
+        if (mHomeVM.getResult() != null) return
+
+        // 获取主页数据
+        mHomeVM.input(HomeIntent.GetHomePage())
+    }
+
     override fun initView() {
 
         // 适配器可以作为局部成员，但不要直接初始化，不然会导致被View引用从而内存泄漏
-        mHomeBannerAdapter = HomeBannerAdapter(mutableListOf(), mCLickComicListener)
-        mHomeRecAdapter = HomeBookAdapter(null, ComicType.Rec, mCLickComicListener)
-        mHomeHotAdapter = HomeBookAdapter(null, ComicType.Hot, mCLickComicListener)
-        mHomeNewAdapter = HomeBookAdapter(null, ComicType.New, mCLickComicListener)
-        mHomeCommitAdapter = HomeBookAdapter(null, ComicType.Commit, mCLickComicListener)
-        mHomeTopicAapter = HomeBookAdapter(null, ComicType.Topic, mCLickComicListener)
-        mHomeRankAapter = HomeBookAdapter(null, ComicType.Rank, mCLickComicListener)
+        mHomeBannerAdapter = HomeBannerAdapter(mutableListOf(), mTapComicChildListener)
+        mHomeRecAdapter = HomeBookAdapter(null, ComicType.Rec, mTapComicChildListener)
+        mHomeHotAdapter = HomeBookAdapter(null, ComicType.Hot, mTapComicChildListener)
+        mHomeNewAdapter = HomeBookAdapter(null, ComicType.New, mTapComicChildListener)
+        mHomeCommitAdapter = HomeBookAdapter(null, ComicType.Commit, mTapComicChildListener)
+        mHomeTopicAapter = HomeBookAdapter(null, ComicType.Topic, mTapComicChildListener)
+        mHomeRankAapter = HomeBookAdapter(null, ComicType.Rank, mTapComicChildListener)
 
+        // 初始化刷新 推荐的按钮
         mRefreshButton = initRefreshButton()
 
+        // 设置 Banner 的高度 （1.875 屏幕宽高指定倍数）、（添加页面效果、指示器、指示器需要设置BottomMargin不然会卡在Banner边缘（产生重叠））
         mBinding.homeBanner.doOnLayout { it.layoutParams.height = (it.width / 1.875 + 0.5).toInt() }
         mBinding.homeBanner.addPageTransformer(ScaleInTransformer())
             .setPageMargin(mContext.dp2px(20), mContext.dp2px(10))
@@ -130,13 +138,11 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
                     .setIndicatorColor(Color.DKGRAY)
                     .setIndicatorSelectorColor(Color.WHITE)
                     .setIndicatorStyle(IndicatorView.IndicatorStyle.INDICATOR_BEZIER)
-                    .also {
-                        it.doOnLayout { view ->
-                            (view.layoutParams as RelativeLayout.LayoutParams).bottomMargin =
-                                mContext.resources.getDimensionPixelSize(dimen.base_dp20)
-                        }
-                    })
+                    .also { it.doOnLayout { view -> (view.layoutParams as RelativeLayout.LayoutParams).bottomMargin = mContext.resources.getDimensionPixelSize(dimen.base_dp20) } })
             .adapter = mHomeBannerAdapter
+
+
+        // 设置每一个子布局的 （Icon、标题、适配器）
         mBinding.homeItemRec.initHomeItem(R.drawable.home_ic_recommed_24dp, R.string.home_recommend_comic, mHomeRecAdapter).also{ it.homeItemConstraint.addView(mRefreshButton) }
         mBinding.homeItemHot.initHomeItem(R.drawable.home_ic_hot_24dp, R.string.home_hot_comic, mHomeHotAdapter)
         mBinding.homeItemNew.initHomeItem(R.drawable.home_ic_new_24dp, R.string.home_new_comic, mHomeNewAdapter)
@@ -144,8 +150,16 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeItemTopic.initHomeItem(R.drawable.home_ic_topic_24dp, R.string.home_topic_comic, mHomeTopicAapter).also { it.homeItemBookRv.layoutManager = GridLayoutManager(mContext, 2) }
         mBinding.homeItemRank.initHomeItem(R.drawable.home_ic_rank_24dp, R.string.home_rank_comic, mHomeRankAapter)
 
+        // 判断数据是否为空 不为空则加载数据
         doOnLoadHomePage(mHomeVM.getResult() ?: return)
         showHomePage()
+    }
+
+    override fun initListener() {
+        mRefreshButton.setOnClickListener {
+            it.isEnabled = false
+            mHomeVM.input(HomeIntent.GetRecPageByRefresh())
+        }
     }
 
     override fun onPause() {
@@ -175,15 +189,12 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
             iconTint = null
             iconPadding = mContext.resources.getDimensionPixelSize(dimen.base_dp6)
             text = mContext.getString(R.string.home_refresh)
-            setOnClickListener {
-                isEnabled = false
-                mHomeVM.input(HomeIntent.GetRecPageByRefresh())
-            }
         }
     }
 
     private fun showHomePage() {
 
+        // 通知每一个 适配器 范围更改
         mHomeBannerAdapter.notifyItemRangeChanged(0, mHomeBannerAdapter.bannerList.size - 1)
         mHomeRecAdapter.notifyItemRangeChanged(0, mHomeRecAdapter.getDataSize())
         mHomeHotAdapter.notifyItemRangeChanged(0, mHomeHotAdapter.getDataSize())
@@ -192,8 +203,10 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
         mHomeTopicAapter.notifyItemRangeChanged(0, mHomeTopicAapter.getDataSize())
         mHomeRankAapter.notifyItemRangeChanged(0, mHomeRankAapter.getDataSize())
 
+        // 刷新事件 为空则 执行淡入动画（代表第一次加载进入布局）
         if (mRefreshListener == null) mBinding.homeLinearLayout.animateFadeIn(300L)
-        mRefreshListener?.also {
+
+        mRefreshListener?.let {
             it.onRefresh()
             toast("刷新成功~")
         }

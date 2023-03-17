@@ -7,6 +7,7 @@ import kotlin.math.pow
 
 /**
  * @author wupanjie
+ * Use : setPageTransformer(StereoPagerTransformer(mContext.resources.displayMetrics.widthPixels.toFloat()))
  */
 class StereoPagerTransformer(private val pageWidth: Float) : ViewPager2.PageTransformer {
 

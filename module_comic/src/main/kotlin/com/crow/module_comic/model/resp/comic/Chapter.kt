@@ -7,59 +7,59 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Chapter(
     @Json(name = "comic_id")
-    val comicId: String,
+    val mComicId: String,
 
     @Json(name = "comic_path_word")
-    val comicPathWord: String,
+    val mComicPathWord: String,
 
     @Json(name = "contents")
-    val contents: List<Content>,
+    val mContents: List<Content>,
 
     @Json(name = "count")
-    val count: Int,
+    val mCount: Int,
 
     @Json(name = "datetime_created")
-    val datetimeCreated: String,
+    val mDatetimeCreated: String,
 
     @Json(name = "group_id")
-    val groupId: Any?,
+    val mGroupId: Any?,
 
     @Json(name = "group_path_word")
-    val groupPathWord: String,
+    val mGroupPathWord: String,
 
     @Json(name = "img_type")
-    val imgType: Int,
+    val mImageType: Int,
 
     @Json(name = "index")
-    val index: Int,
+    val mIndex: Int,
 
     @Json(name = "is_long")
-    val isLong: Boolean,
+    val mIsLong: Boolean,
 
     @Json(name = "name")
-    val name: String,
+    val mName: String,
 
     @Json(name = "news")
-    val news: String,
+    val mNews: String,
 
     @Json(name = "next")
-    val next: String,
+    val mNext: String,
 
     @Json(name = "ordered")
-    val ordered: Int,
+    val mOrdered: Int,
 
     @Json(name = "prev")
-    val prev: Any?,
+    val mPrev: Any?,
 
     @Json(name = "size")
-    val size: Int,
+    val mSize: Int,
 
     @Json(name = "type")
-    val type: Int,
+    val mType: Int,
 
     @Json(name = "uuid")
-    val uuid: String,
+    val mUuid: String,
 
     @Json(name = "words")
-    val words: List<Int>
+    val mWords: List<Int>
 )

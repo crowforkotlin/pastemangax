@@ -25,15 +25,15 @@ class ComicRvAdapter(private var mResults: Results? = null) : RecyclerView.Adapt
         return ViewHolder(ComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
-    override fun getItemCount(): Int = (mResults?.chapter?.size) ?: 0
+    override fun getItemCount(): Int = (mResults?.mChapter?.mSize) ?: 0
 
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
-        val chapter = (mResults ?: return).chapter
-        val content = chapter.contents[position]
+        val chapter = (mResults ?: return).mChapter
+        val content = chapter.mContents[position]
         Glide.with(vh.itemView).load(content.url).into(vh.mPhotoView)
     }
 
     fun setData(data: Results) { mResults = data }
 
-    fun getDataSize() = (mResults?.chapter?.size) ?: 0
+    fun getDataSize() = (mResults?.mChapter?.mSize) ?: 0
 }

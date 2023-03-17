@@ -10,10 +10,7 @@ import androidx.core.view.doOnLayout
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.crow.base.extensions.animateFadeIn
-import com.crow.base.extensions.formatValue
-import com.crow.base.extensions.getSpannableString
-import com.crow.base.extensions.logMsg
+import com.crow.base.extensions.*
 import com.crow.base.fragment.BaseMviBottomSheetDF
 import com.crow.base.viewmodel.doOnError
 import com.crow.base.viewmodel.doOnLoading
@@ -36,17 +33,18 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  * @Description: ComicInfoFragment
  * @formatter:on
  **************************/
-class ComicInfoBottomSheetFragment : BaseMviBottomSheetDF<ComicFragmentInfoBinding> {
+class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFragmentInfoBinding>() {
 
-    constructor()
-    constructor(pathword: String) : this() {
+    constructor(pathword: String, isNeedLoadDataByNetwork: Boolean) : this() {
         mPathword = pathword
+        mIsNeedLoadDataByNetwork = isNeedLoadDataByNetwork
         mPathword.logMsg()
     }
 
     companion object { val TAG = this::class.java.simpleName }
 
     private val mComicVM by lazy { requireParentFragment().viewModel<ComicViewModel>().value }
+    private var mIsNeedLoadDataByNetwork = false
     private var mPathword: String? = null
     private lateinit var mComicChapterRvAdapter: ComicInfoChapterRvAdapter
 
@@ -54,19 +52,14 @@ class ComicInfoBottomSheetFragment : BaseMviBottomSheetDF<ComicFragmentInfoBindi
 
     override fun onStart() {
         super.onStart()
+        // 设置BottomSheet的 高度
         dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)?.layoutParams!!.height = ViewGroup.LayoutParams.MATCH_PARENT
-        if (mComicVM.mComicInfoPage != null) {
+        /* if (mComicVM.mComicInfoPage != null) {
             if (!mComicVM.mComicInfoPage!!.mResults.mComic?.mPathWord.contentEquals(mPathword)) {
                 mComicVM.input(ComicIntent.GetComicInfo(mPathword ?: return))
             }
             return
-        }
-        mComicVM.input(ComicIntent.GetComicInfo(mPathword ?: return))
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        if (!mComicVM.mIsSaveData) { mComicVM.clearAllData() }
+        } */
     }
 
     override fun initObserver() {
@@ -75,10 +68,7 @@ class ComicInfoBottomSheetFragment : BaseMviBottomSheetDF<ComicFragmentInfoBindi
                 is ComicIntent.GetComicInfo -> {
                     intent.mViewState
                         .doOnLoading { showLoadingAnim() }
-                        .doOnError { _, _ ->
-                            mComicVM.input(ComicIntent.GetComicInfo(mPathword ?: return@doOnError))
-                            dismissLoadingAnim()
-                        }
+                        .doOnError { _, _ -> doOnDismissDialogByError() }
                         .doOnResult {
                             dismissLoadingAnim {
                                 showComicInfoPage()
@@ -88,7 +78,7 @@ class ComicInfoBottomSheetFragment : BaseMviBottomSheetDF<ComicFragmentInfoBindi
                 }
                 is ComicIntent.GetComicChapter -> {
                     intent.mViewState
-                        .doOnError { _, _ -> mComicVM.input(ComicIntent.GetComicChapter(mPathword ?: return@doOnError)) }
+                        .doOnError { _, _ -> doOnDismissDialogByError() }
                         .doOnResult { showComicChapaterPage(intent.comicChapter!!.results) }
                 }
                 else -> { }
@@ -97,7 +87,7 @@ class ComicInfoBottomSheetFragment : BaseMviBottomSheetDF<ComicFragmentInfoBindi
     }
 
     override fun initView() {
-        mComicChapterRvAdapter = if (mComicVM.mComicInfoPage?.mResults?.mComic?.mPathWord.contentEquals(mPathword)) {
+        mComicChapterRvAdapter = if (mComicVM.mComicInfoPage?.mResults?.mComic?.mPathWord.contentEquals(mPathword) && !mIsNeedLoadDataByNetwork) {
             showComicInfoPage()
             ComicInfoChapterRvAdapter(mComicVM.mComicChapterPage?.results)
         } else  {
@@ -109,7 +99,6 @@ class ComicInfoBottomSheetFragment : BaseMviBottomSheetDF<ComicFragmentInfoBindi
 
     override fun initListener() {
         mComicChapterRvAdapter.addListener { comic ->
-            mComicVM.setSaveData(true)
             dismissAllowingStateLoss()
             findNavController().navigate(
                 com.crow.base.R.id.mainComicfragment,
@@ -124,6 +113,11 @@ class ComicInfoBottomSheetFragment : BaseMviBottomSheetDF<ComicFragmentInfoBindi
                     .setPopExitAnim(android.R.anim.fade_out)
                     .build())
         }
+    }
+
+    override fun initData() {
+        if (mComicVM.mComicInfoPage != null && !mIsNeedLoadDataByNetwork) return
+        mComicVM.input(ComicIntent.GetComicInfo(mPathword ?: return))
     }
 
     private fun showComicInfoPage() {
@@ -158,4 +152,13 @@ class ComicInfoBottomSheetFragment : BaseMviBottomSheetDF<ComicFragmentInfoBindi
         mComicChapterRvAdapter.notifyItemRangeChanged(0, mComicChapterRvAdapter.getDataSize())
         mBinding.comicInfoRvChapter.animateFadeIn()
     }
+
+    private fun doOnDismissDialogByError() {
+        dismissLoadingAnim {
+            toast("加载失败，请重试~")
+            dismissAllowingStateLoss()
+        }
+    }
+
+    
 }

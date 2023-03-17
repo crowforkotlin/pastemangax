@@ -93,7 +93,6 @@ dependencies {
     api(Dependencies.androidx_constraintlayout)
     api(Dependencies.androidx_lifecycle_ktx)
     api(Dependencies.androidx_lifecycle_service)
-    api("androidx.recyclerview:recyclerview:1.2.1")
     api(Dependencies.androidx_lifecycle_livedata_ktx)
     api(Dependencies.androidx_lifecycle_viewmodel_ktx)
     api(Dependencies.androidx_swiperefreshlayout)
