@@ -10,43 +10,42 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
-		android:visibility="gone">
+		android:visibility="visible">
 
 		<com.to.aboomy.pager2banner.Banner
 			android:id="@+id/home_banner"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"/>
 
-		<!--<androidx.recyclerview.widget.RecyclerView
+		<androidx.recyclerview.widget.RecyclerView
 			android:id="@+id/home_rv"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-			tools:listitem="@layout/home_rv_item_layout" />-->
+			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-		<include
+		<!--<include
 			android:id="@+id/home_item_rec"
-			layout="@layout/home_rv_item_layout" />
+			layout="@layout/home_rv_book_parent" />
 
 		<include
 			android:id="@+id/home_item_hot"
-			layout="@layout/home_rv_item_layout" />
+			layout="@layout/home_rv_book_parent" />
 
 		<include
 			android:id="@+id/home_item_new"
-			layout="@layout/home_rv_item_layout" />
+			layout="@layout/home_rv_book_parent" />
 
 		<include
 			android:id="@+id/home_item_commit"
-			layout="@layout/home_rv_item_layout" />
+			layout="@layout/home_rv_book_parent" />
 
 		<include
 			android:id="@+id/home_item_topic"
-			layout="@layout/home_rv_item_layout" />
+			layout="@layout/home_rv_book_parent" />
 
 		<include
 			android:id="@+id/home_item_rank"
-			layout="@layout/home_rv_item_layout" />
+			layout="@layout/home_rv_book_parent" />-->
 
 	</LinearLayout>
 

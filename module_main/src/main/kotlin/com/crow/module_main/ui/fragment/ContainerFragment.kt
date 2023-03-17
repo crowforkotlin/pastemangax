@@ -2,8 +2,10 @@ package com.crow.module_main.ui.fragment
 
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.extensions.clickGap
 import com.crow.base.extensions.doAfterDelay
 import com.crow.base.extensions.setAutoCancelRefreshing
@@ -20,7 +22,6 @@ import com.crow.module_main.ui.viewmodel.ContainerViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.abs
 
@@ -36,7 +37,7 @@ import kotlin.math.abs
 class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
 
-    private lateinit var mContainerAdapter: ContainerAdapter
+    private var mContainerAdapter: ContainerAdapter? = null
     private val mContaienrVM by viewModel<ContainerViewModel>()
 
     // AppBar搜索
@@ -70,15 +71,16 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mBinding.mainSearchView.setupWithSearchBar(mBinding.mainContainerSearchBar)
 
         // 适配器 初始化 （设置Adapter、预加载页数）
-        mContainerAdapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
+        mContainerAdapter = ContainerAdapter(mFragmentList, requireActivity().supportFragmentManager, viewLifecycleOwner.lifecycle)
         mBinding.mainViewPager.adapter = mContainerAdapter
         mBinding.mainViewPager.offscreenPageLimit = 1
+        (mBinding.mainViewPager.children.first() as? RecyclerView)?.setItemViewCacheSize(mContainerAdapter?.itemCount ?: 1)
 
         // 设置刷新控件的的内部颜色
         mBinding.mainRefresh.setColorSchemeColors(ContextCompat.getColor(mContext, R.color.main_light_blue))
 
         // 关联 TabLayout & ViewPager2
-        TabLayoutMediator(mBinding.mainContainerTabLayout, mBinding.mainViewPager) { tab, pos ->
+        /*TabLayoutMediator(mBinding.mainContainerTabLayout, mBinding.mainViewPager) { tab, pos ->
             when (pos) {
                 0 -> {
                     tab.text = getString(com.crow.module_home.R.string.home_homepage)
@@ -94,9 +96,13 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                 }
                 else -> { }
             }
-        }.attach()
+        }.attach()*/
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mContainerAdapter = null
+    }
     override fun initListener() {
 
         // SearchBar 点击监听

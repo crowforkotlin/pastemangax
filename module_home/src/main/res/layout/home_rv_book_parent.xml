@@ -45,9 +45,7 @@
 			app:layout_constraintTop_toBottomOf="@+id/home_item_bt"
 			app:spanCount="3"
 			tools:itemCount="9"
-			tools:listitem="@layout/home_rv_book_layout">
-
-		</androidx.recyclerview.widget.RecyclerView>
+			tools:listitem="@layout/home_rv_book"/>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
