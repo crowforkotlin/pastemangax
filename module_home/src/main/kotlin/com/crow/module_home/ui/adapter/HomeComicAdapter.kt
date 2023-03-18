@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.crow.base.app.appContext
+import com.crow.base.extensions.ComicCardHeight
 import com.crow.base.extensions.clickGap
 import com.crow.base.extensions.formatValue
 import com.crow.base.view.ToolTipsView
@@ -34,17 +34,10 @@ import java.util.*
 class HomeComicAdapter<T>(
     private var mData: T? = null,
     private val mType: ComicType,
-    private val mTapComicListener: HomeFragment.TapComicListener
+    private val mTapComicListener: HomeFragment.TapComicListener,
 ) : RecyclerView.Adapter<HomeComicAdapter<T>.ViewHolder>() {
 
     inner class ViewHolder(val rvBinding: HomeComicRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
-
-    // 漫画卡片高度
-    private val mChildCardHeight: Int = run {
-        val width = appContext.resources.displayMetrics.widthPixels
-        val height = appContext.resources.displayMetrics.heightPixels
-        (width.toFloat() / (3 - width.toFloat() / height.toFloat())).toInt()
-    }
 
     // 适配器数据量
     private var mSize: Int = 0
@@ -57,7 +50,7 @@ class HomeComicAdapter<T>(
         return ViewHolder(inflate(from(parent.context), parent, false)).also { vh ->
 
             // 漫画卡片高度
-            vh.rvBinding.homeComicRvImage.doOnLayout { vh.rvBinding.homeComicRvImage.layoutParams.height = mChildCardHeight }
+            vh.rvBinding.homeComicRvImage.doOnLayout { vh.rvBinding.homeComicRvImage.layoutParams.height = ComicCardHeight }
 
             // 设置父布局 固定高度 （因为最外层还有一个父布局卡片布局设置的时WRAP_CONTENT 根据 子控件决定高度的）
             vh.rvBinding.root.doOnLayout { rooView ->
@@ -131,10 +124,10 @@ class HomeComicAdapter<T>(
     // 对外暴露数据大小
     fun getDataSize() = mSize
 
-    suspend fun doOnNotify(delay: Long = 20L, waitTime: Long = 100L) {
+    suspend fun doOnNotify(delay: Long = 50L, waitTime: Long = 100L) {
         repeat(mSize) {
             notifyItemChanged(it)
-            delay(50L)
+            delay(delay)
         }
         delay(waitTime)
     }

@@ -87,6 +87,12 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
     }
 
     override fun initView() {
+
+        mBinding.comicInfoImage.doOnLayout {
+            it.layoutParams.height = ComicCardHeight
+            it.layoutParams.width = (ComicCardHeight / 1.25).toInt()
+        }
+
         mComicChapterRvAdapter = if (mComicVM.mComicInfoPage?.mResults?.mComic?.mPathWord.contentEquals(mPathword) && !mIsNeedLoadDataByNetwork) {
             showComicInfoPage()
             ComicInfoChapterRvAdapter(mComicVM.mComicChapterPage?.results)

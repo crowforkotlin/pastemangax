@@ -967,5 +967,6 @@ layout base_textview
 string BaseAppName
 string BaseAppName_CH
 string BaseLoading
+string BaseLoadingError
 string BaseTodoTextView
 style Base_LibBase_LoadingAnim

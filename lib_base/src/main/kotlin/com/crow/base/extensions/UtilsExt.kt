@@ -3,6 +3,7 @@ package com.crow.base.extensions
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import com.crow.base.app.appContext
 import java.text.DecimalFormat
 import java.util.*
 
@@ -33,4 +34,11 @@ fun formatValue(value: Int): String {
 
 fun String.getSpannableString(color: Int, start: Int, end: Int = length): SpannableString {
     return SpannableString(this).also { it.setSpan(ForegroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE) }
+}
+
+// 漫画卡片高度
+val ComicCardHeight: Int by lazy {
+    val width = appContext.resources.displayMetrics.widthPixels
+    val height = appContext.resources.displayMetrics.heightPixels
+    (width.toFloat() / (3 - width.toFloat() / height.toFloat())).toInt()
 }
