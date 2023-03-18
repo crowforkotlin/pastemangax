@@ -70,7 +70,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mBinding.mainSearchView.setupWithSearchBar(mBinding.mainContainerSearchBar)
 
         // 适配器 初始化 （设置Adapter、预加载页数）
-        mContainerAdapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
+        mContainerAdapter = ContainerAdapter(mFragmentList, requireActivity().supportFragmentManager, viewLifecycleOwner.lifecycle)
         mBinding.mainViewPager.adapter = mContainerAdapter
         mBinding.mainViewPager.offscreenPageLimit = 1
 
@@ -118,7 +118,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 刷新监听
         mBinding.mainRefresh.setAutoCancelRefreshing(viewLifecycleOwner) {
             when(mBinding.mainViewPager.currentItem) {
-                0 -> (mFragmentList[0] as HomeFragment).doOnRefresh { mBinding.mainRefresh.isRefreshing = false }
+                0 -> (mFragmentList[0] as HomeFragment).doOnRefresh(mBinding.mainRefresh)
                 1 -> { }
                 2 -> { }
             }
