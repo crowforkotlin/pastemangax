@@ -11,5 +11,4 @@
   <br/>
 
 - ### **❓问题参考**
-    - **✅自定义可缩放RecyclerView**
-        - **🟠[https://ekibun.github.io/ekibook/2020/03/19/scalablelayoutmanager/](https://)**
+    - **✅[自定义可缩放RecyclerView](https://ekibun.github.io/ekibook/2020/03/19/scalablelayoutmanager/)**
