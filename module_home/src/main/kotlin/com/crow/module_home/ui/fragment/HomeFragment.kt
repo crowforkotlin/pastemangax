@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
+import androidx.core.view.isVisible
 import androidx.core.view.setMargins
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -91,8 +92,11 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
                 is HomeIntent.GetRecPageByRefresh -> {
                     intent.mViewState
                         .doOnError { _, _ -> mRecRefreshButton!!.isEnabled = true }
-                        .doOnResult { mHomeRecAdapter.doOnNotifyRec(viewLifecycleOwner, intent.recPageData!!.mResults) }
                         .doOnSuccess { mRecRefreshButton!!.isEnabled = true }
+                        .doOnResult {
+                            mHomeRecAdapter.setData(intent.recPageData!!.mResults, 3)
+                            viewLifecycleOwner.lifecycleScope.launch { mHomeRecAdapter.doOnNotify() }
+                        }
                 }
             }
         }
@@ -184,42 +188,39 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
 
     private fun doOnLoadHomePage(results: Results) {
 
-        lifecycleScope.launch {
+        mHomeBannerAdapter.bannerList.clear()
+        mHomeBannerAdapter.bannerList.addAll(results.mBanners.filter { banner -> banner.mType <= 2 })
+        mHomeRecAdapter.setData(results.mRecComicsResult, 3)
+        mHomeHotAdapter.setData(results.mHotComics, 12)
+        mHomeNewAdapter.setData(results.mNewComics, 12)
+        mHomeFinishAdapter.setData(results.mFinishComicDatas, 6)
+        mHomeTopicAapter.setData(results.mTopics, 4)
+        mHomeRankAapter.setData(results.mRankDayComics, 6)
 
-            mHomeBannerAdapter.bannerList.clear()
-            mHomeBannerAdapter.bannerList.addAll(results.mBanners.filter { banner -> banner.mType <= 2 })
-            mHomeRecAdapter.setData(results.mRecComicsResult, 3)
-            mHomeHotAdapter.setData(results.mHotComics, 12)
-            mHomeNewAdapter.setData(results.mNewComics, 12)
-            mHomeFinishAdapter.setData(results.mFinishComicDatas, 6)
-            mHomeTopicAapter.setData(results.mTopics, 4)
-            mHomeRankAapter.setData(results.mRankDayComics, 6)
+        if (!mBinding.homeLinearLayout.isVisible) {  mBinding.homeLinearLayout.animateFadeIn() }
+        else toast("刷新成功~")
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+
 
             if (mSwipeRefreshLayout != null && mSwipeRefreshLayout!!.isRefreshing) {
                 mSwipeRefreshLayout!!.isRefreshing = false
-                delay(200L)
+                delay(150L)
             }
 
-            // 通知每一个 适配器 范围更改
-            mHomeBannerAdapter.notifyItemRangeChanged(0, mHomeBannerAdapter.bannerList.size)
-            mHomeRecAdapter.notifyItemRangeChanged(0, mHomeRecAdapter.getDataSize())
-            mHomeHotAdapter.notifyItemRangeChanged(0, mHomeHotAdapter.getDataSize())
-            mHomeNewAdapter.notifyItemRangeChanged(0, mHomeNewAdapter.getDataSize())
-            mHomeFinishAdapter.notifyItemRangeChanged(0, mHomeFinishAdapter.getDataSize())
-            mHomeTopicAapter.notifyItemRangeChanged(0, mHomeTopicAapter.getDataSize())
-            mHomeRankAapter.notifyItemRangeChanged(0, mHomeRankAapter.getDataSize())
-
-            // 刷新事件 为空则 执行淡入动画（代表第一次加载进入布局）
-            if (mSwipeRefreshLayout == null) mBinding.homeLinearLayout.animateFadeIn(300L)
-            else toast("刷新成功~")
+            mHomeBannerAdapter.doOnNotify(waitTime = 0L)
+            mHomeRecAdapter.doOnNotify(waitTime = 0L)
+            mHomeHotAdapter.doOnNotify(waitTime = 0L)
+            mHomeNewAdapter.doOnNotify(waitTime = 0L)
+            mHomeFinishAdapter.doOnNotify(waitTime = 0L)
+            mHomeTopicAapter.doOnNotify(waitTime = 0L)
+            mHomeRankAapter.doOnNotify(waitTime = 0L)
         }
     }
 
     fun doOnRefresh(swipeRefreshLayout: SwipeRefreshLayout) {
         mSwipeRefreshLayout = swipeRefreshLayout
-        doAfterDelay(300L) {
-            mHomeVM.input(HomeIntent.GetHomePage())
-        }
+        doAfterDelay(300L) { mHomeVM.input(HomeIntent.GetHomePage()) }
     }
 
 }

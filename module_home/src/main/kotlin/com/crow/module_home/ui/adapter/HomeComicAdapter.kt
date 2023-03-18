@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.doOnLayout
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.app.appContext
@@ -23,7 +21,6 @@ import com.crow.module_home.model.resp.homepage.results.AuthorResult
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.ui.fragment.HomeFragment
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.*
 
 /*************************
@@ -134,15 +131,11 @@ class HomeComicAdapter<T>(
     // 对外暴露数据大小
     fun getDataSize() = mSize
 
-    fun doOnNotifyRec(lifecycleOwner: LifecycleOwner, value: ComicDatas<RecComicsResult>) {
-        val adapter = (this as HomeComicAdapter<ComicDatas<RecComicsResult>>)
-        adapter.mData = value
-        lifecycleOwner.lifecycleScope.launch {
-            notifyItemChanged(0)
-            delay(20L)
-            notifyItemChanged(1)
-            delay(20L)
-            notifyItemChanged(2)
+    suspend fun doOnNotify(delay: Long = 20L, waitTime: Long = 100L) {
+        repeat(mSize) {
+            notifyItemChanged(it)
+            delay(50L)
         }
+        delay(waitTime)
     }
 }
