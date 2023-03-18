@@ -2,7 +2,7 @@
 
 package com.crow.module_home.ui.adapter
 
-import android.view.LayoutInflater
+import android.view.LayoutInflater.from
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -13,12 +13,14 @@ import com.crow.base.app.appContext
 import com.crow.base.extensions.clickGap
 import com.crow.base.extensions.formatValue
 import com.crow.base.view.ToolTipsView
-import com.crow.module_home.databinding.HomeRvBookLayoutBinding
+import com.crow.module_home.databinding.HomeComicRvBinding
+import com.crow.module_home.databinding.HomeComicRvBinding.inflate
 import com.crow.module_home.model.ComicType
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.AuthorResult
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.ui.fragment.HomeFragment
+import kotlinx.coroutines.delay
 import java.util.*
 
 /*************************
@@ -29,13 +31,13 @@ import java.util.*
  * @Description: HomeBookAdapter
  * @formatter:on
  **************************/
-class HomeBookAdapter<T>(
+class HomeComicAdapter<T>(
     private var mData: T? = null,
     private val mType: ComicType,
     private val mTapComicListener: HomeFragment.TapComicListener
-) : RecyclerView.Adapter<HomeBookAdapter<T>.ViewHolder>() {
+) : RecyclerView.Adapter<HomeComicAdapter<T>.ViewHolder>() {
 
-    inner class ViewHolder(val rvBinding: HomeRvBookLayoutBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
+    inner class ViewHolder(val rvBinding: HomeComicRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
 
     // 漫画卡片高度
     private val mChildCardHeight: Int = run {
@@ -52,10 +54,10 @@ class HomeBookAdapter<T>(
 
     override fun getItemCount(): Int = if (mData == null) 0 else mSize
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(HomeRvBookLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
+        return ViewHolder(inflate(from(parent.context), parent, false)).also { vh ->
 
             // 漫画卡片高度
-            vh.rvBinding.homeBookImage.doOnLayout { vh.rvBinding.homeBookImage.layoutParams.height = mChildCardHeight }
+            vh.rvBinding.homeComicRvImage.doOnLayout { vh.rvBinding.homeComicRvImage.layoutParams.height = mChildCardHeight }
 
             // 设置父布局 固定高度 （因为最外层还有一个父布局卡片布局设置的时WRAP_CONTENT 根据 子控件决定高度的）
             vh.rvBinding.root.doOnLayout { rooView ->
@@ -67,7 +69,7 @@ class HomeBookAdapter<T>(
             vh.rvBinding.root.clickGap { _, _ -> mTapComicListener.onTap(mType, vh.mPathWord) }
             vh.rvBinding.homeBookCard.clickGap { _, _ -> mTapComicListener.onTap(mType, vh.mPathWord) }
 
-            ToolTipsView.showToolTipsByLongClick(vh.rvBinding.homeBookName)
+            ToolTipsView.showToolTipsByLongClick(vh.rvBinding.homeComicRvName)
         }
     }
     override fun onBindViewHolder(vh: ViewHolder, pos: Int) {
@@ -90,17 +92,17 @@ class HomeBookAdapter<T>(
             }
             ComicType.Topic -> {
                 val comic = (mData as ComicDatas<Topices>).mResult[pos]
-                Glide.with(vh.itemView).load(comic.mImageUrl).into(vh.rvBinding.homeBookImage)
+                Glide.with(vh.itemView).load(comic.mImageUrl).into(vh.rvBinding.homeComicRvImage)
                 vh.mPathWord = comic.mPathWord
                 vh.rvBinding.apply {
-                    homeBookName.maxLines = 4
-                    homeBookName.text = comic.mTitle
-                    homeBookAuthor.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
-                    homeBookAuthor.text = comic.mDatetimeCreated
-                    (homeBookAuthor.layoutParams as ConstraintLayout.LayoutParams).apply {
+                    homeComicRvName.maxLines = 4
+                    homeComicRvName.text = comic.mTitle
+                    homeComicRvAuthor.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+                    homeComicRvAuthor.text = comic.mDatetimeCreated
+                    (homeComicRvAuthor.layoutParams as ConstraintLayout.LayoutParams).apply {
                         bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
                     }
-                    homeBookHot.visibility = View.GONE
+                    homeComicRvHot.visibility = View.GONE
                 }
             }
             ComicType.Rank -> {
@@ -113,11 +115,11 @@ class HomeBookAdapter<T>(
 
     // 初始化卡片内部视图
     private fun ViewHolder.initView(pathword: String, name: String, imageUrl: String, author: List<AuthorResult>, hot: Int) {
-        Glide.with(itemView).load(imageUrl).into(rvBinding.homeBookImage)   // 加载封面
-        rvBinding.homeBookName.text = name                                  // 漫画名
-        rvBinding.homeBookAuthor.text = author.joinToString { it.name }     // 作者 ：Crow
-        rvBinding.homeBookHot.text = formatValue(hot)                       // 热度 ： 12.3456 W
-        mPathWord = pathword                                                // 设置路径值 （用于后续请求）
+        Glide.with(itemView).load(imageUrl).into(rvBinding.homeComicRvImage)   // 加载封面
+        rvBinding.homeComicRvName.text = name                                  // 漫画名
+        rvBinding.homeComicRvAuthor.text = author.joinToString { it.name }     // 作者 ：Crow
+        rvBinding.homeComicRvHot.text = formatValue(hot)                       // 热度 ： 12.3456 W
+        mPathWord = pathword                                                   // 设置路径值 （用于后续请求）
     }
 
     // 对外暴露设置数据
@@ -128,4 +130,12 @@ class HomeBookAdapter<T>(
 
     // 对外暴露数据大小
     fun getDataSize() = mSize
+
+    suspend fun doOnNotify(delay: Long = 20L, waitTime: Long = 100L) {
+        repeat(mSize) {
+            notifyItemChanged(it)
+            delay(50L)
+        }
+        delay(waitTime)
+    }
 }

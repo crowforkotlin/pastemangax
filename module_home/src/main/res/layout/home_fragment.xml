@@ -9,8 +9,8 @@
 		android:id="@+id/home_linear_layout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:orientation="vertical"
-		android:visibility="gone">
+		android:visibility="invisible"
+		android:orientation="vertical">
 
 		<com.to.aboomy.pager2banner.Banner
 			android:id="@+id/home_banner"
@@ -25,28 +25,28 @@
 			tools:listitem="@layout/home_rv_item_layout" />-->
 
 		<include
-			android:id="@+id/home_item_rec"
-			layout="@layout/home_rv_item_layout" />
+			android:id="@+id/home_comic_rec"
+			layout="@layout/home_comic" />
 
 		<include
-			android:id="@+id/home_item_hot"
-			layout="@layout/home_rv_item_layout" />
+			android:id="@+id/home_comic_hot"
+			layout="@layout/home_comic" />
 
 		<include
-			android:id="@+id/home_item_new"
-			layout="@layout/home_rv_item_layout" />
+			android:id="@+id/home_comic_new"
+			layout="@layout/home_comic" />
 
 		<include
-			android:id="@+id/home_item_commit"
-			layout="@layout/home_rv_item_layout" />
+			android:id="@+id/home_comic_finish"
+			layout="@layout/home_comic" />
 
 		<include
-			android:id="@+id/home_item_topic"
-			layout="@layout/home_rv_item_layout" />
+			android:id="@+id/home_comic_topic"
+			layout="@layout/home_comic" />
 
 		<include
-			android:id="@+id/home_item_rank"
-			layout="@layout/home_rv_item_layout" />
+			android:id="@+id/home_comic_rank"
+			layout="@layout/home_comic" />
 
 	</LinearLayout>
 

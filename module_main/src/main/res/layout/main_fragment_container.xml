@@ -82,7 +82,7 @@
 
 		</com.google.android.material.search.SearchView>
 
-		<com.ssti.laser.view.component.CustomSwipeRefresh
+		<com.crow.module_home.ui.view.CustomSwipeRefresh
 			android:layout_width="match_parent"
 			android:id="@+id/main_refresh"
 			android:layout_height="0dp"
@@ -97,7 +97,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="match_parent" />
 
-		</com.ssti.laser.view.component.CustomSwipeRefresh>
+		</com.crow.module_home.ui.view.CustomSwipeRefresh>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
