@@ -1,6 +1,7 @@
 package com.crow.module_home.network
 
-import com.crow.module_home.model.resp.ComicResultResp
+import com.crow.base.current_project.BaseResultResp
+import com.crow.base.current_project.BaseStrings
 import com.crow.module_home.model.resp.homepage.ComicDatas
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.model.resp.homepage.results.Results
@@ -18,9 +19,9 @@ import retrofit2.http.Query
  **************************/
 interface HomeService {
 
-    @GET("/api/v3/h5/homeIndex")
-    fun getHomePage(): Flow<ComicResultResp<Results>>
+    @GET(BaseStrings.URL.HomePage)
+    fun getHomePage(): Flow<BaseResultResp<Results>>
 
-    @GET("/api/v3/recs")
-    fun getRecPage(@Query("limit") limit: Int, @Query("offset") start: Int, @Query("pos") pos:Int = 3200102): Flow<ComicResultResp<ComicDatas<RecComicsResult>>>
+    @GET(BaseStrings.URL.RefreshRec)
+    fun getRecPage(@Query("limit") limit: Int, @Query("offset") start: Int, @Query("pos") pos:Int = 3200102): Flow<BaseResultResp<ComicDatas<RecComicsResult>>>
 }

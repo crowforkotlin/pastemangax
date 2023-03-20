@@ -10,15 +10,20 @@ import androidx.core.view.doOnLayout
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.crow.base.extensions.*
-import com.crow.base.fragment.BaseMviBottomSheetDF
-import com.crow.base.viewmodel.doOnError
-import com.crow.base.viewmodel.doOnLoading
-import com.crow.base.viewmodel.doOnResult
+import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.logMsg
+import com.crow.base.tools.extensions.toast
+import com.crow.base.ui.fragment.BaseMviBottomSheetDF
+import com.crow.base.current_project.ComicCardHeight
+import com.crow.base.current_project.formatValue
+import com.crow.base.current_project.getSpannableString
+import com.crow.base.ui.viewmodel.doOnError
+import com.crow.base.ui.viewmodel.doOnLoading
+import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_comic.R
 import com.crow.module_comic.databinding.ComicFragmentInfoBinding
 import com.crow.module_comic.model.intent.ComicIntent
-import com.crow.module_comic.model.resp.comic_chapter.Results
+import com.crow.module_comic.model.resp.ChapterResultsResp
 import com.crow.module_comic.model.resp.comic_info.Status
 import com.crow.module_comic.ui.adapter.ComicInfoChapterRvAdapter
 import com.crow.module_comic.ui.viewmodel.ComicViewModel
@@ -79,7 +84,7 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
                 is ComicIntent.GetComicChapter -> {
                     intent.mViewState
                         .doOnError { _, _ -> doOnDismissDialogByError() }
-                        .doOnResult { showComicChapaterPage(intent.comicChapter!!.results) }
+                        .doOnResult { showComicChapaterPage(intent.comicChapter!!) }
                 }
                 else -> { }
             }
@@ -93,9 +98,9 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
             it.layoutParams.width = (ComicCardHeight / 1.25).toInt()
         }
 
-        mComicChapterRvAdapter = if (mComicVM.mComicInfoPage?.mResults?.mComic?.mPathWord.contentEquals(mPathword) && !mIsNeedLoadDataByNetwork) {
+        mComicChapterRvAdapter = if (mComicVM.mComicInfoPage?.mComic?.mPathWord.contentEquals(mPathword) && !mIsNeedLoadDataByNetwork) {
             showComicInfoPage()
-            ComicInfoChapterRvAdapter(mComicVM.mComicChapterPage?.results)
+            ComicInfoChapterRvAdapter(mComicVM.mComicChapterPage)
         } else  {
             ComicInfoChapterRvAdapter()
         }
@@ -128,7 +133,7 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
 
     private fun showComicInfoPage() {
 
-        val comic = (mComicVM.mComicInfoPage ?: return).mResults.mComic ?: return
+        val comic = (mComicVM.mComicInfoPage ?: return).mComic ?: return
 
         Glide.with(this).load(comic.mCover).into(mBinding.comicInfoImage)
         mBinding.comicInfoName.text = comic.mName
@@ -153,7 +158,7 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
         mBinding.root.animateFadeIn()
     }
 
-    private fun showComicChapaterPage(comics: Results) {
+    private fun showComicChapaterPage(comics: ChapterResultsResp) {
         mComicChapterRvAdapter.setData(comics)
         mComicChapterRvAdapter.notifyItemRangeChanged(0, mComicChapterRvAdapter.getDataSize())
         mBinding.comicInfoRvChapter.animateFadeIn()
@@ -165,6 +170,4 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
             dismissAllowingStateLoss()
         }
     }
-
-    
 }

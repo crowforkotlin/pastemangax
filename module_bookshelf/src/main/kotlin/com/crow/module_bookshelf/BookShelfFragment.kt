@@ -1,7 +1,7 @@
 package com.crow.module_bookshelf
 
 import android.view.LayoutInflater
-import com.crow.base.fragment.BaseFragment
+import com.crow.base.ui.fragment.BaseFragment
 import com.crow.module_bookshelf.databinding.BookshelfFragmentBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

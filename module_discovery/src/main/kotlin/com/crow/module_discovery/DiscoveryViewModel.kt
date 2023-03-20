@@ -1,6 +1,6 @@
 package com.crow.module_discovery
 
-import com.crow.base.viewmodel.BaseViewModel
+import com.crow.base.ui.viewmodel.BaseViewModel
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11

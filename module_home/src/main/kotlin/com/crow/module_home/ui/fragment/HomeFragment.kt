@@ -18,7 +18,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.crow.base.R.dimen
 import com.crow.base.R.string.BaseLoadingError
 import com.crow.base.extensions.*
-import com.crow.base.fragment.BaseMviFragment
+import com.crow.base.tools.extensions.*
+import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.viewmodel.*
 import com.crow.base.viewmodel.*
 import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeComicBinding
@@ -108,10 +110,7 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
                 is HomeIntent.GetRecPageByRefresh -> {
                     intent.mViewState
                         .doOnSuccess { mRecRefreshButton!!.isEnabled = true }
-                        .doOnError { _, _ ->
-                            mBinding.root.showSnackBar(getString(BaseLoadingError))
-                            mRecRefreshButton!!.isEnabled = true
-                        }
+                        .doOnError { _, _ -> mBinding.root.showSnackBar(getString(BaseLoadingError)) }
                         .doOnResult {
                             mHomeRecAdapter.setData(intent.recPageData!!.mResults, 3)
                             viewLifecycleOwner.lifecycleScope.launch { mHomeRecAdapter.doOnNotify() }
@@ -147,7 +146,7 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
         // 设置 Banner 的高度 （1.875 屏幕宽高指定倍数）、（添加页面效果、指示器、指示器需要设置BottomMargin不然会卡在Banner边缘（产生重叠））
         mBinding.homeBanner.doOnLayout { it.layoutParams.height = (it.width / 1.875 + 0.5).toInt() }
         mBinding.homeBanner.addPageTransformer(ScaleInTransformer())
-            .setPageMargin(mContext.dp2px(20), mContext.dp2px(10))
+            .setPageMargin(mContext.dp2px(20f), mContext.dp2px(10f))
             .setIndicator(
                 IndicatorView(mContext)
                     .setIndicatorColor(Color.DKGRAY)

@@ -9,10 +9,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.crow.base.extensions.ComicCardHeight
-import com.crow.base.extensions.clickGap
-import com.crow.base.extensions.formatValue
-import com.crow.base.view.ToolTipsView
+import com.crow.base.current_project.ComicCardHeight
+import com.crow.base.tools.extensions.clickGap
+import com.crow.base.current_project.formatValue
+import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_home.databinding.HomeComicRvBinding
 import com.crow.module_home.databinding.HomeComicRvBinding.inflate
 import com.crow.module_home.model.ComicType

@@ -1,9 +1,9 @@
 package com.crow.copymanga.di
 
-import com.crow.base.network.FlowCallAdapterFactory
+import com.crow.base.current_project.BaseStrings
+import com.crow.base.tools.extensions.baseMoshi
+import com.crow.base.tools.network.FlowCallAdapterFactory
 import com.crow.copymanga.BuildConfig
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -51,10 +51,10 @@ val netWorkModule = module {
 
     single {
         Retrofit.Builder()
-            .baseUrl("https://api.copymanga.site/")
+            .baseUrl(BaseStrings.URL.CopyManga)
             .client(get())
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create(Moshi.Builder().add(KotlinJsonAdapterFactory()).build()))
+            .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
             .build()
     }
 

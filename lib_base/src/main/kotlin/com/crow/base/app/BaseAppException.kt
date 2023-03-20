@@ -1,6 +1,6 @@
 package com.crow.base.app
 
-import com.crow.base.extensions.logError
+import com.crow.base.tools.extensions.logError
 
 
 /*************************

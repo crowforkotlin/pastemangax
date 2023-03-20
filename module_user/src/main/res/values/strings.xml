@@ -1,0 +1,9 @@
+<resources>
+
+	<!-- TODO: Remove or change this placeholder text -->
+	<string name="user_login">登录</string>
+	<string name="user_usr">账号</string>
+	<string name="user_pwd">密码</string>
+	<string name="user_auto_login">自动登录</string>
+	<string name="user_login_tips">小提示：登录功能1分钟内只可请求5–10次左右，超过次数后需等待5分钟左右才可恢复，接口有限制…</string>
+</resources>

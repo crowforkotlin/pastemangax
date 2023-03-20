@@ -1,8 +1,10 @@
 package com.crow.module_comic.network
 
-import com.crow.module_comic.model.resp.ComicChapterResp
-import com.crow.module_comic.model.resp.ComicInfoResp
-import com.crow.module_comic.model.resp.ComicResp
+import com.crow.base.current_project.BaseResultResp
+import com.crow.base.current_project.BaseStrings
+import com.crow.module_comic.model.resp.ChapterResultsResp
+import com.crow.module_comic.model.resp.ComicResultsResp
+import com.crow.module_comic.model.resp.InfoResultsResp
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -18,16 +20,16 @@ import retrofit2.http.Query
  **************************/
 interface ComicService {
 
-    @GET("/api/v3/comic2/{pathword}?platform=1&_update=true")
-    fun getComicInfo(@Path("pathword") pathword: String): Flow<ComicInfoResp>
+    @GET(BaseStrings.URL.ComicInfo)
+    fun getComicInfo(@Path("pathword") pathword: String): Flow<BaseResultResp<InfoResultsResp>>
 
-    @GET("/api/v3/comic/{pathword}/group/default/chapters?_update=true")
+    @GET(BaseStrings.URL.ComicChapter)
     fun getComicChapter(
         @Path("pathword") pathword: String,
         @Query("offset") start: Int,
         @Query("limit") limit: Int,
-    ): Flow<ComicChapterResp>
+    ): Flow<BaseResultResp<ChapterResultsResp>>
 
-    @GET("/api/v3/comic/{pathword}/chapter2/{uuid}?platform=3&_update=true")
-    fun getComic(@Path("pathword") pathword: String, @Path("uuid") uuid: String): Flow<ComicResp>
+    @GET(BaseStrings.URL.Comic)
+    fun getComic(@Path("pathword") pathword: String, @Path("uuid") uuid: String): Flow<BaseResultResp<ComicResultsResp>>
 }

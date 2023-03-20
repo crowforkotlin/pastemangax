@@ -5,9 +5,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import com.crow.base.extensions.animateFadeOut
-import com.crow.base.extensions.getNavigationBarHeight
-import com.crow.base.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.getNavigationBarHeight
+import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.copymanga.databinding.AppActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

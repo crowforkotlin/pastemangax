@@ -3,10 +3,10 @@ package com.crow.module_comic.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.crow.base.extensions.clickGap
+import com.crow.base.tools.extensions.clickGap
 import com.crow.module_comic.databinding.ComicInfoRvChapterBinding
 import com.crow.module_comic.model.resp.comic_chapter.Comic
-import com.crow.module_comic.model.resp.comic_chapter.Results
+import com.crow.module_comic.model.resp.ChapterResultsResp
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -16,7 +16,7 @@ import com.crow.module_comic.model.resp.comic_chapter.Results
  * @Description: ComicInfoChapterRvAdapter
  * @formatter:on
  **************************/
-class ComicInfoChapterRvAdapter(private var mComic: Results? = null) : RecyclerView.Adapter<ComicInfoChapterRvAdapter.ViewHolder>() {
+class ComicInfoChapterRvAdapter(private var mComic: ChapterResultsResp? = null) : RecyclerView.Adapter<ComicInfoChapterRvAdapter.ViewHolder>() {
 
     fun interface ChipCLickCallBack {
         fun onClick(mComic: Comic)
@@ -50,7 +50,7 @@ class ComicInfoChapterRvAdapter(private var mComic: Results? = null) : RecyclerV
         vh.mChip.text = comic.name
     }
 
-    fun setData(data: Results) { mComic = data }
+    fun setData(data: ChapterResultsResp) { mComic = data }
 
     fun getDataSize() = mComic?.total ?: 0
 

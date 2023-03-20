@@ -70,12 +70,12 @@ object Dependencies {
     const val androidx_datastore = "androidx.datastore:datastore-preferences:1.0.0"
 
     /* Coroutine 协程
-    * - GitHub : [https://github.com/Kotlin/kotlinx.coroutines]
+    * - Github : [https://github.com/Kotlin/kotlinx.coroutines]
     * */
     const val kotlinx_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
 
     /* SmartRefresh
-    * - GitHub : [https://github.com/scwang90/SmartRefreshLayout]
+    * - Github : [https://github.com/scwang90/SmartRefreshLayout]
     * */
     const val smart_refresh = "io.github.scwang90:refresh-layout-kernel:${Versions.smart_refresh}" // 核心依赖
     const val smart_refresh_header = "io.github.scwang90:refresh-header-classics:${Versions.smart_refresh}" //经典刷新头
@@ -101,7 +101,7 @@ object Dependencies {
     const val retrofit_moshi = "com.squareup.retrofit2:converter-moshi:${Versions.retrofit_version}"
 
     /* Moshi
-    * - GitHub : [https://github.com/square/moshi]
+    * - Github : [https://github.com/square/moshi]
     * */
     const val moshi = "com.squareup.moshi:moshi-kotlin:${Versions.moshi_version}"
 
@@ -139,6 +139,12 @@ object Dependencies {
     * - Github : [https://github.com/square/leakcanary]
     * */
     const val leakcanary ="com.squareup.leakcanary:leakcanary-android:2.9.1"
+
+
+    /* Glance database 分析
+    * - Github : [https://github.com/guolindev/Glance]
+    * */
+    const val glance ="com.guolindev.glance:glance:1.1.0"
 
     /* Glide 图片加载
     * - Github : [https://github.com/bumptech/glide]
@@ -221,4 +227,9 @@ object Dependencies {
     * - Home : [https://bugly.qq.com/v2/workbench/apps]
     * */
     const val tencent_bugly = "com.tencent.bugly:crashreport:latest.release"
+    
+    /* 加载按钮
+    * - Github : [https://github.com/leandroBorgesFerreira/LoadingButtonAndroid/tree/master]
+    * */
+    const val loading_button = "br.com.simplepass:loading-button-android:2.2.0"
 }

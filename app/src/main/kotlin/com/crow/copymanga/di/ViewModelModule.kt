@@ -5,6 +5,7 @@ import com.crow.module_comic.ui.viewmodel.ComicViewModel
 import com.crow.module_discovery.DiscoveryViewModel
 import com.crow.module_home.ui.viewmodel.HomeViewModel
 import com.crow.module_main.ui.viewmodel.ContainerViewModel
+import com.crow.module_user.ui.viewmodel.UserViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -24,5 +25,6 @@ val viewModelModule = module {
     viewModel { ContainerViewModel(get()) }
     viewModel { DiscoveryViewModel() }
     viewModel { ComicViewModel(get()) }
+    viewModel { UserViewModel(get()) }
 
 }

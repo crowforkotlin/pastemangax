@@ -1,22 +1,31 @@
 package com.crow.module_main.ui.fragment
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
-import com.crow.base.extensions.clickGap
-import com.crow.base.extensions.doAfterDelay
-import com.crow.base.extensions.setAutoCancelRefreshing
-import com.crow.base.fragment.BaseMviFragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.crow.base.R
+import com.crow.base.app.appContext
+import com.crow.base.current_project.BaseStrings
+import com.crow.base.tools.extensions.*
+import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_bookshelf.BookShelfFragment
 import com.crow.module_comic.ui.fragment.ComicInfoBottomSheetFragment
 import com.crow.module_discovery.DiscoveryFragment
 import com.crow.module_home.model.ComicType
 import com.crow.module_home.ui.fragment.HomeFragment
-import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentContainerBinding
 import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.viewmodel.ContainerViewModel
+import com.crow.module_user.model.UserIntent
+import com.crow.module_user.ui.fragment.UserBottomSheetFragment
+import com.crow.module_user.ui.viewmodel.UserViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -38,6 +47,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     private lateinit var mContainerAdapter: ContainerAdapter
     private val mContaienrVM by viewModel<ContainerViewModel>()
+    private val mUserVm by viewModel<UserViewModel>()
 
     // AppBar搜索
     private var mAppBarState: Int = STATE_EXPANDED
@@ -54,12 +64,39 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             if (mTapFlag) return
             mTapFlag = true
             ComicInfoBottomSheetFragment(pathword, true).show(parentFragmentManager, ComicInfoBottomSheetFragment.TAG)
-            this@ContainerFragment.doAfterDelay(1000L) { mTapFlag = false }
+            this@ContainerFragment.doAfterDelay(EventGapTime.BASE_FLAG_TIME) { mTapFlag = false }
+        }
+    }
+
+    override fun initObserver() {
+        mUserVm.onOutput { intent ->
+            when(intent) {
+                is UserIntent.GetUserInfo -> {
+                    intent.mViewState
+                        .doOnResult {
+                            val userInfo = intent.userInfo ?: return@doOnResult
+                            Glide.with(mContext)
+                                .load(BaseStrings.URL.MangaFuna.plus(userInfo.mIconUrl))
+                                .apply(RequestOptions().circleCrop().override(appContext.resources.getDimensionPixelSize(R.dimen.base_dp36))
+                                    .placeholder(com.crow.module_main.R.drawable.main_ic_user_24dp))
+                                .into(object : CustomTarget<Drawable>() {
+                                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                                        mBinding.mainContaienrToolbar.navigationIcon = resource
+                                    }
+                                    override fun onLoadCleared(placeholder: Drawable?) { }
+                                })
+                        }
+                }
+                else -> { }
+            }
         }
     }
 
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
+    override fun initData() {
+        mUserVm.input(UserIntent.GetUserInfo())
+    }
     override fun initView() {
 
         // 重新创建View之后 appBarLayout会展开折叠，记录一个状态进行初始化
@@ -75,7 +112,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mBinding.mainViewPager.offscreenPageLimit = 1
 
         // 设置刷新控件的的内部颜色
-        mBinding.mainRefresh.setColorSchemeColors(ContextCompat.getColor(mContext, R.color.main_light_blue))
+        mBinding.mainRefresh.setColorSchemeColors(ContextCompat.getColor(mContext, com.crow.module_main.R.color.main_light_blue))
 
         // 关联 TabLayout & ViewPager2
         TabLayoutMediator(mBinding.mainContainerTabLayout, mBinding.mainViewPager) { tab, pos ->
@@ -98,6 +135,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     override fun initListener() {
+
+        // MaterialToolBar NavigateIcon 点击事件
+        mBinding.mainContaienrToolbar.navigateIconClickGap { _, _ -> UserBottomSheetFragment().show(requireActivity().supportFragmentManager, UserBottomSheetFragment.TAG) }
 
         // SearchBar 点击监听
         mBinding.mainContainerSearchBar.clickGap { _, _ -> mBinding.mainSearchView.show() }

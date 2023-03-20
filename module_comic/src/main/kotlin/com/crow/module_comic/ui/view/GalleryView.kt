@@ -10,7 +10,7 @@ import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.crow.base.extensions.logMsg
+import com.crow.base.tools.extensions.logMsg
 import com.crow.module_comic.R
 import kotlin.math.max
 import kotlin.math.min

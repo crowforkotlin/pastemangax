@@ -1,6 +1,6 @@
 package com.crow.module_home.ui.viewmodel
 
-import com.crow.base.viewmodel.mvi.BaseMviViewModel
+import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_home.model.factory.HomeRepository
 import com.crow.module_home.model.intent.HomeIntent
 import com.crow.module_home.model.resp.homepage.results.Results

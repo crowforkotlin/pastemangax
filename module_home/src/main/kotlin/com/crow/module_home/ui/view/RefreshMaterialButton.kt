@@ -16,7 +16,7 @@ import android.view.animation.LinearInterpolator
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
-import com.crow.base.extensions.clickGap
+import com.crow.base.tools.extensions.clickGap
 import com.crow.module_home.ui.view.RefreshMaterialButton.AnimatorCallback
 import com.google.android.material.button.MaterialButton
 

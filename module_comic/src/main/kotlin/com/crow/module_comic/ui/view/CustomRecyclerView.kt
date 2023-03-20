@@ -10,7 +10,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.crow.base.extensions.logMsg
+import com.crow.base.tools.extensions.logMsg
 import kotlin.math.pow
 import kotlin.math.sqrt
 
