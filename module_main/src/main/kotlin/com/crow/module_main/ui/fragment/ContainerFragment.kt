@@ -12,9 +12,9 @@ import com.bumptech.glide.request.transition.Transition
 import com.crow.base.R
 import com.crow.base.app.appContext
 import com.crow.base.current_project.BaseStrings
+import com.crow.base.current_project.BaseUser
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
-import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_bookshelf.BookShelfFragment
 import com.crow.module_comic.ui.fragment.ComicInfoBottomSheetFragment
 import com.crow.module_discovery.DiscoveryFragment
@@ -23,13 +23,14 @@ import com.crow.module_home.ui.fragment.HomeFragment
 import com.crow.module_main.databinding.MainFragmentContainerBinding
 import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.viewmodel.ContainerViewModel
-import com.crow.module_user.model.UserIntent
+import com.crow.module_user.R.drawable.user_ic_icon
 import com.crow.module_user.ui.fragment.UserBottomSheetFragment
 import com.crow.module_user.ui.viewmodel.UserViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.abs
 
@@ -44,22 +45,26 @@ import kotlin.math.abs
  **************************/
 class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
-
+    // 碎片容器适配器
     private lateinit var mContainerAdapter: ContainerAdapter
-    private val mContaienrVM by viewModel<ContainerViewModel>()
-    private val mUserVm by viewModel<UserViewModel>()
 
-    // AppBar搜索
+    // 容器VM
+    private val mContaienrVM by viewModel<ContainerViewModel>()
+
+    // 共享用户VM
+    private val mUserVM by sharedViewModel<UserViewModel>()
+
+    // AppBar状态（默认展开）
     private var mAppBarState: Int = STATE_EXPANDED
 
     // 碎片集
-    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment(mTapComicListener), DiscoveryFragment(), BookShelfFragment()) }
+    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment(mITapComicListener), DiscoveryFragment(), BookShelfFragment()) }
 
     // 点击标志 用于防止多次显示 ComicInfoBottomSheetFragment
     private var mTapFlag: Boolean = false
 
     // 事件层级: ContainerFragment --> HomeFragment --> HomeBookAdapter --> HomeFragment --> ContainerFragment
-    private val mTapComicListener = object : HomeFragment.TapComicListener {
+    private val mITapComicListener = object : HomeFragment.ITapComicListener {
         override fun onTap(type: ComicType, pathword: String) {
             if (mTapFlag) return
             mTapFlag = true
@@ -68,36 +73,54 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
     }
 
-    override fun initObserver() {
-        mUserVm.onOutput { intent ->
-            when(intent) {
-                is UserIntent.GetUserInfo -> {
-                    intent.mViewState
-                        .doOnResult {
-                            val userInfo = intent.userInfo ?: return@doOnResult
-                            Glide.with(mContext)
-                                .load(BaseStrings.URL.MangaFuna.plus(userInfo.mIconUrl))
-                                .apply(RequestOptions().circleCrop().override(appContext.resources.getDimensionPixelSize(R.dimen.base_dp36))
-                                    .placeholder(com.crow.module_main.R.drawable.main_ic_user_24dp))
-                                .into(object : CustomTarget<Drawable>() {
-                                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                                        mBinding.mainContaienrToolbar.navigationIcon = resource
-                                    }
-                                    override fun onLoadCleared(placeholder: Drawable?) { }
-                                })
-                        }
-                }
-                else -> { }
+    override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
+
+    override fun initListener() {
+
+        // MaterialToolBar NavigateIcon 点击事件
+        mBinding.mainContaienrToolbar.navigateIconClickGap { _, _ -> UserBottomSheetFragment().show(requireActivity().supportFragmentManager, UserBottomSheetFragment.TAG) }
+
+        // SearchBar 点击监听
+        mBinding.mainContainerSearchBar.clickGap { _, _ -> mBinding.mainSearchView.show() }
+
+        // 记录AppBar的状态 （展开、折叠）偏移监听
+        mBinding.mainContaienrAppbar.addOnOffsetChangedListener { appBar, vtOffSet ->
+            mAppBarState = if (vtOffSet == 0) STATE_EXPANDED else if(abs(vtOffSet) >= appBar.totalScrollRange) STATE_COLLAPSED else STATE_COLLAPSED
+        }
+
+        // ToolBar 索引0 （设置）点击监听
+        mBinding.mainContaienrToolbar.menu[0].clickGap { _, _ ->
+            val dialog = MaterialAlertDialogBuilder(mContext)
+            dialog.setTitle("拷贝漫画")
+            dialog.setPositiveButton("知道了~", null)
+            dialog.show()
+        }
+
+        // 刷新监听
+        mBinding.mainRefresh.setAutoCancelRefreshing(viewLifecycleOwner) {
+            when(mBinding.mainViewPager.currentItem) {
+                0 -> (mFragmentList[0] as HomeFragment).doOnRefresh(mBinding.mainRefresh)
+                1 -> { }
+                2 -> { }
             }
         }
     }
 
-    override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
-
-    override fun initData() {
-        mUserVm.input(UserIntent.GetUserInfo())
-    }
     override fun initView() {
+
+        // 设置 内边距属性 实现沉浸式效果
+        mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, 0)
+
+        // 加载 默认的Icon(Drawable)
+        Glide.with(mContext)
+            .load(user_ic_icon)
+            .apply(RequestOptions().circleCrop().override(appContext.resources.getDimensionPixelSize(R.dimen.base_dp36)).placeholder(user_ic_icon))
+            .into(object : CustomTarget<Drawable>() {
+                override fun onLoadCleared(placeholder: Drawable?) {}
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                    mBinding.mainContaienrToolbar.navigationIcon = resource
+                }
+            })
 
         // 重新创建View之后 appBarLayout会展开折叠，记录一个状态进行初始化
         if (mAppBarState == STATE_COLLAPSED) mBinding.mainContaienrAppbar.setExpanded(false, false)
@@ -134,34 +157,32 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }.attach()
     }
 
-    override fun initListener() {
+    override fun initObserver() {
+        mUserVM.userInfo.onCollect(this) {
 
-        // MaterialToolBar NavigateIcon 点击事件
-        mBinding.mainContaienrToolbar.navigateIconClickGap { _, _ -> UserBottomSheetFragment().show(requireActivity().supportFragmentManager, UserBottomSheetFragment.TAG) }
-
-        // SearchBar 点击监听
-        mBinding.mainContainerSearchBar.clickGap { _, _ -> mBinding.mainSearchView.show() }
-
-        // 记录AppBar的状态 （展开、折叠）偏移监听
-        mBinding.mainContaienrAppbar.addOnOffsetChangedListener { appBar, vtOffSet ->
-            mAppBarState = if (vtOffSet == 0) STATE_EXPANDED else if(abs(vtOffSet) >= appBar.totalScrollRange) STATE_COLLAPSED else STATE_COLLAPSED
-        }
-
-        // ToolBar 索引0 （设置）点击监听
-        mBinding.mainContaienrToolbar.menu[0].clickGap { _, _ ->
-            val dialog = MaterialAlertDialogBuilder(mContext)
-            dialog.setTitle("拷贝漫画")
-            dialog.setPositiveButton("知道了~", null)
-            dialog.show()
-        }
-
-        // 刷新监听
-        mBinding.mainRefresh.setAutoCancelRefreshing(viewLifecycleOwner) {
-            when(mBinding.mainViewPager.currentItem) {
-                0 -> (mFragmentList[0] as HomeFragment).doOnRefresh(mBinding.mainRefresh)
-                1 -> { }
-                2 -> { }
+            // 空 则加载默认的Icon (Drawalbe) 否则初始化Token 加载 图片链接
+            if (it == null) {
+                Glide.with(mContext).load(user_ic_icon)
+                    .apply(RequestOptions().circleCrop().override(appContext.resources.getDimensionPixelSize(R.dimen.base_dp36)).placeholder(user_ic_icon))
+                    .into(object : CustomTarget<Drawable>() {
+                        override fun onLoadCleared(placeholder: Drawable?) { }
+                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                            mBinding.mainContaienrToolbar.navigationIcon = resource
+                        }
+                    })
+                return@onCollect
             }
+
+            BaseUser.CURRENT_USER_TOKEN = it.mToken
+            Glide.with(mContext)
+                .load(BaseStrings.URL.MangaFuna.plus(it.mIconUrl))
+                .apply(RequestOptions().circleCrop().override(appContext.resources.getDimensionPixelSize(R.dimen.base_dp36)).placeholder(user_ic_icon))
+                .into(object : CustomTarget<Drawable>() {
+                    override fun onLoadCleared(placeholder: Drawable?) { }
+                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                        mBinding.mainContaienrToolbar.navigationIcon = resource
+                    }
+                })
         }
     }
 }

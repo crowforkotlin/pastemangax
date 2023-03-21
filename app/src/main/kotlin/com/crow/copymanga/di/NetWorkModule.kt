@@ -1,6 +1,7 @@
 package com.crow.copymanga.di
 
 import com.crow.base.current_project.BaseStrings
+import com.crow.base.current_project.BaseUser
 import com.crow.base.tools.extensions.baseMoshi
 import com.crow.base.tools.network.FlowCallAdapterFactory
 import com.crow.copymanga.BuildConfig
@@ -35,7 +36,8 @@ val netWorkModule = module {
                 chain.proceed(chain.request().newBuilder()
                     .addHeader("User-Agent", "Dart/2.16 (dart:io)")
                     .addHeader("Platform", "1")
-                    .addHeader("region", "0")
+                    .addHeader("Authorization","Token ${BaseUser.CURRENT_USER_TOKEN}")
+                    .addHeader("region", BaseUser.CURRENT_REGION)
                     .build()
                 )
             })

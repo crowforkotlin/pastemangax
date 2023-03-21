@@ -146,4 +146,6 @@ dependencies {
     api(Dependencies.bigImageViewPager)
     api(Dependencies.tencent_bugly)
     api(Dependencies.loading_button)
+    api(Dependencies.luksiege_picture_selector)
+    api(Dependencies.luksiege_ucrop)
 }

@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.getNavigationBarHeight
-import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.copymanga.databinding.AppActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +30,5 @@ class MainActivity : AppCompatActivity() {
 
         // 全屏布局
         WindowCompat.setDecorFitsSystemWindows(window, true)
-        mBinding.root.setPadding(0, getStatusBarHeight(), 0, getNavigationBarHeight())
     }
 }

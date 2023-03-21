@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/black">
+
+	<com.github.chrisbanes.photoview.PhotoView
+		android:id="@+id/user_icon_photoview"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/user_icon_edit"
+		style="@style/Widget.Material3.Button.IconButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|center"
+		android:layout_marginBottom="@dimen/base_dp60"
+		android:text="@string/user_change_icon"
+		android:textColor="#80FFFFFF"
+		android:textStyle="bold"
+		app:icon="@drawable/user_ic_edit_24dp"
+		app:backgroundTint="#39FFFFFF"
+		app:iconTint="@null"
+		app:closeIconEnabled="false" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/user_blank_black_tips"
+		android:layout_gravity="bottom|center"
+		android:gravity="center"
+		android:textColor="@android:color/white"
+		android:textSize="@dimen/base_sp7" />
+
+</FrameLayout>

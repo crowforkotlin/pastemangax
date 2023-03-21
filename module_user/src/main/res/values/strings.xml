@@ -2,8 +2,26 @@
 
 	<!-- TODO: Remove or change this placeholder text -->
 	<string name="user_login">登录</string>
+	<string name="user_login_success">登录成功！</string>
+	<string name="user_reg">注册</string>
+	<string name="user_about">关于作者</string>
+	<string name="user_info">个人信息</string>
+	<string name="user_gender">性别：%s</string>
+	<string name="user_nickname">用户名：%s</string>
+	<string name="user_blank_white_tips">“你置身在一片空白之中，它们悉数留给你…“</string>
+	<string name="user_blank_black_tips">”艺术存在于黑暗之中，只有窥视者的眼睛能够看到它的光辉。“\n—Plato</string>
+	<string name="user_upload_icon_tips">注：头像30天内只能修改一次！上传涩图永久禁言!</string>
+	<string name="user_upload_icon_tips_title">须知</string>
+	<string name="user_upload_icon_tips_agreen">同意</string>
+	<string name="user_download">我的下载</string>
+	<string name="user_usr_invalid">"账号长度在6位及以上！"</string>
+	<string name="user_pwd_invalid">"密码长度在6位及以上！"</string>
+	<string name="user_plese_login">登录获取更好的体验~</string>
+	<string name="user_exit">退出账号</string>
+	<string name="user_change_icon">修改头像</string>
 	<string name="user_usr">账号</string>
 	<string name="user_pwd">密码</string>
 	<string name="user_auto_login">自动登录</string>
+	<string name="user_browsing_history">浏览记录</string>
 	<string name="user_login_tips">小提示：登录功能1分钟内只可请求5–10次左右，超过次数后需等待5分钟左右才可恢复，接口有限制…</string>
 </resources>

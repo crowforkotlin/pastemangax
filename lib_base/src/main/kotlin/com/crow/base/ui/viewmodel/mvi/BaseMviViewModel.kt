@@ -2,6 +2,8 @@ package com.crow.base.ui.viewmodel.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.crow.base.R
+import com.crow.base.app.appContext
 import com.crow.base.tools.extensions.logMsg
 import com.crow.base.ui.viewmodel.ViewState
 import com.crow.base.ui.viewmodel.ViewStateException
@@ -54,7 +56,7 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
                     "(MviViewModel) Catch".logMsg()
                     var code = ViewState.Error.DEFAULT
                     if (catch is ViewStateException) code = ViewState.Error.UNKNOW_HOST
-                    this@flowResult.mViewState = ViewState.Error(code, msg = catch.message ?: "Unknow")
+                    this@flowResult.mViewState = ViewState.Error(code, msg = catch.message ?: appContext.getString(R.string.BaseUnknow))
                     _sharedFlow.emit(this@flowResult)
                 }
                 .collect {

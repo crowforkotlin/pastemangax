@@ -18,7 +18,6 @@
 			app:collapseIcon="@drawable/home_ic_bookmark_24dp"
 			app:layout_scrollFlags="scroll|enterAlways"
 			app:menu="@menu/main_container_menu"
-			app:navigationIcon="@drawable/main_ic_user_24dp"
 			app:subtitle="@string/BaseAppName_CH"
 			app:title="@string/BaseAppName" />
 

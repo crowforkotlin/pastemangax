@@ -19,6 +19,4 @@ sealed class UserIntent : BaseMviIntent() {
         val loginResultsOkResp: LoginResultsOkResp? = null,
         val loginResultErrorResp: LoginResultErrorResp? = null,
     ) : UserIntent()
-
-    data class GetUserInfo(val userInfo: LoginResultsOkResp? = null) : UserIntent()
 }

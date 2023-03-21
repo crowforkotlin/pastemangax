@@ -2,7 +2,7 @@ package com.crow.module_comic.ui.fragment
 
 import android.view.LayoutInflater
 import androidx.activity.OnBackPressedCallback
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
@@ -64,7 +64,9 @@ class ComicFragment : BaseMviFragment<ComicFragmentBinding>(){
     }
 
     override fun initListener() {
-        mOnBackCallback = object : OnBackPressedCallback(true) { override fun handleOnBackPressed() { findNavController().navigateUp() } }
+        mOnBackCallback = object : OnBackPressedCallback(true) { override fun handleOnBackPressed() {
+            requireActivity().findNavController(
+            com.crow.base.R.id.app_main_fcv).navigateUp() } }
         requireActivity().onBackPressedDispatcher.addCallback(mOnBackCallback)
     }
 

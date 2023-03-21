@@ -1,5 +1,6 @@
 package com.crow.base.tools.extensions
 
+import androidx.fragment.app.Fragment
 import com.crow.base.ui.viewmodel.ViewStateException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
@@ -19,9 +20,7 @@ import java.net.UnknownHostException
  * @formatter:off
  **************************/
 
-/**
- * 异步请求
- */
+// 异步请求
 internal fun <R> ProducerScope<R>.callEnqueueFlow(call: Call<R>) {
     call.enqueue(object : Callback<R> {
         override fun onResponse(call: Call<R>, response: Response<R>) {
@@ -36,9 +35,7 @@ internal fun <R> ProducerScope<R>.callEnqueueFlow(call: Call<R>) {
     })
 }
 
-/**
- * 同步请求
- */
+// 同步请求
 internal fun <R> ProducerScope<R>.callFlow(call: Call<R>) {
     runCatching {
         processing(call.execute())
@@ -76,4 +73,11 @@ suspend inline fun <T> Flow<T>.toData(): T? {
         data = it
     }
     return data
+}
+
+fun interface IBaseFlowCollectLifecycle<T> {
+    suspend fun onCollect(value : T)
+}
+fun<T> Flow<T>.onCollect(fragment: Fragment, iBaseFlowCollectLifecycle: IBaseFlowCollectLifecycle<T>) {
+    fragment.repeatOnLifecycle { collect { iBaseFlowCollectLifecycle.onCollect(it) } }
 }

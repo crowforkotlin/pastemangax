@@ -8,10 +8,30 @@
 	<fragment
 		android:id="@+id/mainContainerfragment"
 		android:name="com.crow.module_main.ui.fragment.ContainerFragment"
+		tools:layout="@layout/main_fragment_container"
 		android:label="ContainerFragment" />
+
 	<fragment
 		android:id="@+id/mainComicfragment"
 		android:name="com.crow.module_comic.ui.fragment.ComicFragment"
+		tools:layout="@layout/comic_fragment"
 		android:label="ComicFragment" />
+
+	<fragment
+		android:id="@+id/mainUserloginfragment"
+		tools:layout="@layout/user_fragment_login"
+		android:name="com.crow.module_user.ui.fragment.UserLoginFragment"
+		android:label="UserLoginFragment" />
+
+	<fragment
+		android:id="@+id/mainUserinfofragment"
+		android:name="com.crow.module_user.ui.fragment.UserInfoFragment"
+		tools:layout="@layout/user_fragment_info"
+		android:label="UserInfoFragment" />
+	<fragment
+		android:id="@+id/mainUsericonfragment"
+		android:name="com.crow.module_user.ui.fragment.UserIconFragment"
+		tools:layout="@layout/user_fragment_icon"
+		android:label="UserIconFragment" />
 
 </navigation>

@@ -62,6 +62,7 @@ val baseMoshi = Moshi.Builder()
     .build()
 
 inline fun <reified T> String?.toTypeEntity(moshi: Moshi = baseMoshi): T? {
+
     return moshi.adapter(T::class.java).fromJson(this ?: return null)
 }
 inline fun <reified T> toTypeEntity(value: Any?, moshi: Moshi = baseMoshi): T? {

@@ -24,6 +24,7 @@ import kotlinx.coroutines.runBlocking
 
 object DataStoreAgent {
 
+    val USER_CONFIG = stringPreferencesKey("user.config")
     val DATA_USER = stringPreferencesKey("data.user")
     val USER_COOKIE = stringPreferencesKey("user.cookie")
 
@@ -68,6 +69,9 @@ suspend fun <T> Preferences.Key<T>.asyncEncode(value: T) {
     appContext.appDataStore.edit { it[this] = value }
 }
 
+suspend fun <T> Preferences.Key<T>.asyncClear() {
+    appContext.appDataStore.edit { it.clear() }
+}
 suspend fun <T> Preferences.Key<T>.asyncDecode(): T? {
     return appContext.appDataStore.data.map { it[this] }.firstOrNull()
 }
@@ -77,4 +81,8 @@ fun <T> Preferences.Key<T>.encode(value: T) {
 
 fun <T> Preferences.Key<T>.decode(): T? {
     return runBlocking { appContext.appDataStore.data.map { it[this@decode] }.firstOrNull() }
+}
+
+fun <T> Preferences.Key<T>.clear() {
+    runBlocking { appContext.appDataStore.edit { it.clear() } }
 }

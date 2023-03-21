@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import androidx.annotation.DrawableRes
-import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
@@ -17,11 +16,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.crow.base.R.dimen
 import com.crow.base.R.string.BaseLoadingError
-import com.crow.base.extensions.*
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.*
-import com.crow.base.viewmodel.*
 import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeComicBinding
 import com.crow.module_home.databinding.HomeFragmentBinding
@@ -52,17 +49,20 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  **************************/
 class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
 
-    constructor(mClickListener: TapComicListener) : this() { mTapComicParentListener = mClickListener }
+    // 次构造 初始化 父容器的点击事件
+    constructor(mClickListener: ITapComicListener) : this() { mTapComicParentListener = mClickListener }
 
-    interface TapComicListener { fun onTap(type: ComicType, pathword: String) }
+    // 单个漫画的点击事件
+    interface ITapComicListener { fun onTap(type: ComicType, pathword: String) }
 
+    // 主页 VM
     private val mHomeVM by viewModel<HomeViewModel>()
 
     // 主页 子Rv的漫画点击事件
-    private var mTapComicChildListener = object : TapComicListener { override fun onTap(type: ComicType, pathword: String) { mTapComicParentListener?.onTap(type, pathword) } }
+    private var mTapComicChildListener = object : ITapComicListener { override fun onTap(type: ComicType, pathword: String) { mTapComicParentListener?.onTap(type, pathword) } }
 
-    // 主页 漫画点击事件
-    private var mTapComicParentListener: TapComicListener? = null
+    // 主页 父容器漫画点击事件
+    private var mTapComicParentListener: ITapComicListener? = null
 
     // 主页数据量较多， 采用Rv方式
     private lateinit var mHomeBannerAdapter: HomeBannerAdapter
@@ -73,7 +73,7 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
     private lateinit var mHomeTopicAapter: HomeComicAdapter<ComicDatas<Topices>>
     private lateinit var mHomeRankAapter: HomeComicAdapter<ComicDatas<RankComics>>
 
-    // 刷新按钮（换一批） ＆ 主页刷新 控件
+    // 刷新按钮（换一批） ＆ 主页刷新布局控件
     private var mRecRefreshButton : MaterialButton? = null
     private var mSwipeRefreshLayout : SwipeRefreshLayout? = null
 
@@ -96,8 +96,8 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
                         .doOnLoading { if(mSwipeRefreshLayout == null) showLoadingAnim() }
                         .doOnResult {
                             // 检测是否为刷新
-                            if (mSwipeRefreshLayout == null) dismissLoadingAnim { doOnLoadHomePage(intent.homePageData!!.mResults) }
-                            else doOnLoadHomePage(intent.homePageData!!.mResults)
+                            if (mSwipeRefreshLayout == null) dismissLoadingAnim { doLoadHomePage(intent.homePageData!!.mResults) }
+                            else doLoadHomePage(intent.homePageData!!.mResults)
                         }
                         .doOnError { code, msg ->
                             if (code == ViewState.Error.UNKNOW_HOST) mBinding.root.showSnackBar(msg ?: getString(BaseLoadingError))
@@ -113,7 +113,7 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
                         .doOnError { _, _ -> mBinding.root.showSnackBar(getString(BaseLoadingError)) }
                         .doOnResult {
                             mHomeRecAdapter.setData(intent.recPageData!!.mResults, 3)
-                            viewLifecycleOwner.lifecycleScope.launch { mHomeRecAdapter.doOnNotify() }
+                            viewLifecycleOwner.lifecycleScope.launch { mHomeRecAdapter.doNotify() }
                         }
                 }
             }
@@ -137,11 +137,11 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
         mHomeHotAdapter = HomeComicAdapter(null, ComicType.Hot, mTapComicChildListener)
         mHomeNewAdapter = HomeComicAdapter(null, ComicType.New, mTapComicChildListener)
         mHomeFinishAdapter = HomeComicAdapter(null, ComicType.Commit, mTapComicChildListener)
-        mHomeTopicAapter = HomeComicAdapter(null, ComicType.Topic, mTapComicChildListener)
         mHomeRankAapter = HomeComicAdapter(null, ComicType.Rank, mTapComicChildListener)
+        mHomeTopicAapter = HomeComicAdapter(null, ComicType.Topic, mTapComicChildListener)
 
         // 初始化刷新 推荐的按钮
-        mRecRefreshButton = initRecRefreshView(mBinding.homeComicRec.homeComicButtonTitle.id)
+        mRecRefreshButton = initRecRefreshView()
 
         // 设置 Banner 的高度 （1.875 屏幕宽高指定倍数）、（添加页面效果、指示器、指示器需要设置BottomMargin不然会卡在Banner边缘（产生重叠））
         mBinding.homeBanner.doOnLayout { it.layoutParams.height = (it.width / 1.875 + 0.5).toInt() }
@@ -161,18 +161,22 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeComicHot.initHomeComicRvView(R.drawable.home_ic_hot_24dp, R.string.home_hot_comic, mHomeHotAdapter)
         mBinding.homeComicNew.initHomeComicRvView(R.drawable.home_ic_new_24dp, R.string.home_new_comic, mHomeNewAdapter)
         mBinding.homeComicFinish.initHomeComicRvView(R.drawable.home_ic_finish_24dp, R.string.home_commit_finish, mHomeFinishAdapter)
-        mBinding.homeComicTopic.initHomeComicRvView(R.drawable.home_ic_topic_24dp, R.string.home_topic_comic, mHomeTopicAapter).also { it.homeComicBookRv.layoutManager = GridLayoutManager(mContext, 2) }
         mBinding.homeComicRank.initHomeComicRvView(R.drawable.home_ic_rank_24dp, R.string.home_rank_comic, mHomeRankAapter)
+        mBinding.homeComicTopic.initHomeComicRvView(R.drawable.home_ic_topic_24dp, R.string.home_topic_comic, mHomeTopicAapter).also { it.homeComicBookRv.layoutManager = GridLayoutManager(mContext, 2) }
 
         // 判断数据是否为空 不为空则加载数据
-        doOnLoadHomePage(mHomeVM.getResult() ?: return)
+        doLoadHomePage(mHomeVM.getResult() ?: return)
     }
 
     override fun initListener() {
+
+        // 刷新推荐按钮 点击监听事件
         mRecRefreshButton!!.setOnClickListener { view ->
             view.isEnabled = false
             mHomeVM.input(HomeIntent.GetRecPageByRefresh())
         }
+
+        // 每个主页漫画类型（显示更多）卡片的点击事件
         mBinding.homeComicRec.homeComicMore.clickGap { _, _ -> }
         mBinding.homeComicHot.homeComicMore.clickGap { _, _ -> }
         mBinding.homeComicNew.homeComicMore.clickGap { _, _ -> }
@@ -190,7 +194,7 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
     }
 
     // 初始化刷新按钮
-    private fun initRecRefreshView(@IdRes recItemBtId: Int): MaterialButton {
+    private fun initRecRefreshView(): MaterialButton {
         return MaterialButton(mContext, null, materialIconButtonStyle).apply {
             layoutParams =  ConstraintLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                 endToEnd = PARENT_ID
@@ -205,7 +209,7 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
     }
 
     // 加载主页数据
-    private fun doOnLoadHomePage(results: Results) {
+    private fun doLoadHomePage(results: Results) {
 
         // 设置适配器数据
         mHomeBannerAdapter.bannerList.clear()
@@ -214,8 +218,8 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
         mHomeHotAdapter.setData(results.mHotComics, 12)
         mHomeNewAdapter.setData(results.mNewComics, 12)
         mHomeFinishAdapter.setData(results.mFinishComicDatas, 6)
-        mHomeTopicAapter.setData(results.mTopics, 4)
         mHomeRankAapter.setData(results.mRankDayComics, 6)
+        mHomeTopicAapter.setData(results.mTopics, 4)
 
         // 布局不可见 则淡入 否则代表正在刷新 提示即可
         if (!mBinding.homeLinearLayout.isVisible) {  mBinding.homeLinearLayout.animateFadeIn() }
@@ -231,17 +235,19 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
 
             // 通知适配器
             mHomeBannerAdapter.doOnNotify(waitTime = 0L)
-            mHomeRecAdapter.doOnNotify(waitTime = 0L)
-            mHomeHotAdapter.doOnNotify(waitTime = 0L)
-            mHomeNewAdapter.doOnNotify(waitTime = 0L)
-            mHomeFinishAdapter.doOnNotify(waitTime = 0L)
-            mHomeTopicAapter.doOnNotify(waitTime = 0L)
-            mHomeRankAapter.doOnNotify(waitTime = 0L)
+            mHomeRecAdapter.doNotify(waitTime = 0L)
+            mHomeHotAdapter.doNotify(waitTime = 0L)
+            mHomeNewAdapter.doNotify(waitTime = 0L)
+            mHomeFinishAdapter.doNotify(waitTime = 0L)
+            mHomeRankAapter.doNotify(waitTime = 0L)
+            mHomeTopicAapter.doNotify(waitTime = 0L)
         }
     }
 
-    // 暴露的函数 提供给 ContainerFragment用于通知主页刷新
+    // 暴露的函数 提供给 ContainerFragment 用于通知主页刷新
     fun doOnRefresh(swipeRefreshLayout: SwipeRefreshLayout) {
+
+        // 初始化刷新控件布局 300MS 后执行获取主页的意图（给刷新控件的动画加一点时间执行，不然请求快的话会导致控件直接消失）
         mSwipeRefreshLayout = swipeRefreshLayout
         doAfterDelay(300L) { mHomeVM.input(HomeIntent.GetHomePage()) }
     }

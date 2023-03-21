@@ -32,11 +32,11 @@
 			layout="@layout/home_comic" />
 
 		<include
-			android:id="@+id/home_comic_topic"
+			android:id="@+id/home_comic_rank"
 			layout="@layout/home_comic" />
 
 		<include
-			android:id="@+id/home_comic_rank"
+			android:id="@+id/home_comic_topic"
 			layout="@layout/home_comic" />
 
 	</LinearLayout>

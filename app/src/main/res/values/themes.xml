@@ -12,10 +12,6 @@
 		<item name="postSplashScreenTheme">@style/App.Theme.CopyManga</item>
 
 		<!-- SplashIcon -->
-		<item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
-
-		<!-- StatusBar背景 -->
-		<item name="statusBarBackground">@color/base_purple_8f6af1</item>
-		<item name="windowSplashScreenBackground">@color/base_purple_8f6af1</item>
+		<item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
 	</style>
 </resources>

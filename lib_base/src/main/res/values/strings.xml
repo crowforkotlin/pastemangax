@@ -5,4 +5,5 @@
     <string name="BaseTodoTextView" translatable="false">This is TextView,Now Todo What......</string>
     <string name="BaseLoading" translatable="false">加载中...</string>
     <string name="BaseLoadingError">加载失败，请重试！</string>
+    <string name="BaseUnknow">Unknow</string>
 </resources>

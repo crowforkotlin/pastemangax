@@ -15,10 +15,10 @@ import kotlinx.coroutines.delay
 
 class HomeBannerAdapter(
     val bannerList: MutableList<Banner>,
-    val mTapComicListener: HomeFragment.TapComicListener,
+    val mITapComicListener: HomeFragment.ITapComicListener,
 ) : RecyclerView.Adapter<HomeBannerAdapter.ViewHolder>() {
 
-    private var mComicListener: HomeFragment.TapComicListener? = null
+    private var mComicListener: HomeFragment.ITapComicListener? = null
 
     inner class ViewHolder(val rvBinding: HomeBannerRvBinding) : RecyclerView.ViewHolder(rvBinding.root) {
         var mPathword: String = ""
@@ -27,7 +27,7 @@ class HomeBannerAdapter(
     override fun getItemCount(): Int = bannerList.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(inflate(from(parent.context), parent, false)).also { vh ->
-            vh.rvBinding.baneerImage.clickGap { _, _ -> mTapComicListener.onTap(ComicType.Banner, vh.mPathword) }
+            vh.rvBinding.baneerImage.clickGap { _, _ -> mITapComicListener.onTap(ComicType.Banner, vh.mPathword) }
         }
     }
 
@@ -40,7 +40,7 @@ class HomeBannerAdapter(
         vh.mPathword = banner.mComic!!.mPathWord
     }
 
-    fun setListener(clickListener: HomeFragment.TapComicListener) { mComicListener = clickListener }
+    fun setListener(clickListener: HomeFragment.ITapComicListener) { mComicListener = clickListener }
 
     suspend fun doOnNotify(delay: Long = 20L, waitTime: Long = 100L) {
         repeat(bannerList.size) {

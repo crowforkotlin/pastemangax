@@ -43,6 +43,7 @@ abstract class BaseBottomSheetDF<out VB : ViewBinding, out VM : BaseViewModel> :
     }
 
     abstract fun getViewBinding(inflater: LayoutInflater): VB
+
     abstract fun getViewModel(): Lazy<VM>
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

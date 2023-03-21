@@ -10,8 +10,8 @@ import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.current_project.ComicCardHeight
-import com.crow.base.tools.extensions.clickGap
 import com.crow.base.current_project.formatValue
+import com.crow.base.tools.extensions.clickGap
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_home.databinding.HomeComicRvBinding
 import com.crow.module_home.databinding.HomeComicRvBinding.inflate
@@ -34,7 +34,7 @@ import java.util.*
 class HomeComicAdapter<T>(
     private var mData: T? = null,
     private val mType: ComicType,
-    private val mTapComicListener: HomeFragment.TapComicListener,
+    private val mITapComicListener: HomeFragment.ITapComicListener,
 ) : RecyclerView.Adapter<HomeComicAdapter<T>.ViewHolder>() {
 
     inner class ViewHolder(val rvBinding: HomeComicRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
@@ -59,8 +59,8 @@ class HomeComicAdapter<T>(
             }
 
             // 点击 父布局卡片 以及漫画卡片 事件 回调给上级 HomeFragment --> ContainerFragment
-            vh.rvBinding.root.clickGap { _, _ -> mTapComicListener.onTap(mType, vh.mPathWord) }
-            vh.rvBinding.homeBookCard.clickGap { _, _ -> mTapComicListener.onTap(mType, vh.mPathWord) }
+            vh.rvBinding.root.clickGap { _, _ -> mITapComicListener.onTap(mType, vh.mPathWord) }
+            vh.rvBinding.homeBookCard.clickGap { _, _ -> mITapComicListener.onTap(mType, vh.mPathWord) }
 
             ToolTipsView.showToolTipsByLongClick(vh.rvBinding.homeComicRvName)
         }
@@ -83,6 +83,10 @@ class HomeComicAdapter<T>(
                 val comic = (mData as FinishComicDatas).mResult[pos]
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
+            ComicType.Rank -> {
+                val comic = (mData as ComicDatas<RankComics>).mResult[pos].mComic
+                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
+            }
             ComicType.Topic -> {
                 val comic = (mData as ComicDatas<Topices>).mResult[pos]
                 Glide.with(vh.itemView).load(comic.mImageUrl).into(vh.rvBinding.homeComicRvImage)
@@ -97,10 +101,6 @@ class HomeComicAdapter<T>(
                     }
                     homeComicRvHot.visibility = View.GONE
                 }
-            }
-            ComicType.Rank -> {
-                val comic = (mData as ComicDatas<RankComics>).mResult[pos].mComic
-                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
             else -> { }
         }
@@ -124,7 +124,7 @@ class HomeComicAdapter<T>(
     // 对外暴露数据大小
     fun getDataSize() = mSize
 
-    suspend fun doOnNotify(delay: Long = 50L, waitTime: Long = 100L) {
+    suspend fun doNotify(delay: Long = 50L, waitTime: Long = 100L) {
         repeat(mSize) {
             notifyItemChanged(it)
             delay(delay)

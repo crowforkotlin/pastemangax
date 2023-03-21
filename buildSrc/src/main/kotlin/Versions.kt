@@ -17,7 +17,7 @@ object Versions {
     const val arouter_version = "1.5.2"
     const val okhttp_version = "4.10.0"
     const val navigation_version = "2.6.0-alpha03"
-    const val glide_version = "4.14.2"
+    const val glide_version = "4.15.1"
     const val lifecycle_version = "2.5.1"
     const val ktor_version = "2.1.3"
     const val paging_version = "3.1.1"

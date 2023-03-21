@@ -144,7 +144,7 @@
 			android:layout_weight="0.25"
 			android:text="@string/ComicDownLoad"
 			android:textStyle="bold"
-			app:icon="@drawable/comic_ic_download_24dp"
+			app:icon="@drawable/base_ic_download_24dp"
 			app:iconGravity="top" />
 
 		<com.google.android.material.button.MaterialButton

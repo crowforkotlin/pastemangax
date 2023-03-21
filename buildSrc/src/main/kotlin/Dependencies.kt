@@ -232,4 +232,12 @@ object Dependencies {
     * - Github : [https://github.com/leandroBorgesFerreira/LoadingButtonAndroid/tree/master]
     * */
     const val loading_button = "br.com.simplepass:loading-button-android:2.2.0"
+
+    /* 图片选择器
+    * - Github : [https://github.com/LuckSiege/PictureSelector]
+    * */
+    const val luksiege_picture_selector = "io.github.lucksiege:pictureselector:v3.10.8"
+    const val luksiege_compress = "io.github.lucksiege:compress:v3.10.8"
+    const val luksiege_ucrop = "io.github.lucksiege:ucrop:v3.10.8"
+    const val luksiege_camerax = "io.github.lucksiege:camerax:v3.10.8"
 }

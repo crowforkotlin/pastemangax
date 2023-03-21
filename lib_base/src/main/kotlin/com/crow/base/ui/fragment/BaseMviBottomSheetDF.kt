@@ -32,9 +32,12 @@ abstract class BaseMviBottomSheetDF<out VB : ViewBinding> : BaseBottomSheetDFImp
         repeatOnLifecycle(state) { output { intent -> baseMviSuspendResult.onResult(intent) } }
     }
 
+
+
     override fun getView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, ): View? {
         return getViewBinding(inflater).also { _mBinding = it }.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mContext = requireContext()
         initObserver()
@@ -47,7 +50,9 @@ abstract class BaseMviBottomSheetDF<out VB : ViewBinding> : BaseBottomSheetDFImp
     }
 
     override fun initView() { }
+
     override fun initListener() { }
+
     override fun initObserver() { }
 
 }
