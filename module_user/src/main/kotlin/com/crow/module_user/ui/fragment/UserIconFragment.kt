@@ -54,6 +54,8 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
     }
 
     override fun initObserver() {
+
+        // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {
 
             // 初始化 Icon链接 设置用户名 退出可见 修改适配器数据

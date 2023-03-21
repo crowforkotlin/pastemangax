@@ -64,7 +64,6 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
     }
 
-
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
     override fun initListener() {
@@ -146,6 +145,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             // 加载 Icon  无链接或加载失败 则默认Drawable
             mUserVM.doLoadIcon(mContext, true) { resource ->  mBinding.mainContaienrToolbar.navigationIcon = resource }
 
+            // 初始化 用户Tokne
             BaseUser.CURRENT_USER_TOKEN = it?.mToken ?: return@onCollect
         }
     }

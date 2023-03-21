@@ -89,6 +89,7 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
             mAdapterData.add(0, R.drawable.user_ic_usr_24dp to getString(R.string.user_info))
         }
 
+        // 点击 头像事件
         mBinding.userIcon.clickGap { _, _ ->
 
             // 点击头像 并 深链接跳转
@@ -96,6 +97,7 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
             navigate(baseId.mainUsericonfragment, bundleOf("iconUrl" to if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mUserVM.mIconUrl else null))
         }
 
+        // 点击 退出事件
         mBinding.userExit.clickGap { _, _ ->
 
             // 退出账号 并 清除用户数据 置空 Token

@@ -36,6 +36,7 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
     private var _userInfo = MutableStateFlow<LoginResultsOkResp?>(null)
     val userInfo: StateFlow<LoginResultsOkResp?> get() = _userInfo
 
+    // 头像链接
     var mIconUrl: String? = null
         private set
 
@@ -72,6 +73,7 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
         }
     }
 
+    // 加载Icon --- needApply : 是否需要适配固定大小
     inline fun doLoadIcon(context: Context, needApply: Boolean = true, crossinline doOnReady: (resource: Drawable) -> Unit) {
         if (needApply) {
             Glide.with(context)
@@ -80,20 +82,16 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
                 .apply(RequestOptions().circleCrop().override(context.resources.getDimensionPixelSize(com.crow.base.R.dimen.base_dp36)))
                 .into(object : CustomTarget<Drawable>() {
                     override fun onLoadCleared(placeholder: Drawable?) {}
-                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                        doOnReady(resource)
-                    }
+                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { doOnReady(resource) }
                 })
-        } else {
-            Glide.with(context)
-                .load(if (mIconUrl == null) R.drawable.user_ic_icon else BaseStrings.URL.MangaFuna.plus(mIconUrl))
-                .placeholder(R.drawable.user_ic_icon)
-                .into(object : CustomTarget<Drawable>() {
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                        doOnReady(resource)
-                    }
-                })
+            return
         }
+        Glide.with(context)
+            .load(if (mIconUrl == null) R.drawable.user_ic_icon else BaseStrings.URL.MangaFuna.plus(mIconUrl))
+            .placeholder(R.drawable.user_ic_icon)
+            .into(object : CustomTarget<Drawable>() {
+                override fun onLoadCleared(placeholder: Drawable?) {}
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { doOnReady(resource) }
+            })
     }
 }
