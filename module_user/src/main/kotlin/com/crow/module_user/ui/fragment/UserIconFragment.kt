@@ -9,14 +9,12 @@ import android.widget.ImageView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.bumptech.glide.Glide
-import com.crow.base.tools.extensions.clickGap
-import com.crow.base.tools.extensions.getNavigationBarHeight
-import com.crow.base.tools.extensions.getStatusBarHeight
-import com.crow.base.tools.extensions.logMsg
+import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.module_user.R
 import com.crow.module_user.databinding.UserFragmentIconBinding
 import com.crow.module_user.ui.tools.GlideEngine
+import com.crow.module_user.ui.viewmodel.UserViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
@@ -25,6 +23,7 @@ import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCropImageEngine
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.io.File
 
 
@@ -42,6 +41,8 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
     // WindowInsets属性 （状态栏属性设置等...）
     private var mWindowInsets: WindowInsetsControllerCompat? = null
 
+    private val mUserVM by sharedViewModel<UserViewModel>()
+
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentIconBinding.inflate(inflater)
 
     override fun onDestroyView() {
@@ -52,18 +53,20 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
         mWindowInsets = null
     }
 
+    override fun initObserver() {
+        mUserVM.userInfo.onCollect(this) {
+
+            // 初始化 Icon链接 设置用户名 退出可见 修改适配器数据
+            mUserVM.doLoadIcon(mContext, false) { resource ->  mBinding.userIconPhotoview.setImageDrawable(resource) }
+
+            if (it == null) mBinding.userIconEdit.visibility = View.GONE
+        }
+    }
+
     override fun initView() {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())
-
-        // 加载Icon 为 bundle value 为 null则加载默认的Drawable
-        Glide.with(mContext)
-            .load(arguments?.getString("iconUrl") ?: run {
-                mBinding.userIconEdit.visibility = View.GONE
-                R.drawable.user_ic_icon
-            })
-            .into(mBinding.userIconPhotoview)
 
         // 初始化 设置状态栏暗色
         mWindowInsets = WindowCompat.getInsetsController(requireActivity().window, requireActivity().window.decorView)

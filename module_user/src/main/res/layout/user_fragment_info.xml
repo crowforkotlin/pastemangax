@@ -7,7 +7,7 @@
 	tools:context="com.crow.module_user.ui.fragment.UserInfoFragment">
 
 	<androidx.constraintlayout.utils.widget.ImageFilterButton
-		android:id="@+id/userImageview"
+		android:id="@+id/user_icon"
 		android:layout_width="@dimen/base_dp108"
 		android:layout_height="@dimen/base_dp108"
 		android:layout_marginTop="16dp"

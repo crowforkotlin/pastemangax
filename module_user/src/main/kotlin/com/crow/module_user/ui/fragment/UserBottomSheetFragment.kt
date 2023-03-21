@@ -1,17 +1,11 @@
 package com.crow.module_user.ui.fragment
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.crow.base.R.drawable.base_ic_download_24dp
 import com.crow.base.app.appContext
-import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
 import com.crow.base.tools.extensions.clickGap
 import com.crow.base.tools.extensions.navigate
@@ -53,16 +47,13 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
                 0 -> {
                     dismissAllowingStateLoss()
                     if (content == getString(R.string.user_info))
-                        navigate(baseId.mainUserinfofragment, bundleOf("iconUrl" to mIconUrl))
+                        navigate(baseId.mainUserinfofragment)
                     else
                         navigate(baseId.mainUserloginfragment)
                 }
             }
         }
     }
-
-    // 头像链接
-    private var mIconUrl: String? = null
 
     // 用戶 VM
     private val mUserVM by sharedViewModel<UserViewModel>()
@@ -84,18 +75,14 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
 
     override fun initObserver() {
 
+        // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {
+
             // 初始化 Icon链接 设置用户名 退出可见 修改适配器数据
-            mIconUrl = BaseStrings.URL.MangaFuna.plus((it ?: return@onCollect).mIconUrl)
-            Glide.with(mContext)
-                .load(mIconUrl)
-                .apply(RequestOptions().circleCrop().override(mContext.resources.getDimensionPixelSize(com.crow.base.R.dimen.base_dp36)).placeholder(R.drawable.user_ic_icon))
-                .into(object : CustomTarget<Drawable>() {
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                        mBinding.userIcon.setImageDrawable(resource)
-                    }
-                })
+            mUserVM.doLoadIcon(mContext, false) { resource ->  mBinding.userIcon.setImageDrawable(resource) }
+
+            if (it == null) return@onCollect
+
             mBinding.userName.text = getString(R.string.user_nickname, it.mNickname)
             mBinding.userExit.visibility = View.VISIBLE
             mAdapterData.removeFirst()
@@ -103,9 +90,10 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
         }
 
         mBinding.userIcon.clickGap { _, _ ->
+
             // 点击头像 并 深链接跳转
             dismissAllowingStateLoss()
-            navigate(baseId.mainUsericonfragment, bundleOf("iconUrl" to if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mIconUrl else null))
+            navigate(baseId.mainUsericonfragment, bundleOf("iconUrl" to if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mUserVM.mIconUrl else null))
         }
 
         mBinding.userExit.clickGap { _, _ ->

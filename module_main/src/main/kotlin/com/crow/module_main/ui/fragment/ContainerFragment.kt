@@ -1,17 +1,9 @@
 package com.crow.module_main.ui.fragment
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.crow.base.R
-import com.crow.base.app.appContext
-import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -23,7 +15,6 @@ import com.crow.module_home.ui.fragment.HomeFragment
 import com.crow.module_main.databinding.MainFragmentContainerBinding
 import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.viewmodel.ContainerViewModel
-import com.crow.module_user.R.drawable.user_ic_icon
 import com.crow.module_user.ui.fragment.UserBottomSheetFragment
 import com.crow.module_user.ui.viewmodel.UserViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
@@ -73,6 +64,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
     }
 
+
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
     override fun initListener() {
@@ -111,17 +103,6 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 设置 内边距属性 实现沉浸式效果
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, 0)
 
-        // 加载 默认的Icon(Drawable)
-        Glide.with(mContext)
-            .load(user_ic_icon)
-            .apply(RequestOptions().circleCrop().override(appContext.resources.getDimensionPixelSize(R.dimen.base_dp36)).placeholder(user_ic_icon))
-            .into(object : CustomTarget<Drawable>() {
-                override fun onLoadCleared(placeholder: Drawable?) {}
-                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                    mBinding.mainContaienrToolbar.navigationIcon = resource
-                }
-            })
-
         // 重新创建View之后 appBarLayout会展开折叠，记录一个状态进行初始化
         if (mAppBarState == STATE_COLLAPSED) mBinding.mainContaienrAppbar.setExpanded(false, false)
         else mBinding.mainContaienrAppbar.setExpanded(true, false)
@@ -158,31 +139,14 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     override fun initObserver() {
+
+        // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {
 
-            // 空 则加载默认的Icon (Drawalbe) 否则初始化Token 加载 图片链接
-            if (it == null) {
-                Glide.with(mContext).load(user_ic_icon)
-                    .apply(RequestOptions().circleCrop().override(appContext.resources.getDimensionPixelSize(R.dimen.base_dp36)).placeholder(user_ic_icon))
-                    .into(object : CustomTarget<Drawable>() {
-                        override fun onLoadCleared(placeholder: Drawable?) { }
-                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                            mBinding.mainContaienrToolbar.navigationIcon = resource
-                        }
-                    })
-                return@onCollect
-            }
+            // 加载 Icon  无链接或加载失败 则默认Drawable
+            mUserVM.doLoadIcon(mContext, true) { resource ->  mBinding.mainContaienrToolbar.navigationIcon = resource }
 
-            BaseUser.CURRENT_USER_TOKEN = it.mToken
-            Glide.with(mContext)
-                .load(BaseStrings.URL.MangaFuna.plus(it.mIconUrl))
-                .apply(RequestOptions().circleCrop().override(appContext.resources.getDimensionPixelSize(R.dimen.base_dp36)).placeholder(user_ic_icon))
-                .into(object : CustomTarget<Drawable>() {
-                    override fun onLoadCleared(placeholder: Drawable?) { }
-                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                        mBinding.mainContaienrToolbar.navigationIcon = resource
-                    }
-                })
+            BaseUser.CURRENT_USER_TOKEN = it?.mToken ?: return@onCollect
         }
     }
 }

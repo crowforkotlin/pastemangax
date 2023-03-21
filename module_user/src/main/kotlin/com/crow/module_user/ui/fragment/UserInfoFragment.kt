@@ -1,11 +1,11 @@
 package com.crow.module_user.ui.fragment
 
 import android.view.LayoutInflater
-import androidx.core.os.bundleOf
-import com.bumptech.glide.Glide
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.module_user.databinding.UserFragmentInfoBinding
+import com.crow.module_user.ui.viewmodel.UserViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 /*************************
@@ -18,23 +18,29 @@ import com.crow.module_user.databinding.UserFragmentInfoBinding
  **************************/
 class UserInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
 
-    private var mIconUrl: String? = null
+    private val mUserVM by sharedViewModel<UserViewModel>()
 
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentInfoBinding.inflate(inflater)
 
     override fun initView() {
 
+        // 设置 内边距属性 实现沉浸式效果
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())
+    }
 
-        mIconUrl = arguments?.getString("iconUrl") ?: return
-
-        Glide.with(mContext)
-            .load(mIconUrl)
-            .into(mBinding.userImageview)
-
-        mBinding.userImageview.clickGap { _, _ ->
+    override fun initListener() {
+        // 头像 点击事件
+        mBinding.userIcon.clickGap { _, _ ->
             toast("123")
-            navigate(com.crow.base.R.id.mainUsericonfragment, bundleOf("iconUrl" to mIconUrl))
+            navigate(com.crow.base.R.id.mainUsericonfragment)
+        }
+    }
+
+    override fun initObserver() {
+        mUserVM.userInfo.onCollect(this) {
+
+            // 初始化 Icon链接 设置用户名 退出可见 修改适配器数据
+            mUserVM.doLoadIcon(mContext, false) { resource ->  mBinding.userIcon.setImageDrawable(resource) }
         }
     }
 }
