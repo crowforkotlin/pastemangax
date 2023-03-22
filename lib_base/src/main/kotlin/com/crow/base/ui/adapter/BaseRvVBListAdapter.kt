@@ -15,7 +15,7 @@ import androidx.viewbinding.ViewBinding
  * @formatter:off
  **************************/
 
-abstract class BaseRvVBListAdapter<T: Any, VB : ViewBinding>(getContentIsSame : (oldItem: T, newItem: T) -> Boolean)
+abstract class BaseRvVBListAdapter<T: Any, VB : ViewBinding>(inline val getContentIsSame : (oldItem: T, newItem: T) -> Boolean)
     : ListAdapter<T, BaseRvVBListAdapter<T, VB>.ViewHolder>(object : DiffUtil.ItemCallback<T>() {
     override fun areItemsTheSame(oldItem: T, newItem: T) = oldItem === newItem
     override fun areContentsTheSame(oldItem: T, newItem: T) = getContentIsSame(oldItem, newItem)

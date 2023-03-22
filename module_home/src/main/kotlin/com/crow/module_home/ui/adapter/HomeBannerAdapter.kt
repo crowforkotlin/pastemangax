@@ -11,7 +11,6 @@ import com.crow.module_home.databinding.HomeBannerRvBinding.inflate
 import com.crow.module_home.model.ComicType
 import com.crow.module_home.model.resp.homepage.Banner
 import com.crow.module_home.ui.fragment.HomeFragment
-import kotlinx.coroutines.delay
 
 class HomeBannerAdapter(
     val bannerList: MutableList<Banner>,
@@ -42,11 +41,11 @@ class HomeBannerAdapter(
 
     fun setListener(clickListener: HomeFragment.ITapComicListener) { mComicListener = clickListener }
 
-    suspend fun doOnNotify(delay: Long = 20L, waitTime: Long = 100L) {
-        repeat(bannerList.size) {
-            notifyItemChanged(it)
-            delay(delay)
+    /*suspend fun doOnNotify(datas: List<Banner>, delay: Long = 20L, waitTime: Long = 100L) {
+        bannerList.clear()
+        datas.forEachIndexed { index, banner ->
+            if (banner.mType <= 2) bannerList.add(banner)
+            notifyItemChanged(index)
         }
-        delay(waitTime)
-    }
+    }*/
 }

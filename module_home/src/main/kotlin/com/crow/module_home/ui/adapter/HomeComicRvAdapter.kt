@@ -32,20 +32,18 @@ import java.util.*
  * @formatter:on
  **************************/
 class HomeComicRvAdapter<T>(
-    private var mData: T? = null,
+    private var mData: MutableList<T> = mutableListOf(),
     private val mType: ComicType,
     private val mITapComicListener: HomeFragment.ITapComicListener,
 ) : RecyclerView.Adapter<HomeComicRvAdapter<T>.ViewHolder>() {
 
     inner class ViewHolder(val rvBinding: HomeComicRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
 
-    // 适配器数据量
-    private var mSize: Int = 0
-
     // 父布局高度
     private var mParentHeight: Int? = null
 
-    override fun getItemCount(): Int = if (mData == null) 0 else mSize
+    override fun getItemCount(): Int = mData.size
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(inflate(from(parent.context), parent, false)).also { vh ->
 
@@ -65,30 +63,31 @@ class HomeComicRvAdapter<T>(
             ToolTipsView.showToolTipsByLongClick(vh.rvBinding.homeComicRvName)
         }
     }
+
     override fun onBindViewHolder(vh: ViewHolder, pos: Int) {
         when (mType) {
             ComicType.Rec -> {
-                val comic = (mData as ComicDatas<RecComicsResult>).mResult[pos].mComic
+                val comic = (mData as MutableList<RecComicsResult>)[pos].mComic
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
             ComicType.Hot -> {
-                val comic = (mData as List<HotComic>)[pos].mComic
+                val comic = (mData as MutableList<HotComic>)[pos].mComic
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
             ComicType.New -> {
-                val comic = (mData as List<NewComic>)[pos].mComic
+                val comic = (mData as MutableList<NewComic>)[pos].mComic
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
             ComicType.Commit -> {
-                val comic = (mData as FinishComicDatas).mResult[pos]
+                val comic = (mData as MutableList<FinishComic>)[pos]
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
             ComicType.Rank -> {
-                val comic = (mData as ComicDatas<RankComics>).mResult[pos].mComic
+                val comic = (mData as MutableList<RankComics>)[pos].mComic
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
             ComicType.Topic -> {
-                val comic = (mData as ComicDatas<Topices>).mResult[pos]
+                val comic = (mData as MutableList<Topices>)[pos]
                 Glide.with(vh.itemView).load(comic.mImageUrl).into(vh.rvBinding.homeComicRvImage)
                 vh.mPathWord = comic.mPathWord
                 vh.rvBinding.apply {
@@ -115,20 +114,117 @@ class HomeComicRvAdapter<T>(
         mPathWord = pathword                                                   // 设置路径值 （用于后续请求）
     }
 
-    // 对外暴露设置数据
-    fun setData(value: T, size: Int? = null) {
-        mData = value
-        if (size != null) this.mSize = size
-    }
 
-    // 对外暴露数据大小
-    fun getDataSize() = mSize
+    /*
+    * 下面的代码逻辑全都一致，整合到一个Rv文件中不需要分开，看着有点屎山可能 有改进可在联系我提交 有考虑用ListAdapter，但还是为了整合到第一个文件 默认就改之前写好的这个了
+    * 1：首先判断 Rv旧数据源 和 新 数据源 的大小是否相等
+    * 2：相同则 覆盖旧的值 否则在判断旧数据值是否不为0（这里为什么加这个判断 以防万一Rv数据加载失败 新旧数据大小不一致就可以通知移除所有数据）
+    * 3：开始循环 -> 数据大小不一致（代表需要新增数据） 否则 通知数据做出改变即可
+    * 4：延时：第一次进入界面延时（20L-视觉上直接刷新完）后面刷新用50L（动态的有一个反馈效果），20L不适合手动刷新，会有错位Rv的视觉效果bug
+    * 5：开启协程避免阻塞UI线程
+    * @Time: 2023.3.22
+    * @Author: CrowForKotlin
+    * */
 
-    suspend fun doNotify(delay: Long = 50L, waitTime: Long = 100L) {
-        repeat(mSize) {
-            notifyItemChanged(it)
+    suspend fun doRecNotify(adapter: HomeComicRvAdapter<RecComicsResult>, datas: MutableList<RecComicsResult>, delay: Long) {
+        val itemSize = itemCount
+        val isSizeSame = itemSize == datas.size
+        if (isSizeSame) adapter.mData = datas
+        else if(itemSize != 0) {
+            adapter.notifyItemRangeRemoved(0, itemSize)
+            adapter.mData.clear()
+        }
+        datas.forEachIndexed { index, data ->
+            if (!isSizeSame) {
+                adapter.mData.add(data)
+                adapter.notifyItemInserted(index)
+            } else adapter.notifyItemChanged(index)
             delay(delay)
         }
-        delay(waitTime)
+    }
+
+    suspend fun doHotNotify(adapter: HomeComicRvAdapter<HotComic>, datas: MutableList<HotComic>, delay: Long) {
+        val itemSize = itemCount
+        val isSizeSame = itemSize == datas.size
+        if (isSizeSame) adapter.mData = datas
+        else if(itemSize != 0) {
+            adapter.notifyItemRangeRemoved(0, itemSize)
+            adapter.mData.clear()
+        }
+        datas.forEachIndexed { index, data ->
+            if (!isSizeSame) {
+                adapter.mData.add(data)
+                adapter.notifyItemInserted(index)
+            } else adapter.notifyItemChanged(index)
+            delay(delay)
+        }
+    }
+
+    suspend fun doNewNotify(adapter: HomeComicRvAdapter<NewComic>, datas: MutableList<NewComic>, delay: Long) {
+        val itemSize = itemCount
+        val isSizeSame = itemSize == datas.size
+        if (isSizeSame) adapter.mData = datas
+        else if(itemSize != 0) {
+            adapter.notifyItemRangeRemoved(0, itemSize)
+            adapter.mData.clear()
+        }
+        datas.forEachIndexed { index, data ->
+            if (!isSizeSame) {
+                adapter.mData.add(data)
+                adapter.notifyItemInserted(index)
+            } else adapter.notifyItemChanged(index)
+            delay(delay)
+        }
+    }
+
+    suspend fun doFinishNotify(adapter: HomeComicRvAdapter<FinishComic>, datas: MutableList<FinishComic>, delay: Long) {
+        val itemSize = itemCount
+        val isSizeSame = itemSize == datas.size
+        if (isSizeSame) adapter.mData = datas
+        else if(itemSize != 0) {
+            adapter.notifyItemRangeRemoved(0, itemSize)
+            adapter.mData.clear()
+        }
+        datas.forEachIndexed { index, data ->
+            if (!isSizeSame) {
+                adapter.mData.add(data)
+                adapter.notifyItemInserted(index)
+            } else adapter.notifyItemChanged(index)
+            delay(delay)
+        }
+    }
+
+    suspend fun doRankNotify(adapter: HomeComicRvAdapter<RankComics>, datas: MutableList<RankComics>, delay: Long) {
+        val itemSize = itemCount
+        val isSizeSame = itemSize == datas.size
+        if (isSizeSame) adapter.mData = datas
+        else if(itemSize != 0) {
+            adapter.notifyItemRangeRemoved(0, itemSize)
+            adapter.mData.clear()
+        }
+        datas.forEachIndexed { index, data ->
+            if (!isSizeSame) {
+                adapter.mData.add(data)
+                adapter.notifyItemInserted(index)
+            } else adapter.notifyItemChanged(index)
+            delay(delay)
+        }
+    }
+
+    suspend fun doTopicNotify(adapter: HomeComicRvAdapter<Topices>, datas: MutableList<Topices>, delay: Long) {
+        val itemSize = itemCount
+        val isSizeSame = itemSize == datas.size
+        if (isSizeSame) adapter.mData = datas
+        else if(itemSize != 0) {
+            adapter.notifyItemRangeRemoved(0, itemSize)
+            adapter.mData.clear()
+        }
+        datas.forEachIndexed { index, data ->
+            if (!isSizeSame) {
+                adapter.mData.add(data)
+                adapter.notifyItemInserted(index)
+            } else adapter.notifyItemChanged(index)
+            delay(delay)
+        }
     }
 }

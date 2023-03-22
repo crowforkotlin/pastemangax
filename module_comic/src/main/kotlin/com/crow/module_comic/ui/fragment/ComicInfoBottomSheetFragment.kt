@@ -57,14 +57,9 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
 
     override fun onStart() {
         super.onStart()
+
         // 设置BottomSheet的 高度
         dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)?.layoutParams!!.height = ViewGroup.LayoutParams.MATCH_PARENT
-        /* if (mComicVM.mComicInfoPage != null) {
-            if (!mComicVM.mComicInfoPage!!.mResults.mComic?.mPathWord.contentEquals(mPathword)) {
-                mComicVM.input(ComicIntent.GetComicInfo(mPathword ?: return))
-            }
-            return
-        } */
     }
 
     override fun initObserver() {
@@ -74,17 +69,17 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
                     intent.mViewState
                         .doOnLoading { showLoadingAnim() }
                         .doOnError { _, _ -> doOnDismissDialogByError() }
-                        .doOnResult {
-                            dismissLoadingAnim {
-                                showComicInfoPage()
-                                mComicVM.input(ComicIntent.GetComicChapter(mPathword ?: return@dismissLoadingAnim))
-                            }
-                        }
+                        .doOnResult { mComicVM.input(ComicIntent.GetComicChapter(mPathword ?: return@doOnResult)) }
                 }
                 is ComicIntent.GetComicChapter -> {
                     intent.mViewState
                         .doOnError { _, _ -> doOnDismissDialogByError() }
-                        .doOnResult { showComicChapaterPage(intent.comicChapter!!) }
+                        .doOnResult {
+                            dismissLoadingAnim {
+                                showComicInfoPage()
+                                showComicChapaterPage(intent.comicChapter!!)
+                            }
+                        }
                 }
                 else -> { }
             }
@@ -93,19 +88,23 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
 
     override fun initView() {
 
-        mBinding.comicInfoImage.doOnLayout {
-            it.layoutParams.height = ComicCardHeight
-            it.layoutParams.width = (ComicCardHeight / 1.25).toInt()
+        // 设置 漫画图的卡片 宽高
+        mBinding.comicInfoCard.layoutParams.apply {
+            height = ComicCardHeight
+            width = (ComicCardHeight / 1.25).toInt()
         }
 
-        mComicChapterRvAdapter = if (mComicVM.mComicInfoPage?.mComic?.mPathWord.contentEquals(mPathword) && !mIsNeedLoadDataByNetwork) {
+        mComicChapterRvAdapter = ComicInfoChapterRvAdapter() /*if (mComicVM.mComicInfoPage?.mComic?.mPathWord.contentEquals(mPathword) && !mIsNeedLoadDataByNetwork) {
             showComicInfoPage()
-            ComicInfoChapterRvAdapter(mComicVM.mComicChapterPage)
+            ComicInfoChapterRvAdapter(mComicVM.mComicChapterPage?.list ?: listOf())
         } else  {
-            ComicInfoChapterRvAdapter()
-        }
-        mBinding.comicInfoName.doOnLayout { (it.layoutParams as ConstraintLayout.LayoutParams).topMargin = mBinding.comicInfoDragView.height / 2 }
+
+        }*/
+
         mBinding.comicInfoRvChapter.adapter = mComicChapterRvAdapter
+
+        mBinding.comicInfoName.doOnLayout { (it.layoutParams as ConstraintLayout.LayoutParams).topMargin = mBinding.comicInfoDragView.height / 2 }
+
     }
 
     override fun initListener() {
@@ -159,9 +158,9 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
     }
 
     private fun showComicChapaterPage(comics: ChapterResultsResp) {
-        mComicChapterRvAdapter.setData(comics)
-        mComicChapterRvAdapter.notifyItemRangeChanged(0, mComicChapterRvAdapter.getDataSize())
-        mBinding.comicInfoRvChapter.animateFadeIn()
+        mComicChapterRvAdapter.setData(comics.list)
+        mComicChapterRvAdapter.notifyItemRangeInserted(0, mComicChapterRvAdapter.itemCount)
+        mBinding.comicInfoRvChapter.animateFadeIn(300L)
     }
 
     private fun doOnDismissDialogByError() {

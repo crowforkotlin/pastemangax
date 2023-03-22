@@ -31,6 +31,7 @@
 		tools:text="@string/BaseTodoTextView" />
 
 	<androidx.cardview.widget.CardView
+		style="@style/Widget.Material3.CardView.Filled"
 		android:id="@+id/comic_info_card"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -40,13 +41,13 @@
 		app:cardCornerRadius="@dimen/base_dp20"
 		app:cardElevation="@dimen/base_dp10"
 		app:layout_constraintStart_toStartOf="@+id/comic_info_name"
-		app:layout_constraintTop_toBottomOf="@+id/comic_info_name"
-		tools:layout_height="@dimen/base_dp168"
-		tools:layout_width="@dimen/base_dp120">
+		app:layout_constraintTop_toBottomOf="@+id/comic_info_name">
 
 		<ImageView
 			android:id="@+id/comic_info_image"
 			android:layout_width="match_parent"
+			tools:layout_height="@dimen/base_dp168"
+			tools:layout_width="@dimen/base_dp120"
 			android:layout_height="match_parent"
 			android:contentDescription="@string/BaseTodoTextView"
 			android:scaleType="centerCrop" />

@@ -64,18 +64,21 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
     // 主页 父容器漫画点击事件
     private var mTapComicParentListener: ITapComicListener? = null
 
-    // 主页数据量较多， 采用Rv方式
-    private lateinit var mHomeBannerAdapter: HomeBannerAdapter
-    private lateinit var mHomeRecAdapter: HomeComicRvAdapter<ComicDatas<RecComicsResult>>
-    private lateinit var mHomeHotAdapter: HomeComicRvAdapter<List<HotComic>>
-    private lateinit var mHomeNewAdapter: HomeComicRvAdapter<List<NewComic>>
-    private lateinit var mHomeFinishAdapter: HomeComicRvAdapter<FinishComicDatas>
-    private lateinit var mHomeTopicAapter: HomeComicRvAdapter<ComicDatas<Topices>>
-    private lateinit var mHomeRankAapter: HomeComicRvAdapter<ComicDatas<RankComics>>
-
     // 刷新按钮（换一批） ＆ 主页刷新布局控件
     private var mRecRefreshButton : MaterialButton? = null
     private var mSwipeRefreshLayout : SwipeRefreshLayout? = null
+
+    // 主页布局刷新的时间 第一次进入布局默认20Ms 之后刷新 为 50Ms
+    private var mHomePageLayoutRefreshTime = 20L
+
+    // 主页数据量较多， 采用Rv方式
+    private lateinit var mHomeBannerAdapter: HomeBannerAdapter
+    private lateinit var mHomeRecAdapter: HomeComicRvAdapter<RecComicsResult>
+    private lateinit var mHomeHotAdapter: HomeComicRvAdapter<HotComic>
+    private lateinit var mHomeNewAdapter: HomeComicRvAdapter<NewComic>
+    private lateinit var mHomeFinishAdapter: HomeComicRvAdapter<FinishComic>
+    private lateinit var mHomeTopicAapter: HomeComicRvAdapter<Topices>
+    private lateinit var mHomeRankAapter: HomeComicRvAdapter<RankComics>
 
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentBinding.inflate(inflater)
 
@@ -90,30 +93,31 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
     override fun initObserver() {
         mHomeVM.onOutput { intent ->
             when (intent) {
+
                 // （获取主页）（根据 刷新事件 来决定是否启用加载动画） 正常加载数据、反馈View
                 is HomeIntent.GetHomePage -> {
                     intent.mViewState
                         .doOnLoading { if(mSwipeRefreshLayout == null) showLoadingAnim() }
                         .doOnResult {
-                            // 检测是否为刷新
+                            // 刷新控件null 代表 用的是加载动画 -> 取消加载动画 否则直接加载页面数据
                             if (mSwipeRefreshLayout == null) dismissLoadingAnim { doLoadHomePage(intent.homePageData!!.mResults) }
                             else doLoadHomePage(intent.homePageData!!.mResults)
                         }
                         .doOnError { code, msg ->
                             if (code == ViewState.Error.UNKNOW_HOST) mBinding.root.showSnackBar(msg ?: getString(BaseLoadingError))
-                            if (mSwipeRefreshLayout != null) mSwipeRefreshLayout?.isRefreshing = false
-                            else dismissLoadingAnim()
+                            if (mSwipeRefreshLayout == null) dismissLoadingAnim() else  mSwipeRefreshLayout?.isRefreshing = false
                         }
                 }
 
-                // （刷新获取）不启用 加载动画 正常加载数据 反馈View
+                // （刷新获取）不启用 加载动画 正常加载数据 -> 反馈View
                 is HomeIntent.GetRecPageByRefresh -> {
                     intent.mViewState
                         .doOnSuccess { mRecRefreshButton!!.isEnabled = true }
                         .doOnError { _, _ -> mBinding.root.showSnackBar(getString(BaseLoadingError)) }
                         .doOnResult {
-                            mHomeRecAdapter.setData(intent.recPageData!!.mResults, 3)
-                            viewLifecycleOwner.lifecycleScope.launch { mHomeRecAdapter.doNotify() }
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                mHomeRecAdapter.doRecNotify(mHomeRecAdapter, intent.recPageData?.mResults?.mResult?.toMutableList() ?: return@launch, mHomePageLayoutRefreshTime)
+                            }
                         }
                 }
             }
@@ -132,13 +136,12 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
     override fun initView() {
 
         // 适配器可以作为局部成员，但不要直接初始化，不然会导致被View引用从而内存泄漏
-        mHomeBannerAdapter = HomeBannerAdapter(mutableListOf(), mTapComicChildListener)
-        mHomeRecAdapter = HomeComicRvAdapter(null, ComicType.Rec, mTapComicChildListener)
-        mHomeHotAdapter = HomeComicRvAdapter(null, ComicType.Hot, mTapComicChildListener)
-        mHomeNewAdapter = HomeComicRvAdapter(null, ComicType.New, mTapComicChildListener)
-        mHomeFinishAdapter = HomeComicRvAdapter(null, ComicType.Commit, mTapComicChildListener)
-        mHomeRankAapter = HomeComicRvAdapter(null, ComicType.Rank, mTapComicChildListener)
-        mHomeTopicAapter = HomeComicRvAdapter(null, ComicType.Topic, mTapComicChildListener)
+        mHomeRecAdapter = HomeComicRvAdapter(mType = ComicType.Rec, mITapComicListener = mTapComicChildListener)
+        mHomeHotAdapter = HomeComicRvAdapter(mType = ComicType.Hot, mITapComicListener = mTapComicChildListener)
+        mHomeNewAdapter = HomeComicRvAdapter(mType = ComicType.New, mITapComicListener = mTapComicChildListener)
+        mHomeFinishAdapter = HomeComicRvAdapter(mType = ComicType.Commit, mITapComicListener = mTapComicChildListener)
+        mHomeRankAapter = HomeComicRvAdapter(mType = ComicType.Rank,mITapComicListener =  mTapComicChildListener)
+        mHomeTopicAapter = HomeComicRvAdapter(mType = ComicType.Topic, mITapComicListener = mTapComicChildListener)
 
         // 初始化刷新 推荐的按钮
         mRecRefreshButton = initRecRefreshView()
@@ -153,7 +156,6 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
                     .setIndicatorSelectorColor(Color.WHITE)
                     .setIndicatorStyle(IndicatorView.IndicatorStyle.INDICATOR_BEZIER)
                     .also { it.doOnLayout { view -> (view.layoutParams as RelativeLayout.LayoutParams).bottomMargin = mContext.resources.getDimensionPixelSize(dimen.base_dp20) } })
-            .adapter = mHomeBannerAdapter
 
 
         // 设置每一个子布局的 （Icon、标题、适配器）
@@ -172,7 +174,11 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
 
         // 刷新推荐按钮 点击监听事件
         mRecRefreshButton!!.setOnClickListener { view ->
+
+            // 禁用 之后请求完毕会恢复
             view.isEnabled = false
+
+            // 发送意图
             mHomeVM.input(HomeIntent.GetRecPageByRefresh())
         }
 
@@ -211,21 +217,15 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
     // 加载主页数据
     private fun doLoadHomePage(results: Results) {
 
-        // 设置适配器数据
-        mHomeBannerAdapter.bannerList.clear()
-        mHomeBannerAdapter.bannerList.addAll(results.mBanners.filter { banner -> banner.mType <= 2 })
-        mHomeRecAdapter.setData(results.mRecComicsResult, 3)
-        mHomeHotAdapter.setData(results.mHotComics, 12)
-        mHomeNewAdapter.setData(results.mNewComics, 12)
-        mHomeFinishAdapter.setData(results.mFinishComicDatas, 6)
-        mHomeRankAapter.setData(results.mRankDayComics, 6)
-        mHomeTopicAapter.setData(results.mTopics, 4)
+        // 设置轮播图数据
+        mHomeBannerAdapter = HomeBannerAdapter(results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList(), mTapComicChildListener)
+        mBinding.homeBanner.adapter = mHomeBannerAdapter
 
         // 布局不可见 则淡入 否则代表正在刷新 提示即可
         if (!mBinding.homeLinearLayout.isVisible) {  mBinding.homeLinearLayout.animateFadeIn() }
-        else toast("刷新成功~")
+        else toast(getString(R.string.home_refresh_success))
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        viewLifecycleOwner.lifecycleScope.launch {
 
             // 等待刷新控件动画消失 150MS
             if (mSwipeRefreshLayout != null && mSwipeRefreshLayout!!.isRefreshing) {
@@ -234,13 +234,15 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
             }
 
             // 通知适配器
-            mHomeBannerAdapter.doOnNotify(waitTime = 0L)
-            mHomeRecAdapter.doNotify(waitTime = 0L)
-            mHomeHotAdapter.doNotify(waitTime = 0L)
-            mHomeNewAdapter.doNotify(waitTime = 0L)
-            mHomeFinishAdapter.doNotify(waitTime = 0L)
-            mHomeRankAapter.doNotify(waitTime = 0L)
-            mHomeTopicAapter.doNotify(waitTime = 0L)
+            mHomeRecAdapter.doRecNotify(mHomeRecAdapter, results.mRecComicsResult.mResult.toMutableList(), mHomePageLayoutRefreshTime)
+            mHomeHotAdapter.doHotNotify(mHomeHotAdapter, results.mHotComics.toMutableList(), mHomePageLayoutRefreshTime)
+            mHomeNewAdapter.doNewNotify(mHomeNewAdapter, results.mNewComics.toMutableList(), mHomePageLayoutRefreshTime)
+            mHomeFinishAdapter.doFinishNotify(mHomeFinishAdapter, results.mFinishComicDatas.mResult.toMutableList(), mHomePageLayoutRefreshTime)
+            mHomeRankAapter.doRankNotify(mHomeRankAapter, results.mRankDayComics.mResult.toMutableList(), mHomePageLayoutRefreshTime)
+            mHomeTopicAapter.doTopicNotify(mHomeTopicAapter, results.mTopics.mResult.toMutableList(), mHomePageLayoutRefreshTime)
+
+            // 设置布局刷新时间 50MS
+            if (mHomePageLayoutRefreshTime == 20L) mHomePageLayoutRefreshTime = 50L
         }
     }
 
