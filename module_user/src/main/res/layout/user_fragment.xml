@@ -17,16 +17,17 @@
 	<androidx.constraintlayout.utils.widget.ImageFilterButton
 		android:id="@+id/user_icon"
 		android:layout_width="@dimen/base_dp64"
-		android:scaleType="centerCrop"
 		android:layout_height="@dimen/base_dp64"
+		android:elevation="@dimen/base_dp1"
 		android:layout_marginStart="@dimen/base_dp20"
-		app:roundPercent="1"
 		android:layout_marginTop="@dimen/base_dp20"
 		android:contentDescription="@string/BaseTodoTextView"
 		android:foreground="?android:attr/selectableItemBackground"
+		android:scaleType="centerCrop"
 		android:src="@drawable/user_ic_icon"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+		app:layout_constraintTop_toTopOf="parent"
+		app:roundPercent="1" />
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/user_exit"
@@ -44,11 +45,14 @@
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
-	<TextView
+	<com.google.android.material.textview.MaterialTextView
 		android:id="@+id/user_name"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/base_dp10"
+		android:background="@drawable/user_bg_nickname_radius_shape"
+		android:elevation="@dimen/base_dp1"
+		android:padding="@dimen/base_dp10"
 		android:text="@string/user_plese_login"
 		android:textSize="@dimen/base_sp16"
 		android:textStyle="bold"

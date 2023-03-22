@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<color name="user_grey_bdbdbd">#bdbdbd</color>
+	<color name="user_deep_purple">#ede7f6</color>
 </resources>
