@@ -1,12 +1,12 @@
 package com.crow.module_user.network
 
 import android.util.Base64
+import com.crow.base.current_project.BaseResultResp
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncEncode
 import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toTypeEntity
-import com.crow.base.current_project.BaseResultResp
-import com.crow.module_user.model.resp.user_login.LoginResultsOkResp
+import com.crow.module_user.model.resp.LoginResultsOkResp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
 import kotlin.random.Random
@@ -29,4 +29,8 @@ class UserRepository(val service: UserService) {
                 DataStoreAgent.DATA_USER.asyncEncode(toJson((toTypeEntity<LoginResultsOkResp>(value.mResults) ?: return@onEach).also { it.mPassword = password }))
         }
     }
+
+    fun getUserUpdateInfo() = service.getUserUpdateInfo()
+
+    fun getUserInfo() = service.getUserInfo()
 }

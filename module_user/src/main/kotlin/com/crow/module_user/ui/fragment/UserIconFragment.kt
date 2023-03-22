@@ -2,12 +2,16 @@ package com.crow.module_user.ui.fragment
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Typeface
 import android.net.Uri
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.setPadding
 import com.bumptech.glide.Glide
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -15,7 +19,6 @@ import com.crow.module_user.R
 import com.crow.module_user.databinding.UserFragmentIconBinding
 import com.crow.module_user.ui.tools.GlideEngine
 import com.crow.module_user.ui.viewmodel.UserViewModel
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.config.SelectModeConfig
@@ -25,6 +28,7 @@ import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCropImageEngine
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.io.File
+import com.crow.base.R as baseR
 
 
 /*************************
@@ -41,6 +45,7 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
     // WindowInsets属性 （状态栏属性设置等...）
     private var mWindowInsets: WindowInsetsControllerCompat? = null
 
+    // 共享 用户VM
     private val mUserVM by sharedViewModel<UserViewModel>()
 
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentIconBinding.inflate(inflater)
@@ -58,9 +63,10 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
         // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {
 
-            // 初始化 Icon链接 设置用户名 退出可见 修改适配器数据
+            // 初始化 Icon链接 设置用户名
             mUserVM.doLoadIcon(mContext, false) { resource ->  mBinding.userIconPhotoview.setImageDrawable(resource) }
 
+            // 用户信息为空 则设置编辑按钮消失
             if (it == null) mBinding.userIconEdit.visibility = View.GONE
         }
     }
@@ -81,11 +87,18 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
         mBinding.userIconEdit.clickGap { _, _ ->
 
             //  创建一个MaterialDialog用于提示，同意后打开相册（支持裁剪）
-            MaterialAlertDialogBuilder(mContext)
-                .setTitle(getString(R.string.user_upload_icon_tips_title))
-                .setPositiveButton(R.string.user_upload_icon_tips_agreen) { dialog, _ ->
-                    dialog.dismiss()
-                    PictureSelector.create(this)
+            mContext.newMaterialDialog { dialog ->
+                dialog.setView(TextView(dialog.context).also { textView ->
+                        textView.text = mContext.getString(R.string.user_upload_icon_tips)
+                        textView.textSize = 18f
+                        textView.setPadding(mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp20))
+                        textView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                        textView.gravity = Gravity.CENTER or Gravity.CENTER_VERTICAL
+                })
+                dialog.setTitle(getString(R.string.user_upload_icon_tips_title))
+                dialog.setPositiveButton(R.string.user_upload_icon_tips_agreen) { dialogs, _ ->
+                    dialogs.dismiss()
+                    PictureSelector.create(mContext)
                         .openGallery(SelectMimeType.ofImage())
                         .setSelectionMode(SelectModeConfig.SINGLE)
                         .setImageEngine(GlideEngine.createGlideEngine())
@@ -106,8 +119,7 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
                             override fun onCancel() {}
                         })
                 }
-                .setView(layoutInflater.inflate(R.layout.user_dialog_tips_icon, mBinding.root, false))
-                .show()
+            }
         }
     }
 }

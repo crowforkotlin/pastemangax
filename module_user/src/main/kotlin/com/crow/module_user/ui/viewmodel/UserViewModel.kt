@@ -8,6 +8,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.crow.base.current_project.BaseStrings
+import com.crow.base.current_project.BaseUser
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncClear
 import com.crow.base.tools.extensions.asyncDecode
@@ -15,12 +16,13 @@ import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_user.R
 import com.crow.module_user.model.UserIntent
-import com.crow.module_user.model.resp.user_login.LoginResultErrorResp
-import com.crow.module_user.model.resp.user_login.LoginResultsOkResp
+import com.crow.module_user.model.resp.LoginResultErrorResp
+import com.crow.module_user.model.resp.LoginResultsOkResp
 import com.crow.module_user.network.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.net.HttpURLConnection
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -40,6 +42,7 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
     var mIconUrl: String? = null
         private set
 
+
     init {
         // 初始化 用户信息
         viewModelScope.launch {
@@ -50,13 +53,15 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
     override fun dispatcher(intent: UserIntent) {
         when (intent) {
             is UserIntent.Login -> doLogin(intent)
+            is UserIntent.GetUserUpdateInfo -> doGetUserInfo(intent)
+            is UserIntent.GetUserInfo -> { }
         }
     }
 
     private fun doLogin(intent: UserIntent.Login) {
         // 200代表 登录 请求成功
         intent.flowResult(repository.login(intent.username, intent.password)) { value ->
-            if (value.mCode == 200) intent.copy(loginResultsOkResp = (toTypeEntity<LoginResultsOkResp>(value.mResults) ?: return@flowResult intent).also {
+            if (value.mCode == HttpURLConnection.HTTP_OK) intent.copy(loginResultsOkResp = (toTypeEntity<LoginResultsOkResp>(value.mResults) ?: return@flowResult intent).also {
                 mIconUrl = it.mIconUrl
                 _userInfo.emit(it)
             })
@@ -64,10 +69,17 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
         }
     }
 
+    private fun doGetUserInfo(intent: UserIntent.GetUserUpdateInfo) {
+        intent.flowResult(repository.getUserUpdateInfo()) { value ->
+            intent.copy(userUpdateInfoResp = value.mResults)
+        }
+    }
+
     // 清除用户信息
-    fun onClearUserInfo() {
+    fun doClearUserInfo() {
         viewModelScope.launch {
             DataStoreAgent.DATA_USER.asyncClear()
+            BaseUser.CURRENT_USER_TOKEN = ""
             mIconUrl = null
             _userInfo.emit(null)
         }

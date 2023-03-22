@@ -1,4 +1,4 @@
-package com.crow.module_user.model.resp.user_login
+package com.crow.module_user.model.resp
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

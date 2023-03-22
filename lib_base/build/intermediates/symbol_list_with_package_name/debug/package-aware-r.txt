@@ -970,8 +970,12 @@ layout base_loading_more
 layout base_textview
 string BaseAppName
 string BaseAppName_CH
+string BaseCancel
+string BaseConfirm
 string BaseLoading
 string BaseLoadingError
+string BaseTips
 string BaseTodoTextView
+string BaseTokenError
 string BaseUnknow
 style Base_LibBase_LoadingAnim

@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.crow.base.ui.dialog.LoadingAnimDialog
 import com.crow.base.tools.extensions.permissionext.IBasePerEvent
 import com.crow.base.tools.extensions.permissionext.IBasePermission
+import com.crow.base.ui.dialog.LoadingAnimDialog
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -43,8 +43,8 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
 
     override fun dismissLoadingAnim() { LoadingAnimDialog.dismiss(parentFragmentManager) }
 
-    inline fun dismissLoadingAnim(crossinline animEnd: () -> Unit) {
-        LoadingAnimDialog.dismiss(parentFragmentManager) { animEnd()  }
+    fun dismissLoadingAnim(loadingAnimCallBack: LoadingAnimDialog.LoadingAnimCallBack) {
+        LoadingAnimDialog.dismiss(parentFragmentManager) { loadingAnimCallBack.onAnimEnd()  }
     }
 
     override fun requestPermission(permissions: Array<String>, iBasePerEvent: IBasePerEvent) {

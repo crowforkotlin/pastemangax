@@ -31,7 +31,7 @@ abstract class BaseFragment<VB : ViewBinding, out VM : BaseViewModel> : BaseFrag
     override fun initObserver() {
         mViewModel.viewState.observe(viewLifecycleOwner) { viewState ->
             viewState
-                .doOnLoading { showLoadingAnim() }
+                .doOnLoading{ showLoadingAnim() }
                 .doOnSuccess { dismissLoadingAnim() }
                 .doOnError { _, msg ->
                     dismissLoadingAnim()

@@ -18,6 +18,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
  * @formatter:off
  **************************/
 
+fun interface IMaterialDialogCallback {
+    fun doOnConfig(builder: MaterialAlertDialogBuilder)
+}
+
 inline fun Context.newDialog(dialogConfig: AlertDialog.Builder.() -> Unit) {
     AlertDialog.Builder(this).apply {
         dialogConfig()
@@ -26,9 +30,9 @@ inline fun Context.newDialog(dialogConfig: AlertDialog.Builder.() -> Unit) {
     }
 }
 
-inline fun Context.newMaterialDialog(config: MaterialAlertDialogBuilder.() -> Unit) {
+fun Context.newMaterialDialog(iMaterialDialogCallback: IMaterialDialogCallback) {
     val dialog = MaterialAlertDialogBuilder(this)
-    dialog.config()
+    iMaterialDialogCallback.doOnConfig(dialog)
     dialog.show()
 }
 
@@ -37,9 +41,11 @@ fun Window.setLayoutWidthAndHeight(@FloatRange(from = 0.0, to = 1.0) width: Floa
     val displayMetrics = context.resources.displayMetrics
     setLayout((displayMetrics.widthPixels * width).toInt(), (displayMetrics.heightPixels * height).toInt())
 }
+
 fun Window.setLayoutMatch() = setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
-
 fun Window.setLayoutWarp() = setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
 fun Window.setBackgroundTransparent() = setBackgroundDrawableResource(android.R.color.transparent)
+
 fun Window.setMaskAmount(@FloatRange(from = 0.0, to = 100.0) amount: Float) = setDimAmount(amount)

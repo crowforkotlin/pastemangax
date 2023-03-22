@@ -31,7 +31,7 @@ abstract class BaseVBActivity<out VB : ViewBinding, out VM : BaseViewModel> : Ba
     open fun initObserver() {
         mViewModel.viewState.observe(this) { viewState ->
             viewState
-                .doOnLoading { showLoadingAnim() }
+                .doOnLoading{ showLoadingAnim() }
                 .doOnSuccess { dismissLoadingAnim() }
                 .doOnError { _, msg ->
                     dismissLoadingAnim()

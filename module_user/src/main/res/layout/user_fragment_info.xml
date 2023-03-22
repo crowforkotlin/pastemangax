@@ -4,20 +4,67 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context="com.crow.module_user.ui.fragment.UserInfoFragment">
+	tools:context="com.crow.module_user.ui.fragment.UserUpdateInfoFragment">
 
 	<androidx.constraintlayout.utils.widget.ImageFilterButton
-		android:id="@+id/user_icon"
+		android:id="@+id/user_update_info_icon"
 		android:layout_width="@dimen/base_dp108"
 		android:layout_height="@dimen/base_dp108"
 		android:layout_marginTop="16dp"
-		android:foreground="?android:attr/selectableItemBackground"
 		android:contentDescription="@string/BaseTodoTextView"
+		android:foreground="?android:attr/selectableItemBackground"
 		android:scaleType="centerCrop"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:roundPercent="1"
-		app:srcCompat="@drawable/user_ic_edit_24dp" />
+		tools:srcCompat="@drawable/user_ic_icon" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/user_update_info_rv"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_margin="@dimen/base_dp10"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		app:layout_constraintBottom_toTopOf="@+id/user_update_info_exit_textview"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/user_update_info_icon"
+		tools:listitem="@layout/user_fragment_info_rv" />
+
+
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
+		android:id="@+id/user_update_info_exit_button"
+		android:layout_width="371dp"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="@dimen/base_dp60"
+		android:contentDescription="@string/BaseTodoTextView"
+		android:src="@drawable/user_ic_exit_24dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:tint="@null"
+		tools:text="@string/user_change_icon" />
+
+	<TextView
+		android:id="@+id/user_update_info_exit_textview"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="@dimen/base_dp5"
+		android:text="@string/user_exit"
+		android:textStyle="bold"
+		app:layout_constraintBottom_toTopOf="@+id/user_update_info_exit_button"
+		app:layout_constraintEnd_toEndOf="@+id/user_update_info_exit_button"
+		app:layout_constraintStart_toStartOf="@+id/user_update_info_exit_button" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/user_info_blank_tips"
+		android:textSize="@dimen/base_sp7"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="@+id/user_update_info_exit_button"
+		app:layout_constraintStart_toStartOf="@+id/user_update_info_exit_button" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

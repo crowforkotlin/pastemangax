@@ -74,6 +74,17 @@ object Dependencies {
     * */
     const val kotlinx_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
 
+    /* KotlinX DataTime
+    * - Github : [https://github.com/Kotlin/kotlinx-datetime]
+    * */
+    const val kotlinx_datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
+
+    // kotlin stdlib
+    const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin_version}"
+    const val kotlin_jdk7 = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin_version}"
+    const val kotlin_jdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
+    const val kotlin_reflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin_version}"
+
     /* SmartRefresh
     * - Github : [https://github.com/scwang90/SmartRefreshLayout]
     * */

@@ -969,8 +969,12 @@ int layout base_loading_more 0x0
 int layout base_textview 0x0
 int string BaseAppName 0x0
 int string BaseAppName_CH 0x0
+int string BaseCancel 0x0
+int string BaseConfirm 0x0
 int string BaseLoading 0x0
 int string BaseLoadingError 0x0
+int string BaseTips 0x0
 int string BaseTodoTextView 0x0
+int string BaseTokenError 0x0
 int string BaseUnknow 0x0
 int style Base_LibBase_LoadingAnim 0x0

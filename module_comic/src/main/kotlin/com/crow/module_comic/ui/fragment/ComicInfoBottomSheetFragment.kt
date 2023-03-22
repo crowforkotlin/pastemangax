@@ -10,13 +10,13 @@ import androidx.core.view.doOnLayout
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.crow.base.current_project.ComicCardHeight
+import com.crow.base.current_project.formatValue
+import com.crow.base.current_project.getSpannableString
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviBottomSheetDF
-import com.crow.base.current_project.ComicCardHeight
-import com.crow.base.current_project.formatValue
-import com.crow.base.current_project.getSpannableString
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult

@@ -12,7 +12,7 @@ import com.crow.base.app.appContext
 import com.crow.base.tools.extensions.clickGap
 import com.crow.module_user.databinding.UserFragmentRvBinding
 import com.crow.module_user.databinding.UserFragmentRvBinding.inflate
-import com.crow.module_user.model.resp.user_login.LoginResultsOkResp
+import com.crow.module_user.model.resp.LoginResultsOkResp
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -23,7 +23,7 @@ import com.crow.module_user.model.resp.user_login.LoginResultsOkResp
  * @formatter:on
  **************************/
 
-private typealias Res = @receiver:DrawableRes Int
+typealias Res = @receiver:DrawableRes Int
 
 class UserRvAdapter(
     private val datas: List<Pair<Res, String>>,

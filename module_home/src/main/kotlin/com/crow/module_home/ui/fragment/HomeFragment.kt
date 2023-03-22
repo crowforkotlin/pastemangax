@@ -28,7 +28,7 @@ import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.model.resp.homepage.results.Results
 import com.crow.module_home.ui.adapter.HomeBannerAdapter
-import com.crow.module_home.ui.adapter.HomeComicAdapter
+import com.crow.module_home.ui.adapter.HomeComicRvAdapter
 import com.crow.module_home.ui.viewmodel.HomeViewModel
 import com.google.android.material.R.attr.materialIconButtonStyle
 import com.google.android.material.button.MaterialButton
@@ -66,12 +66,12 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
 
     // 主页数据量较多， 采用Rv方式
     private lateinit var mHomeBannerAdapter: HomeBannerAdapter
-    private lateinit var mHomeRecAdapter: HomeComicAdapter<ComicDatas<RecComicsResult>>
-    private lateinit var mHomeHotAdapter: HomeComicAdapter<List<HotComic>>
-    private lateinit var mHomeNewAdapter: HomeComicAdapter<List<NewComic>>
-    private lateinit var mHomeFinishAdapter: HomeComicAdapter<FinishComicDatas>
-    private lateinit var mHomeTopicAapter: HomeComicAdapter<ComicDatas<Topices>>
-    private lateinit var mHomeRankAapter: HomeComicAdapter<ComicDatas<RankComics>>
+    private lateinit var mHomeRecAdapter: HomeComicRvAdapter<ComicDatas<RecComicsResult>>
+    private lateinit var mHomeHotAdapter: HomeComicRvAdapter<List<HotComic>>
+    private lateinit var mHomeNewAdapter: HomeComicRvAdapter<List<NewComic>>
+    private lateinit var mHomeFinishAdapter: HomeComicRvAdapter<FinishComicDatas>
+    private lateinit var mHomeTopicAapter: HomeComicRvAdapter<ComicDatas<Topices>>
+    private lateinit var mHomeRankAapter: HomeComicRvAdapter<ComicDatas<RankComics>>
 
     // 刷新按钮（换一批） ＆ 主页刷新布局控件
     private var mRecRefreshButton : MaterialButton? = null
@@ -133,12 +133,12 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
 
         // 适配器可以作为局部成员，但不要直接初始化，不然会导致被View引用从而内存泄漏
         mHomeBannerAdapter = HomeBannerAdapter(mutableListOf(), mTapComicChildListener)
-        mHomeRecAdapter = HomeComicAdapter(null, ComicType.Rec, mTapComicChildListener)
-        mHomeHotAdapter = HomeComicAdapter(null, ComicType.Hot, mTapComicChildListener)
-        mHomeNewAdapter = HomeComicAdapter(null, ComicType.New, mTapComicChildListener)
-        mHomeFinishAdapter = HomeComicAdapter(null, ComicType.Commit, mTapComicChildListener)
-        mHomeRankAapter = HomeComicAdapter(null, ComicType.Rank, mTapComicChildListener)
-        mHomeTopicAapter = HomeComicAdapter(null, ComicType.Topic, mTapComicChildListener)
+        mHomeRecAdapter = HomeComicRvAdapter(null, ComicType.Rec, mTapComicChildListener)
+        mHomeHotAdapter = HomeComicRvAdapter(null, ComicType.Hot, mTapComicChildListener)
+        mHomeNewAdapter = HomeComicRvAdapter(null, ComicType.New, mTapComicChildListener)
+        mHomeFinishAdapter = HomeComicRvAdapter(null, ComicType.Commit, mTapComicChildListener)
+        mHomeRankAapter = HomeComicRvAdapter(null, ComicType.Rank, mTapComicChildListener)
+        mHomeTopicAapter = HomeComicRvAdapter(null, ComicType.Topic, mTapComicChildListener)
 
         // 初始化刷新 推荐的按钮
         mRecRefreshButton = initRecRefreshView()
@@ -186,7 +186,7 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
     }
 
     // 初始化主页Rv视图
-    private fun <T> HomeComicBinding.initHomeComicRvView(@DrawableRes iconRes: Int, @StringRes iconText: Int, adapter: HomeComicAdapter<T>): HomeComicBinding {
+    private fun <T> HomeComicBinding.initHomeComicRvView(@DrawableRes iconRes: Int, @StringRes iconText: Int, adapter: HomeComicRvAdapter<T>): HomeComicBinding {
         homeComicButtonTitle.setIconResource(iconRes)
         homeComicButtonTitle.text = mContext.getString(iconText)
         homeComicBookRv.adapter = adapter

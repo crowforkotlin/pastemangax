@@ -31,11 +31,11 @@ import java.util.*
  * @Description: HomeBookAdapter
  * @formatter:on
  **************************/
-class HomeComicAdapter<T>(
+class HomeComicRvAdapter<T>(
     private var mData: T? = null,
     private val mType: ComicType,
     private val mITapComicListener: HomeFragment.ITapComicListener,
-) : RecyclerView.Adapter<HomeComicAdapter<T>.ViewHolder>() {
+) : RecyclerView.Adapter<HomeComicRvAdapter<T>.ViewHolder>() {
 
     inner class ViewHolder(val rvBinding: HomeComicRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
 

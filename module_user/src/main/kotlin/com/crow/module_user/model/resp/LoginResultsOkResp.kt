@@ -1,4 +1,4 @@
-package com.crow.module_user.model.resp.user_login
+package com.crow.module_user.model.resp
 
 
 import com.squareup.moshi.Json
@@ -87,6 +87,12 @@ data class LoginResultsOkResp (
 
     @Json(name = "vip_downloads")
     val mVipDownloads: Int,
+
+   /* @Json(name = "vip_downloads")
+    val mDayDownloadsRefresh: String? = null,
+
+    @Json(name = "day_downloads")
+    val mDayDownloads: Int? = null,*/
 
     var mPassword: String? = null,
 )

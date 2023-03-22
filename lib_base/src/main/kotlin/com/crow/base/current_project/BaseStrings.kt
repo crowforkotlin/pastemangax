@@ -10,5 +10,7 @@ object BaseStrings {
         const val Comic = "/api/v3/comic/{pathword}/chapter2/{uuid}?platform=3&_update=true"
         const val HomePage = "/api/v3/h5/homeIndex"
         const val RefreshRec = "/api/v3/recs"
+        const val UserUpdateInfo = "/api/v3/member/update/info"
+        const val UserInfo = "/api/v3/member/info"
     }
 }

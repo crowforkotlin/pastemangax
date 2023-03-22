@@ -25,7 +25,7 @@
 
 	<fragment
 		android:id="@+id/mainUserinfofragment"
-		android:name="com.crow.module_user.ui.fragment.UserInfoFragment"
+		android:name="com.crow.module_user.ui.fragment.UserUpdateInfoFragment"
 		tools:layout="@layout/user_fragment_info"
 		android:label="UserInfoFragment" />
 	<fragment

@@ -63,6 +63,7 @@ class UserLoginFragment : BaseMviFragment<UserFragmentLoginBinding>(){
                                 .onSuccess { toast(it, false) }
                         }
                 }
+                else -> { }
             }
         }
     }

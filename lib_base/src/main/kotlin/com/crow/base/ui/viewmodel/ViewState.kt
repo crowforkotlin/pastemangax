@@ -37,14 +37,18 @@ sealed class ViewState {
 
 }
 
+fun interface IViewStateCallBack {
+    fun callback()
+}
+
+fun interface IViewStateErrorCallBack {
+    fun callback(code: Int, msg: String?)
+}
+
 //自定义error 可以抛出来结束流的运行
 class ViewStateException(msg: String, throwable: Throwable? = null) : Exception(msg, throwable)
 
-inline fun ViewState.doOnResultWithLoading(
-    fragmentManager: FragmentManager,
-    crossinline onResult: () -> Unit,
-    crossinline animEnd: () -> Unit,
-) {
+inline fun ViewState.doOnResultWithLoading (fragmentManager: FragmentManager, crossinline onResult: () -> Unit, crossinline animEnd: () -> Unit) {
     when (this) {
         is ViewState.Default -> {}
         is ViewState.Loading -> LoadingAnimDialog.show(fragmentManager)
@@ -52,26 +56,6 @@ inline fun ViewState.doOnResultWithLoading(
         is ViewState.Success -> LoadingAnimDialog.dismiss(fragmentManager) { animEnd() }
         is ViewState.Result -> onResult()
     }
-}
-
-inline fun ViewState.doOnLoading(crossinline block: () -> Unit): ViewState {
-    if (this is ViewState.Loading) block()
-    return this
-}
-
-inline fun ViewState.doOnSuccess(crossinline block: () -> Unit): ViewState {
-    if (this is ViewState.Success) block()
-    return this
-}
-
-inline fun ViewState.doOnError(crossinline block: (Int, String?) -> Unit): ViewState {
-    if (this is ViewState.Error) block(type, msg)
-    return this
-}
-
-inline fun ViewState.doOnResult(crossinline block: () -> Unit): ViewState {
-    if (this is ViewState.Result) block()
-    return this
 }
 
 suspend inline fun ViewState.doOnLoadingInCoroutine(crossinline block: suspend () -> Unit): ViewState {
@@ -91,5 +75,45 @@ suspend inline fun ViewState.doOnErrorInCoroutine(crossinline block: suspend (In
 
 suspend inline fun ViewState.doOnResultInCoroutine(crossinline block: suspend () -> Unit): ViewState {
     if (this is ViewState.Result) block()
+    return this
+}
+
+inline fun ViewState.doOnLoadingInline(crossinline block: () -> Unit): ViewState {
+    if (this is ViewState.Loading) block()
+    return this
+}
+
+inline fun ViewState.doOnSuccessInline(crossinline block: () -> Unit): ViewState {
+    if (this is ViewState.Success) block()
+    return this
+}
+
+inline fun ViewState.doOnErrorInline(crossinline block: (Int, String?) -> Unit): ViewState {
+    if (this is ViewState.Error) block(type, msg)
+    return this
+}
+
+inline fun ViewState.doOnResultInline(crossinline block: () -> Unit): ViewState {
+    if (this is ViewState.Result) block()
+    return this
+}
+
+fun ViewState.doOnLoading(iViewStateCallBack: IViewStateCallBack): ViewState {
+    if (this is ViewState.Loading) iViewStateCallBack.callback()
+    return this
+}
+
+fun ViewState.doOnSuccess(iViewStateCallBack: IViewStateCallBack): ViewState {
+    if (this is ViewState.Success) iViewStateCallBack.callback()
+    return this
+}
+
+fun ViewState.doOnResult(iViewStateCallBack: IViewStateCallBack): ViewState {
+    if (this is ViewState.Result) iViewStateCallBack.callback()
+    return this
+}
+
+fun ViewState.doOnError(iViewStateErrorCallBack: IViewStateErrorCallBack): ViewState {
+    if (this is ViewState.Error) iViewStateErrorCallBack.callback(type, msg)
     return this
 }

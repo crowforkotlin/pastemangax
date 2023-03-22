@@ -64,3 +64,4 @@ fun Fragment.navigate(
     findNavController().navigate(idRes, bundle, navOptions)
 }
 
+fun Fragment.navigateUp() = findNavController().navigateUp()

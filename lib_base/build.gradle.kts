@@ -114,6 +114,9 @@ dependencies {
 
     /* Kotlin 协程 */
     api(Dependencies.kotlinx_coroutines)
+    api(Dependencies.kotlinx_datetime)
+    api(Dependencies.kotlin_stdlib)
+    api(Dependencies.kotlin_reflect)
 
 
     /* Koin 注入框架 */

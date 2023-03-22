@@ -33,7 +33,7 @@ abstract class BaseBottomSheetDF<out VB : ViewBinding, out VM : BaseViewModel> :
     override fun initObserver() {
         mViewModel.viewState.observe(viewLifecycleOwner) { viewState ->
             viewState
-                .doOnLoading { showLoadingAnim() }
+                .doOnLoading{ showLoadingAnim() }
                 .doOnSuccess { dismissLoadingAnim() }
                 .doOnError { _, msg ->
                     dismissLoadingAnim()
