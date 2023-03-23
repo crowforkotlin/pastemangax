@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="base_RedError">#FD0000</color>
+    <color name="base_RightGreen">#12AB18</color>
+    <color name="base_background_panda">#D1D1D1</color>
+    <color name="base_buttonBackground">#BE9AE3</color>
+    <color name="base_buttonRipper">#7D3DEF</color>
+    <color name="base_titleError">#E1CA00</color>
+    <color name="base_textColor">#FFFFFF</color>
+
+    <color name="base_purple_8f6af1">#8f6af1</color>
+    <color name="base_download_bg">#d4e5ef</color>
+</resources>

@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.crow.base.test.lib_base-mergeDebugAndroidTestResources-2:/values-v19/values-v19.xml",
+            "map": [
+                {
+                    "source": "D:\\Programing\\Tools\\Gradle\\caches\\transforms-3\\78cfc5680c46a484558c7e719b3ca24a\\transformed\\jetified-BigImageViewPager-androidx-7.0.4\\res\\values-v19\\values-v19.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "11",
+                        "endColumns": "9",
+                        "endOffsets": "514"
+                    }
+                }
+            ]
+        }
+    ]
+}

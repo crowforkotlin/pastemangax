@@ -1,0 +1,29 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml:2:1-7:12
+	package
+		INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml
+		ADDED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml:2:1-7:12
+		INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml:2:11-69
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml:4:5-79
+	android:name
+		ADDED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml:4:22-76
+uses-sdk
+INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml
+INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml
+INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml
+INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml
+		ADDED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml
+		INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml
+		ADDED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml
+		INJECTED from D:\Programing\Android\2023\CopyManga\lib_base\src\main\AndroidManifest.xml
