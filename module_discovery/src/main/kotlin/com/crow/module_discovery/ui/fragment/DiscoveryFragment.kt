@@ -1,7 +1,8 @@
-package com.crow.module_discovery
+package com.crow.module_discovery.ui.fragment
 
 import android.view.LayoutInflater
 import com.crow.base.ui.fragment.BaseFragment
+import com.crow.module_discovery.ui.viewmodel.DiscoveryViewModel
 import com.crow.module_discovery.databinding.DiscoveryFragmentBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

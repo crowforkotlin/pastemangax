@@ -1,4 +1,4 @@
-package com.crow.module_home.model.factory
+package com.crow.module_home.network
 
 import com.crow.module_home.network.HomeService
 

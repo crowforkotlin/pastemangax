@@ -55,11 +55,14 @@ fun String.getSpannableString(color: Int, start: Int, end: Int = length): Spanna
 }
 
 // 漫画卡片高度
-val ComicCardHeight: Int by lazy {
+private val comic_card_height: Int by lazy {
     val width = appContext.resources.displayMetrics.widthPixels
     val height = appContext.resources.displayMetrics.heightPixels
     (width.toFloat() / (3 - width.toFloat() / height.toFloat())).toInt()
 }
+
+fun getComicCardHeight() = comic_card_height
+fun getComicCardWidth() = (comic_card_height / 1.25).toInt()
 
 // Fix Memory Leak
 fun ProgressButton.updateLifecycleObserver(lifecycle: Lifecycle?) {

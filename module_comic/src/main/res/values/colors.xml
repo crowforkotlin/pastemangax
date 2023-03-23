@@ -2,4 +2,5 @@
 <resources>
 	<color name="comic_green">#81c784</color>
 	<color name="comic_red">#e57373</color>
+	<color name="comic_blue">#2196f3</color>
 </resources>

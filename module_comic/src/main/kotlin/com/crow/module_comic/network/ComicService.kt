@@ -3,6 +3,7 @@ package com.crow.module_comic.network
 import com.crow.base.current_project.BaseResultResp
 import com.crow.base.current_project.BaseStrings
 import com.crow.module_comic.model.resp.ChapterResultsResp
+import com.crow.module_comic.model.resp.ComicBrowserHistoryResp
 import com.crow.module_comic.model.resp.ComicResultsResp
 import com.crow.module_comic.model.resp.InfoResultsResp
 import kotlinx.coroutines.flow.Flow
@@ -32,4 +33,7 @@ interface ComicService {
 
     @GET(BaseStrings.URL.Comic)
     fun getComic(@Path("pathword") pathword: String, @Path("uuid") uuid: String): Flow<BaseResultResp<ComicResultsResp>>
+
+    @GET(BaseStrings.URL.ComicBrowserHistory)
+    fun getComicBrowserHistory(@Path("pathword") pathword: String) : Flow<BaseResultResp<ComicBrowserHistoryResp>>
 }

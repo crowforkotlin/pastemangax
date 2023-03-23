@@ -10,9 +10,7 @@ import androidx.core.view.doOnLayout
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.crow.base.current_project.ComicCardHeight
-import com.crow.base.current_project.formatValue
-import com.crow.base.current_project.getSpannableString
+import com.crow.base.current_project.*
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.toast
@@ -40,17 +38,18 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  **************************/
 class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFragmentInfoBinding>() {
 
-    constructor(pathword: String, isNeedLoadDataByNetwork: Boolean) : this() {
+    constructor(pathword: String, isNeedGetComicPageInfo: Boolean) : this() {
         mPathword = pathword
-        mIsNeedLoadDataByNetwork = isNeedLoadDataByNetwork
+        mIsNeedGetComicPageInfo = isNeedGetComicPageInfo
         mPathword.logMsg()
     }
 
     companion object { val TAG = this::class.java.simpleName }
 
     private val mComicVM by lazy { requireParentFragment().viewModel<ComicViewModel>().value }
-    private var mIsNeedLoadDataByNetwork = false
     private var mPathword: String? = null
+    private var mChapterName: String? = null
+    private var mIsNeedGetComicPageInfo = false
     private lateinit var mComicChapterRvAdapter: ComicInfoChapterRvAdapter
 
     override fun getViewBinding(inflater: LayoutInflater) = ComicFragmentInfoBinding.inflate(inflater)
@@ -81,6 +80,9 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
                             }
                         }
                 }
+                is ComicIntent.GetComicBrowserHistory -> {
+                    intent.mViewState.doOnResult { mComicChapterRvAdapter.mChapterName = intent.browserHistory?.browse?.chapterName }
+                }
                 else -> { }
             }
         }
@@ -90,16 +92,16 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
 
         // 设置 漫画图的卡片 宽高
         mBinding.comicInfoCard.layoutParams.apply {
-            height = ComicCardHeight
-            width = (ComicCardHeight / 1.25).toInt()
+            height = getComicCardHeight()
+            width = getComicCardWidth()
         }
 
-        mComicChapterRvAdapter = ComicInfoChapterRvAdapter() /*if (mComicVM.mComicInfoPage?.mComic?.mPathWord.contentEquals(mPathword) && !mIsNeedLoadDataByNetwork) {
+        mComicChapterRvAdapter = if (mComicVM.mComicInfoPage?.mComic?.mPathWord.contentEquals(mPathword) && !mIsNeedGetComicPageInfo) {
             showComicInfoPage()
-            ComicInfoChapterRvAdapter(mComicVM.mComicChapterPage?.list ?: listOf())
+            ComicInfoChapterRvAdapter(mComicVM.mComicChapterPage?.list?.toMutableList() ?: mutableListOf())
         } else  {
-
-        }*/
+            ComicInfoChapterRvAdapter()
+        }
 
         mBinding.comicInfoRvChapter.adapter = mComicChapterRvAdapter
 
@@ -126,8 +128,8 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
     }
 
     override fun initData() {
-        if (mComicVM.mComicInfoPage != null && !mIsNeedLoadDataByNetwork) return
-        mComicVM.input(ComicIntent.GetComicInfo(mPathword ?: return))
+        if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mComicVM.input(ComicIntent.GetComicBrowserHistory(mPathword ?: return))
+        if (mComicVM.mComicInfoPage == null || mIsNeedGetComicPageInfo) mComicVM.input(ComicIntent.GetComicInfo(mPathword ?: return))
     }
 
     private fun showComicInfoPage() {

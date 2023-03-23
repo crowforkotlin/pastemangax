@@ -1,4 +1,4 @@
-package com.crow.module_discovery
+package com.crow.module_discovery.ui.viewmodel
 
 import com.crow.base.ui.viewmodel.BaseViewModel
 

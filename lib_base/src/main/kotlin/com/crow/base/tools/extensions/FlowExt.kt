@@ -81,3 +81,6 @@ fun interface IBaseFlowCollectLifecycle<T> {
 fun<T> Flow<T>.onCollect(fragment: Fragment, iBaseFlowCollectLifecycle: IBaseFlowCollectLifecycle<T>) {
     fragment.repeatOnLifecycle { collect { iBaseFlowCollectLifecycle.onCollect(it) } }
 }
+
+
+

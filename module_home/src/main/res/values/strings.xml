@@ -1,6 +1,4 @@
 <resources>
-
-	<string name="home_refresh_success">"刷新成功~"</string>
 	<string name="home_homepage">主页</string>
 	<string name="home_recovery">发现</string>
 	<string name="home_bookshelf">书架</string>

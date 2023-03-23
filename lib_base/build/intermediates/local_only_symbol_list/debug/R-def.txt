@@ -975,6 +975,7 @@ string BaseCancel
 string BaseConfirm
 string BaseLoading
 string BaseLoadingError
+string BaseRefreshScucess
 string BaseTips
 string BaseTodoTextView
 string BaseTokenError

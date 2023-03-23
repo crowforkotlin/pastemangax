@@ -23,7 +23,7 @@ import kotlinx.serialization.json.Json
  */
 val baseJson = Json {
 
-//    classDiscriminator = "type"           // 多态序列化的类描述符属性的名称
+//    classDiscriminator = "code"           // 多态序列化的类描述符属性的名称
 //    prettyPrintIndent = "    "            // 指定打印缩进字符串
 
     encodeDefaults = true                   // 是否编码默认值

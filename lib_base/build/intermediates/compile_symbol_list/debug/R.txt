@@ -973,6 +973,7 @@ int string BaseCancel 0x0
 int string BaseConfirm 0x0
 int string BaseLoading 0x0
 int string BaseLoadingError 0x0
+int string BaseRefreshScucess 0x0
 int string BaseTips 0x0
 int string BaseTodoTextView 0x0
 int string BaseTokenError 0x0

@@ -9,8 +9,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.crow.base.current_project.ComicCardHeight
 import com.crow.base.current_project.formatValue
+import com.crow.base.current_project.getComicCardHeight
 import com.crow.base.tools.extensions.clickGap
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_home.databinding.HomeComicRvBinding
@@ -19,7 +19,6 @@ import com.crow.module_home.model.ComicType
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.AuthorResult
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
-import com.crow.module_home.ui.fragment.HomeFragment
 import kotlinx.coroutines.delay
 import java.util.*
 
@@ -34,7 +33,7 @@ import java.util.*
 class HomeComicRvAdapter<T>(
     private var mData: MutableList<T> = mutableListOf(),
     private val mType: ComicType,
-    private val mITapComicListener: HomeFragment.ITapComicListener,
+    inline val onTap: (ComicType, String) -> Unit
 ) : RecyclerView.Adapter<HomeComicRvAdapter<T>.ViewHolder>() {
 
     inner class ViewHolder(val rvBinding: HomeComicRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
@@ -48,7 +47,7 @@ class HomeComicRvAdapter<T>(
         return ViewHolder(inflate(from(parent.context), parent, false)).also { vh ->
 
             // 漫画卡片高度
-            vh.rvBinding.homeComicRvImage.doOnLayout { vh.rvBinding.homeComicRvImage.layoutParams.height = ComicCardHeight }
+            vh.rvBinding.homeComicRvImage.doOnLayout { vh.rvBinding.homeComicRvImage.layoutParams.height = getComicCardHeight() }
 
             // 设置父布局 固定高度 （因为最外层还有一个父布局卡片布局设置的时WRAP_CONTENT 根据 子控件决定高度的）
             vh.rvBinding.root.doOnLayout { rooView ->
@@ -57,8 +56,8 @@ class HomeComicRvAdapter<T>(
             }
 
             // 点击 父布局卡片 以及漫画卡片 事件 回调给上级 HomeFragment --> ContainerFragment
-            vh.rvBinding.root.clickGap { _, _ -> mITapComicListener.onTap(mType, vh.mPathWord) }
-            vh.rvBinding.homeBookCard.clickGap { _, _ -> mITapComicListener.onTap(mType, vh.mPathWord) }
+            vh.rvBinding.root.clickGap { _, _ -> onTap(mType, vh.mPathWord) }
+            vh.rvBinding.homeBookCard.clickGap { _, _ -> onTap(mType, vh.mPathWord) }
 
             ToolTipsView.showToolTipsByLongClick(vh.rvBinding.homeComicRvName)
         }

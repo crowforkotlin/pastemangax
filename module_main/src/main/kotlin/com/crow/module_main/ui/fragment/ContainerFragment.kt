@@ -4,13 +4,15 @@ import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
+import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
-import com.crow.module_bookshelf.BookShelfFragment
+import com.crow.module_bookshelf.ui.fragment.BookshelfFragment
 import com.crow.module_comic.ui.fragment.ComicInfoBottomSheetFragment
-import com.crow.module_discovery.DiscoveryFragment
-import com.crow.module_home.model.ComicType
+import com.crow.module_discovery.ui.fragment.DiscoveryFragment
+import com.crow.module_home.model.entity.ComicTapEntity
 import com.crow.module_home.ui.fragment.HomeFragment
 import com.crow.module_main.databinding.MainFragmentContainerBinding
 import com.crow.module_main.ui.adapter.ContainerAdapter
@@ -36,6 +38,39 @@ import kotlin.math.abs
  **************************/
 class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
+    companion object {
+        const val LOGIN_SCUESS = 1
+    }
+
+    init {
+
+        // 登录成功后响应回来进行刷新
+        FlowBus.with<Unit>(BaseStrings.Key.LOGIN_SUCUESS).register(this) {
+            (mFragmentList[0] as HomeFragment).doRefresh(mBinding.mainRefresh)
+            (mFragmentList[2] as BookshelfFragment).doRefresh(mBinding.mainRefresh)
+        }
+
+        // 主页点击漫画
+        FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).register(this) {
+            if (mTapFlag) return@register
+            mTapFlag = true
+            ComicInfoBottomSheetFragment(it.pathword, true).show(parentFragmentManager, ComicInfoBottomSheetFragment.TAG)
+            doAfterDelay(EventGapTime.BASE_FLAG_TIME) { mTapFlag = false }
+        }
+
+        // 清除用户数据
+        FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).register(this) {
+            mUserVM.doClearUserInfo()
+        }
+
+        // 退出账号
+        FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).register(this) {
+            mUserVM.doClearUserInfo()
+            if (mBinding.mainViewPager.currentItem == 2) (mFragmentList[2] as BookshelfFragment).doRefresh(mBinding.mainRefresh)
+        }
+
+    }
+
     // 碎片容器适配器
     private lateinit var mContainerAdapter: ContainerAdapter
 
@@ -49,20 +84,10 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private var mAppBarState: Int = STATE_EXPANDED
 
     // 碎片集
-    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment(mITapComicListener), DiscoveryFragment(), BookShelfFragment()) }
+    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment(), DiscoveryFragment(), BookshelfFragment()) }
 
     // 点击标志 用于防止多次显示 ComicInfoBottomSheetFragment
     private var mTapFlag: Boolean = false
-
-    // 事件层级: ContainerFragment --> HomeFragment --> HomeBookAdapter --> HomeFragment --> ContainerFragment
-    private val mITapComicListener = object : HomeFragment.ITapComicListener {
-        override fun onTap(type: ComicType, pathword: String) {
-            if (mTapFlag) return
-            mTapFlag = true
-            ComicInfoBottomSheetFragment(pathword, true).show(parentFragmentManager, ComicInfoBottomSheetFragment.TAG)
-            this@ContainerFragment.doAfterDelay(EventGapTime.BASE_FLAG_TIME) { mTapFlag = false }
-        }
-    }
 
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
@@ -90,9 +115,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 刷新监听
         mBinding.mainRefresh.setAutoCancelRefreshing(viewLifecycleOwner) {
             when(mBinding.mainViewPager.currentItem) {
-                0 -> (mFragmentList[0] as HomeFragment).doOnRefresh(mBinding.mainRefresh)
-                1 -> { }
-                2 -> { }
+                0 -> (mFragmentList[0] as HomeFragment).doRefresh(mBinding.mainRefresh)
+                1 -> (mFragmentList[1] as DiscoveryFragment)
+                2 -> (mFragmentList[2] as BookshelfFragment).doRefresh(mBinding.mainRefresh)
             }
         }
     }
@@ -112,7 +137,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 适配器 初始化 （设置Adapter、预加载页数）
         mContainerAdapter = ContainerAdapter(mFragmentList, requireActivity().supportFragmentManager, viewLifecycleOwner.lifecycle)
         mBinding.mainViewPager.adapter = mContainerAdapter
-        mBinding.mainViewPager.offscreenPageLimit = 1
+        mBinding.mainViewPager.offscreenPageLimit = 3
 
         // 设置刷新控件的的内部颜色
         mBinding.mainRefresh.setColorSchemeColors(ContextCompat.getColor(mContext, com.crow.module_main.R.color.main_light_blue))
@@ -135,6 +160,8 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                 else -> { }
             }
         }.attach()
+
+
     }
 
     override fun initObserver() {

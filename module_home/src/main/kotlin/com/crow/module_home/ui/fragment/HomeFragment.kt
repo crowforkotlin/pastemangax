@@ -14,8 +14,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.crow.base.R.dimen
-import com.crow.base.R.string.BaseLoadingError
+import com.crow.base.current_project.BaseStrings
+import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.*
@@ -23,6 +23,7 @@ import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeComicBinding
 import com.crow.module_home.databinding.HomeFragmentBinding
 import com.crow.module_home.model.ComicType
+import com.crow.module_home.model.entity.ComicTapEntity
 import com.crow.module_home.model.intent.HomeIntent
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
@@ -37,6 +38,7 @@ import com.to.aboomy.pager2banner.ScaleInTransformer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.crow.base.R as baseR
 
 
 /*************************
@@ -47,22 +49,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  * @Description: HomeBodyFragment
  * @formatter:on
  **************************/
-class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
-
-    // 次构造 初始化 父容器的点击事件
-    constructor(mClickListener: ITapComicListener) : this() { mTapComicParentListener = mClickListener }
-
-    // 单个漫画的点击事件
-    interface ITapComicListener { fun onTap(type: ComicType, pathword: String) }
+class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     // 主页 VM
     private val mHomeVM by viewModel<HomeViewModel>()
-
-    // 主页 子Rv的漫画点击事件
-    private var mTapComicChildListener = object : ITapComicListener { override fun onTap(type: ComicType, pathword: String) { mTapComicParentListener?.onTap(type, pathword) } }
-
-    // 主页 父容器漫画点击事件
-    private var mTapComicParentListener: ITapComicListener? = null
 
     // 刷新按钮（换一批） ＆ 主页刷新布局控件
     private var mRecRefreshButton : MaterialButton? = null
@@ -104,7 +94,7 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
                             else doLoadHomePage(intent.homePageData!!.mResults)
                         }
                         .doOnError { code, msg ->
-                            if (code == ViewState.Error.UNKNOW_HOST) mBinding.root.showSnackBar(msg ?: getString(BaseLoadingError))
+                            if (code == ViewState.Error.UNKNOW_HOST) mBinding.root.showSnackBar(msg ?: getString(baseR.string.BaseLoadingError))
                             if (mSwipeRefreshLayout == null) dismissLoadingAnim() else  mSwipeRefreshLayout?.isRefreshing = false
                         }
                 }
@@ -113,7 +103,7 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
                 is HomeIntent.GetRecPageByRefresh -> {
                     intent.mViewState
                         .doOnSuccess { mRecRefreshButton!!.isEnabled = true }
-                        .doOnError { _, _ -> mBinding.root.showSnackBar(getString(BaseLoadingError)) }
+                        .doOnError { _, _ -> mBinding.root.showSnackBar(getString(baseR.string.BaseLoadingError)) }
                         .doOnResult {
                             viewLifecycleOwner.lifecycleScope.launch {
                                 mHomeRecAdapter.doRecNotify(mHomeRecAdapter, intent.recPageData?.mResults?.mResult?.toMutableList() ?: return@launch, mHomePageLayoutRefreshTime)
@@ -136,12 +126,24 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
     override fun initView() {
 
         // 适配器可以作为局部成员，但不要直接初始化，不然会导致被View引用从而内存泄漏
-        mHomeRecAdapter = HomeComicRvAdapter(mType = ComicType.Rec, mITapComicListener = mTapComicChildListener)
-        mHomeHotAdapter = HomeComicRvAdapter(mType = ComicType.Hot, mITapComicListener = mTapComicChildListener)
-        mHomeNewAdapter = HomeComicRvAdapter(mType = ComicType.New, mITapComicListener = mTapComicChildListener)
-        mHomeFinishAdapter = HomeComicRvAdapter(mType = ComicType.Commit, mITapComicListener = mTapComicChildListener)
-        mHomeRankAapter = HomeComicRvAdapter(mType = ComicType.Rank,mITapComicListener =  mTapComicChildListener)
-        mHomeTopicAapter = HomeComicRvAdapter(mType = ComicType.Topic, mITapComicListener = mTapComicChildListener)
+        mHomeRecAdapter = HomeComicRvAdapter(mType = ComicType.Rec) { type, pathword ->
+            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+        }
+        mHomeHotAdapter = HomeComicRvAdapter(mType = ComicType.Hot) { type, pathword ->
+            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+        }
+        mHomeNewAdapter = HomeComicRvAdapter(mType = ComicType.New) { type, pathword ->
+            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+        }
+        mHomeFinishAdapter = HomeComicRvAdapter(mType = ComicType.Commit) { type, pathword ->
+            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+        }
+        mHomeRankAapter = HomeComicRvAdapter(mType = ComicType.Rank) { type, pathword ->
+            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+        }
+        mHomeTopicAapter = HomeComicRvAdapter(mType = ComicType.Topic) { type, pathword ->
+            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+        }
 
         // 初始化刷新 推荐的按钮
         mRecRefreshButton = initRecRefreshView()
@@ -155,7 +157,7 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
                     .setIndicatorColor(Color.DKGRAY)
                     .setIndicatorSelectorColor(Color.WHITE)
                     .setIndicatorStyle(IndicatorView.IndicatorStyle.INDICATOR_BEZIER)
-                    .also { it.doOnLayout { view -> (view.layoutParams as RelativeLayout.LayoutParams).bottomMargin = mContext.resources.getDimensionPixelSize(dimen.base_dp20) } })
+                    .also { it.doOnLayout { view -> (view.layoutParams as RelativeLayout.LayoutParams).bottomMargin = mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp20) } })
 
 
         // 设置每一个子布局的 （Icon、标题、适配器）
@@ -207,9 +209,9 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
                 topToBottom = mBinding.homeComicRec.homeComicBookRv.id
             }
             icon = ContextCompat.getDrawable(mContext, R.drawable.home_ic_refresh_24dp)
-            iconSize = mContext.resources.getDimensionPixelSize(dimen.base_dp24)
+            iconSize = mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp24)
             iconTint = null
-            iconPadding = mContext.resources.getDimensionPixelSize(dimen.base_dp6)
+            iconPadding = mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp6)
             text = mContext.getString(R.string.home_refresh)
         }
     }
@@ -218,12 +220,15 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
     private fun doLoadHomePage(results: Results) {
 
         // 设置轮播图数据
-        mHomeBannerAdapter = HomeBannerAdapter(results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList(), mTapComicChildListener)
+        mHomeBannerAdapter = HomeBannerAdapter(results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList()) { type, pathword ->
+            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+        }
+
         mBinding.homeBanner.adapter = mHomeBannerAdapter
 
         // 布局不可见 则淡入 否则代表正在刷新 提示即可
         if (!mBinding.homeLinearLayout.isVisible) {  mBinding.homeLinearLayout.animateFadeIn() }
-        else toast(getString(R.string.home_refresh_success))
+        else toast(getString(baseR.string.BaseRefreshScucess))
 
         viewLifecycleOwner.lifecycleScope.launch {
 
@@ -247,7 +252,7 @@ class HomeFragment constructor() : BaseMviFragment<HomeFragmentBinding>() {
     }
 
     // 暴露的函数 提供给 ContainerFragment 用于通知主页刷新
-    fun doOnRefresh(swipeRefreshLayout: SwipeRefreshLayout) {
+    fun doRefresh(swipeRefreshLayout: SwipeRefreshLayout) {
 
         // 初始化刷新控件布局 300MS 后执行获取主页的意图（给刷新控件的动画加一点时间执行，不然请求快的话会导致控件直接消失）
         mSwipeRefreshLayout = swipeRefreshLayout

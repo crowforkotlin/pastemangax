@@ -1,7 +1,7 @@
 package com.crow.module_home.ui.viewmodel
 
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
-import com.crow.module_home.model.factory.HomeRepository
+import com.crow.module_home.network.HomeRepository
 import com.crow.module_home.model.intent.HomeIntent
 import com.crow.module_home.model.resp.homepage.results.Results
 
@@ -23,7 +23,7 @@ class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<H
 
     // 获取主页 （返回数据量很多）
     private fun getHomePage(intent: HomeIntent.GetHomePage) {
-        intent.flowResult(repository.getHomePage()) { value ->
+        flowResult(intent, repository.getHomePage()) { value ->
             mResult = value.mResults
             intent.copy(homePageData = value)
         }
@@ -31,7 +31,7 @@ class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<H
 
     // 通过刷新的方式 获取推荐
     private fun getRecPageByRefresh(intent: HomeIntent.GetRecPageByRefresh) {
-        intent.flowResult(repository.getRecPageByRefresh(3, mRefreshStartIndex)) { value ->
+        flowResult(intent, repository.getRecPageByRefresh(3, mRefreshStartIndex)) { value ->
             mRefreshStartIndex += 3
             intent.copy(recPageData = value)
         }

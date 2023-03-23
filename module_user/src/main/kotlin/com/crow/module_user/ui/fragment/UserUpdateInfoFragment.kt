@@ -6,7 +6,9 @@ import androidx.activity.addCallback
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.processTokenError
+import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
@@ -142,8 +144,8 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
             // 退出Fragment 标志位 true
             mExitFragment = true
 
-            // 清除用户全部数据
-            mUserVM.doClearUserInfo()
+            // 发送事件清除用户全部数据
+            FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).post(lifecycleScope, Unit)
 
             // 清除当前界面的用户数据
             mUserUpdateInfoVM.doClearUserUpdateInfoData()

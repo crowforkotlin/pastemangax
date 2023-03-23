@@ -10,14 +10,11 @@ import com.crow.module_home.databinding.HomeBannerRvBinding
 import com.crow.module_home.databinding.HomeBannerRvBinding.inflate
 import com.crow.module_home.model.ComicType
 import com.crow.module_home.model.resp.homepage.Banner
-import com.crow.module_home.ui.fragment.HomeFragment
 
 class HomeBannerAdapter(
     val bannerList: MutableList<Banner>,
-    val mITapComicListener: HomeFragment.ITapComicListener,
+    inline val onTap: (ComicType, String) -> Unit,
 ) : RecyclerView.Adapter<HomeBannerAdapter.ViewHolder>() {
-
-    private var mComicListener: HomeFragment.ITapComicListener? = null
 
     inner class ViewHolder(val rvBinding: HomeBannerRvBinding) : RecyclerView.ViewHolder(rvBinding.root) {
         var mPathword: String = ""
@@ -26,7 +23,7 @@ class HomeBannerAdapter(
     override fun getItemCount(): Int = bannerList.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(inflate(from(parent.context), parent, false)).also { vh ->
-            vh.rvBinding.baneerImage.clickGap { _, _ -> mITapComicListener.onTap(ComicType.Banner, vh.mPathword) }
+            vh.rvBinding.baneerImage.clickGap { _, _ -> onTap(ComicType.Banner, vh.mPathword) }
         }
     }
 
@@ -38,8 +35,6 @@ class HomeBannerAdapter(
         vh.rvBinding.bannerText.text = banner.mBrief
         vh.mPathword = banner.mComic!!.mPathWord
     }
-
-    fun setListener(clickListener: HomeFragment.ITapComicListener) { mComicListener = clickListener }
 
     /*suspend fun doOnNotify(datas: List<Banner>, delay: Long = 20L, waitTime: Long = 100L) {
         bannerList.clear()

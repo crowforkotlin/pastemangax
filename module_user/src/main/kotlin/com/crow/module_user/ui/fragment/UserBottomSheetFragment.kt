@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import com.crow.base.app.appContext
+import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
+import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.clickGap
 import com.crow.base.tools.extensions.navigate
 import com.crow.base.tools.extensions.onCollect
@@ -30,9 +33,12 @@ import com.crow.base.R as baseR
  * @formatter:on
  **************************/
 
-class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
+class UserBottomSheetFragment() : BaseMviBottomSheetDF<UserFragmentBinding>() {
 
     companion object { val TAG = UserBottomSheetFragment::class.java.simpleName }
+
+    // 用戶 VM
+    private val mUserVM by sharedViewModel<UserViewModel>()
 
     // 用户适配器数据
     private val mAdapterData = mutableListOf (
@@ -70,9 +76,6 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
             4 -> { }
         }
     } }
-
-    // 用戶 VM
-    private val mUserVM by sharedViewModel<UserViewModel>()
 
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentBinding.inflate(inflater)
 
@@ -126,8 +129,8 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
         // 点击 退出事件
         mBinding.userExit.clickGap { _, _ ->
 
-            // 清除用户全部数据
-            mUserVM.doClearUserInfo()
+            // 发送事件清除用户数据
+            FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).post(lifecycleScope, Unit)
 
             // SnackBar提示
             mBinding.root.showSnackBar(getString(R.string.user_exit_sucess))

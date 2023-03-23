@@ -60,7 +60,7 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
 
     private fun doLogin(intent: UserIntent.Login) {
         // 200代表 登录 请求成功
-        intent.flowResult(repository.login(intent.username, intent.password)) { value ->
+        flowResult(intent, repository.login(intent.username, intent.password)) { value ->
             if (value.mCode == HttpURLConnection.HTTP_OK) intent.copy(loginResultsOkResp = (toTypeEntity<LoginResultsOkResp>(value.mResults) ?: return@flowResult intent).also {
                 mIconUrl = it.mIconUrl
                 _userInfo.emit(it)
@@ -70,7 +70,7 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
     }
 
     private fun doGetUserInfo(intent: UserIntent.GetUserUpdateInfo) {
-        intent.flowResult(repository.getUserUpdateInfo()) { value ->
+        flowResult(intent, repository.getUserUpdateInfo()) { value ->
             intent.copy(userUpdateInfoResp = value.mResults)
         }
     }

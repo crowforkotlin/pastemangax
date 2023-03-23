@@ -27,7 +27,7 @@ sealed class ViewState {
     object Result : ViewState()
 
     // 加载失败
-    class Error(val type: Int = DEFAULT, val msg: String? = null) : ViewState() {
+    class Error(val code: Int = DEFAULT, val msg: String? = null) : ViewState() {
         companion object {
             const val DEFAULT = -1
             const val UNKNOW_HOST = -2
@@ -69,7 +69,7 @@ suspend inline fun ViewState.doOnSuccessInCoroutine(crossinline block: suspend (
 }
 
 suspend inline fun ViewState.doOnErrorInCoroutine(crossinline block: suspend (Int, String?) -> Unit): ViewState {
-    if (this is ViewState.Error) block(type, msg)
+    if (this is ViewState.Error) block(code, msg)
     return this
 }
 
@@ -89,7 +89,7 @@ inline fun ViewState.doOnSuccessInline(crossinline block: () -> Unit): ViewState
 }
 
 inline fun ViewState.doOnErrorInline(crossinline block: (Int, String?) -> Unit): ViewState {
-    if (this is ViewState.Error) block(type, msg)
+    if (this is ViewState.Error) block(code, msg)
     return this
 }
 
@@ -114,6 +114,6 @@ fun ViewState.doOnResult(iViewStateCallBack: IViewStateCallBack): ViewState {
 }
 
 fun ViewState.doOnError(iViewStateErrorCallBack: IViewStateErrorCallBack): ViewState {
-    if (this is ViewState.Error) iViewStateErrorCallBack.callback(type, msg)
+    if (this is ViewState.Error) iViewStateErrorCallBack.callback(code, msg)
     return this
 }

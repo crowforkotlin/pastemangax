@@ -966,6 +966,7 @@
     <string name="BaseConfirm">确认</string>
     <string name="BaseLoading" translatable="false">加载中...</string>
     <string name="BaseLoadingError">加载失败，请重试！</string>
+    <string name="BaseRefreshScucess">"刷新成功~"</string>
     <string name="BaseTips">提示</string>
     <string name="BaseTodoTextView" translatable="false">This is TextView,Now Todo What......</string>
     <string name="BaseTokenError">身份信息过期!\n您接下来的浏览将是访客模式！\n是否重新登录？</string>
