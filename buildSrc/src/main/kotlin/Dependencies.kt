@@ -88,9 +88,9 @@ object Dependencies {
     /* SmartRefresh
     * - Github : [https://github.com/scwang90/SmartRefreshLayout]
     * */
-    const val smart_refresh = "io.github.scwang90:refresh-layout-kernel:${Versions.smart_refresh}" // 核心依赖
+    const val smart_refresh = "io.github.scwang90:refresh-layout-kernel:${Versions.smart_refresh}"          // 核心依赖
     const val smart_refresh_header = "io.github.scwang90:refresh-header-classics:${Versions.smart_refresh}" //经典刷新头
-    const val smart_refresh_radar = "io.github.scwang90:refresh-header-radar:${Versions.smart_refresh}"     //雷达刷新头
+    const val smart_refresh_material_header = "io.github.scwang90:refresh-header-material:${Versions.smart_refresh}" //经典刷新头
 
     /* Swiperefreshlayout */
     const val androidx_swiperefreshlayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"

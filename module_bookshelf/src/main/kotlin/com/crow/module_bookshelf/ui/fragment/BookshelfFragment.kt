@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
 import com.crow.base.current_project.processTokenError
@@ -18,8 +17,7 @@ import com.crow.module_bookshelf.databinding.BookshelfFragmentBinding
 import com.crow.module_bookshelf.model.intent.BookShelfIntent
 import com.crow.module_bookshelf.ui.adapter.BookshelfRvAdapter
 import com.crow.module_bookshelf.ui.viewmodel.BookshelfViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.crow.base.R as baseR
 
@@ -33,7 +31,7 @@ import com.crow.base.R as baseR
  * @formatter:on
  *************************/
 
-class BookshelfFragment() : BaseMviFragment<BookshelfFragmentBinding>() {
+class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
     // 书架VM
     private val mBookshelfVM by viewModel<BookshelfViewModel>()
@@ -41,24 +39,18 @@ class BookshelfFragment() : BaseMviFragment<BookshelfFragmentBinding>() {
     // Bookshelf 适配器
     private lateinit var mBookshelfRvAdapter: BookshelfRvAdapter
 
-    private var mRefreshLayout: SwipeRefreshLayout? = null
+    // 刷新布局
+    private var mRefreshLayout: SmartRefreshLayout? = null
 
     override fun getViewBinding(inflater: LayoutInflater) = BookshelfFragmentBinding.inflate(inflater)
 
     override fun initView() {
-
-        // 设置 内边距属性 实现沉浸式效果
-        mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, 0)
 
         // 初始化适配器
         mBookshelfRvAdapter = BookshelfRvAdapter {  }
 
         // 设置适配器
         mBinding.bookshelfRv.adapter = mBookshelfRvAdapter
-    }
-
-    override fun initData() {
-        // mBookshelfVM.input(BookShelfIntent.GetBookShelf())
     }
 
     override fun initObserver() {
@@ -77,16 +69,18 @@ class BookshelfFragment() : BaseMviFragment<BookshelfFragmentBinding>() {
             when(intent) {
                 is BookShelfIntent.GetBookShelf -> {
                     intent.mViewState
-
                         .doOnResult {
 
                             // 文本不可见 代表成功获取到数据
                             mBinding.bookshelfRvText.visibility = View.GONE
 
-                            // 判斷是否正在刷新
-                            if (mRefreshLayout?.isRefreshing == true) {
+                            if(mRefreshLayout?.isRefreshing == true) {
+
+                                // 取消刷新
+                                mRefreshLayout!!.finishRefresh()
+
+                                // Toast Tips
                                 toast(getString(baseR.string.BaseRefreshScucess))
-                                mRefreshLayout!!.isRefreshing = false
                             }
                         }
                         .doOnError { code, msg ->
@@ -94,7 +88,7 @@ class BookshelfFragment() : BaseMviFragment<BookshelfFragmentBinding>() {
                             // 获取书架 适配器数据 0 才显示文本 顺便取消刷新
                             if (mBookshelfRvAdapter.itemCount == 0) {
                                 mBinding.bookshelfRvText.visibility = View.VISIBLE
-                                mRefreshLayout?.isRefreshing = false
+                                mRefreshLayout?.finishRefresh()
                             }
 
                             // 解析地址失败 且 Resumed的状态才提示
@@ -120,12 +114,13 @@ class BookshelfFragment() : BaseMviFragment<BookshelfFragmentBinding>() {
         }
     }
 
-    fun doRefresh(refreshlayout: SwipeRefreshLayout) {
-        mRefreshLayout = refreshlayout
-        viewLifecycleOwner.lifecycleScope.launch {
-            mBookshelfRvAdapter.refresh()
-            delay(500L)
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mRefreshLayout = null
+    }
 
+    fun doRefresh(refreshlayout: SmartRefreshLayout) {
+        mRefreshLayout = refreshlayout
+        doAfterDelay(BASE_ANIM_300L) { mBookshelfRvAdapter.refresh() }
     }
 }

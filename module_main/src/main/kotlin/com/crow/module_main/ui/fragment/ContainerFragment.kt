@@ -21,7 +21,6 @@ import com.crow.module_user.ui.fragment.UserBottomSheetFragment
 import com.crow.module_user.ui.viewmodel.UserViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -104,14 +103,14 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
         // ToolBar 索引0 （设置）点击监听
         mBinding.mainContaienrToolbar.menu[0].clickGap { _, _ ->
-            val dialog = MaterialAlertDialogBuilder(mContext)
-            dialog.setTitle("拷贝漫画")
-            dialog.setPositiveButton("知道了~", null)
-            dialog.show()
+            mContext.newMaterialDialog { dialog ->
+                dialog.setTitle("拷贝漫画")
+                dialog.setPositiveButton("知道了~", null)
+            }
         }
 
         // 刷新监听
-        mBinding.mainRefresh.setAutoCancelRefreshing(viewLifecycleOwner) {
+        mBinding.mainRefresh.setOnRefreshListener {
             when(mBinding.mainViewPager.currentItem) {
                 0 -> (mFragmentList[0] as HomeFragment).doRefresh(mBinding.mainRefresh)
                 1 -> (mFragmentList[1] as DiscoveryFragment)
@@ -124,6 +123,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, 0)
+
+        // 设置刷新时不允许列表滚动
+        mBinding.mainRefresh.setDisableContentWhenRefresh(true)
 
         // 重新创建View之后 appBarLayout会展开折叠，记录一个状态进行初始化
         if (mAppBarState == STATE_COLLAPSED) mBinding.mainContaienrAppbar.setExpanded(false, false)
@@ -138,7 +140,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mBinding.mainViewPager.offscreenPageLimit = 3
 
         // 设置刷新控件的的内部颜色
-        mBinding.mainRefresh.setColorSchemeColors(ContextCompat.getColor(mContext, com.crow.module_main.R.color.main_light_blue))
+        // mBinding.mainRefresh.setColorSchemeColors(ContextCompat.getColor(mContext, com.crow.module_main.R.color.main_light_blue))
 
         // 关联 TabLayout & ViewPager2
         TabLayoutMediator(mBinding.mainContainerTabLayout, mBinding.mainViewPager) { tab, pos ->
