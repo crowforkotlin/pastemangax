@@ -59,9 +59,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
 
         // 清除用户数据
-        FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).register(this) {
-            mUserVM.doClearUserInfo()
-        }
+        FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).register(this) { mUserVM.doClearUserInfo() }
 
         // 退出账号
         FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).register(this) {

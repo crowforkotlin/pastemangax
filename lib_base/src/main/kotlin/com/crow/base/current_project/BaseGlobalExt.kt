@@ -87,6 +87,7 @@ inline fun View.processTokenError(
     runCatching { msg.toTypeEntity<BaseTokenInvalidResp>()!!.mResults }
         .onSuccess {
             context.newMaterialDialog { dialog ->
+                dialog.setCancelable(false)
                 dialog.setView(TextView(context).also {  textView ->
                     textView.text = context.getString(R.string.BaseTokenError)
                     textView.textSize = 18f

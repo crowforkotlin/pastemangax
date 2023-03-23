@@ -9,8 +9,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.crow.base.R
+import com.crow.base.app.appContext
 import com.crow.base.current_project.formatValue
 import com.crow.base.current_project.getComicCardHeight
+import com.crow.base.current_project.getComicCardWidth
 import com.crow.base.tools.extensions.clickGap
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_home.databinding.HomeComicRvBinding
@@ -43,11 +46,17 @@ class HomeComicRvAdapter<T>(
 
     override fun getItemCount(): Int = mData.size
 
+    private val mSize10 = appContext.resources.getDimension(R.dimen.base_dp10).toInt()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(inflate(from(parent.context), parent, false)).also { vh ->
 
             // 漫画卡片高度
-            vh.rvBinding.homeComicRvImage.doOnLayout { vh.rvBinding.homeComicRvImage.layoutParams.height = getComicCardHeight() }
+            vh.rvBinding.homeComicRvImage.layoutParams.apply {
+                width = getComicCardWidth() - mSize10
+                height = getComicCardHeight() - mSize10
+                (vh.rvBinding.homeComicRvName.layoutParams as ConstraintLayout.LayoutParams).topMargin += mSize10 / 2
+            }
 
             // 设置父布局 固定高度 （因为最外层还有一个父布局卡片布局设置的时WRAP_CONTENT 根据 子控件决定高度的）
             vh.rvBinding.root.doOnLayout { rooView ->

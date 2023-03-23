@@ -59,7 +59,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     private var mSwipeRefreshLayout : SwipeRefreshLayout? = null
 
     // 主页布局刷新的时间 第一次进入布局默认20Ms 之后刷新 为 50Ms
-    private var mHomePageLayoutRefreshTime = 20L
+    private var mHomePageLayoutRefreshTime = 10L
 
     // 主页数据量较多， 采用Rv方式
     private lateinit var mHomeBannerAdapter: HomeBannerAdapter
@@ -247,7 +247,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             mHomeTopicAapter.doTopicNotify(mHomeTopicAapter, results.mTopics.mResult.toMutableList(), mHomePageLayoutRefreshTime)
 
             // 设置布局刷新时间 50MS
-            if (mHomePageLayoutRefreshTime == 20L) mHomePageLayoutRefreshTime = 50L
+            if (mHomePageLayoutRefreshTime == 10L) mHomePageLayoutRefreshTime = 50L
         }
     }
 
