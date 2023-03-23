@@ -11,6 +11,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.crow.base.current_project.*
+import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.toast
@@ -27,6 +28,7 @@ import com.crow.module_comic.ui.adapter.ComicInfoChapterRvAdapter
 import com.crow.module_comic.ui.viewmodel.ComicViewModel
 import com.google.android.material.chip.Chip
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.crow.base.R as baseR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -113,7 +115,7 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
         mComicChapterRvAdapter.addListener { comic ->
             dismissAllowingStateLoss()
             findNavController().navigate(
-                com.crow.base.R.id.mainComicfragment,
+                baseR.id.mainComicfragment,
                 Bundle().also {
                     it.putString("pathword", comic.comicPathWord)
                     it.putString("uuid", comic.uuid)
@@ -162,12 +164,12 @@ class ComicInfoBottomSheetFragment constructor() : BaseMviBottomSheetDF<ComicFra
     private fun showComicChapaterPage(comics: ChapterResultsResp) {
         mComicChapterRvAdapter.setData(comics.list)
         mComicChapterRvAdapter.notifyItemRangeInserted(0, mComicChapterRvAdapter.itemCount)
-        mBinding.comicInfoRvChapter.animateFadeIn(300L)
+        mBinding.comicInfoRvChapter.animateFadeIn(BASE_ANIM_300L)
     }
 
     private fun doOnDismissDialogByError() {
         dismissLoadingAnim {
-            toast("加载失败，请重试~")
+            toast(getString(baseR.string.BaseLoadingError))
             dismissAllowingStateLoss()
         }
     }

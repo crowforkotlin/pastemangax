@@ -13,7 +13,6 @@ import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
@@ -28,11 +27,12 @@ import com.crow.module_home.model.intent.HomeIntent
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.model.resp.homepage.results.Results
-import com.crow.module_home.ui.adapter.HomeBannerAdapter
+import com.crow.module_home.ui.adapter.HomeBannerRvAdapter
 import com.crow.module_home.ui.adapter.HomeComicRvAdapter
 import com.crow.module_home.ui.viewmodel.HomeViewModel
 import com.google.android.material.R.attr.materialIconButtonStyle
 import com.google.android.material.button.MaterialButton
+import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.to.aboomy.pager2banner.IndicatorView
 import com.to.aboomy.pager2banner.ScaleInTransformer
 import kotlinx.coroutines.delay
@@ -56,13 +56,13 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     // 刷新按钮（换一批） ＆ 主页刷新布局控件
     private var mRecRefreshButton : MaterialButton? = null
-    private var mSwipeRefreshLayout : SwipeRefreshLayout? = null
+    private var mSwipeRefreshLayout : SmartRefreshLayout? = null
 
     // 主页布局刷新的时间 第一次进入布局默认20Ms 之后刷新 为 50Ms
     private var mHomePageLayoutRefreshTime = 10L
 
     // 主页数据量较多， 采用Rv方式
-    private lateinit var mHomeBannerAdapter: HomeBannerAdapter
+    private lateinit var mHomeBannerRvAdapter: HomeBannerRvAdapter
     private lateinit var mHomeRecAdapter: HomeComicRvAdapter<RecComicsResult>
     private lateinit var mHomeHotAdapter: HomeComicRvAdapter<HotComic>
     private lateinit var mHomeNewAdapter: HomeComicRvAdapter<NewComic>
@@ -95,7 +95,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                         }
                         .doOnError { code, msg ->
                             if (code == ViewState.Error.UNKNOW_HOST) mBinding.root.showSnackBar(msg ?: getString(baseR.string.BaseLoadingError))
-                            if (mSwipeRefreshLayout == null) dismissLoadingAnim() else  mSwipeRefreshLayout?.isRefreshing = false
+                            if (mSwipeRefreshLayout == null) dismissLoadingAnim() else  mSwipeRefreshLayout?.finishRefresh()
                         }
                 }
 
@@ -220,11 +220,11 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     private fun doLoadHomePage(results: Results) {
 
         // 设置轮播图数据
-        mHomeBannerAdapter = HomeBannerAdapter(results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList()) { type, pathword ->
+        mHomeBannerRvAdapter = HomeBannerRvAdapter(results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList()) { type, pathword ->
             FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
 
-        mBinding.homeBanner.adapter = mHomeBannerAdapter
+        mBinding.homeBanner.adapter = mHomeBannerRvAdapter
 
         // 布局不可见 则淡入 否则代表正在刷新 提示即可
         if (!mBinding.homeLinearLayout.isVisible) {  mBinding.homeLinearLayout.animateFadeIn() }
@@ -234,7 +234,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
             // 等待刷新控件动画消失 150MS
             if (mSwipeRefreshLayout != null && mSwipeRefreshLayout!!.isRefreshing) {
-                mSwipeRefreshLayout!!.isRefreshing = false
+                mSwipeRefreshLayout!!.finishRefresh()
                 delay(150L)
             }
 
@@ -252,11 +252,11 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     }
 
     // 暴露的函数 提供给 ContainerFragment 用于通知主页刷新
-    fun doRefresh(swipeRefreshLayout: SwipeRefreshLayout) {
+    fun doRefresh(swipeRefreshLayout: SmartRefreshLayout) {
 
         // 初始化刷新控件布局 300MS 后执行获取主页的意图（给刷新控件的动画加一点时间执行，不然请求快的话会导致控件直接消失）
         mSwipeRefreshLayout = swipeRefreshLayout
-        doAfterDelay(300L) { mHomeVM.input(HomeIntent.GetHomePage()) }
+        doAfterDelay(BASE_ANIM_300L) { mHomeVM.input(HomeIntent.GetHomePage()) }
     }
 
 }

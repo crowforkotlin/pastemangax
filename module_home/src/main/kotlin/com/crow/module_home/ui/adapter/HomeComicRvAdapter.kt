@@ -6,7 +6,6 @@ import android.view.LayoutInflater.from
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.R
@@ -53,15 +52,14 @@ class HomeComicRvAdapter<T>(
 
             // 漫画卡片高度
             vh.rvBinding.homeComicRvImage.layoutParams.apply {
-                width = getComicCardWidth() - mSize10
-                height = getComicCardHeight() - mSize10
-                (vh.rvBinding.homeComicRvName.layoutParams as ConstraintLayout.LayoutParams).topMargin += mSize10 / 2
-            }
-
-            // 设置父布局 固定高度 （因为最外层还有一个父布局卡片布局设置的时WRAP_CONTENT 根据 子控件决定高度的）
-            vh.rvBinding.root.doOnLayout { rooView ->
-                mParentHeight = mParentHeight ?: rooView.height
-                rooView.layoutParams.height = mParentHeight!!
+                if (mType != ComicType.Topic) {
+                    width = getComicCardWidth() - mSize10
+                    height = getComicCardHeight() - mSize10
+                    (vh.rvBinding.homeComicRvName.layoutParams as ConstraintLayout.LayoutParams).topMargin += mSize10 / 2
+                } else {
+                    width = getComicCardWidth() / 2 + getComicCardWidth() - mSize10
+                    height = getComicCardHeight()
+                }
             }
 
             // 点击 父布局卡片 以及漫画卡片 事件 回调给上级 HomeFragment --> ContainerFragment

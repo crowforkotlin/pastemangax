@@ -11,10 +11,10 @@ import com.crow.module_home.databinding.HomeBannerRvBinding.inflate
 import com.crow.module_home.model.ComicType
 import com.crow.module_home.model.resp.homepage.Banner
 
-class HomeBannerAdapter(
+class HomeBannerRvAdapter(
     val bannerList: MutableList<Banner>,
     inline val onTap: (ComicType, String) -> Unit,
-) : RecyclerView.Adapter<HomeBannerAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<HomeBannerRvAdapter.ViewHolder>() {
 
     inner class ViewHolder(val rvBinding: HomeBannerRvBinding) : RecyclerView.ViewHolder(rvBinding.root) {
         var mPathword: String = ""

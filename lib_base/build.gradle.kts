@@ -141,14 +141,13 @@ dependencies {
 
     api(Dependencies.zguop_banner)
     api(Dependencies.circular_imageview)
-    api(Dependencies.eventbus)
-    api(Dependencies.immersionBar)
-    api(Dependencies.immersionBar_kt)
-    api(Dependencies.volley)
     api(Dependencies.shimmerlayout)
     api(Dependencies.bigImageViewPager)
     api(Dependencies.tencent_bugly)
     api(Dependencies.loading_button)
     api(Dependencies.luksiege_picture_selector)
     api(Dependencies.luksiege_ucrop)
+
+    api(Dependencies.smart_refresh)
+    api(Dependencies.smart_refresh_material_header)
 }
