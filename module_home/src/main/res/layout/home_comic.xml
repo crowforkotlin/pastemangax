@@ -12,7 +12,6 @@
 	app:cardCornerRadius="@dimen/base_dp20"
 	app:cardElevation="@dimen/base_dp10">
 
-	<!-- asdasd啊实打实的-->
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:id="@+id/home_comic_constraint"
 		android:layout_width="match_parent"
@@ -67,3 +66,7 @@
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
+
+<!--
+Git 提交这么麻烦啊！！！！
+-->
