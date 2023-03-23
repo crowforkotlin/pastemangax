@@ -1,9 +1,10 @@
 package com.crow.copymanga.di
 
-import com.crow.base.network.FlowCallAdapterFactory
+import com.crow.base.current_project.BaseStrings
+import com.crow.base.current_project.BaseUser
+import com.crow.base.tools.extensions.baseMoshi
+import com.crow.base.tools.network.FlowCallAdapterFactory
 import com.crow.copymanga.BuildConfig
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -35,7 +36,8 @@ val netWorkModule = module {
                 chain.proceed(chain.request().newBuilder()
                     .addHeader("User-Agent", "Dart/2.16 (dart:io)")
                     .addHeader("Platform", "1")
-                    .addHeader("region", "0")
+                    .addHeader("Authorization","Token ${BaseUser.CURRENT_USER_TOKEN}")
+                    .addHeader("region", BaseUser.CURRENT_REGION)
                     .build()
                 )
             })
@@ -51,10 +53,10 @@ val netWorkModule = module {
 
     single {
         Retrofit.Builder()
-            .baseUrl("https://api.copymanga.site/")
+            .baseUrl(BaseStrings.URL.CopyManga)
             .client(get())
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create(Moshi.Builder().add(KotlinJsonAdapterFactory()).build()))
+            .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
             .build()
     }
 

@@ -1,8 +1,10 @@
 package com.crow.copymanga.di
 
+import com.crow.module_bookshelf.network.BookShelfRepository
 import com.crow.module_comic.network.ComicRepository
-import com.crow.module_home.model.factory.HomeRepository
+import com.crow.module_home.network.HomeRepository
 import com.crow.module_main.network.ContainerRepository
+import com.crow.module_user.network.UserRepository
 import org.koin.dsl.module
 
 /*************************
@@ -18,4 +20,6 @@ val factoryModule = module {
     factory { HomeRepository(get()) }
     factory { ContainerRepository(get()) }
     factory { ComicRepository(get()) }
+    factory { UserRepository(get()) }
+    factory { BookShelfRepository(get()) }
 }

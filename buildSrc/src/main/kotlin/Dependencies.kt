@@ -70,12 +70,23 @@ object Dependencies {
     const val androidx_datastore = "androidx.datastore:datastore-preferences:1.0.0"
 
     /* Coroutine 协程
-    * - GitHub : [https://github.com/Kotlin/kotlinx.coroutines]
+    * - Github : [https://github.com/Kotlin/kotlinx.coroutines]
     * */
     const val kotlinx_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
 
+    /* KotlinX DataTime
+    * - Github : [https://github.com/Kotlin/kotlinx-datetime]
+    * */
+    const val kotlinx_datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
+
+    // kotlin stdlib
+    const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin_version}"
+    const val kotlin_jdk7 = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin_version}"
+    const val kotlin_jdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
+    const val kotlin_reflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin_version}"
+
     /* SmartRefresh
-    * - GitHub : [https://github.com/scwang90/SmartRefreshLayout]
+    * - Github : [https://github.com/scwang90/SmartRefreshLayout]
     * */
     const val smart_refresh = "io.github.scwang90:refresh-layout-kernel:${Versions.smart_refresh}" // 核心依赖
     const val smart_refresh_header = "io.github.scwang90:refresh-header-classics:${Versions.smart_refresh}" //经典刷新头
@@ -101,7 +112,7 @@ object Dependencies {
     const val retrofit_moshi = "com.squareup.retrofit2:converter-moshi:${Versions.retrofit_version}"
 
     /* Moshi
-    * - GitHub : [https://github.com/square/moshi]
+    * - Github : [https://github.com/square/moshi]
     * */
     const val moshi = "com.squareup.moshi:moshi-kotlin:${Versions.moshi_version}"
 
@@ -139,6 +150,12 @@ object Dependencies {
     * - Github : [https://github.com/square/leakcanary]
     * */
     const val leakcanary ="com.squareup.leakcanary:leakcanary-android:2.9.1"
+
+
+    /* Glance database 分析
+    * - Github : [https://github.com/guolindev/Glance]
+    * */
+    const val glance ="com.guolindev.glance:glance:1.1.0"
 
     /* Glide 图片加载
     * - Github : [https://github.com/bumptech/glide]
@@ -221,4 +238,17 @@ object Dependencies {
     * - Home : [https://bugly.qq.com/v2/workbench/apps]
     * */
     const val tencent_bugly = "com.tencent.bugly:crashreport:latest.release"
+    
+    /* 加载按钮
+    * - Github : [https://github.com/leandroBorgesFerreira/LoadingButtonAndroid/tree/master]
+    * */
+    const val loading_button = "br.com.simplepass:loading-button-android:2.2.0"
+
+    /* 图片选择器
+    * - Github : [https://github.com/LuckSiege/PictureSelector]
+    * */
+    const val luksiege_picture_selector = "io.github.lucksiege:pictureselector:v3.10.8"
+    const val luksiege_compress = "io.github.lucksiege:compress:v3.10.8"
+    const val luksiege_ucrop = "io.github.lucksiege:ucrop:v3.10.8"
+    const val luksiege_camerax = "io.github.lucksiege:camerax:v3.10.8"
 }

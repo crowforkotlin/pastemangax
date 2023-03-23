@@ -76,5 +76,6 @@ dependencies {
     api(project(mapOf("path" to ":module_discovery")))
     api(project(mapOf("path" to ":module_bookshelf")))
     api(project(mapOf("path" to ":module_comic")))
+    api(project(mapOf("path" to ":module_user")))
 
 }

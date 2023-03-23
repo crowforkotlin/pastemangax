@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.crow.base.test.lib_base-mergeDebugAndroidTestResources-2:/values-v29/values-v29.xml",
+            "map": [
+                {
+                    "source": "D:\\Programing\\Tools\\Gradle\\caches\\transforms-3\\e8c2f0583866fce64805785c230ac7dc\\transformed\\jetified-core-splashscreen-1.0.0-beta02\\res\\values-v29\\values-v29.xml",
+                    "from": {
+                        "startLines": "2,7",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,374",
+                        "endLines": "6,8",
+                        "endColumns": "12,12",
+                        "endOffsets": "369,464"
+                    }
+                }
+            ]
+        }
+    ]
+}

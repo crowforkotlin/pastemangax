@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ResourceName">
+	<item name="app_main_fcv" type="id"/>
 	<item name="mainComicfragment" type="id"/>
+	<item name="mainUserloginfragment" type="id"/>
+	<item name="mainUserinfofragment" type="id"/>
+	<item name="mainUsericonfragment" type="id"/>
 </resources>

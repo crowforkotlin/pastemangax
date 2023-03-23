@@ -1,9 +1,9 @@
 <resources>
-
 	<string name="home_homepage">主页</string>
 	<string name="home_recovery">发现</string>
 	<string name="home_bookshelf">书架</string>
 	<string name="home_comic">漫画</string>
+	<string name="home_mine">我的</string>
 	<string name="home_recommend_comic">推荐漫画</string>
 	<string name="home_commit_finish">已完结</string>
 	<string name="home_new_comic">已更新</string>

@@ -15,4 +15,6 @@ class ComicRepository(private val service: ComicService) {
     fun getComicChapter(pathword: String, start: Int, limit: Int = 100) = service.getComicChapter(pathword, start, limit)
 
     fun getComic(pathword: String, uuid: String) = service.getComic(pathword, uuid)
+
+    fun getComicBrowserHistory(pathword: String) = service.getComicBrowserHistory(pathword)
 }

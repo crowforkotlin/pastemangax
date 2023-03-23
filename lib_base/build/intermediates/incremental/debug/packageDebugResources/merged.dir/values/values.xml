@@ -955,11 +955,22 @@
     <dimen name="base_sp7">7sp</dimen>
     <dimen name="base_sp8">8sp</dimen>
     <dimen name="base_sp9">9sp</dimen>
+    <item name="app_main_fcv" type="id"/>
     <item name="mainComicfragment" type="id"/>
+    <item name="mainUsericonfragment" type="id"/>
+    <item name="mainUserinfofragment" type="id"/>
+    <item name="mainUserloginfragment" type="id"/>
     <string name="BaseAppName">CopyMangaX</string>
     <string name="BaseAppName_CH">拷贝漫画</string>
+    <string name="BaseCancel">取消</string>
+    <string name="BaseConfirm">确认</string>
     <string name="BaseLoading" translatable="false">加载中...</string>
+    <string name="BaseLoadingError">加载失败，请重试！</string>
+    <string name="BaseRefreshScucess">"刷新成功~"</string>
+    <string name="BaseTips">提示</string>
     <string name="BaseTodoTextView" translatable="false">This is TextView,Now Todo What......</string>
+    <string name="BaseTokenError">身份信息过期!\n您接下来的浏览将是访客模式！\n是否重新登录？</string>
+    <string name="BaseUnknow">Unknow Error!</string>
     <style name="Base_LibBase_LoadingAnim" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>

@@ -105,6 +105,7 @@ dependencies {
     api(Dependencies.androidx_paging_common_ktx)
     api(Dependencies.androidx_core_splash_screen)
 
+    debugApi(Dependencies.glance)
     debugApi(Dependencies.leakcanary) // 不支持在MinSdk 24以下的设备运行
     testApi(Dependencies.junit_junit)
     androidTestApi(Dependencies.androidx_test_junit_ktx)
@@ -113,6 +114,9 @@ dependencies {
 
     /* Kotlin 协程 */
     api(Dependencies.kotlinx_coroutines)
+    api(Dependencies.kotlinx_datetime)
+    api(Dependencies.kotlin_stdlib)
+    api(Dependencies.kotlin_reflect)
 
 
     /* Koin 注入框架 */
@@ -144,4 +148,7 @@ dependencies {
     api(Dependencies.shimmerlayout)
     api(Dependencies.bigImageViewPager)
     api(Dependencies.tencent_bugly)
+    api(Dependencies.loading_button)
+    api(Dependencies.luksiege_picture_selector)
+    api(Dependencies.luksiege_ucrop)
 }

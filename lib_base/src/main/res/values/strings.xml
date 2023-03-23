@@ -4,4 +4,13 @@
     <string name="BaseAppName_CH">拷贝漫画</string>
     <string name="BaseTodoTextView" translatable="false">This is TextView,Now Todo What......</string>
     <string name="BaseLoading" translatable="false">加载中...</string>
+    <string name="BaseLoadingError">加载失败，请重试！</string>
+    <string name="BaseRefreshScucess">"刷新成功~"</string>
+    <string name="BaseUnknow">Unknow Error!</string>
+    <string name="BaseConfirm">确认</string>
+    <string name="BaseCancel">取消</string>
+    <string name="BaseTips">提示</string>
+
+
+
 </resources>

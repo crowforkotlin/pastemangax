@@ -1,6 +1,6 @@
 package com.crow.module_main.ui.viewmodel
 
-import com.crow.base.viewmodel.mvi.BaseMviViewModel
+import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_comic.model.intent.ComicIntent
 import com.crow.module_main.network.ContainerRepository
 

@@ -5,20 +5,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.app.appContext
-import com.crow.base.extensions.clickGap
+import com.crow.base.tools.extensions.clickGap
 import com.crow.module_home.databinding.HomeBannerRvBinding
 import com.crow.module_home.databinding.HomeBannerRvBinding.inflate
 import com.crow.module_home.model.ComicType
 import com.crow.module_home.model.resp.homepage.Banner
-import com.crow.module_home.ui.fragment.HomeFragment
-import kotlinx.coroutines.delay
 
 class HomeBannerAdapter(
     val bannerList: MutableList<Banner>,
-    val mTapComicListener: HomeFragment.TapComicListener,
+    inline val onTap: (ComicType, String) -> Unit,
 ) : RecyclerView.Adapter<HomeBannerAdapter.ViewHolder>() {
-
-    private var mComicListener: HomeFragment.TapComicListener? = null
 
     inner class ViewHolder(val rvBinding: HomeBannerRvBinding) : RecyclerView.ViewHolder(rvBinding.root) {
         var mPathword: String = ""
@@ -27,7 +23,7 @@ class HomeBannerAdapter(
     override fun getItemCount(): Int = bannerList.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(inflate(from(parent.context), parent, false)).also { vh ->
-            vh.rvBinding.baneerImage.clickGap { _, _ -> mTapComicListener.onTap(ComicType.Banner, vh.mPathword) }
+            vh.rvBinding.baneerImage.clickGap { _, _ -> onTap(ComicType.Banner, vh.mPathword) }
         }
     }
 
@@ -40,13 +36,11 @@ class HomeBannerAdapter(
         vh.mPathword = banner.mComic!!.mPathWord
     }
 
-    fun setListener(clickListener: HomeFragment.TapComicListener) { mComicListener = clickListener }
-
-    suspend fun doOnNotify(delay: Long = 20L, waitTime: Long = 100L) {
-        repeat(bannerList.size) {
-            notifyItemChanged(it)
-            delay(delay)
+    /*suspend fun doOnNotify(datas: List<Banner>, delay: Long = 20L, waitTime: Long = 100L) {
+        bannerList.clear()
+        datas.forEachIndexed { index, banner ->
+            if (banner.mType <= 2) bannerList.add(banner)
+            notifyItemChanged(index)
         }
-        delay(waitTime)
-    }
+    }*/
 }

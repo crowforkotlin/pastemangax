@@ -2,15 +2,15 @@ package com.crow.module_comic.ui.fragment
 
 import android.view.LayoutInflater
 import androidx.activity.OnBackPressedCallback
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.crow.base.fragment.BaseMviFragment
-import com.crow.base.viewmodel.doOnError
-import com.crow.base.viewmodel.doOnLoading
-import com.crow.base.viewmodel.doOnResult
+import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.viewmodel.doOnError
+import com.crow.base.ui.viewmodel.doOnLoading
+import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_comic.databinding.ComicFragmentBinding
 import com.crow.module_comic.model.intent.ComicIntent
-import com.crow.module_comic.model.resp.comic.Results
+import com.crow.module_comic.model.resp.ComicResultsResp
 import com.crow.module_comic.ui.adapter.ComicRvAdapter
 import com.crow.module_comic.ui.viewmodel.ComicViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -38,15 +38,15 @@ class ComicFragment : BaseMviFragment<ComicFragmentBinding>(){
                    intent.mViewState
                        .doOnLoading { showLoadingAnim() }
                        .doOnError { _, _ -> dismissLoadingAnim() }
-                       .doOnResult { dismissLoadingAnim { showComicPage(intent.comicChapter!!.mResults) } }
+                       .doOnResult { dismissLoadingAnim { showComicPage(intent.comicChapter!!) } }
                 }
                 else -> {}
             }
         }
     }
 
-    private fun showComicPage(results: Results) {
-        mComicRvAdapter.setData(results)
+    private fun showComicPage(comicResultsResp: ComicResultsResp) {
+        mComicRvAdapter.setData(comicResultsResp)
         mComicRvAdapter.notifyItemRangeChanged(0, mComicRvAdapter.getDataSize())
     }
 
@@ -64,7 +64,9 @@ class ComicFragment : BaseMviFragment<ComicFragmentBinding>(){
     }
 
     override fun initListener() {
-        mOnBackCallback = object : OnBackPressedCallback(true) { override fun handleOnBackPressed() { findNavController().navigateUp() } }
+        mOnBackCallback = object : OnBackPressedCallback(true) { override fun handleOnBackPressed() {
+            requireActivity().findNavController(
+            com.crow.base.R.id.app_main_fcv).navigateUp() } }
         requireActivity().onBackPressedDispatcher.addCallback(mOnBackCallback)
     }
 

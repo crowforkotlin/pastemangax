@@ -31,23 +31,23 @@
 		tools:text="@string/BaseTodoTextView" />
 
 	<androidx.cardview.widget.CardView
+		style="@style/Widget.Material3.CardView.Filled"
 		android:id="@+id/comic_info_card"
-		android:layout_width="0dp"
-		android:layout_height="0dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/base_dp20"
 		android:layout_marginEnd="@dimen/base_dp20"
 		android:layout_marginBottom="@dimen/base_dp20"
 		app:cardCornerRadius="@dimen/base_dp20"
-
 		app:cardElevation="@dimen/base_dp10"
-		app:layout_constraintBottom_toBottomOf="@+id/comic_guideline_horizontal_03"
-		app:layout_constraintEnd_toEndOf="@+id/comic_guideline_vertical_06"
 		app:layout_constraintStart_toStartOf="@+id/comic_info_name"
 		app:layout_constraintTop_toBottomOf="@+id/comic_info_name">
 
 		<ImageView
 			android:id="@+id/comic_info_image"
 			android:layout_width="match_parent"
+			tools:layout_height="@dimen/base_dp168"
+			tools:layout_width="@dimen/base_dp120"
 			android:layout_height="match_parent"
 			android:contentDescription="@string/BaseTodoTextView"
 			android:scaleType="centerCrop" />
@@ -145,7 +145,7 @@
 			android:layout_weight="0.25"
 			android:text="@string/ComicDownLoad"
 			android:textStyle="bold"
-			app:icon="@drawable/comic_ic_download_24dp"
+			app:icon="@drawable/base_ic_download_24dp"
 			app:iconGravity="top" />
 
 		<com.google.android.material.button.MaterialButton
@@ -201,19 +201,5 @@
 		</androidx.appcompat.widget.LinearLayoutCompat>
 
 	</androidx.core.widget.NestedScrollView>
-
-	<androidx.constraintlayout.widget.Guideline
-		android:id="@+id/comic_guideline_vertical_06"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		app:layout_constraintGuide_percent="0.4" />
-
-	<androidx.constraintlayout.widget.Guideline
-		android:id="@+id/comic_guideline_horizontal_03"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		app:layout_constraintGuide_percent="0.3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

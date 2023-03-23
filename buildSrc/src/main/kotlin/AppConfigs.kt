@@ -22,6 +22,8 @@ object AppConfigs {
 
     const val module_comic_namespace = "com.crow.module_comic"
 
+    const val module_user_namespace = "com.crow.module_user"
+
     // Base库的命名空间
     const val base_namespace = "com.crow.base"
 
@@ -34,13 +36,20 @@ object AppConfigs {
     // module home 资源前缀
     const val home_resource_prefix = "home"
 
+    // module_main资源前缀
     const val main_resource_prefix = "main"
 
+    // module_discovery资源前缀
     const val discovery_resource_prefix = "discovery"
 
+    // module_bookshelf资源前缀
     const val bookshelf_resource_prefix = "bookshelf"
 
+    // module_comic资源前缀
     const val comic_resource_prefix = "comic"
+
+    // module_user资源前缀
+    const val user_resource_prefix = "user"
 
     // 应用ID
     const val application_id = "com.crow.copymanga"

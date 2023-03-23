@@ -8,5 +8,5 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	app:defaultNavHost="true"
-	app:navGraph="@navigation/app_main_nav"
+	app:navGraph="@navigation/main_nav"
 	tools:context=".MainActivity" />
