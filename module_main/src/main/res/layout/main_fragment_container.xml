@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	tools:context="com.crow.module_main.ui.fragment.ContainerFragment">
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/main_contaienr_appbar"
@@ -75,33 +77,20 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			app:layout_constraintEnd_toEndOf="parent"
+			app:layout="@layout/main_search_layout"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent">
 
-			<include layout="@layout/main_search_layout" />
-
 		</com.google.android.material.search.SearchView>
 
-		<com.scwang.smart.refresh.layout.SmartRefreshLayout
-			android:id="@+id/main_refresh"
-			android:layout_width="wrap_content"
+		<androidx.viewpager2.widget.ViewPager2
+			android:id="@+id/main_view_pager"
+			android:layout_width="match_parent"
 			android:layout_height="0dp"
+			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/main_container_tab_layout" >
-
-			<com.scwang.smart.refresh.header.MaterialHeader
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"/>
-
-			<androidx.viewpager2.widget.ViewPager2
-				android:id="@+id/main_view_pager"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent" />
-
-		</com.scwang.smart.refresh.layout.SmartRefreshLayout>
-
+			app:layout_constraintTop_toBottomOf="@+id/main_container_tab_layout" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 

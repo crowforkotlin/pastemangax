@@ -957,6 +957,7 @@ dimen base_sp8
 dimen base_sp9
 drawable base_bg_original_loading_radius
 drawable base_ic_download_24dp
+drawable base_ic_edit_24dp
 drawable base_shape_textview_radius
 id app_main_fcv
 id loadingLottieAnimation

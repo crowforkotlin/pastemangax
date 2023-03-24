@@ -955,6 +955,7 @@ int dimen base_sp8 0x0
 int dimen base_sp9 0x0
 int drawable base_bg_original_loading_radius 0x0
 int drawable base_ic_download_24dp 0x0
+int drawable base_ic_edit_24dp 0x0
 int drawable base_shape_textview_radius 0x0
 int id app_main_fcv 0x0
 int id loadingLottieAnimation 0x0

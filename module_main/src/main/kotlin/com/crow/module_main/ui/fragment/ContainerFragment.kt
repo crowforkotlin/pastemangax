@@ -45,8 +45,8 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
         // 登录成功后响应回来进行刷新
         FlowBus.with<Unit>(BaseStrings.Key.LOGIN_SUCUESS).register(this) {
-            (mFragmentList[0] as HomeFragment).doRefresh(mBinding.mainRefresh)
-            (mFragmentList[2] as BookshelfFragment).doRefresh(mBinding.mainRefresh)
+            (mFragmentList[0] as HomeFragment).doRefresh()
+            (mFragmentList[2] as BookshelfFragment).doRefresh()
         }
 
         // 主页点击漫画
@@ -63,7 +63,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 退出账号
         FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).register(this) {
             mUserVM.doClearUserInfo()
-            if (mBinding.mainViewPager.currentItem == 2) (mFragmentList[2] as BookshelfFragment).doRefresh(mBinding.mainRefresh)
+            if (mBinding.mainViewPager.currentItem == 2) (mFragmentList[2] as BookshelfFragment).doRefresh()
         }
 
     }
@@ -108,24 +108,12 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                 dialog.setPositiveButton("知道了~", null)
             }
         }
-
-        // 刷新监听
-        mBinding.mainRefresh.setOnRefreshListener {
-            when(mBinding.mainViewPager.currentItem) {
-                0 -> (mFragmentList[0] as HomeFragment).doRefresh(mBinding.mainRefresh)
-                1 -> (mFragmentList[1] as DiscoveryFragment)
-                2 -> (mFragmentList[2] as BookshelfFragment).doRefresh(mBinding.mainRefresh)
-            }
-        }
     }
 
     override fun initView() {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, 0)
-
-        // 设置刷新时不允许列表滚动
-        mBinding.mainRefresh.setDisableContentWhenRefresh(true)
 
         // 重新创建View之后 appBarLayout会展开折叠，记录一个状态进行初始化
         if (mAppBarState == STATE_COLLAPSED) mBinding.mainContaienrAppbar.setExpanded(false, false)

@@ -1,34 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:orientation="vertical"
 	tools:context=".ui.fragment.BookshelfFragment">
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/bookshelf_rv"
+	<androidx.appcompat.widget.LinearLayoutCompat
+		android:id="@+id/bookshelf_bar_first"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:spanCount="3"
-		tools:listitem="@layout/bookshelf_fragment_rv" />
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/bookshelf_move_comic"
+			style="@style/Widget.Material3.Button.IconButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/bookshelf_comic"
+			app:icon="@drawable/bookshelf_ic_move_top_24dp"
+			app:iconGravity="top"
+			app:iconTint="@null"
+			app:layout_constraintBottom_toBottomOf="@+id/bookshelf_edit"
+			app:layout_constraintEnd_toStartOf="@+id/bookshelf_move_bottom"
+			app:layout_constraintStart_toStartOf="@+id/bookshelf_count"
+			app:layout_constraintTop_toTopOf="@+id/bookshelf_edit" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/bookshelf_light_novel"
+			style="@style/Widget.Material3.Button.IconButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/bookshelf_novel"
+			app:icon="@drawable/bookshelf_ic_move_top_24dp"
+			app:iconGravity="top"
+			app:iconTint="@null"
+			app:layout_constraintBottom_toBottomOf="@+id/bookshelf_edit"
+			app:layout_constraintEnd_toStartOf="@+id/bookshelf_move_bottom"
+			app:layout_constraintStart_toStartOf="@+id/bookshelf_count"
+			app:layout_constraintTop_toTopOf="@+id/bookshelf_edit" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/bookshelf_edit"
+			style="@style/Widget.Material3.Button.IconButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/bookshelf_edit"
+			app:icon="@drawable/base_ic_edit_24dp"
+			app:iconGravity="top"
+			app:iconTint="@null"
+			app:layout_constraintBottom_toBottomOf="@+id/bookshelf_edit"
+			app:layout_constraintEnd_toStartOf="@+id/bookshelf_move_bottom"
+			app:layout_constraintStart_toStartOf="@+id/bookshelf_count"
+			app:layout_constraintTop_toTopOf="@+id/bookshelf_edit" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/bookshelf_filter"
+			style="@style/Widget.Material3.Button.IconButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/bookshelf_filter"
+			app:icon="@drawable/bookshelf_ic_filter_24dp"
+			app:iconGravity="top"
+			app:iconTint="@null"
+			app:layout_constraintBottom_toBottomOf="@+id/bookshelf_edit"
+			app:layout_constraintEnd_toStartOf="@+id/bookshelf_move_bottom"
+			app:layout_constraintStart_toStartOf="@+id/bookshelf_count"
+			app:layout_constraintTop_toTopOf="@+id/bookshelf_edit" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/bookshelf_move_top"
+			style="@style/Widget.Material3.Button.IconButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/bookshelf_up"
+			app:icon="@drawable/bookshelf_ic_move_top_24dp"
+			app:iconGravity="top"
+			app:iconTint="@null"
+			app:layout_constraintBottom_toBottomOf="@+id/bookshelf_edit"
+			app:layout_constraintEnd_toStartOf="@+id/bookshelf_move_bottom"
+			app:layout_constraintStart_toStartOf="@+id/bookshelf_count"
+			app:layout_constraintTop_toTopOf="@+id/bookshelf_edit" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/bookshelf_move_bottom"
+			style="@style/Widget.Material3.Button.IconButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/bookshelf_down"
+			app:icon="@drawable/bookshelf_ic_move_bottom_24dp"
+			app:iconGravity="top"
+			app:iconTint="@null"
+			app:layout_constraintBottom_toBottomOf="@+id/bookshelf_edit"
+			app:layout_constraintEnd_toStartOf="@+id/bookshelf_move_bottom"
+			app:layout_constraintStart_toStartOf="@+id/bookshelf_count"
+			app:layout_constraintTop_toTopOf="@+id/bookshelf_edit" />
+
+
+	</androidx.appcompat.widget.LinearLayoutCompat>
 
 	<TextView
-		android:id="@+id/bookshelf_rv_text"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:gravity="center"
-		android:text="@string/bookshelf_empty"
-		android:textSize="@dimen/base_sp18"
+		android:id="@+id/bookshelf_count"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:drawablePadding="@dimen/base_dp5"
+		android:ellipsize="end"
+		android:layout_gravity="center"
+		android:layout_marginBottom="@dimen/base_dp5"
+		android:maxLines="1"
+		android:textAlignment="center"
+		android:textSize="@dimen/base_sp16"
+		android:textStyle="bold"
+		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
+		tools:text="@string/bookshelf_count"
+		app:drawableStartCompat="@drawable/bookshelf_ic_novel_24dp" />
+
+	<com.google.android.material.divider.MaterialDivider
+
+		android:layout_width="match_parent"
+		app:dividerInsetStart="@dimen/base_dp16"
+		app:dividerInsetEnd="@dimen/base_dp16"
+		android:layout_height="wrap_content"/>
+
+	<com.scwang.smart.refresh.layout.SmartRefreshLayout
+		android:id="@+id/bookshelf_refresh"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:visibility="gone"
+		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent" />
+		app:layout_constraintTop_toBottomOf="@+id/bookshelf_bar">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+		<com.scwang.smart.refresh.header.MaterialHeader
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" />
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/bookshelf_rv"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+			app:spanCount="3"
+			tools:listitem="@layout/bookshelf_fragment_rv" />
+
+	</com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+	<TextView
+		android:id="@+id/bookshelf_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:layout_weight="1"
+		android:gravity="center"
+		android:text="@string/bookshelf_empty"
+		android:textSize="@dimen/base_sp18" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -20,7 +20,7 @@
 		android:text="@string/user_change_icon"
 		android:textColor="#80FFFFFF"
 		android:textStyle="bold"
-		app:icon="@drawable/user_ic_edit_24dp"
+		app:icon="@drawable/base_ic_edit_24dp"
 		app:backgroundTint="#39FFFFFF"
 		app:iconTint="@null"
 		app:closeIconEnabled="false" />

@@ -1,45 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+<com.scwang.smart.refresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/home_refresh"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content">
 
-	<LinearLayout
-		android:id="@+id/home_linear_layout"
+	<com.scwang.smart.refresh.header.MaterialHeader
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical"
-		android:visibility="invisible">
+		android:layout_height="wrap_content" />
 
-		<com.to.aboomy.pager2banner.Banner
-			android:id="@+id/home_banner"
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<LinearLayout
+			android:id="@+id/home_linear_layout"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:visibility="invisible">
 
-		<include
-			android:id="@+id/home_comic_rec"
-			layout="@layout/home_comic" />
+			<com.to.aboomy.pager2banner.Banner
+				android:id="@+id/home_banner"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" />
 
-		<include
-			android:id="@+id/home_comic_hot"
-			layout="@layout/home_comic" />
+			<include
+				android:id="@+id/home_comic_rec"
+				layout="@layout/home_comic" />
 
-		<include
-			android:id="@+id/home_comic_new"
-			layout="@layout/home_comic" />
+			<include
+				android:id="@+id/home_comic_hot"
+				layout="@layout/home_comic" />
 
-		<include
-			android:id="@+id/home_comic_finish"
-			layout="@layout/home_comic" />
+			<include
+				android:id="@+id/home_comic_new"
+				layout="@layout/home_comic" />
 
-		<include
-			android:id="@+id/home_comic_rank"
-			layout="@layout/home_comic" />
+			<include
+				android:id="@+id/home_comic_finish"
+				layout="@layout/home_comic" />
 
-		<include
-			android:id="@+id/home_comic_topic"
-			layout="@layout/home_comic" />
+			<include
+				android:id="@+id/home_comic_rank"
+				layout="@layout/home_comic" />
 
-	</LinearLayout>
+			<include
+				android:id="@+id/home_comic_topic"
+				layout="@layout/home_comic" />
 
-</androidx.core.widget.NestedScrollView>
+		</LinearLayout>
+
+	</androidx.core.widget.NestedScrollView>
+
+</com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
