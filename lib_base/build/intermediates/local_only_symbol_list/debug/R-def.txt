@@ -6,6 +6,7 @@ color base_background_panda
 color base_buttonBackground
 color base_buttonRipper
 color base_download_bg
+color base_home_bar_bg
 color base_purple_8f6af1
 color base_textColor
 color base_titleError

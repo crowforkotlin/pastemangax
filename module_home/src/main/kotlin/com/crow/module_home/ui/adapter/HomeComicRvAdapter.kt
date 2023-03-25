@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.R
 import com.crow.base.app.appContext
+import com.crow.base.current_project.entity.ComicType
 import com.crow.base.current_project.formatValue
 import com.crow.base.current_project.getComicCardHeight
 import com.crow.base.current_project.getComicCardWidth
@@ -17,7 +18,6 @@ import com.crow.base.tools.extensions.clickGap
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_home.databinding.HomeComicRvBinding
 import com.crow.module_home.databinding.HomeComicRvBinding.inflate
-import com.crow.module_home.model.ComicType
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.AuthorResult
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
@@ -35,7 +35,7 @@ import java.util.*
 class HomeComicRvAdapter<T>(
     private var mData: MutableList<T> = mutableListOf(),
     private val mType: ComicType,
-    inline val onTap: (ComicType, String) -> Unit
+    inline val doOnTap: (ComicType, String) -> Unit
 ) : RecyclerView.Adapter<HomeComicRvAdapter<T>.ViewHolder>() {
 
     inner class ViewHolder(val rvBinding: HomeComicRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
@@ -50,22 +50,20 @@ class HomeComicRvAdapter<T>(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(inflate(from(parent.context), parent, false)).also { vh ->
 
+            // 推荐 设置底部间距0
+            if(mType == ComicType.Rec) (vh.rvBinding.homeComicRvHot.layoutParams as ConstraintLayout.LayoutParams).bottomMargin = 0
+
             // 漫画卡片高度
             vh.rvBinding.homeComicRvImage.layoutParams.apply {
-                if (mType != ComicType.Topic) {
-                    width = getComicCardWidth() - mSize10
-                    height = getComicCardHeight() - mSize10
-                    (vh.rvBinding.homeComicRvName.layoutParams as ConstraintLayout.LayoutParams).topMargin += mSize10 / 2
-                } else {
-                    width = getComicCardWidth() / 2 + getComicCardWidth() - mSize10
-                    height = getComicCardHeight()
-                }
+                width = if (mType != ComicType.Topic) getComicCardWidth() else getComicCardWidth() / 2 + getComicCardWidth()
+                height = getComicCardHeight()
             }
 
             // 点击 父布局卡片 以及漫画卡片 事件 回调给上级 HomeFragment --> ContainerFragment
-            vh.rvBinding.root.clickGap { _, _ -> onTap(mType, vh.mPathWord) }
-            vh.rvBinding.homeBookCard.clickGap { _, _ -> onTap(mType, vh.mPathWord) }
+            vh.rvBinding.root.clickGap { _, _ -> doOnTap(mType, vh.mPathWord) }
+            vh.rvBinding.homeBookCard.clickGap { _, _ -> doOnTap(mType, vh.mPathWord) }
 
+            // Tooltips漫画名称设置
             ToolTipsView.showToolTipsByLongClick(vh.rvBinding.homeComicRvName)
         }
     }

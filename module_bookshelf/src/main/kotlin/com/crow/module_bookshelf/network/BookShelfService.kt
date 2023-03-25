@@ -2,7 +2,8 @@ package com.crow.module_bookshelf.network
 
 import com.crow.base.current_project.BaseResultResp
 import com.crow.base.current_project.BaseStrings
-import com.crow.module_bookshelf.model.resp.BookshelfResp
+import com.crow.module_bookshelf.model.resp.BookshelfComicfResp
+import com.crow.module_bookshelf.model.resp.BookshelfNovelResp
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -17,6 +18,9 @@ import retrofit2.http.Query
  **************************/
 interface BookShelfService {
 
-    @GET(BaseStrings.URL.BookShelf)
-    fun getBookShlef(@Query("offset") start: Int, @Query("limit") limit: Int, @Query("ordering") order: String) : Flow<BaseResultResp<BookshelfResp>>
+    @GET(BaseStrings.URL.BookshelfComic)
+    fun getBookshlefComic(@Query("offset") start: Int, @Query("limit") limit: Int, @Query("ordering") order: String) : Flow<BaseResultResp<BookshelfComicfResp>>
+
+    @GET(BaseStrings.URL.BookshelfNovel)
+    fun getBookshlefNovel(@Query("offset") start: Int, @Query("limit") limit: Int, @Query("ordering") order: String) : Flow<BaseResultResp<BookshelfNovelResp>>
 }

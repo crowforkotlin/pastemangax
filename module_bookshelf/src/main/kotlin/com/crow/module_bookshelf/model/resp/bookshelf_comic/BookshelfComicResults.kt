@@ -1,11 +1,12 @@
-package com.crow.module_bookshelf.model.resp.book_shelf
+package com.crow.module_bookshelf.model.resp.bookshelf_comic
 
 
+import com.crow.module_bookshelf.model.resp.bookshelf.LastBrowse
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class BookshelfResults(
+data class BookshelfComicResults(
 
     @Json(name = "b_folder")
     val mBFolder: Boolean,

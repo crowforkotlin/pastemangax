@@ -2,8 +2,7 @@ package com.crow.module_bookshelf.model.source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.crow.base.tools.extensions.logMsg
-import com.crow.module_bookshelf.model.resp.book_shelf.BookshelfResults
+import com.crow.module_bookshelf.model.resp.bookshelf_comic.BookshelfComicResults
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -13,7 +12,7 @@ import com.crow.module_bookshelf.model.resp.book_shelf.BookshelfResults
  * @Description: BookShelfDataSource
  * @formatter:on
  **************************/
-class BookshelfDataSource(inline val mDoOnPageResults: suspend (position: Int, pageSize: Int) -> List<BookshelfResults>?) : PagingSource<Int, BookshelfResults>() {
+class BookshelfComicDataSource(inline val mDoOnPageResults: suspend (position: Int, pageSize: Int) -> List<BookshelfComicResults>?) : PagingSource<Int, BookshelfComicResults>() {
 
     companion object {
         private const val START_POSITION = 0
@@ -21,22 +20,19 @@ class BookshelfDataSource(inline val mDoOnPageResults: suspend (position: Int, p
     }
 
     // 当刷新时调用
-    override fun getRefreshKey(state: PagingState<Int, BookshelfResults>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, BookshelfComicResults>): Int? {
 
         // 获取最近的结尾页面位置
         val anchorPage = state.closestPageToPosition(state.anchorPosition ?: return null)
-
-        "prevKey : ${anchorPage?.prevKey}\tnextKey : ${anchorPage?.nextKey}".logMsg()
 
         // 刷新后重载的Load函数返回值会让nextKey + 20 此时判断nextKey 不为空则 -20 即 position为 + 20 - 20 原封不
         return anchorPage?.prevKey?.plus(LOAD_POSITION) ?: anchorPage?.nextKey?.minus(LOAD_POSITION)
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, BookshelfResults> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, BookshelfComicResults> {
         val position = params.key ?: START_POSITION
-        "position : $position\tpageSize ${params.loadSize}".logMsg()
         return try {
-            val realDataList = mutableListOf<BookshelfResults>().apply { addAll(mDoOnPageResults(position, params.loadSize) ?: return@apply) }
+            val realDataList = mutableListOf<BookshelfComicResults>().apply { addAll(mDoOnPageResults(position, params.loadSize) ?: return@apply) }
             if (realDataList.isEmpty()) LoadResult.Page(data = realDataList, prevKey = null, nextKey = null)
             else LoadResult.Page(data = realDataList, prevKey = null, nextKey = position + LOAD_POSITION)
         } catch (e: Exception) {

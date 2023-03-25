@@ -8,25 +8,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.current_project.getComicCardHeight
 import com.crow.base.current_project.getComicCardWidth
+import com.crow.base.tools.extensions.clickGap
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
-import com.crow.module_bookshelf.model.resp.book_shelf.BookshelfResults
+import com.crow.module_bookshelf.model.resp.bookshelf_comic.BookshelfComicResults
 
-class BookshelfRvAdapter(private val clickCallback: (BookshelfResults) -> Unit) : PagingDataAdapter<BookshelfResults, BookshelfRvAdapter.ViewHolder>(DiffCallback()) {
+class BookshelfComicRvAdapter(inline val doOnTap: (BookshelfComicResults) -> Unit) : PagingDataAdapter<BookshelfComicResults, BookshelfComicRvAdapter.ViewHolder>(DiffCallback()) {
 
-    class DiffCallback: DiffUtil.ItemCallback<BookshelfResults>() {
-        override fun areItemsTheSame(oldItem: BookshelfResults, newItem: BookshelfResults): Boolean {
+    class DiffCallback: DiffUtil.ItemCallback<BookshelfComicResults>() {
+        override fun areItemsTheSame(oldItem: BookshelfComicResults, newItem: BookshelfComicResults): Boolean {
             return oldItem.mUuid == newItem.mUuid
         }
 
-        override fun areContentsTheSame(oldItem: BookshelfResults, newItem: BookshelfResults): Boolean {
+        override fun areContentsTheSame(oldItem: BookshelfComicResults, newItem: BookshelfComicResults): Boolean {
             return oldItem == newItem
         }
     }
 
-    inner class ViewHolder(val rvBinding: BookshelfFragmentRvBinding): RecyclerView.ViewHolder(rvBinding.root) {
+    inner class ViewHolder(val rvBinding: BookshelfFragmentRvBinding): RecyclerView.ViewHolder(rvBinding.root)
 
-
-    }
 
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
         val item = getItem(position) ?: return
@@ -44,6 +43,10 @@ class BookshelfRvAdapter(private val clickCallback: (BookshelfResults) -> Unit) 
             vh.rvBinding.bookshelfRvImage.layoutParams.apply {
                 width = getComicCardWidth()
                 height = getComicCardHeight()
+            }
+
+            vh.rvBinding.bookshelfRvImage.clickGap { _, _ ->
+                doOnTap(getItem(vh.absoluteAdapterPosition) ?: return@clickGap)
             }
         }
     }

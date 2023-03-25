@@ -8,7 +8,7 @@ import com.crow.base.app.appContext
 import com.crow.base.tools.extensions.clickGap
 import com.crow.module_home.databinding.HomeBannerRvBinding
 import com.crow.module_home.databinding.HomeBannerRvBinding.inflate
-import com.crow.module_home.model.ComicType
+import com.crow.base.current_project.entity.ComicType
 import com.crow.module_home.model.resp.homepage.Banner
 
 class HomeBannerRvAdapter(

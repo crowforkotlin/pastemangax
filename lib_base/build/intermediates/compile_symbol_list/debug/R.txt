@@ -4,6 +4,7 @@ int color base_background_panda 0x0
 int color base_buttonBackground 0x0
 int color base_buttonRipper 0x0
 int color base_download_bg 0x0
+int color base_home_bar_bg 0x0
 int color base_purple_8f6af1 0x0
 int color base_textColor 0x0
 int color base_titleError 0x0

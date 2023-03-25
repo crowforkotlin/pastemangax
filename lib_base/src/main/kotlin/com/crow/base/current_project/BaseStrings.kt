@@ -13,13 +13,14 @@ object BaseStrings {
         const val RefreshRec = "/api/v3/recs"
         const val UserUpdateInfo = "/api/v3/member/update/info"
         const val UserInfo = "/api/v3/member/info"
-        const val BookShelf = "/api/v3/member/collect/comics?free_type=1&_update=true"
+        const val BookshelfComic = "/api/v3/member/collect/comics?free_type=1&_update=true"
+        const val BookshelfNovel = "/api/v3/member/collect/books?free_type=1&_update=true"
     }
 
     object Key {
         const val OPEN_USER_BOTTOM = "OPEN_USER_BOTTOM"
+        const val OPEN_COMIC_BOTTOM = "OPEN_COMIC_BOTTOM"
         const val LOGIN_SUCUESS = "LOGIN_SUCUESS"
-        const val HOME_COMIC_TAP = "HOME_COMIC_TAP"
         const val CLEAR_USER_INFO = "CLEAR_USER_INFO"
         const val EXIT_USER = "EXIT_USER"
     }

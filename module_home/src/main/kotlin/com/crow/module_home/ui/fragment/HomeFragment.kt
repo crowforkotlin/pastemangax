@@ -3,7 +3,6 @@ package com.crow.module_home.ui.fragment
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
-import android.widget.RelativeLayout
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -16,7 +15,9 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.BaseStrings.Key.HOME_COMIC_TAP
+import com.crow.base.current_project.BaseStrings.Key.OPEN_COMIC_BOTTOM
+import com.crow.base.current_project.entity.ComicTapEntity
+import com.crow.base.current_project.entity.ComicType
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -24,8 +25,6 @@ import com.crow.base.ui.viewmodel.*
 import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeComicBinding
 import com.crow.module_home.databinding.HomeFragmentBinding
-import com.crow.module_home.model.ComicType
-import com.crow.module_home.model.entity.ComicTapEntity
 import com.crow.module_home.model.intent.HomeIntent
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
@@ -125,24 +124,27 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     override fun initView() {
 
+        // 设置 内边距属性 实现沉浸式效果
+        mBinding.homeAppbar.setPadding(0, mContext.getStatusBarHeight(), 0, 0)
+
         // 适配器可以作为局部成员，但不要直接初始化，不然会导致被View引用从而内存泄漏
         mHomeRecAdapter = HomeComicRvAdapter(mType = ComicType.Rec) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
         mHomeHotAdapter = HomeComicRvAdapter(mType = ComicType.Hot) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
         mHomeNewAdapter = HomeComicRvAdapter(mType = ComicType.New) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
         mHomeFinishAdapter = HomeComicRvAdapter(mType = ComicType.Commit) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
         mHomeRankAapter = HomeComicRvAdapter(mType = ComicType.Rank) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
         mHomeTopicAapter = HomeComicRvAdapter(mType = ComicType.Topic) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
 
         // 初始化刷新 推荐的按钮
@@ -152,15 +154,16 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeRefresh.setDisableContentWhenRefresh(true)
 
         // 设置 Banner 的高度 （1.875 屏幕宽高指定倍数）、（添加页面效果、指示器、指示器需要设置BottomMargin不然会卡在Banner边缘（产生重叠））
+        val base20 = mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp20)
         mBinding.homeBanner.doOnLayout { it.layoutParams.height = (it.width / 1.875 + 0.5).toInt() }
         mBinding.homeBanner.addPageTransformer(ScaleInTransformer())
-            .setPageMargin(mContext.dp2px(20f), mContext.dp2px(10f))
+            .setPageMargin(base20, mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp10))
             .setIndicator(
                 IndicatorView(mContext)
                     .setIndicatorColor(Color.DKGRAY)
                     .setIndicatorSelectorColor(Color.WHITE)
                     .setIndicatorStyle(IndicatorView.IndicatorStyle.INDICATOR_BEZIER)
-                    .also { it.doOnLayout { view -> (view.layoutParams as RelativeLayout.LayoutParams).bottomMargin = mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp20) } })
+                    .also { it.setPadding(0, 0, 0, base20) })
 
 
         // 设置每一个子布局的 （Icon、标题、适配器）
@@ -226,7 +229,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     // 初始化刷新按钮
     private fun initRecRefreshView(): MaterialButton {
         return MaterialButton(mContext, null, materialIconButtonStyle).apply {
-            layoutParams =  ConstraintLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+            layoutParams = ConstraintLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                 endToEnd = PARENT_ID
                 topToBottom = mBinding.homeComicRec.homeComicBookRv.id
             }
@@ -243,7 +246,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
         // 设置轮播图数据
         mHomeBannerRvAdapter = HomeBannerRvAdapter(results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList()) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
 
         // 设置Banner适配器
@@ -270,7 +273,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             mHomeTopicAapter.doTopicNotify(mHomeTopicAapter, results.mTopics.mResult.toMutableList(), mHomePageLayoutRefreshTime)
 
             // 设置布局刷新时间 50MS
-            if (mHomePageLayoutRefreshTime == 10L) mHomePageLayoutRefreshTime = 50L
+            if (mHomePageLayoutRefreshTime == 10L) mHomePageLayoutRefreshTime = 100L
         }
     }
 

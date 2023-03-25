@@ -1,4 +1,4 @@
-package com.crow.module_bookshelf.model.resp.book_shelf
+package com.crow.module_bookshelf.model.resp.bookshelf
 
 
 import com.squareup.moshi.Json
