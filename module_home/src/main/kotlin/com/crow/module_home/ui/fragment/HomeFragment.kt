@@ -1,6 +1,7 @@
 package com.crow.module_home.ui.fragment
 
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import androidx.annotation.DrawableRes
@@ -10,10 +11,12 @@ import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.current_project.BaseStrings
+import com.crow.base.current_project.BaseStrings.Key.HOME_COMIC_TAP
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -124,22 +127,22 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
         // 适配器可以作为局部成员，但不要直接初始化，不然会导致被View引用从而内存泄漏
         mHomeRecAdapter = HomeComicRvAdapter(mType = ComicType.Rec) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
         mHomeHotAdapter = HomeComicRvAdapter(mType = ComicType.Hot) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
         mHomeNewAdapter = HomeComicRvAdapter(mType = ComicType.New) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
         mHomeFinishAdapter = HomeComicRvAdapter(mType = ComicType.Commit) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
         mHomeRankAapter = HomeComicRvAdapter(mType = ComicType.Rank) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
         mHomeTopicAapter = HomeComicRvAdapter(mType = ComicType.Topic) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
 
         // 初始化刷新 推荐的按钮
@@ -184,6 +187,22 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             mHomeVM.input(HomeIntent.GetRecPageByRefresh())
         }
 
+        // 搜索
+        mBinding.homeToolbar.menu[0].clickGap { _, _ ->
+            mBinding.homeSearchView.show()
+        }
+
+        // 设置
+        mBinding.homeToolbar.menu[1].clickGap { _, _ ->
+            mContext.newMaterialDialog { dialog ->
+                dialog.setTitle("拷贝漫画")
+                dialog.setPositiveButton("知道了~", null)
+            }
+        }
+
+        // MaterialToolBar NavigateIcon 点击事件
+        mBinding.homeToolbar.navigateIconClickGap { _, _ -> FlowBus.with<Unit>(BaseStrings.Key.OPEN_USER_BOTTOM).post(lifecycleScope, Unit) }
+
         // 每个主页漫画类型（显示更多）卡片的点击事件
         mBinding.homeComicRec.homeComicMore.clickGap { _, _ -> }
         mBinding.homeComicHot.homeComicMore.clickGap { _, _ -> }
@@ -224,9 +243,10 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
         // 设置轮播图数据
         mHomeBannerRvAdapter = HomeBannerRvAdapter(results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList()) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(BaseStrings.Key.HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<ComicTapEntity>(HOME_COMIC_TAP).post(lifecycleScope, ComicTapEntity(type, pathword))
         }
 
+        // 设置Banner适配器
         mBinding.homeBanner.adapter = mHomeBannerRvAdapter
 
         // 布局不可见 则淡入 否则代表正在刷新 提示即可
@@ -260,4 +280,8 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mHomeVM.input(HomeIntent.GetHomePage())
     }
 
+    // 暴露的函数 提供给 ContainerFragment 用于通知主页设置Icon
+    fun setIconResource(resource: Drawable) {
+        mBinding.homeToolbar.navigationIcon = resource
+    }
 }
