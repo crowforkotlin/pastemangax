@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<item
+		android:id="@+id/home_menu_search"
+		android:icon="@drawable/home_ic_search_24dp"
+		android:title="@string/home_settings"
+		app:showAsAction="ifRoom" />
+
+	<item
+		android:id="@+id/home_menu_settings"
+		android:icon="@drawable/home_ic_settings_24dp"
+		android:title="@string/home_settings"
+		app:showAsAction="ifRoom" />
+
+</menu>

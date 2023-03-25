@@ -27,7 +27,7 @@
 		android:layout_height="wrap_content"
 		android:gravity="start"
 		android:visibility="gone"
-		app:icon="@drawable/user_ic_edit_24dp"
+		app:icon="@drawable/base_ic_edit_24dp"
 		app:iconGravity="end"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"

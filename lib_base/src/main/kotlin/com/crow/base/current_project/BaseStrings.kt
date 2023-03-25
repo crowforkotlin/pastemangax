@@ -17,6 +17,7 @@ object BaseStrings {
     }
 
     object Key {
+        const val OPEN_USER_BOTTOM = "OPEN_USER_BOTTOM"
         const val LOGIN_SUCUESS = "LOGIN_SUCUESS"
         const val HOME_COMIC_TAP = "HOME_COMIC_TAP"
         const val CLEAR_USER_INFO = "CLEAR_USER_INFO"

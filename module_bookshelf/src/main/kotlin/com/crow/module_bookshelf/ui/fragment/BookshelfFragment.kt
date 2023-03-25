@@ -2,6 +2,7 @@ package com.crow.module_bookshelf.ui.fragment
 
 import android.view.LayoutInflater
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.current_project.BaseStrings
@@ -13,11 +14,11 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.ViewState
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.module_bookshelf.R
 import com.crow.module_bookshelf.databinding.BookshelfFragmentBinding
 import com.crow.module_bookshelf.model.intent.BookShelfIntent
 import com.crow.module_bookshelf.ui.adapter.BookshelfRvAdapter
 import com.crow.module_bookshelf.ui.viewmodel.BookshelfViewModel
-import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.crow.base.R as baseR
 
@@ -39,9 +40,6 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     // Bookshelf 适配器
     private lateinit var mBookshelfRvAdapter: BookshelfRvAdapter
 
-    // 刷新布局
-    private var mRefreshLayout: SmartRefreshLayout? = null
-
     override fun getViewBinding(inflater: LayoutInflater) = BookshelfFragmentBinding.inflate(inflater)
 
     override fun initView() {
@@ -49,8 +47,32 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         // 初始化适配器
         mBookshelfRvAdapter = BookshelfRvAdapter {  }
 
+        // 设置刷新时不允许列表滚动
+        mBinding.bookshelfRefresh.setDisableContentWhenRefresh(true)
+
         // 设置适配器
         mBinding.bookshelfRv.adapter = mBookshelfRvAdapter
+
+        // mBinding.bookshelfBar.setPadding(0, 0, 0, mContext.getNavigationBarHeight() + mContext.getNavigationBarHeight() / 4)
+    }
+
+    override fun initListener() {
+
+        // 刷新
+        mBinding.bookshelfRefresh.setOnRefreshListener { mBookshelfRvAdapter.refresh() }
+
+        mBinding.bookshelfMoveTop.clickGap { _, _ ->
+            if (mBookshelfRvAdapter.itemCount != 0) {
+                mBinding.bookshelfRv.smoothScrollToPosition(0)
+            }
+        }
+        mBinding.bookshelfMoveBottom.clickGap { _, _ ->
+            if (mBookshelfRvAdapter.itemCount > 0) {
+                mBinding.bookshelfRv.smoothScrollToPosition(mBookshelfRvAdapter.itemCount - 1)
+            }
+        }
+
+
     }
 
     override fun initObserver() {
@@ -72,12 +94,31 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                         .doOnResult {
 
                             // 文本不可见 代表成功获取到数据
-                            mBinding.bookshelfRvText.visibility = View.GONE
+                            if (mBinding.bookshelfText.isVisible) {
 
-                            if(mRefreshLayout?.isRefreshing == true) {
+                                // “空空如也“ 不可见
+                                mBinding.bookshelfText.visibility = View.GONE
+
+                                // 刷新布局 可见
+                                mBinding.bookshelfRefresh.visibility = View.VISIBLE
+
+                                // 书架栏 可见
+                                mBinding.bookshelfBarFirst.visibility = View.VISIBLE
+                                mBinding.bookshelfCount.visibility = View.VISIBLE
+                            }
+
+                            // 设置漫画总数
+                            if (mBinding.bookshelfCount.text.isNullOrEmpty()) {
+                                mBinding.bookshelfCount.text = getString(R.string.bookshelf_count, intent.bookshelfResp!!.mTotal.toString())
+                                mBinding.bookshelfBarFirst.animateFadeIn()
+                                mBinding.bookshelfCount.animateFadeIn()
+                            }
+
+                            // 正在刷新？
+                            if(mBinding.bookshelfRefresh.isRefreshing) {
 
                                 // 取消刷新
-                                mRefreshLayout!!.finishRefresh()
+                                mBinding.bookshelfRefresh.finishRefresh()
 
                                 // Toast Tips
                                 toast(getString(baseR.string.BaseRefreshScucess))
@@ -85,10 +126,24 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                         }
                         .doOnError { code, msg ->
 
-                            // 获取书架 适配器数据 0 才显示文本 顺便取消刷新
+                            // 适配器数据 0 的逻辑
                             if (mBookshelfRvAdapter.itemCount == 0) {
-                                mBinding.bookshelfRvText.visibility = View.VISIBLE
-                                mRefreshLayout?.finishRefresh()
+
+                                // “空空如也” 可见
+                                mBinding.bookshelfText.visibility = View.VISIBLE
+
+                                // 隐藏 书架栏
+                                mBinding.bookshelfBarFirst.visibility = View.INVISIBLE
+                                mBinding.bookshelfCount.visibility = View.INVISIBLE
+
+                                // 隐藏 刷新布局
+                                mBinding.bookshelfRefresh.visibility = View.GONE
+
+                                // 置空漫画总数文本 为什么？因为 当下次请求成功时就可根据对应的逻辑设置 文本， 仅设置一次文本即可
+                                mBinding.bookshelfCount.text = null
+
+                                // 完成刷新
+                                mBinding.bookshelfRefresh.finishRefresh()
                             }
 
                             // 解析地址失败 且 Resumed的状态才提示
@@ -114,13 +169,8 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mRefreshLayout = null
-    }
-
-    fun doRefresh(refreshlayout: SmartRefreshLayout) {
-        mRefreshLayout = refreshlayout
-        doAfterDelay(BASE_ANIM_300L) { mBookshelfRvAdapter.refresh() }
+    fun doRefresh() {
+        mBinding.bookshelfRefresh.autoRefresh()
+        mBookshelfRvAdapter.refresh()
     }
 }
