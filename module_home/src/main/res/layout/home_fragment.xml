@@ -18,7 +18,7 @@
 		android:id="@+id/home_appbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="@null">
+		android:background="@color/base_home_bar_bg">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@+id/home_toolbar"
@@ -32,13 +32,6 @@
 			app:title="@string/BaseAppName"
 			app:titleCentered="true" />
 
-		<androidx.appcompat.widget.LinearLayoutCompat
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal">
-
-		</androidx.appcompat.widget.LinearLayoutCompat>
-
 	</com.google.android.material.appbar.AppBarLayout>
 
 	<com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -51,20 +44,22 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content" />
 
-		<androidx.core.widget.NestedScrollView
+		<ScrollView
 			android:layout_width="match_parent"
 			android:layout_height="match_parent">
 
-			<LinearLayout
+			<androidx.appcompat.widget.LinearLayoutCompat
 				android:id="@+id/home_linear_layout"
 				android:layout_width="match_parent"
-				android:layout_height="match_parent"
+				android:layout_height="wrap_content"
 				android:orientation="vertical"
+				tools:visibility="visible"
 				android:visibility="invisible">
 
 				<com.to.aboomy.pager2banner.Banner
 					android:id="@+id/home_banner"
 					android:layout_width="match_parent"
+					android:layout_marginTop="@dimen/base_dp10"
 					android:layout_height="wrap_content"
 					android:nestedScrollingEnabled="false" />
 
@@ -92,12 +87,11 @@
 					android:id="@+id/home_comic_topic"
 					layout="@layout/home_comic" />
 
-			</LinearLayout>
+			</androidx.appcompat.widget.LinearLayoutCompat>
 
-		</androidx.core.widget.NestedScrollView>
+		</ScrollView>
 
 	</com.scwang.smart.refresh.layout.SmartRefreshLayout>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

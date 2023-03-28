@@ -14,7 +14,7 @@
 	<fragment
 		android:id="@+id/mainComicfragment"
 		android:name="com.crow.module_comic.ui.fragment.ComicFragment"
-		tools:layout="@layout/comic_fragment"
+		tools:layout="@layout/book_comic_fragment"
 		android:label="ComicFragment" />
 
 	<fragment
@@ -33,5 +33,11 @@
 		android:name="com.crow.module_user.ui.fragment.UserIconFragment"
 		tools:layout="@layout/user_fragment_icon"
 		android:label="UserIconFragment" />
+
+	<fragment
+		android:id="@+id/mainBookinfofragment"
+		android:name="com.crow.module_comic.ui.fragment.BookInfoFragment"
+		tools:layout="@layout/book_comic_fragment_info"
+		android:label="BookInfoFragment" />
 
 </navigation>

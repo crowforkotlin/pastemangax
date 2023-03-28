@@ -3,14 +3,14 @@ package com.crow.module_home.model.resp.homepage
 import com.squareup.moshi.Json
 
 /**
- * Comic datas
+ * ComicPage datas
  *
  * @param T
  * @property mLimit 页数
  * @property mResult 结果集
  * @property offset 起点
  * @property total 漫画总数
- * @constructor Create empty Comic datas
+ * @constructor Create empty ComicPage datas
  */
 data class ComicDatas<T>(
 

@@ -25,14 +25,12 @@ fun interface LifecycleCallBack {
 }
 
 fun Fragment.repeatOnLifecycle(
-    state: Lifecycle.State = Lifecycle.State.CREATED,
+    state: Lifecycle.State = Lifecycle.State.STARTED,
     lifecycleCallBack: LifecycleCallBack,
 ) {
     viewLifecycleOwner.lifecycleScope.launch {
         viewLifecycleOwner.repeatOnLifecycle(state) {
-            lifecycleCallBack.onLifeCycle(
-                this
-            )
+            lifecycleCallBack.onLifeCycle(this)
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.crow.module_main.ui.viewmodel
 
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
-import com.crow.module_comic.model.intent.ComicIntent
+import com.crow.module_comic.model.intent.BookIntent
 import com.crow.module_main.network.ContainerRepository
 
 /*************************
@@ -12,7 +12,7 @@ import com.crow.module_main.network.ContainerRepository
  * @Description: ContainerViewModel
  * @formatter:on
  **************************/
-class ContainerViewModel(val repository: ContainerRepository) : BaseMviViewModel<ComicIntent>() {
+class ContainerViewModel(val repository: ContainerRepository) : BaseMviViewModel<BookIntent>() {
 
-    override fun dispatcher(intent: ComicIntent) { }
+    override fun dispatcher(intent: BookIntent) { }
 }

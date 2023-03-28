@@ -1,0 +1,12 @@
+<resources>
+	<string name="BookComicAuthor">作者：%s</string>
+	<string name="BookComicHot">热度：%s</string>
+	<string name="BookComicStatus">状态：%s</string>
+	<string name="BookComicUpdate">更新时间：%s</string>
+	<string name="BookComicNewChapter">最新一章：%s</string>
+	<string name="BookComicAddToBookShelf">加入书架</string>
+	<string name="BookComicDownLoad">下载章节</string>
+	<string name="BookComicReadNow">开始阅读</string>
+	<string name="BookComicReadedPage">已经阅读至：%s</string>
+	<string name="BookComicRequestThrottled">请求过于频繁！请等待 %s 秒后尝试！</string>
+</resources>

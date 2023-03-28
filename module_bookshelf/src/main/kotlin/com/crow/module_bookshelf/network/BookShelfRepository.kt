@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.flowOn
  **************************/
 class BookShelfRepository(private val service: BookShelfService) {
 
-    fun getBookShelf(start: Int, limit: Int, order: String) = service.getBookShlef(start, limit, order).flowOn(Dispatchers.IO)
+    // 获取书架 漫画
+    fun getBookshelfComic(start: Int, limit: Int, order: String) = service.getBookshlefComic(start, limit, order).flowOn(Dispatchers.IO)
 
+    // 获取书架 轻小说
+    fun getBookshelfNovel(start: Int, limit: Int, order: String) = service.getBookshlefNovel(start, limit, order).flowOn(Dispatchers.IO)
 }

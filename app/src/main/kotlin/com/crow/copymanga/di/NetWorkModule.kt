@@ -59,11 +59,4 @@ val netWorkModule = module {
             .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
             .build()
     }
-
-    single (qualifier = named("Custom")) {
-        Retrofit.Builder()
-            .baseUrl("https://www.baidu.com/")
-            .build()
-    }
-
 }

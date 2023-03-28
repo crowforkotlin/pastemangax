@@ -10,4 +10,8 @@
 
     <color name="base_purple_8f6af1">#8f6af1</color>
     <color name="base_download_bg">#d4e5ef</color>
+
+    <!-- Project -->
+    <color name="base_home_bar_bg">#f3e5f5</color>
+
 </resources>

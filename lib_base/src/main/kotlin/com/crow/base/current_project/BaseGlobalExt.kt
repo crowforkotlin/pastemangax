@@ -84,7 +84,7 @@ inline fun View.processTokenError(
     crossinline doOnCancel: (MaterialAlertDialogBuilder) -> Unit = { },
     crossinline doOnConfirm: (MaterialAlertDialogBuilder) -> Unit
 ) {
-    runCatching { msg.toTypeEntity<BaseTokenInvalidResp>()!!.mResults }
+    runCatching { msg.toTypeEntity<BaseContentInvalidResp>()!!.mResults }
         .onSuccess {
             context.newMaterialDialog { dialog ->
                 dialog.setCancelable(false)

@@ -5,6 +5,7 @@ color base_background_panda
 color base_buttonBackground
 color base_buttonRipper
 color base_download_bg
+color base_home_bar_bg
 color base_purple_8f6af1
 color base_textColor
 color base_titleError
@@ -960,6 +961,7 @@ drawable base_ic_edit_24dp
 drawable base_shape_textview_radius
 id app_main_fcv
 id loadingLottieAnimation
+id mainBookinfofragment
 id mainComicfragment
 id mainUsericonfragment
 id mainUserinfofragment

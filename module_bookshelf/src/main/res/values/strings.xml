@@ -1,5 +1,6 @@
 <resources>
 	<string name="bookshelf_empty">空空如也＞﹏＜</string>
+	<string name="bookshelf">空空如也＞﹏＜</string>
 	<string name="bookshelf_count">漫画数量（%s）</string>
 	<string name="bookshelf_comic">漫画</string>
 	<string name="bookshelf_novel">小说</string>

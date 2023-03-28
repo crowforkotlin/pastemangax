@@ -45,6 +45,15 @@ fun interface IViewStateErrorCallBack {
     fun callback(code: Int, msg: String?)
 }
 
+
+fun interface IViewStateSuspendCallBack {
+    suspend fun callback()
+}
+
+fun interface IViewStateErrorSuspendCallBack {
+    suspend fun callback(code: Int, msg: String?)
+}
+
 //自定义error 可以抛出来结束流的运行
 class ViewStateException(msg: String, throwable: Throwable? = null) : Exception(msg, throwable)
 
@@ -114,6 +123,27 @@ fun ViewState.doOnResult(iViewStateCallBack: IViewStateCallBack): ViewState {
 }
 
 fun ViewState.doOnError(iViewStateErrorCallBack: IViewStateErrorCallBack): ViewState {
+    if (this is ViewState.Error) iViewStateErrorCallBack.callback(code, msg)
+    return this
+}
+
+
+suspend fun ViewState.doOnLoadingSuspend(iViewStateCallBack: IViewStateSuspendCallBack): ViewState {
+    if (this is ViewState.Loading) iViewStateCallBack.callback()
+    return this
+}
+
+suspend fun ViewState.doOnSuccessSuspend(iViewStateCallBack: IViewStateSuspendCallBack): ViewState {
+    if (this is ViewState.Success) iViewStateCallBack.callback()
+    return this
+}
+
+suspend fun ViewState.doOnResultSuspend(iViewStateCallBack: IViewStateSuspendCallBack): ViewState {
+    if (this is ViewState.Result) iViewStateCallBack.callback()
+    return this
+}
+
+suspend fun ViewState.doOnErrorSuspend(iViewStateErrorCallBack: IViewStateErrorSuspendCallBack): ViewState {
     if (this is ViewState.Error) iViewStateErrorCallBack.callback(code, msg)
     return this
 }

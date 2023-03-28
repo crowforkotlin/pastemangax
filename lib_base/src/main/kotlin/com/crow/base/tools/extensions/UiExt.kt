@@ -9,6 +9,7 @@ import android.view.ViewPropertyAnimator
 
 
 const val BASE_ANIM_300L = 300L
+const val BASE_ANIM_200L = 200L
 
 /*
 在进行 `dp` 到 `px` 的转换时，数值通常会变大，因为 `dp` 是设备无关像素，而 `px` 是实际的物理像素点，

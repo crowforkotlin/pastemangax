@@ -4,6 +4,7 @@ int color base_background_panda 0x0
 int color base_buttonBackground 0x0
 int color base_buttonRipper 0x0
 int color base_download_bg 0x0
+int color base_home_bar_bg 0x0
 int color base_purple_8f6af1 0x0
 int color base_textColor 0x0
 int color base_titleError 0x0
@@ -959,6 +960,7 @@ int drawable base_ic_edit_24dp 0x0
 int drawable base_shape_textview_radius 0x0
 int id app_main_fcv 0x0
 int id loadingLottieAnimation 0x0
+int id mainBookinfofragment 0x0
 int id mainComicfragment 0x0
 int id mainUsericonfragment 0x0
 int id mainUserinfofragment 0x0
