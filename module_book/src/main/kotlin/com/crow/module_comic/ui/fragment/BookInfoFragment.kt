@@ -1,4 +1,4 @@
-@file:Suppress("IMPLICIT_CAST_TO_ANY", "CAST_NEVER_SUCCEEDS")
+@file:Suppress("IMPLICIT_CAST_TO_ANY", "CAST_NEVER_SUCCEEDS", "DEPRECATION")
 
 package com.crow.module_comic.ui.fragment
 
@@ -48,6 +48,7 @@ import com.crow.base.R as baseR
  * @Description: ComicInfoFragment
  * @formatter:on
  **************************/
+
 class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
     companion object { val TAG = this::class.java.simpleName }
@@ -88,39 +89,39 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
         // 类型有两个 漫画 和 小说
         if (bookResult is ComicInfoResult) {
-            Glide.with(this).load(bookResult.mCover).into(mBinding.comicInfoImage)
-            mBinding.comicInfoAuthor.text = getString(R.string.BookComicAuthor, bookResult.mAuthor.joinToString { it.mName })
-            mBinding.comicInfoHot.text = getString(R.string.BookComicHot, formatValue(bookResult.mPopular))
-            mBinding.comicInfoUpdate.text = getString(R.string.BookComicUpdate, bookResult.mDatetimeUpdated)
-            mBinding.comicInfoNewChapter.text = getString(R.string.BookComicNewChapter, bookResult.mLastChapter.mName)
-            mBinding.comicInfoStatus.text = when (bookResult.mStatus.mValue) {
+            Glide.with(this).load(bookResult.mCover).into(mBinding.bookInfoImage)
+            mBinding.bookInfoAuthor.text = getString(R.string.BookComicAuthor, bookResult.mAuthor.joinToString { it.mName })
+            mBinding.bookInfoHot.text = getString(R.string.BookComicHot, formatValue(bookResult.mPopular))
+            mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, bookResult.mDatetimeUpdated)
+            mBinding.bookInfoNewChapter.text = getString(R.string.BookComicNewChapter, bookResult.mLastChapter.mName)
+            mBinding.bookInfoStatus.text = when (bookResult.mStatus.mValue) {
                 Status.LOADING -> getString(R.string.BookComicStatus, bookResult.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.comic_green), 3)
                 Status.FINISH -> getString(R.string.BookComicStatus, bookResult.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.comic_red), 3)
                 else -> null
             }
-            mBinding.comicInfoName.text = bookResult.mName
-            mBinding.comicInfoDesc.text = bookResult.mBrief
+            mBinding.bookInfoName.text = bookResult.mName
+            mBinding.bookInfoDesc.text = bookResult.mBrief
             bookResult.mTheme.forEach { theme ->
-                mBinding.comicInfoThemeChip.addView(Chip(mContext).also {
+                mBinding.bookInfoThemeChip.addView(Chip(mContext).also {
                     it.text = theme.mName
                     it.isClickable = false
                 })
             }
         } else if (bookResult is NovelInfoResult) {
-            Glide.with(this).load(bookResult.mCover).into(mBinding.comicInfoImage)
-            mBinding.comicInfoAuthor.text = getString(R.string.BookComicAuthor, bookResult.mAuthor.joinToString { it.mName })
-            mBinding.comicInfoHot.text = getString(R.string.BookComicHot, formatValue(bookResult.mPopular))
-            mBinding.comicInfoUpdate.text = getString(R.string.BookComicUpdate, bookResult.mDatetimeUpdated)
-            mBinding.comicInfoNewChapter.text = getString(R.string.BookComicNewChapter, bookResult.mLastChapter.mName)
-            mBinding.comicInfoStatus.text = when (bookResult.mStatus.mValue) {
+            Glide.with(this).load(bookResult.mCover).into(mBinding.bookInfoImage)
+            mBinding.bookInfoAuthor.text = getString(R.string.BookComicAuthor, bookResult.mAuthor.joinToString { it.mName })
+            mBinding.bookInfoHot.text = getString(R.string.BookComicHot, formatValue(bookResult.mPopular))
+            mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, bookResult.mDatetimeUpdated)
+            mBinding.bookInfoNewChapter.text = getString(R.string.BookComicNewChapter, bookResult.mLastChapter.mName)
+            mBinding.bookInfoStatus.text = when (bookResult.mStatus.mValue) {
                 Status.LOADING -> getString(R.string.BookComicStatus, bookResult.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.comic_green), 3)
                 Status.FINISH -> getString(R.string.BookComicStatus, bookResult.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.comic_red), 3)
                 else -> null
             }
-            mBinding.comicInfoName.text = bookResult.mName
-            mBinding.comicInfoDesc.text = bookResult.mBrief
+            mBinding.bookInfoName.text = bookResult.mName
+            mBinding.bookInfoDesc.text = bookResult.mBrief
             bookResult.mTheme.forEach { theme ->
-                mBinding.comicInfoThemeChip.addView(Chip(mContext).also {
+                mBinding.bookInfoThemeChip.addView(Chip(mContext).also {
                     it.text = theme.mName
                     it.isClickable = false
                 })
@@ -146,8 +147,6 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
     // 添加章节选择器
     private fun addBookChapterSlector(comicChapterResp: ComicChapterResp?, novelChapterResp: NovelChapterResp?) {
-
-        novelChapterResp?.mTotal.logMsg()
 
         // 计算选项卡个数，使用向上取整的方式
         val tabItemCount = ((comicChapterResp?.mTotal?.plus(99) ?: novelChapterResp?.mTotal?.plus(99)) ?: return) / 100
@@ -265,15 +264,15 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(),0 , mContext.getNavigationBarHeight())
 
         // 设置 漫画图的卡片 宽高
-        mBinding.comicInfoCard.layoutParams.height = getComicCardHeight()
-        mBinding.comicInfoCard.layoutParams.width = getComicCardWidth()
+        mBinding.bookInfoCard.layoutParams.height = getComicCardHeight()
+        mBinding.bookInfoCard.layoutParams.width = getComicCardWidth()
 
         // 设置刷新时不允许列表滚动
         mBinding.bookComicInfoRefresh.setDisableContentWhenRefresh(true)
 
         // 重新创建View之后 appBarLayout会展开折叠，记录一个状态进行初始化
-        if (mAppbarState == STATE_COLLAPSED) mBinding.bookComicInfoAppbar.setExpanded(false, false)
-        else mBinding.bookComicInfoAppbar.setExpanded(true, false)
+        if (mAppbarState == STATE_COLLAPSED) mBinding.bookInfoAppbar.setExpanded(false, false)
+        else mBinding.bookInfoAppbar.setExpanded(true, false)
 
         // 漫画
         if (mBookTapEntity.type == BookType.Comic) {
@@ -330,7 +329,7 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
         })
 
         // 记录AppBar的状态 （展开、折叠）偏移监听
-        mBinding.bookComicInfoAppbar.addOnOffsetChangedListener { appBar, offset ->
+        mBinding.bookInfoAppbar.addOnOffsetChangedListener { appBar, offset ->
             mAppbarState = if (offset == 0) STATE_EXPANDED else if (abs(offset) >= appBar.totalScrollRange) STATE_COLLAPSED else STATE_COLLAPSED
         }
 

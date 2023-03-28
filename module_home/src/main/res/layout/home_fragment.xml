@@ -32,13 +32,6 @@
 			app:title="@string/BaseAppName"
 			app:titleCentered="true" />
 
-		<androidx.appcompat.widget.LinearLayoutCompat
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal">
-
-		</androidx.appcompat.widget.LinearLayoutCompat>
-
 	</com.google.android.material.appbar.AppBarLayout>
 
 	<com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -60,6 +53,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
+				tools:visibility="visible"
 				android:visibility="invisible">
 
 				<com.to.aboomy.pager2banner.Banner

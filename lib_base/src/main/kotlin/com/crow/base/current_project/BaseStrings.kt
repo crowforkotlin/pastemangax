@@ -30,7 +30,7 @@ object BaseStrings {
 
     object Key {
         const val OPEN_USER_BOTTOM = "OPEN_USER_BOTTOM"
-        const val OPEN_COMIC_BOTTOM = "OPEN_COMIC_BOTTOM"
+        const val OPEN_COMIC_INFO = "OPEN_COMIC_INFO"
         const val LOGIN_SUCUESS = "LOGIN_SUCUESS"
         const val CLEAR_USER_INFO = "CLEAR_USER_INFO"
         const val EXIT_USER = "EXIT_USER"

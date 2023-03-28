@@ -58,10 +58,10 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
         // 初始化适配器
         mBookshelfComicRvAdapter = BookshelfComicRvAdapter {
-            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_COMIC_BOTTOM).post(lifecycleScope, BookTapEntity(BookType.Comic, it.mComic.mPathWord))
+            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(BookType.Comic, it.mComic.mPathWord))
         }
         mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter {
-            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_COMIC_BOTTOM).post(lifecycleScope, BookTapEntity(BookType.Novel, it.mNovel.mPathWord))
+            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(BookType.Novel, it.mNovel.mPathWord))
         }
 
         // 设置适配器

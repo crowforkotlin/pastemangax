@@ -2,7 +2,6 @@ package com.crow.module_comic.model.source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.crow.base.tools.extensions.logMsg
 import com.crow.module_comic.model.resp.ComicChapterResp
 import com.crow.module_comic.model.resp.comic_chapter.ComicChapterResult
 
@@ -30,8 +29,6 @@ class BookComicDataSource(inline val mDoOnPageResults: suspend (position: Int, p
 
         // 下一个位置
         val nextPos = position + LOAD_POSITION
-
-        position.logMsg()
 
         return try {
 
