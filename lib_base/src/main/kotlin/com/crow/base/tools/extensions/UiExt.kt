@@ -35,14 +35,14 @@ fun Context.px2dip(px: Float): Float {
 }
 
 // 淡入
-fun View.animateFadeIn(duration: Long = 200L): ViewPropertyAnimator {
+fun View.animateFadeIn(duration: Long = BASE_ANIM_200L): ViewPropertyAnimator {
     alpha = 0f
     visibility = View.VISIBLE
     return animate().alpha(1f).setDuration(duration)
 }
 
 //淡出
-fun View.animateFadeOut(duration: Long = 200L): ViewPropertyAnimator {
+fun View.animateFadeOut(duration: Long = BASE_ANIM_300L): ViewPropertyAnimator {
     alpha = 1f
     visibility = View.VISIBLE
     return animate().alpha(0f).setDuration(duration)

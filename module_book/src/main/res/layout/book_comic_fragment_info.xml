@@ -219,6 +219,7 @@
 			</com.google.android.material.appbar.AppBarLayout>
 
 			<androidx.appcompat.widget.LinearLayoutCompat
+				android:id="@+id/book_info_linear_chapter"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:layout_marginTop="@dimen/base_dp10"
@@ -253,7 +254,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:gravity="center"
-				android:text="@string/BaseLoadingError"
+				android:text="@string/BaseLoadingErrorNeedRefresh"
 				android:visibility="gone"
 				tools:visibility="visible" />
 
