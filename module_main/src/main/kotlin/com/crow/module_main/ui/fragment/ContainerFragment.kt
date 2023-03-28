@@ -1,18 +1,15 @@
 package com.crow.module_main.ui.fragment
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
-import com.crow.base.current_project.entity.ComicTapEntity
+import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.EventGapTime
-import com.crow.base.tools.extensions.doAfterDelay
-import com.crow.base.tools.extensions.logMsg
-import com.crow.base.tools.extensions.onCollect
+import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.module_bookshelf.ui.fragment.BookshelfFragment
-import com.crow.module_comic.ui.fragment.ComicInfoBottomSheetFragment
 import com.crow.module_discovery.ui.fragment.DiscoveryFragment
 import com.crow.module_home.ui.fragment.HomeFragment
 import com.crow.module_main.R
@@ -23,6 +20,7 @@ import com.crow.module_user.ui.fragment.UserBottomSheetFragment
 import com.crow.module_user.ui.viewmodel.UserViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.crow.base.R as baseR
 
 
 /*************************
@@ -44,10 +42,10 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
 
         // 主页点击漫画
-        FlowBus.with<ComicTapEntity>(BaseStrings.Key.OPEN_COMIC_BOTTOM).register(this) {
+        FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_COMIC_BOTTOM).register(this) {
             if (mTapFlag) return@register
             mTapFlag = true
-            ComicInfoBottomSheetFragment(it.pathword, true).show(parentFragmentManager, ComicInfoBottomSheetFragment.TAG)
+            navigate(baseR.id.mainBookinfofragment, Bundle().also { bundle -> bundle.putSerializable("tapEntity", it) })
             doAfterDelay(EventGapTime.BASE_FLAG_TIME) { mTapFlag = false }
         }
 

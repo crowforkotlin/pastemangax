@@ -8,12 +8,12 @@ import com.crow.base.app.appContext
 import com.crow.base.tools.extensions.clickGap
 import com.crow.module_home.databinding.HomeBannerRvBinding
 import com.crow.module_home.databinding.HomeBannerRvBinding.inflate
-import com.crow.base.current_project.entity.ComicType
+import com.crow.base.current_project.entity.BookType
 import com.crow.module_home.model.resp.homepage.Banner
 
 class HomeBannerRvAdapter(
     val bannerList: MutableList<Banner>,
-    inline val onTap: (ComicType, String) -> Unit,
+    inline val onTap: (BookType, String) -> Unit,
 ) : RecyclerView.Adapter<HomeBannerRvAdapter.ViewHolder>() {
 
     inner class ViewHolder(val rvBinding: HomeBannerRvBinding) : RecyclerView.ViewHolder(rvBinding.root) {
@@ -23,7 +23,7 @@ class HomeBannerRvAdapter(
     override fun getItemCount(): Int = bannerList.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(inflate(from(parent.context), parent, false)).also { vh ->
-            vh.rvBinding.baneerImage.clickGap { _, _ -> onTap(ComicType.Banner, vh.mPathword) }
+            vh.rvBinding.baneerImage.clickGap { _, _ -> onTap(BookType.Banner, vh.mPathword) }
         }
     }
 

@@ -962,6 +962,7 @@ drawable base_ic_edit_24dp
 drawable base_shape_textview_radius
 id app_main_fcv
 id loadingLottieAnimation
+id mainBookinfofragment
 id mainComicfragment
 id mainUsericonfragment
 id mainUserinfofragment

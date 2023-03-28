@@ -6,8 +6,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
-import com.crow.base.current_project.entity.ComicTapEntity
-import com.crow.base.current_project.entity.ComicType
+import com.crow.base.current_project.entity.BookTapEntity
+import com.crow.base.current_project.entity.BookType
 import com.crow.base.current_project.processTokenError
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
@@ -37,7 +37,7 @@ import com.crow.base.R as baseR
 
 class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
-    // 书架VM
+    // 共享书架VM
     private val mBsVM by sharedViewModel<BookshelfViewModel>()
 
     // Bookshelf Comic适配器
@@ -58,10 +58,10 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
         // 初始化适配器
         mBookshelfComicRvAdapter = BookshelfComicRvAdapter {
-            FlowBus.with<ComicTapEntity>(BaseStrings.Key.OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(ComicType.Comic, it.mComic.mPathWord))
+            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_COMIC_BOTTOM).post(lifecycleScope, BookTapEntity(BookType.Comic, it.mComic.mPathWord))
         }
         mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter {
-            FlowBus.with<ComicTapEntity>(BaseStrings.Key.OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(ComicType.Novel, it.mNovel.mPathWord))
+            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_COMIC_BOTTOM).post(lifecycleScope, BookTapEntity(BookType.Novel, it.mNovel.mPathWord))
         }
 
         // 设置适配器
@@ -168,7 +168,6 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                             // 文本不可见 代表成功获取到数据
                             if (mBinding.bookshelfText.isVisible) {
 
-                                // “空空如也“ 不可见
                                 mBinding.bookshelfText.visibility = View.GONE
 
                                 // 刷新布局 可见
@@ -187,7 +186,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
                             // 设置漫画总数
                             if (mBinding.bookshelfCount.text.isNullOrEmpty()) {
-                                mBinding.bookshelfCount.text = getString(R.string.bookshelf_count, intent.bookshelfComicfResp!!.mTotal.toString())
+                                mBinding.bookshelfCount.text = getString(R.string.bookshelf_count, intent.bookshelfComicResp!!.mTotal.toString())
                                 mBinding.bookshelfBar.animateFadeIn()
                                 mBinding.bookshelfCount.animateFadeIn()
                             }

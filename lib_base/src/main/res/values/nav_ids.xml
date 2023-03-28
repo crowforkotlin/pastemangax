@@ -5,4 +5,5 @@
 	<item name="mainUserloginfragment" type="id"/>
 	<item name="mainUserinfofragment" type="id"/>
 	<item name="mainUsericonfragment" type="id"/>
+	<item name="mainBookinfofragment" type="id"/>
 </resources>

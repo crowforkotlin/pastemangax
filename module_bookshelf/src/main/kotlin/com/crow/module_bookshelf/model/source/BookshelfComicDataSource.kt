@@ -2,6 +2,8 @@ package com.crow.module_bookshelf.model.source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.crow.base.tools.extensions.logMsg
+import com.crow.module_bookshelf.model.resp.BookshelfComicResp
 import com.crow.module_bookshelf.model.resp.bookshelf_comic.BookshelfComicResults
 
 /*************************
@@ -12,7 +14,7 @@ import com.crow.module_bookshelf.model.resp.bookshelf_comic.BookshelfComicResult
  * @Description: BookShelfDataSource
  * @formatter:on
  **************************/
-class BookshelfComicDataSource(inline val mDoOnPageResults: suspend (position: Int, pageSize: Int) -> List<BookshelfComicResults>?) : PagingSource<Int, BookshelfComicResults>() {
+class BookshelfComicDataSource(inline val mDoOnPageResults: suspend (position: Int, pageSize: Int) -> BookshelfComicResp?) : PagingSource<Int, BookshelfComicResults>() {
 
     companion object {
         private const val START_POSITION = 0
@@ -30,11 +32,28 @@ class BookshelfComicDataSource(inline val mDoOnPageResults: suspend (position: I
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, BookshelfComicResults> {
+
+        // 当前位置
         val position = params.key ?: START_POSITION
+
+        // 下一个位置
+        val nextPos = position + LOAD_POSITION
+
+
         return try {
-            val realDataList = mutableListOf<BookshelfComicResults>().apply { addAll(mDoOnPageResults(position, params.loadSize) ?: return@apply) }
-            if (realDataList.isEmpty()) LoadResult.Page(data = realDataList, prevKey = null, nextKey = null)
-            else LoadResult.Page(data = realDataList, prevKey = null, nextKey = position + LOAD_POSITION)
+
+            // 获取书架漫画结果集
+            val result = mDoOnPageResults(position, params.loadSize) ?: return LoadResult.Page(data = mutableListOf(), null, null)
+
+            // 下一个键 = 如果 当前位置 + 预加载页数 大于 总共的数量则返回空 否则 返回下一个起点
+            val nextKey = if (nextPos > result.mTotal) null else nextPos
+
+            // 返回数据
+            mutableListOf<BookshelfComicResults>().run {
+                addAll(result.mList)
+                if (isEmpty()) LoadResult.Page(this, prevKey = null, nextKey = null)
+                else LoadResult.Page(this, prevKey = null, nextKey = nextKey)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
             LoadResult.Error(e)

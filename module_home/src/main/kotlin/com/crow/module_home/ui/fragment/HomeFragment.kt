@@ -16,8 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseStrings.Key.OPEN_COMIC_BOTTOM
-import com.crow.base.current_project.entity.ComicTapEntity
-import com.crow.base.current_project.entity.ComicType
+import com.crow.base.current_project.entity.BookTapEntity
+import com.crow.base.current_project.entity.BookType
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -128,23 +128,23 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeAppbar.setPadding(0, mContext.getStatusBarHeight(), 0, 0)
 
         // 适配器可以作为局部成员，但不要直接初始化，不然会导致被View引用从而内存泄漏
-        mHomeRecAdapter = HomeComicRvAdapter(mType = ComicType.Rec) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
+        mHomeRecAdapter = HomeComicRvAdapter(mType = BookType.Rec) { type, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, BookTapEntity(type, pathword))
         }
-        mHomeHotAdapter = HomeComicRvAdapter(mType = ComicType.Hot) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
+        mHomeHotAdapter = HomeComicRvAdapter(mType = BookType.Hot) { type, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, BookTapEntity(type, pathword))
         }
-        mHomeNewAdapter = HomeComicRvAdapter(mType = ComicType.New) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
+        mHomeNewAdapter = HomeComicRvAdapter(mType = BookType.New) { type, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, BookTapEntity(type, pathword))
         }
-        mHomeFinishAdapter = HomeComicRvAdapter(mType = ComicType.Commit) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
+        mHomeFinishAdapter = HomeComicRvAdapter(mType = BookType.Commit) { type, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, BookTapEntity(type, pathword))
         }
-        mHomeRankAapter = HomeComicRvAdapter(mType = ComicType.Rank) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
+        mHomeRankAapter = HomeComicRvAdapter(mType = BookType.Rank) { type, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, BookTapEntity(type, pathword))
         }
-        mHomeTopicAapter = HomeComicRvAdapter(mType = ComicType.Topic) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
+        mHomeTopicAapter = HomeComicRvAdapter(mType = BookType.Topic) { type, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, BookTapEntity(type, pathword))
         }
 
         // 初始化刷新 推荐的按钮
@@ -246,7 +246,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
         // 设置轮播图数据
         mHomeBannerRvAdapter = HomeBannerRvAdapter(results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList()) { type, pathword ->
-            FlowBus.with<ComicTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, ComicTapEntity(type, pathword))
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_BOTTOM).post(lifecycleScope, BookTapEntity(type, pathword))
         }
 
         // 设置Banner适配器

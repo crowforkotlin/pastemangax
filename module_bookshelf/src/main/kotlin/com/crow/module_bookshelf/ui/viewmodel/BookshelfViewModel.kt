@@ -44,7 +44,7 @@ class BookshelfViewModel(val repository: BookShelfRepository) : BaseMviViewModel
             ),
             pagingSourceFactory = {
                 BookshelfComicDataSource { position, pagesize ->
-                    flowResult(repository.getBookshelfComic(position, pagesize, mOrder), intent) { value -> intent.copy(bookshelfComicfResp = value.mResults) }?.mResults?.mList
+                    flowResult(repository.getBookshelfComic(position, pagesize, mOrder), intent) { value -> intent.copy(bookshelfComicResp = value.mResults) }?.mResults
                 }
             }
         ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
@@ -60,7 +60,7 @@ class BookshelfViewModel(val repository: BookShelfRepository) : BaseMviViewModel
             ),
             pagingSourceFactory = {
                 BookshelfNovelDataSource { position, pagesize ->
-                    flowResult(repository.getBookshelfNovel(position, pagesize, mOrder), intent) { value -> intent.copy(bookshelfNovelResp = value.mResults) }?.mResults?.mList
+                    flowResult(repository.getBookshelfNovel(position, pagesize, mOrder), intent) { value -> intent.copy(bookshelfNovelResp = value.mResults) }?.mResults
                 }
             }
         ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
