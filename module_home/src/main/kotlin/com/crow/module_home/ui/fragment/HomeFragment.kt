@@ -168,8 +168,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(type, pathword))
         }
 
-
-
         // 初始化刷新 推荐的按钮
         mRecRefreshButton = initRecRefreshView()
 
