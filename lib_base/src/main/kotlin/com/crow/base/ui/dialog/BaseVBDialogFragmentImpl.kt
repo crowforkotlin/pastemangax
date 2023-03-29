@@ -37,8 +37,8 @@ abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment, IBase
     // 初始化观察者
     override fun initObserver() {}
 
-    override fun showLoadingAnim() {
-        LoadingAnimDialog.show(parentFragmentManager)
+    override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) {
+        LoadingAnimDialog.show(parentFragmentManager, loadingAnimConfig)
     }
 
     override fun dismissLoadingAnim() {

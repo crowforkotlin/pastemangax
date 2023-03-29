@@ -16,7 +16,7 @@ object AppConfigs {
 
     const val module_main_namespace = "com.crow.module_main"
 
-    const val module_discovery_namespace = "com.crow.module_discovery"
+    const val module_discovery_namespace = "com.crow.module_discover"
 
     const val module_bookshelf_namespace = "com.crow.module_bookshelf"
 
@@ -40,7 +40,7 @@ object AppConfigs {
     const val main_resource_prefix = "main"
 
     // module_discovery资源前缀
-    const val discovery_resource_prefix = "discovery"
+    const val discovery_resource_prefix = "discover"
 
     // module_bookshelf资源前缀
     const val bookshelf_resource_prefix = "bookshelf"

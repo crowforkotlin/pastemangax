@@ -3,6 +3,7 @@ package com.crow.module_main.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
 import com.crow.base.current_project.entity.BookTapEntity
@@ -10,7 +11,7 @@ import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.module_bookshelf.ui.fragment.BookshelfFragment
-import com.crow.module_discovery.ui.fragment.DiscoveryFragment
+import com.crow.module_discover.ui.fragment.DiscoverFragment
 import com.crow.module_home.ui.fragment.HomeFragment
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentContainerBinding
@@ -55,7 +56,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 退出账号
         FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).register(this) {
             mUserVM.doClearUserInfo()
-            if (mBinding.mainViewPager.currentItem == 2) (mFragmentList[2] as BookshelfFragment).doRefresh()
+            (mFragmentList[2] as BookshelfFragment).doExitUser()
         }
 
         // 打开用户界面
@@ -74,10 +75,17 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private val mUserVM by sharedViewModel<UserViewModel>()
 
     // 碎片集
-    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment(), DiscoveryFragment(), BookshelfFragment()) }
+    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment(), DiscoverFragment(), BookshelfFragment()) }
 
     // 点击标志 用于防止多次显示 ComicInfoBottomSheetFragment
     private var mTapFlag: Boolean = false
+
+    private fun switchFragment(position: Int) {
+        if (mBinding.mainViewPager.currentItem != position) {
+            mBinding.mainViewPager.setCurrentItem(position, true)
+        }
+        FlowBus.with<Int>(BaseStrings.Key.POST_CURRENT_ITEM).post(lifecycleScope, position)
+    }
 
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
@@ -112,12 +120,6 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
             // 初始化 用户Tokne
             BaseUser.CURRENT_USER_TOKEN = it?.mToken ?: return@onCollect
-        }
-    }
-
-    private fun switchFragment(position: Int) {
-        if (mBinding.mainViewPager.currentItem != position) {
-            mBinding.mainViewPager.setCurrentItem(position, true)
         }
     }
 }

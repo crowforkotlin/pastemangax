@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.crow.base.tools.extensions.permissionext.IBasePerEvent
 import com.crow.base.tools.extensions.permissionext.IBasePermission
@@ -39,7 +40,8 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
 
     override var iBasePerEvent: IBasePerEvent? = null
 
-    override fun showLoadingAnim() { LoadingAnimDialog.show(parentFragmentManager) }
+    override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) { LoadingAnimDialog.show(parentFragmentManager, loadingAnimConfig) }
+
 
     override fun dismissLoadingAnim() { LoadingAnimDialog.dismiss(parentFragmentManager) }
 

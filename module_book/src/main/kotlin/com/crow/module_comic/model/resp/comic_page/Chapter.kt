@@ -43,7 +43,7 @@ data class Chapter(
     val mNews: String,
 
     @Json(name = "next")
-    val mNext: String,
+    val mNext: String?,
 
     @Json(name = "ordered")
     val mOrdered: Int,

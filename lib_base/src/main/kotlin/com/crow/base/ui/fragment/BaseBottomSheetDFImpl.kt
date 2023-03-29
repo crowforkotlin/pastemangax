@@ -19,7 +19,10 @@ abstract class BaseBottomSheetDFImpl : BottomSheetDialogFragment(), IBaseFragmen
 
     override fun initData() {}
 
-    override fun showLoadingAnim() { LoadingAnimDialog.show(parentFragmentManager) }
+    override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) {
+        LoadingAnimDialog.show(parentFragmentManager, loadingAnimConfig)
+    }
+
     override fun dismissLoadingAnim() { LoadingAnimDialog.dismiss(parentFragmentManager) }
 
     inline fun dismissLoadingAnim(crossinline animEnd: () -> Unit) {
