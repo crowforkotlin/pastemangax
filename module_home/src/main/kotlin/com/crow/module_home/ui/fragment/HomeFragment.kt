@@ -148,6 +148,28 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
         }
 
+        // 适配器可以作为局部成员，但不要直接初始化，不然会导致被View引用从而内存泄漏
+        mHomeRecAdapter = HomeComicRvAdapter(mType = BookType.Rec) { _, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+        }
+        mHomeHotAdapter = HomeComicRvAdapter(mType = BookType.Hot) { _, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+        }
+        mHomeNewAdapter = HomeComicRvAdapter(mType = BookType.New) { _, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+        }
+        mHomeFinishAdapter = HomeComicRvAdapter(mType = BookType.Commit) { _, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+        }
+        mHomeRankAapter = HomeComicRvAdapter(mType = BookType.Rank) { _, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+        }
+        mHomeTopicAapter = HomeComicRvAdapter(mType = BookType.Topic) { type, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(type, pathword))
+        }
+
+
+
         // 初始化刷新 推荐的按钮
         mRecRefreshButton = initRecRefreshView()
 
