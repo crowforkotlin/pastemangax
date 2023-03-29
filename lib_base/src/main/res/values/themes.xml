@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Base_LibBase_LoadingAnim" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base_LoadingAnim_Dark" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="Base_LoadingAnim_Light" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 </resources>

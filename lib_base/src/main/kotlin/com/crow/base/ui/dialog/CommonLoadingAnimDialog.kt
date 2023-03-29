@@ -20,7 +20,7 @@ import com.crow.base.ui.viewmodel.BaseViewModel
 class CommonLoadingAnimDialog: BaseVBDialogFragment<BaseDialogOriginalLoadingBinding,BaseViewModel>() {
 
     init {
-        setStyle(STYLE_NO_TITLE, R.style.Base_LibBase_LoadingAnim)
+        setStyle(STYLE_NO_TITLE, R.style.Base_LoadingAnim_Dark)
     }
 
     companion object {

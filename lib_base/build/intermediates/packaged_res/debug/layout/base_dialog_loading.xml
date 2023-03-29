@@ -1,19 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?> <!-- @formatter:off -->
-<androidx.appcompat.widget.LinearLayoutCompat
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:theme="@style/Base_LibBase_LoadingAnim"
-    android:orientation="vertical"> <!-- @formatter:on -->
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/loadingLottieAnimation"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        app:lottie_loop="true"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="lottie/loading_threepoint_0.80s.json" />
+	<com.airbnb.lottie.LottieAnimationView
+		android:id="@+id/loadingLottieAnimation"
+		android:layout_width="@dimen/base_dp200"
+		android:layout_height="@dimen/base_dp200"
+		android:layout_gravity="center"
+		app:lottie_autoPlay="true"
+		app:lottie_fileName="lottie/loading_threepoint_0.80s.json"
+		app:lottie_loop="true" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+</FrameLayout>

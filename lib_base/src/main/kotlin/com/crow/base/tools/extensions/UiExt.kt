@@ -6,6 +6,8 @@ import android.content.Context
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewPropertyAnimator
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 
 const val BASE_ANIM_300L = 300L
@@ -46,4 +48,16 @@ fun View.animateFadeOut(duration: Long = BASE_ANIM_300L): ViewPropertyAnimator {
     alpha = 1f
     visibility = View.VISIBLE
     return animate().alpha(0f).setDuration(duration)
+}
+
+suspend fun View.suspendAnimateFadeIn(duration: Long = BASE_ANIM_200L) = suspendCancellableCoroutine { continuation ->
+    alpha = 0f
+    visibility = View.VISIBLE
+    animate().alpha(1f).setDuration(duration).also { it.withEndAction { continuation.resume(it) } }
+}
+
+suspend fun View.suspendAnimateFadeOut(duration: Long = BASE_ANIM_300L) = suspendCancellableCoroutine { continuation ->
+    alpha = 1f
+    visibility = View.VISIBLE
+    animate().alpha(0f).setDuration(duration).also { it.withEndAction { continuation.resume(it) } }
 }

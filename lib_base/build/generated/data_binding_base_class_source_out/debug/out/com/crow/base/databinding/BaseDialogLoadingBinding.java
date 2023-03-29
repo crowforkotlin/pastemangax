@@ -4,9 +4,9 @@ package com.crow.base.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.airbnb.lottie.LottieAnimationView;
@@ -17,12 +17,12 @@ import java.lang.String;
 
 public final class BaseDialogLoadingBinding implements ViewBinding {
   @NonNull
-  private final LinearLayoutCompat rootView;
+  private final FrameLayout rootView;
 
   @NonNull
   public final LottieAnimationView loadingLottieAnimation;
 
-  private BaseDialogLoadingBinding(@NonNull LinearLayoutCompat rootView,
+  private BaseDialogLoadingBinding(@NonNull FrameLayout rootView,
       @NonNull LottieAnimationView loadingLottieAnimation) {
     this.rootView = rootView;
     this.loadingLottieAnimation = loadingLottieAnimation;
@@ -30,7 +30,7 @@ public final class BaseDialogLoadingBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public LinearLayoutCompat getRoot() {
+  public FrameLayout getRoot() {
     return rootView;
   }
 
@@ -61,7 +61,7 @@ public final class BaseDialogLoadingBinding implements ViewBinding {
         break missingId;
       }
 
-      return new BaseDialogLoadingBinding((LinearLayoutCompat) rootView, loadingLottieAnimation);
+      return new BaseDialogLoadingBinding((FrameLayout) rootView, loadingLottieAnimation);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

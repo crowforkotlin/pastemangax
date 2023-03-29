@@ -1,0 +1,1 @@
+int layout discovery_fragment 0x0

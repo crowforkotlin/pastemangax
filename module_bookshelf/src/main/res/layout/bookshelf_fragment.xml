@@ -76,7 +76,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
-			app:icon="@drawable/bookshelf_ic_move_top_24dp"
+			app:icon="@drawable/base_ic_move_top_24dp"
 			app:iconTint="@null"
 			app:layout_constraintEnd_toStartOf="@+id/bookshelf_move_bottom"
 			app:layout_constraintTop_toTopOf="@+id/bookshelf_edit" />
@@ -87,7 +87,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="end"
-			app:icon="@drawable/bookshelf_ic_move_bottom_24dp"
+			app:icon="@drawable/base_ic_move_bottom_24dp"
 			app:iconTint="@null"
 			app:layout_constraintEnd_toStartOf="@+id/bookshelf_filter"
 			app:layout_constraintTop_toTopOf="@+id/bookshelf_edit" />
@@ -103,40 +103,34 @@
 			android:textAlignment="center"
 			android:textSize="@dimen/base_sp16"
 			android:textStyle="bold"
+			android:visibility="invisible"
 			app:drawableStartCompat="@drawable/bookshelf_ic_novel_24dp"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/bookshelf_edit"
-			tools:text="@string/bookshelf_count" />
-
+			tools:text="@string/bookshelf_comic_count"
+			tools:visibility="visible" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
-	<!--<androidx.viewpager2.widget.ViewPager2
-		android:id="@+id/bookshelf_vp"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_weight="@integer/material_motion_duration_long_1" />
--->
 	<com.scwang.smart.refresh.layout.SmartRefreshLayout
 		android:id="@+id/bookshelf_refresh"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_weight="1"
-		android:visibility="gone"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/bookshelf_bar">
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
 
 		<com.scwang.smart.refresh.header.MaterialHeader
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content" />
 
-		<FrameLayout
+		<androidx.coordinatorlayout.widget.CoordinatorLayout
+			android:id="@+id/bookshelf_frame_rv"
 			android:layout_width="match_parent"
-			android:layout_height="match_parent">
+			android:layout_height="match_parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/bookshelf_bar">
 
 			<androidx.recyclerview.widget.RecyclerView
 				android:id="@+id/bookshelf_rv_comic"
@@ -145,7 +139,8 @@
 				android:visibility="invisible"
 				app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
 				app:spanCount="3"
-				tools:listitem="@layout/bookshelf_fragment_rv" />
+				tools:listitem="@layout/bookshelf_fragment_rv"
+				tools:visibility="visible" />
 
 			<androidx.recyclerview.widget.RecyclerView
 				android:id="@+id/bookshelf_rv_novel"
@@ -156,19 +151,17 @@
 				app:spanCount="3"
 				tools:listitem="@layout/bookshelf_fragment_rv" />
 
-		</FrameLayout>
+			<TextView
+				android:id="@+id/bookshelf_text"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_gravity="center"
+				android:gravity="center"
+				android:text="@string/bookshelf_empty"
+				android:textSize="@dimen/base_sp18" />
+
+		</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 	</com.scwang.smart.refresh.layout.SmartRefreshLayout>
-
-	<TextView
-		android:id="@+id/bookshelf_text"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:layout_weight="1"
-		android:gravity="center"
-		android:text="@string/bookshelf_empty"
-		android:textSize="@dimen/base_sp18" />
-
 
 </androidx.appcompat.widget.LinearLayoutCompat>

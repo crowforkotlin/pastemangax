@@ -6,6 +6,7 @@
     <string name="BaseLoading" translatable="false">加载中...</string>
     <string name="BaseLoadingError">加载失败，请重试！</string>
     <string name="BaseLoadingErrorNeedRefresh">加载失败，请刷新重试！</string>
+    <string name="BaseLoadingRetry">重新加载</string>
     <string name="BaseRefreshScucess">"刷新成功~"</string>
     <string name="BaseUnknow">Unknow Error!</string>
     <string name="BaseConfirm">确认</string>

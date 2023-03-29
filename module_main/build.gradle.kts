@@ -73,7 +73,7 @@ dependencies {
     implementation(project(mapOf("path" to ":lib_base")))
 
     api(project(mapOf("path" to ":module_home")))
-    api(project(mapOf("path" to ":module_discovery")))
+    api(project(mapOf("path" to ":module_discover")))
     api(project(mapOf("path" to ":module_bookshelf")))
     api(project(mapOf("path" to ":module_book")))
     api(project(mapOf("path" to ":module_user")))
