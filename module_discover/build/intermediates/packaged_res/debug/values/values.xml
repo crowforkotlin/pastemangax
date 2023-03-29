@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="discover_comic">漫画</string>
+    <string name="discover_comic_count">%d 本漫画（当前位置）</string>
+    <string name="discover_hot">热度</string>
+    <string name="discover_novel">轻小说</string>
+    <string name="discover_update_time">更新时间</string>
+    <style name="Discover.Theme.CopyManga" parent="Theme.Material3.DayNight.NoActionBar">
+	</style>
+</resources>
