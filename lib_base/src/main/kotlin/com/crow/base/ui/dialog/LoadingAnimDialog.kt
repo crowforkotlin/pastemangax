@@ -1,16 +1,12 @@
 package com.crow.base.ui.dialog
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import com.crow.base.R
-import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.doAfterDelay
-import com.crow.base.tools.extensions.setBackgroundTransparent
-import com.crow.base.tools.extensions.setMaskAmount
+import com.crow.base.tools.extensions.*
 
 /*************************
  * @Machine: RedmiBook Pro 15
@@ -23,11 +19,15 @@ import com.crow.base.tools.extensions.setMaskAmount
  *************************/
 class LoadingAnimDialog : DialogFragment() {
 
-    init {
-        setStyle(STYLE_NO_TITLE, R.style.Base_LibBase_LoadingAnim)
-    }
     fun interface LoadingAnimCallBack {
         fun onAnimEnd()
+    }
+
+    interface LoadingAnimConfig {
+
+        fun isNoInitStyle() : Boolean
+
+        fun doOnConfig(window: Window)
     }
 
     companion object {
@@ -39,12 +39,22 @@ class LoadingAnimDialog : DialogFragment() {
 
         @JvmStatic
         @Synchronized
-        fun show(fragmentManager: FragmentManager) {
+        fun show(fragmentManager: FragmentManager,loadingAnimConfig: LoadingAnimConfig? = null) {
             val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: LoadingAnimDialog()
             if (dialog.isAdded) { return }
             if (!dialog.isVisible) {
                 mShowTime = System.currentTimeMillis()
-                if (!fragmentManager.isStateSaved) { dialog.show(fragmentManager, TAG) }
+                if (!fragmentManager.isStateSaved) {
+                    dialog.show(fragmentManager, TAG)
+                    if (loadingAnimConfig != null) {
+                        if (!loadingAnimConfig.isNoInitStyle()) dialog.lifecycleScope.launchWhenCreated {
+                            dialog.setStyle(STYLE_NO_TITLE,  R.style.Base_LoadingAnim_Dark)
+                        }
+                        dialog.lifecycleScope.launchWhenStarted { loadingAnimConfig.doOnConfig(dialog.dialog?.window ?: return@launchWhenStarted) }
+                    } else {
+                        dialog.setStyle(STYLE_NO_TITLE,  R.style.Base_LoadingAnim_Dark)
+                    }
+                }
             }
         }
 
@@ -82,8 +92,6 @@ class LoadingAnimDialog : DialogFragment() {
         val window = dialog!!.window!!
         window.setBackgroundTransparent()
         window.setMaskAmount(0f)
-        window.decorView.alpha = 0f
-        window.decorView.visibility = View.VISIBLE
-        window.decorView.animate().alpha(1f).duration = 200L
+        view?.animateFadeIn()
     }
 }

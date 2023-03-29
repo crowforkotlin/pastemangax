@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
+import com.crow.base.ui.dialog.LoadingAnimDialog
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -16,7 +18,7 @@ import android.view.ViewGroup
 interface IBaseFragment {
 
     // 显示加载动画
-    fun showLoadingAnim()
+    fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig? = null)
 
     // 隐藏加载动画
     fun dismissLoadingAnim()

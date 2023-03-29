@@ -1,4 +1,6 @@
-@file:Suppress("IMPLICIT_CAST_TO_ANY", "CAST_NEVER_SUCCEEDS", "DEPRECATION")
+@file:Suppress("IMPLICIT_CAST_TO_ANY", "CAST_NEVER_SUCCEEDS", "DEPRECATION", "FunctionName",
+    "NonAsciiCharacters"
+)
 
 package com.crow.module_comic.ui.fragment
 
@@ -7,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.crow.base.current_project.*
@@ -74,6 +77,9 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
     // 默认的Appbar状态
     private var mAppbarState = STATE_EXPANDED
+
+    // 章节名称
+    private var mChapterName: String? = null
 
     // 漫画章节Rv
     private var mComicChapterRvAdapter: ComicChapterRvAdapter? = null
@@ -191,15 +197,11 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
         // 显示漫画页
         showBookInfoPage()
 
-        // 章节选择器 可见
-        mBinding.bookInfoRvChapterSelector.visibility = View.VISIBLE
-
-        // Rv可见
-        mBinding.bookInfoRvChapter.visibility = View.VISIBLE
     }
 
     // 书页内容意图处理
     private fun doBookInfoIntent(intent: BookIntent) {
+        BaseUser.CURRENT_USER_TOKEN.logMsg()
         intent.mViewState
             // 执行加载动画
             .doOnLoading { showLoadingAnim() }
@@ -231,29 +233,39 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
                 when(intent) {
                     is BookIntent.GetComicChapter -> {
                         if (intent.comicChapter != null) {
+                            if (mBinding.comicInfoErrorTips.isVisible) {
+                                mBinding.comicInfoErrorTips.animateFadeOut().withEndAction { mBinding.comicInfoErrorTips.visibility = View.GONE }
+                                mBinding.bookInfoLinearChapter.animateFadeIn()
+                            }
                             if (mBinding.bookComicInfoRefresh.isRefreshing) showBookChapterPage(intent.comicChapter, null)
                             else dismissLoadingAnim { showBookChapterPage(intent.comicChapter, null) }
                             return@doOnResult
                         }
-                        dismissLoadingAnim {
-                            navigateUp()
-                            mBinding.root.showSnackBar(intent.invalidResp ?: getString(baseR.string.BaseUnknow))
-                        }
+                        失败的结果取消加载动画或刷新控件(intent.invalidResp)
                     }
                     is BookIntent.GetNovelChapter -> {
                         if (intent.novelChapter != null) {
+                            if (mBinding.comicInfoErrorTips.isVisible) {
+                                mBinding.comicInfoErrorTips.animateFadeOut().withEndAction { mBinding.comicInfoErrorTips.visibility = View.GONE }
+                                mBinding.bookInfoLinearChapter.animateFadeIn()
+                            }
                             if (mBinding.bookComicInfoRefresh.isRefreshing) showBookChapterPage(null, intent.novelChapter)
                             else dismissLoadingAnim { showBookChapterPage(null, intent.novelChapter) }
                             return@doOnResult
                         }
-                        dismissLoadingAnim {
-                            navigateUp()
-                            mBinding.root.showSnackBar(intent.invalidResp ?: getString(baseR.string.BaseUnknow))
-                        }
+                        失败的结果取消加载动画或刷新控件(intent.invalidResp)
                     }
                     else -> {}
                 }
             }
+    }
+
+    private fun 失败的结果取消加载动画或刷新控件(invalidResp: String?) {
+        if (mBinding.bookComicInfoRefresh.isRefreshing) mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknow))
+        else dismissLoadingAnim {
+            mBinding.comicInfoErrorTips.animateFadeIn()
+            mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknow))
+        }
     }
 
     override fun getViewBinding(inflater: LayoutInflater) = BookComicFragmentInfoBinding.inflate(inflater)
@@ -278,10 +290,17 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
         if (mBookTapEntity.type == BookType.Comic) {
 
             // 定义点击章节
-            val doOnTapChapter = { comic: ComicChapterResult -> navigate(baseR.id.mainComicfragment, Bundle().also {
+            val doOnTapChapter = { comic: ComicChapterResult ->
+
+                // 设置章节名称 用于下次返回重建View时让adapter定位到已读章节名称
+                mChapterName = comic.name
+
+                // 跳转
+                navigate(baseR.id.mainComicfragment, Bundle().also {
                     it.putString(BaseStrings.PATH_WORD, comic.comicPathWord)
                     it.putString("uuid", comic.uuid)
-            }) }
+                })
+            }
 
             // 初始化漫画章节适配器 这里判断数据是否为空？ 不为空直接恢复View的状态
             mComicChapterRvAdapter = if (mBookVM.mComicChapterPage != null && mBookVM.mComicInfoPage != null) {
@@ -293,6 +312,10 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
                 ComicChapterRvAdapter(mBookVM.mComicChapterPage!!.mList.toMutableList(),doOnTapChapter)
 
             } else ComicChapterRvAdapter(mDoOnTapChapter = doOnTapChapter)
+
+            // 章节名称不为空 则设置 漫画适配器的已读章节名称
+            if (mChapterName != null) mComicChapterRvAdapter?.mChapterName = mChapterName
+
         }
 
         // 轻小说
@@ -306,6 +329,9 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
                 NovelChapterRvAdapter(mBookVM.mNovelChapterPage!!.mList.toMutableList()) { }
             } else NovelChapterRvAdapter { }
+
+            // 章节名称不为空 则设置 漫画适配器的已读章节名称
+            if (mChapterName != null) mNovelChapterRvAdapter?.mChapterName = mChapterName
         }
 
         // 设置适配器
@@ -395,13 +421,15 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
                 is BookIntent.GetComicBrowserHistory -> {
                     intent.mViewState.doOnResult {
-                        mComicChapterRvAdapter?.mChapterName = intent.comicBrowser?.browse?.chapterName ?: return@doOnResult
+                        mChapterName = intent.comicBrowser?.browse?.chapterName ?: return@doOnResult
+                        mComicChapterRvAdapter?.mChapterName = mChapterName
                         toast(getString(R.string.BookComicReadedPage, mComicChapterRvAdapter?.mChapterName))
                     }
                 }
                 is BookIntent.GetNovelBrowserHistory -> {
                     intent.mViewState.doOnResult {
-                        mNovelChapterRvAdapter?.mChapterName = intent.novelBrowser?.browse?.chapterName ?: return@doOnResult
+                        mChapterName = intent.novelBrowser?.browse?.chapterName ?: return@doOnResult
+                        mNovelChapterRvAdapter?.mChapterName = mChapterName
                         toast(getString(R.string.BookComicReadedPage, mNovelChapterRvAdapter?.mChapterName))
                     }
                 }

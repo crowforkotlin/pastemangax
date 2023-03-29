@@ -3,15 +3,19 @@ package com.crow.module_home.ui.fragment
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.Window
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.get
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.current_project.BaseStrings
@@ -21,6 +25,7 @@ import com.crow.base.current_project.entity.BookType
 import com.crow.base.current_project.entity.BookType.Comic
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
+import com.crow.base.ui.dialog.LoadingAnimDialog
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.*
 import com.crow.module_home.R
@@ -35,6 +40,8 @@ import com.crow.module_home.ui.adapter.HomeComicRvAdapter
 import com.crow.module_home.ui.viewmodel.HomeViewModel
 import com.google.android.material.R.attr.materialIconButtonStyle
 import com.google.android.material.button.MaterialButton
+import com.scwang.smart.refresh.layout.api.RefreshLayout
+import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.to.aboomy.pager2banner.IndicatorView
 import com.to.aboomy.pager2banner.ScaleInTransformer
 import kotlinx.coroutines.delay
@@ -59,8 +66,8 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     // 刷新按钮（换一批） ＆ 主页刷新布局控件
     private var mRecRefreshButton : MaterialButton? = null
 
-    // 主页布局刷新的时间 第一次进入布局默认5Ms 之后刷新 为 50Ms
-    private var mHomePageLayoutRefreshTime = 5L
+    // 主页布局刷新的时间 第一次进入布局默认20Ms 之后刷新 为 50Ms
+    private var mHomePageLayoutRefreshTime = 10L
 
     // 主页数据量较多， 采用Rv方式
     private lateinit var mHomeBannerRvAdapter: HomeBannerRvAdapter
@@ -87,10 +94,19 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                 // （获取主页）（根据 刷新事件 来决定是否启用加载动画） 正常加载数据、反馈View
                 is HomeIntent.GetHomePage -> {
                     intent.mViewState
-                        .doOnLoading { if(!mBinding.homeRefresh.isRefreshing) showLoadingAnim() }
+                        .doOnLoading {
+                            if(!mBinding.homeRefresh.isRefreshing) {
+                                showLoadingAnim(object : LoadingAnimDialog.LoadingAnimConfig {
+                                    override fun isNoInitStyle(): Boolean = true
+                                    override fun doOnConfig(window: Window) {
+                                        window.setMaskAmount(0.2f)
+                                    }
+                                })
+                            }
+                        }
                         .doOnResult {
                             // 刷新控件没有刷新 代表 用的是加载动画 -> 取消加载动画 否则直接加载页面数据
-                            if (!mBinding.homeRefresh.isRefreshing) dismissLoadingAnim { doLoadHomePage(intent.homePageData!!.mResults) }
+                            if (!mBinding.homeRefresh.isRefreshing) doLoadHomePage(intent.homePageData!!.mResults)
                             else doLoadHomePage(intent.homePageData!!.mResults)
                         }
                         .doOnError { code, msg ->
@@ -128,6 +144,10 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         // 设置 内边距属性 实现沉浸式效果
         mBinding.homeAppbar.setPadding(0, mContext.getStatusBarHeight(), 0, 0)
 
+        mHomeBannerRvAdapter = HomeBannerRvAdapter { _, pathword ->
+            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+        }
+
         // 适配器可以作为局部成员，但不要直接初始化，不然会导致被View引用从而内存泄漏
         mHomeRecAdapter = HomeComicRvAdapter(mType = BookType.Rec) { _, pathword ->
             FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
@@ -148,6 +168,8 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(type, pathword))
         }
 
+
+
         // 初始化刷新 推荐的按钮
         mRecRefreshButton = initRecRefreshView()
 
@@ -165,6 +187,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                     .setIndicatorSelectorColor(Color.WHITE)
                     .setIndicatorStyle(IndicatorView.IndicatorStyle.INDICATOR_BEZIER)
                     .also { it.setPadding(0, 0, 0, base20) })
+            .adapter = mHomeBannerRvAdapter
 
         // 设置每一个子布局的 （Icon、标题、适配器）
         mBinding.homeComicRec.initHomeComicRvView(R.drawable.home_ic_recommed_24dp, R.string.home_recommend_comic, mHomeRecAdapter).also{ it.homeComicConstraint.addView(mRecRefreshButton) }
@@ -173,6 +196,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeComicFinish.initHomeComicRvView(R.drawable.home_ic_finish_24dp, R.string.home_commit_finish, mHomeFinishAdapter)
         mBinding.homeComicRank.initHomeComicRvView(R.drawable.home_ic_rank_24dp, R.string.home_rank_comic, mHomeRankAapter)
         mBinding.homeComicTopic.initHomeComicRvView(R.drawable.home_ic_topic_24dp, R.string.home_topic_comic, mHomeTopicAapter).also { it.homeComicBookRv.layoutManager = GridLayoutManager(mContext, 2) }
+
         // 判断数据是否为空 不为空则加载数据
         doLoadHomePage(mHomeVM.getResult() ?: return)
     }
@@ -244,19 +268,25 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     private fun doLoadHomePage(results: Results) {
 
         // 布局不可见 则淡入 否则代表正在刷新 提示即可
-        if (!mBinding.homeLinearLayout.isVisible) {  mBinding.homeLinearLayout.animateFadeIn() }
-        else toast(getString(baseR.string.BaseRefreshScucess))
-        mBinding.homeBanner.adapter = HomeBannerRvAdapter(results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList()) { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
-        }
+        if (mBinding.homeLinearLayout.isVisible) { toast(getString(baseR.string.BaseRefreshScucess)) }
 
         viewLifecycleOwner.lifecycleScope.launch {
 
-            // 等待刷新控件动画消失 150MS
+            // LinearLayout布局可见 淡入延时 200L
+            if (!mBinding.homeLinearLayout.isVisible) mBinding.homeLinearLayout.suspendAnimateFadeIn()
+
+            // 刷新控件动画消失 延时300ML是为了等待刷新控件刷新完毕
             if (mBinding.homeRefresh.isRefreshing) {
                 mBinding.homeRefresh.finishRefresh()
-                delay(150L)
+                delay(BASE_ANIM_300L)
             }
+
+
+
+
+            mHomeBannerRvAdapter.doBannerNotify(results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList(), mHomePageLayoutRefreshTime)
+
+            if (!mBinding.homeBanner.isVisible) mBinding.homeBanner.suspendAnimateFadeIn(BASE_ANIM_300L)
 
             mHomeRecAdapter.doRecNotify(mHomeRecAdapter, results.mRecComicsResult.mResult.toMutableList(), mHomePageLayoutRefreshTime)
             mHomeHotAdapter.doHotNotify(mHomeHotAdapter, results.mHotComics.toMutableList(), mHomePageLayoutRefreshTime)
@@ -265,8 +295,12 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             mHomeRankAapter.doRankNotify(mHomeRankAapter, results.mRankDayComics.mResult.toMutableList(), mHomePageLayoutRefreshTime)
             mHomeTopicAapter.doTopicNotify(mHomeTopicAapter, results.mTopics.mResult.toMutableList(), mHomePageLayoutRefreshTime)
 
-            // 设置布局刷新时间 50MS
-            if (mHomePageLayoutRefreshTime == 5L) mHomePageLayoutRefreshTime = 100L
+            // 设置布局刷新时间 20MS
+            mHomePageLayoutRefreshTime = 20L
+
+            // 取消加载动画
+            dismissLoadingAnim()
+
         }
     }
 

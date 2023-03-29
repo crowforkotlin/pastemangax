@@ -2,6 +2,8 @@ package com.crow.module_home.ui.adapter
 
 import android.view.LayoutInflater.from
 import android.view.ViewGroup
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.app.appContext
@@ -11,6 +13,7 @@ import com.crow.module_home.databinding.HomeBannerRvBinding
 import com.crow.module_home.databinding.HomeBannerRvBinding.inflate
 import com.crow.module_home.model.resp.homepage.Banner
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class HomeBannerRvAdapter(
     private var mBannerList: MutableList<Banner> = mutableListOf(),

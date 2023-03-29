@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.crow.base.R
 import com.crow.base.app.appContext
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.ui.viewmodel.ViewState
 import com.crow.base.ui.viewmodel.ViewState.*
 import com.crow.base.ui.viewmodel.ViewStateException
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -57,10 +59,10 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
         viewModelScope.launch(context) {
             flow
                 .onStart { trySendIntent(intent, Loading) }
-                .onCompletion { catch -> trySendIntent(intent, Success) { if (catch != null && !continuation.isCompleted) continuation.resume(null) } }
+                .onCompletion { catch -> trySendIntent(intent, Success) { if (catch != null && !continuation.isCompleted) continuation.resumeWithException(catch) } }
                 .catch { catch ->
                     trySendIntent(intent, Error (if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT , catch.message ?: appContext.getString(R.string.BaseUnknow))) {
-                        if (!continuation.isCompleted) continuation.resume(null)
+                        if (!continuation.isCompleted) continuation.resumeWithException(catch)
                     }
                 }
                 .collect {

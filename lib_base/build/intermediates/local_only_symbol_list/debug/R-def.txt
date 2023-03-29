@@ -959,8 +959,13 @@ dimen base_sp9
 drawable base_bg_original_loading_radius
 drawable base_ic_download_24dp
 drawable base_ic_edit_24dp
+drawable base_ic_move_bottom_24dp
+drawable base_ic_move_top_24dp
 drawable base_shape_textview_radius
+drawable base_steve
 id app_main_fcv
+id base_loading_lottie
+id base_loading_retry
 id loadingLottieAnimation
 id mainBookinfofragment
 id mainComicfragment
@@ -970,7 +975,7 @@ id mainUserloginfragment
 id textview
 layout base_dialog_loading
 layout base_dialog_original_loading
-layout base_loading_more
+layout base_paging_footer_retry
 layout base_textview
 string BaseAppName
 string BaseAppName_CH
@@ -978,9 +983,12 @@ string BaseCancel
 string BaseConfirm
 string BaseLoading
 string BaseLoadingError
+string BaseLoadingErrorNeedRefresh
+string BaseLoadingRetry
 string BaseRefreshScucess
 string BaseTips
 string BaseTodoTextView
 string BaseTokenError
 string BaseUnknow
-style Base_LibBase_LoadingAnim
+style Base_LoadingAnim_Dark
+style Base_LoadingAnim_Light

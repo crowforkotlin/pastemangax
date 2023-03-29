@@ -957,8 +957,13 @@ int dimen base_sp9 0x0
 int drawable base_bg_original_loading_radius 0x0
 int drawable base_ic_download_24dp 0x0
 int drawable base_ic_edit_24dp 0x0
+int drawable base_ic_move_bottom_24dp 0x0
+int drawable base_ic_move_top_24dp 0x0
 int drawable base_shape_textview_radius 0x0
+int drawable base_steve 0x0
 int id app_main_fcv 0x0
+int id base_loading_lottie 0x0
+int id base_loading_retry 0x0
 int id loadingLottieAnimation 0x0
 int id mainBookinfofragment 0x0
 int id mainComicfragment 0x0
@@ -968,7 +973,7 @@ int id mainUserloginfragment 0x0
 int id textview 0x0
 int layout base_dialog_loading 0x0
 int layout base_dialog_original_loading 0x0
-int layout base_loading_more 0x0
+int layout base_paging_footer_retry 0x0
 int layout base_textview 0x0
 int string BaseAppName 0x0
 int string BaseAppName_CH 0x0
@@ -976,9 +981,12 @@ int string BaseCancel 0x0
 int string BaseConfirm 0x0
 int string BaseLoading 0x0
 int string BaseLoadingError 0x0
+int string BaseLoadingErrorNeedRefresh 0x0
+int string BaseLoadingRetry 0x0
 int string BaseRefreshScucess 0x0
 int string BaseTips 0x0
 int string BaseTodoTextView 0x0
 int string BaseTokenError 0x0
 int string BaseUnknow 0x0
-int style Base_LibBase_LoadingAnim 0x0
+int style Base_LoadingAnim_Dark 0x0
+int style Base_LoadingAnim_Light 0x0

@@ -968,14 +968,21 @@
     <string name="BaseConfirm">确认</string>
     <string name="BaseLoading" translatable="false">加载中...</string>
     <string name="BaseLoadingError">加载失败，请重试！</string>
+    <string name="BaseLoadingErrorNeedRefresh">加载失败，请刷新重试！</string>
+    <string name="BaseLoadingRetry">重新加载</string>
     <string name="BaseRefreshScucess">"刷新成功~"</string>
     <string name="BaseTips">提示</string>
     <string name="BaseTodoTextView" translatable="false">This is TextView,Now Todo What......</string>
     <string name="BaseTokenError">身份信息过期!\n您接下来的浏览将是访客模式！\n是否重新登录？</string>
     <string name="BaseUnknow">Unknow Error!</string>
-    <style name="Base_LibBase_LoadingAnim" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base_LoadingAnim_Dark" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="Base_LoadingAnim_Light" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 </resources>
