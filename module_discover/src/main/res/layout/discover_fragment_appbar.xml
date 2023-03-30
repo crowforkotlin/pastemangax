@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@color/base_home_bar_bg">
+
+	<androidx.appcompat.widget.LinearLayoutCompat
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		app:layout_scrollFlags="scroll|enterAlways">
+
+		<com.google.android.material.button.MaterialButtonToggleGroup
+			android:id="@+id/discover_appbar_button_group"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="@dimen/base_dp5"
+			android:layout_weight="1"
+			app:checkedButton="@id/discover_appbar_update"
+			app:selectionRequired="true"
+			app:singleSelection="true">
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/discover_appbar_update"
+				style="@style/Widget.Material3.Button.OutlinedButton"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:text="@string/discover_update_time" />
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/discover_appbar_hot"
+				style="@style/Widget.Material3.Button.OutlinedButton"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:layout_gravity="center"
+				android:text="@string/discover_hot" />
+
+		</com.google.android.material.button.MaterialButtonToggleGroup>
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/discover_appbar_edit"
+			style="@style/Widget.Material3.Button.IconButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_margin="@dimen/base_dp5"
+			app:icon="@drawable/base_ic_edit_24dp"
+			app:iconTint="@null" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/discover_appbar_bottom"
+			style="@style/Widget.Material3.Button.IconButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			app:icon="@drawable/base_ic_move_bottom_24dp"
+			app:iconTint="@null" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/discover_appbar_top"
+			style="@style/Widget.Material3.Button.IconButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			app:icon="@drawable/base_ic_move_top_24dp"
+			app:iconTint="@null" />
+
+	</androidx.appcompat.widget.LinearLayoutCompat>
+
+	<androidx.appcompat.widget.LinearLayoutCompat
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<TextView
+			android:id="@+id/discover_appbar_tag_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_margin="@dimen/base_dp5"
+			android:layout_weight="1"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:textSize="@dimen/base_sp12"
+			android:textStyle="bold"
+			tools:text="校园-连载中（404）" />
+
+		<TextView
+			android:id="@+id/discover_appbar_text_pos"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="@dimen/base_dp5"
+			android:textStyle="bold"
+			tools:text="当前位置：（404）" />
+
+	</androidx.appcompat.widget.LinearLayoutCompat>
+
+</com.google.android.material.appbar.AppBarLayout>

@@ -956,10 +956,12 @@ dimen base_sp7
 dimen base_sp8
 dimen base_sp9
 drawable base_bg_original_loading_radius
+drawable base_ic_back_24dp
 drawable base_ic_download_24dp
 drawable base_ic_edit_24dp
 drawable base_ic_move_bottom_24dp
 drawable base_ic_move_top_24dp
+drawable base_ic_settings_24dp
 drawable base_shape_textview_radius
 drawable base_steve
 id app_main_fcv

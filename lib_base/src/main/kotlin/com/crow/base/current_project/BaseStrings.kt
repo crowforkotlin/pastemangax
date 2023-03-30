@@ -27,14 +27,16 @@ object BaseStrings {
         const val BookshelfComic = "/api/v3/member/collect/comics?free_type=1&_update=true"
         const val BookshelfNovel = "/api/v3/member/collect/books?free_type=1&_update=true"
 
-        const val DiscoverTag = "/api/v3/h5/filter/comic/tags"
-        const val DiscoverHome = "/api/v3/comics?free_type=1&_update=true"
+        const val DiscoverComicTag = "/api/v3/h5/filter/comic/tags"
+        const val DiscoverComicHome = "/api/v3/comics?free_type=1&_update=true"
+        const val DiscoverNovelTag = "/api/v3/h5/filter/book/tags"
+        const val DiscoverNovelHome = "/api/v3/books?free_type=1&_update=true"
     }
 
     object Key {
         const val POST_CURRENT_ITEM = "POST_CURRENT_ITEM"
         const val OPEN_USER_BOTTOM = "OPEN_USER_BOTTOM"
-        const val OPEN_COMIC_INFO = "OPEN_COMIC_INFO"
+        const val OPEN_BOOK_INFO = "OPEN_BOOK_INFO"
         const val LOGIN_SUCUESS = "LOGIN_SUCUESS"
         const val CLEAR_USER_INFO = "CLEAR_USER_INFO"
         const val EXIT_USER = "EXIT_USER"

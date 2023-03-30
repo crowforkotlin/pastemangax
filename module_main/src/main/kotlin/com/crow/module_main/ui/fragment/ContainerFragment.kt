@@ -43,7 +43,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
 
         // 主页点击漫画
-        FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_COMIC_INFO).register(this) {
+        FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).register(this) {
             if (mTapFlag) return@register
             mTapFlag = true
             navigate(baseR.id.mainBookinfofragment, Bundle().also { bundle -> bundle.putSerializable("tapEntity", it) })

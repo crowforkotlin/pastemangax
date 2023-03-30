@@ -1,6 +1,4 @@
-@file:Suppress("IMPLICIT_CAST_TO_ANY", "CAST_NEVER_SUCCEEDS", "DEPRECATION", "FunctionName",
-    "NonAsciiCharacters"
-)
+@file:Suppress("IMPLICIT_CAST_TO_ANY", "CAST_NEVER_SUCCEEDS", "DEPRECATION", "FunctionName", "NonAsciiCharacters")
 
 package com.crow.module_comic.ui.fragment
 
@@ -101,8 +99,8 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
             mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, bookResult.mDatetimeUpdated)
             mBinding.bookInfoNewChapter.text = getString(R.string.BookComicNewChapter, bookResult.mLastChapter.mName)
             mBinding.bookInfoStatus.text = when (bookResult.mStatus.mValue) {
-                Status.LOADING -> getString(R.string.BookComicStatus, bookResult.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.comic_green), 3)
-                Status.FINISH -> getString(R.string.BookComicStatus, bookResult.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.comic_red), 3)
+                Status.LOADING -> getString(R.string.BookComicStatus, bookResult.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_green), 3)
+                Status.FINISH -> getString(R.string.BookComicStatus, bookResult.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_red), 3)
                 else -> null
             }
             mBinding.bookInfoName.text = bookResult.mName
@@ -120,8 +118,8 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
             mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, bookResult.mDatetimeUpdated)
             mBinding.bookInfoNewChapter.text = getString(R.string.BookComicNewChapter, bookResult.mLastChapter.mName)
             mBinding.bookInfoStatus.text = when (bookResult.mStatus.mValue) {
-                Status.LOADING -> getString(R.string.BookComicStatus, bookResult.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.comic_green), 3)
-                Status.FINISH -> getString(R.string.BookComicStatus, bookResult.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.comic_red), 3)
+                Status.LOADING -> getString(R.string.BookComicStatus, bookResult.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_green), 3)
+                Status.FINISH -> getString(R.string.BookComicStatus, bookResult.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_red), 3)
                 else -> null
             }
             mBinding.bookInfoName.text = bookResult.mName
@@ -227,7 +225,7 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
             .doOnError { _, _ -> mBinding.comicInfoErrorTips.visibility = View.VISIBLE }
             .doOnSuccess {
                 mBinding.bookInfoRvChapterSelector.isEnabled = true
-                if (mBinding.bookComicInfoRefresh.isRefreshing) mBinding.bookComicInfoRefresh.finishRefresh()
+                if (mBinding.bookInfoRefresh.isRefreshing) mBinding.bookInfoRefresh.finishRefresh()
             }
             .doOnResult {
                 when(intent) {
@@ -237,7 +235,7 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
                                 mBinding.comicInfoErrorTips.animateFadeOut().withEndAction { mBinding.comicInfoErrorTips.visibility = View.GONE }
                                 mBinding.bookInfoLinearChapter.animateFadeIn()
                             }
-                            if (mBinding.bookComicInfoRefresh.isRefreshing) showBookChapterPage(intent.comicChapter, null)
+                            if (mBinding.bookInfoRefresh.isRefreshing) showBookChapterPage(intent.comicChapter, null)
                             else dismissLoadingAnim { showBookChapterPage(intent.comicChapter, null) }
                             return@doOnResult
                         }
@@ -249,7 +247,7 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
                                 mBinding.comicInfoErrorTips.animateFadeOut().withEndAction { mBinding.comicInfoErrorTips.visibility = View.GONE }
                                 mBinding.bookInfoLinearChapter.animateFadeIn()
                             }
-                            if (mBinding.bookComicInfoRefresh.isRefreshing) showBookChapterPage(null, intent.novelChapter)
+                            if (mBinding.bookInfoRefresh.isRefreshing) showBookChapterPage(null, intent.novelChapter)
                             else dismissLoadingAnim { showBookChapterPage(null, intent.novelChapter) }
                             return@doOnResult
                         }
@@ -261,7 +259,7 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
     }
 
     private fun 失败的结果取消加载动画或刷新控件(invalidResp: String?) {
-        if (mBinding.bookComicInfoRefresh.isRefreshing) mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknow))
+        if (mBinding.bookInfoRefresh.isRefreshing) mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknow))
         else dismissLoadingAnim {
             mBinding.comicInfoErrorTips.animateFadeIn()
             mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknow))
@@ -280,7 +278,7 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
         mBinding.bookInfoCard.layoutParams.width = getComicCardWidth()
 
         // 设置刷新时不允许列表滚动
-        mBinding.bookComicInfoRefresh.setDisableContentWhenRefresh(true)
+        mBinding.bookInfoRefresh.setDisableContentWhenRefresh(true)
 
         // 重新创建View之后 appBarLayout会展开折叠，记录一个状态进行初始化
         if (mAppbarState == STATE_COLLAPSED) mBinding.bookInfoAppbar.setExpanded(false, false)
@@ -340,6 +338,8 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
     override fun initListener() {
 
+        mBinding.bookInfoBack.clickGap { _, _ -> navigateUp() }
+
         // 章节选择器 Tab 点击事件 0-100话 101-200话
         mBinding.bookInfoRvChapterSelector.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -360,7 +360,13 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
         }
 
         // 设置刷新事件
-        mBinding.bookComicInfoRefresh.setOnRefreshListener { mBookVM.input(BookIntent.GetComicChapter(mBookTapEntity.pathword)) }
+        mBinding.bookInfoRefresh.setOnRefreshListener {
+            when (mBookTapEntity.type) {
+                BookType.Comic -> mBookVM.input(BookIntent.GetComicChapter(mBookTapEntity.pathword))
+                BookType.Novel -> mBookVM.input(BookIntent.GetNovelChapter(mBookTapEntity.pathword))
+                else -> it.finishRefresh()
+            }
+        }
     }
 
     override fun initData() {
@@ -421,14 +427,14 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
                 is BookIntent.GetComicBrowserHistory -> {
                     intent.mViewState.doOnResult {
-                        mChapterName = intent.comicBrowser?.browse?.chapterName ?: return@doOnResult
+                        mChapterName = intent.comicBrowser?.mBrowse?.chapterName ?: return@doOnResult
                         mComicChapterRvAdapter?.mChapterName = mChapterName
                         toast(getString(R.string.BookComicReadedPage, mComicChapterRvAdapter?.mChapterName))
                     }
                 }
                 is BookIntent.GetNovelBrowserHistory -> {
                     intent.mViewState.doOnResult {
-                        mChapterName = intent.novelBrowser?.browse?.chapterName ?: return@doOnResult
+                        mChapterName = intent.novelBrowser?.mBrowse?.chapterName ?: return@doOnResult
                         mNovelChapterRvAdapter?.mChapterName = mChapterName
                         toast(getString(R.string.BookComicReadedPage, mNovelChapterRvAdapter?.mChapterName))
                     }

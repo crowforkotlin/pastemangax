@@ -1,6 +1,5 @@
 package com.crow.module_discover.ui.viewmodel
 
-import androidx.coordinatorlayout.widget.CoordinatorLayout.Behavior.getTag
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -8,9 +7,12 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_discover.model.intent.DiscoverIntent
-import com.crow.module_discover.model.resp.DiscoverTagResp
-import com.crow.module_discover.model.resp.home.DiscoverHomeResult
-import com.crow.module_discover.model.source.DiscoverHomeDataSource
+import com.crow.module_discover.model.resp.DiscoverComicTagResp
+import com.crow.module_discover.model.resp.DiscoverNovelTagResp
+import com.crow.module_discover.model.resp.comic_home.DiscoverComicHomeResult
+import com.crow.module_discover.model.resp.novel_home.DiscoverNovelHomeResult
+import com.crow.module_discover.model.source.DiscoverComicHomeDataSource
+import com.crow.module_discover.model.source.DiscoverNovelHomeDataSource
 import com.crow.module_discover.network.DiscoverRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -26,42 +28,73 @@ import kotlinx.coroutines.flow.flowOn
  **************************/
 class DiscoverViewModel(val repository: DiscoverRepository) : BaseMviViewModel<DiscoverIntent>() {
 
-    // 暴露的 发现主页流
-    var mDiscoverHomeFlowPager : Flow<PagingData<DiscoverHomeResult>>? = null
+    var mCurrentItem : Int = 0
 
-    // 标签数据
-    private var mTagResp: DiscoverTagResp? = null
+    // 暴露的 发现漫画主页流
+    var mDiscoverComicHomeFlowPager : Flow<PagingData<DiscoverComicHomeResult>>? = null
+
+    // 暴露的 发现轻小说主页流
+    var mDiscoverNovelHomeFlowPager : Flow<PagingData<DiscoverNovelHomeResult>>? = null
+
+    // 漫画标签数据
+    private var mComicTagResp: DiscoverComicTagResp? = null
+
+    // 轻小说标签数据
+    private var mNovelTagResp: DiscoverNovelTagResp? = null
 
     // 排序方式
     private var mOrder: String = "-datetime_updated"
 
-    private fun getTag(intent: DiscoverIntent.GetTag) {
-        flowResult(intent, repository.getTag()) { value ->
-            mTagResp = value.mResults
-            intent.copy(tagResp = value.mResults)
+    private fun getComicTag(intent: DiscoverIntent.GetComicTag) {
+        flowResult(intent, repository.getComicTag()) { value ->
+            mComicTagResp = value.mResults
+            intent.copy(comicTagResp = value.mResults)
         }
     }
 
-    private fun getHome(intent: DiscoverIntent.GetHome): Flow<PagingData<DiscoverHomeResult>>? {
-        mDiscoverHomeFlowPager = Pager(
+    private fun getNovelTag(intent: DiscoverIntent.GetNovelTag) {
+        flowResult(intent, repository.getNovelTag()) { value ->
+            mNovelTagResp = value.mResults
+            intent.copy(novelTagResp = value.mResults)
+        }
+    }
+
+    private fun getNovelHome(intent: DiscoverIntent.GetComicHome) {
+        mDiscoverComicHomeFlowPager = Pager(
             config = PagingConfig (
                 pageSize = 30,
                 initialLoadSize = 30,
                 enablePlaceholders = true
             ),
             pagingSourceFactory = {
-                DiscoverHomeDataSource { position, pageSize ->
-                    flowResult(repository.getHome(position, pageSize, mOrder), intent) { value -> intent.copy(homeResp = value.mResults) }.mResults
+                DiscoverComicHomeDataSource { position, pageSize ->
+                    flowResult(repository.getComicHome(position, pageSize, mOrder), intent) { value -> intent.copy(comicHomeResp = value.mResults) }.mResults
                 }
             }
         ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
-        return mDiscoverHomeFlowPager
+    }
+
+    private fun getNovelHome(intent: DiscoverIntent.GetNovelHome) {
+        mDiscoverNovelHomeFlowPager = Pager(
+            config = PagingConfig (
+                pageSize = 30,
+                initialLoadSize = 30,
+                enablePlaceholders = true
+            ),
+            pagingSourceFactory = {
+                DiscoverNovelHomeDataSource { position, pageSize ->
+                    flowResult(repository.getNovelHome(position, pageSize, mOrder), intent) { value -> intent.copy(novelHomeResp = value.mResults) }.mResults
+                }
+            }
+        ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
     }
 
     override fun dispatcher(intent: DiscoverIntent) {
         when(intent) {
-            is DiscoverIntent.GetTag -> getTag(intent)
-            is DiscoverIntent.GetHome -> getHome(intent)
+            is DiscoverIntent.GetComicTag -> getComicTag(intent)
+            is DiscoverIntent.GetComicHome -> getNovelHome(intent)
+            is DiscoverIntent.GetNovelTag -> getNovelTag(intent)
+            is DiscoverIntent.GetNovelHome -> getNovelHome(intent)
         }
     }
 }

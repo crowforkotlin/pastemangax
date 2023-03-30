@@ -7,22 +7,46 @@
 	android:visibility="invisible"
 	tools:visibility="visible">
 
-	<TextView
-		android:id="@+id/book_info_name"
-		android:layout_width="match_parent"
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/book_info_back"
+		style="@style/Widget.Material3.Button.IconButton"
+		android:layout_width="wrap_content"
+		app:iconTint="@color/black"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/base_dp10"
 		android:layout_marginTop="@dimen/base_dp10"
-		android:layout_marginEnd="@dimen/base_dp10"
+		app:icon="@drawable/base_ic_back_24dp"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<TextView
+		android:id="@+id/book_info_name"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="@dimen/base_dp10"
 		android:ellipsize="end"
 		android:gravity="center"
 		android:maxLines="2"
+		android:layout_marginEnd="@dimen/base_dp5"
 		android:textSize="@dimen/base_sp20"
 		android:textStyle="bold"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="@+id/book_info_back"
+		app:layout_constraintEnd_toStartOf="@+id/book_info_setting"
+		app:layout_constraintStart_toEndOf="@+id/book_info_back"
+		app:layout_constraintTop_toTopOf="@+id/book_info_back"
 		tools:text="@string/BaseTodoTextView" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/book_info_setting"
+		app:iconTint="@color/black"
+		style="@style/Widget.Material3.Button.IconButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="@dimen/base_dp10"
+		android:layout_marginTop="@dimen/base_dp10"
+		app:icon="@drawable/base_ic_settings_24dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
 	<androidx.cardview.widget.CardView
 		android:id="@+id/book_info_card"
@@ -30,11 +54,11 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/base_dp10"
-		android:layout_marginTop="@dimen/base_dp20"
 		app:cardCornerRadius="@dimen/base_dp20"
+		android:layout_marginTop="@dimen/base_dp10"
 		app:cardElevation="@dimen/base_dp10"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/book_info_name">
+		app:layout_constraintTop_toBottomOf="@+id/book_info_back">
 
 		<ImageView
 			android:id="@+id/book_info_image"
@@ -160,7 +184,7 @@
 		app:layout_constraintTop_toTopOf="@+id/bookMaterialbutton" />
 
 	<com.scwang.smart.refresh.layout.SmartRefreshLayout
-		android:id="@+id/book_comic_info_refresh"
+		android:id="@+id/book_info_refresh"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		app:layout_constraintBottom_toBottomOf="parent"

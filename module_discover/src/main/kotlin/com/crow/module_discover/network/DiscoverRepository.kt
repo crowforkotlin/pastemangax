@@ -1,10 +1,5 @@
 package com.crow.module_discover.network
 
-import com.crow.base.current_project.BaseResultResp
-import com.crow.module_discover.model.resp.DiscoverTagResp
-import kotlinx.coroutines.flow.Flow
-import retrofit2.http.GET
-
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: module_discover/src/main/kotlin/com/crow/module_discover/network
@@ -15,8 +10,11 @@ import retrofit2.http.GET
  **************************/
 class DiscoverRepository(val service: DiscoverService) {
 
-    fun getTag() = service.getTag()
+    fun getComicTag() = service.getComicTag()
 
-    fun getHome(start: Int, limit: Int, order: String, theme: String = "") = service.getHome(start, limit, order, theme)
+    fun getComicHome(start: Int, limit: Int, order: String, theme: String = "") = service.getComicHome(start, limit, order, theme)
 
+    fun getNovelTag() = service.getNovelTag()
+
+    fun getNovelHome(start: Int, limit: Int, order: String, theme: String = "") = service.getNovelHome(start, limit, order, theme)
 }

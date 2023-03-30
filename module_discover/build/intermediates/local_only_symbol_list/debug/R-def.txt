@@ -1,17 +1,26 @@
 R_DEF: Internal format may change without notice
 local
-id discoverTextview
-id discover_comic_bottom
-id discover_comic_button_group
-id discover_comic_edit
-id discover_comic_hot
+color discover_green
+color discover_grey
+color discover_indigo
+color discover_purple
+color discover_red
+id discover_appbar_bottom
+id discover_appbar_button_group
+id discover_appbar_edit
+id discover_appbar_hot
+id discover_appbar_tag_text
+id discover_appbar_text_pos
+id discover_appbar_top
+id discover_appbar_update
+id discover_comic_appbar
 id discover_comic_refresh
 id discover_comic_rv
-id discover_comic_tag_text
-id discover_comic_text_pos
 id discover_comic_tips_error
-id discover_comic_top
-id discover_comic_update
+id discover_novel_appbar
+id discover_novel_refresh
+id discover_novel_rv
+id discover_novel_tips_error
 id discover_rv_author
 id discover_rv_book_card
 id discover_rv_hot
@@ -21,6 +30,7 @@ id discover_rv_time
 id discover_tab_layout
 id discover_vp
 layout discover_fragment
+layout discover_fragment_appbar
 layout discover_fragment_comic
 layout discover_fragment_novel
 layout discover_fragment_rv

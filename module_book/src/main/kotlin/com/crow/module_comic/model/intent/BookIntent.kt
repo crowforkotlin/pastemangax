@@ -12,7 +12,7 @@ sealed class BookIntent : BaseMviIntent() {
 
     data class GetComicPage(val pathword: String, val uuid: String, val comicPage: ComicPageResp? = null) : BookIntent()
 
-    data class GetComicBrowserHistory(val pathword: String, val comicBrowser: ComicBrowserHistoryResp? = null) : BookIntent()
+    data class GetComicBrowserHistory(val pathword: String, val comicBrowser: ComicBrowserResp? = null) : BookIntent()
 
     data class GetNovelInfo(val pathword: String, val novelInfo: NovelInfoResp? = null): BookIntent()
 

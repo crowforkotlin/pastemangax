@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.crow.module_discover.R;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -24,16 +22,7 @@ public final class DiscoverFragmentComicBinding implements ViewBinding {
   private final CoordinatorLayout rootView;
 
   @NonNull
-  public final MaterialButton discoverComicBottom;
-
-  @NonNull
-  public final MaterialButtonToggleGroup discoverComicButtonGroup;
-
-  @NonNull
-  public final MaterialButton discoverComicEdit;
-
-  @NonNull
-  public final MaterialButton discoverComicHot;
+  public final DiscoverFragmentAppbarBinding discoverComicAppbar;
 
   @NonNull
   public final SmartRefreshLayout discoverComicRefresh;
@@ -42,40 +31,17 @@ public final class DiscoverFragmentComicBinding implements ViewBinding {
   public final RecyclerView discoverComicRv;
 
   @NonNull
-  public final TextView discoverComicTagText;
-
-  @NonNull
-  public final TextView discoverComicTextPos;
-
-  @NonNull
   public final TextView discoverComicTipsError;
 
-  @NonNull
-  public final MaterialButton discoverComicTop;
-
-  @NonNull
-  public final MaterialButton discoverComicUpdate;
-
   private DiscoverFragmentComicBinding(@NonNull CoordinatorLayout rootView,
-      @NonNull MaterialButton discoverComicBottom,
-      @NonNull MaterialButtonToggleGroup discoverComicButtonGroup,
-      @NonNull MaterialButton discoverComicEdit, @NonNull MaterialButton discoverComicHot,
+      @NonNull DiscoverFragmentAppbarBinding discoverComicAppbar,
       @NonNull SmartRefreshLayout discoverComicRefresh, @NonNull RecyclerView discoverComicRv,
-      @NonNull TextView discoverComicTagText, @NonNull TextView discoverComicTextPos,
-      @NonNull TextView discoverComicTipsError, @NonNull MaterialButton discoverComicTop,
-      @NonNull MaterialButton discoverComicUpdate) {
+      @NonNull TextView discoverComicTipsError) {
     this.rootView = rootView;
-    this.discoverComicBottom = discoverComicBottom;
-    this.discoverComicButtonGroup = discoverComicButtonGroup;
-    this.discoverComicEdit = discoverComicEdit;
-    this.discoverComicHot = discoverComicHot;
+    this.discoverComicAppbar = discoverComicAppbar;
     this.discoverComicRefresh = discoverComicRefresh;
     this.discoverComicRv = discoverComicRv;
-    this.discoverComicTagText = discoverComicTagText;
-    this.discoverComicTextPos = discoverComicTextPos;
     this.discoverComicTipsError = discoverComicTipsError;
-    this.discoverComicTop = discoverComicTop;
-    this.discoverComicUpdate = discoverComicUpdate;
   }
 
   @Override
@@ -105,29 +71,12 @@ public final class DiscoverFragmentComicBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.discover_comic_bottom;
-      MaterialButton discoverComicBottom = ViewBindings.findChildViewById(rootView, id);
-      if (discoverComicBottom == null) {
+      id = R.id.discover_comic_appbar;
+      View discoverComicAppbar = ViewBindings.findChildViewById(rootView, id);
+      if (discoverComicAppbar == null) {
         break missingId;
       }
-
-      id = R.id.discover_comic_button_group;
-      MaterialButtonToggleGroup discoverComicButtonGroup = ViewBindings.findChildViewById(rootView, id);
-      if (discoverComicButtonGroup == null) {
-        break missingId;
-      }
-
-      id = R.id.discover_comic_edit;
-      MaterialButton discoverComicEdit = ViewBindings.findChildViewById(rootView, id);
-      if (discoverComicEdit == null) {
-        break missingId;
-      }
-
-      id = R.id.discover_comic_hot;
-      MaterialButton discoverComicHot = ViewBindings.findChildViewById(rootView, id);
-      if (discoverComicHot == null) {
-        break missingId;
-      }
+      DiscoverFragmentAppbarBinding binding_discoverComicAppbar = DiscoverFragmentAppbarBinding.bind(discoverComicAppbar);
 
       id = R.id.discover_comic_refresh;
       SmartRefreshLayout discoverComicRefresh = ViewBindings.findChildViewById(rootView, id);
@@ -141,40 +90,15 @@ public final class DiscoverFragmentComicBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.discover_comic_tag_text;
-      TextView discoverComicTagText = ViewBindings.findChildViewById(rootView, id);
-      if (discoverComicTagText == null) {
-        break missingId;
-      }
-
-      id = R.id.discover_comic_text_pos;
-      TextView discoverComicTextPos = ViewBindings.findChildViewById(rootView, id);
-      if (discoverComicTextPos == null) {
-        break missingId;
-      }
-
       id = R.id.discover_comic_tips_error;
       TextView discoverComicTipsError = ViewBindings.findChildViewById(rootView, id);
       if (discoverComicTipsError == null) {
         break missingId;
       }
 
-      id = R.id.discover_comic_top;
-      MaterialButton discoverComicTop = ViewBindings.findChildViewById(rootView, id);
-      if (discoverComicTop == null) {
-        break missingId;
-      }
-
-      id = R.id.discover_comic_update;
-      MaterialButton discoverComicUpdate = ViewBindings.findChildViewById(rootView, id);
-      if (discoverComicUpdate == null) {
-        break missingId;
-      }
-
-      return new DiscoverFragmentComicBinding((CoordinatorLayout) rootView, discoverComicBottom,
-          discoverComicButtonGroup, discoverComicEdit, discoverComicHot, discoverComicRefresh,
-          discoverComicRv, discoverComicTagText, discoverComicTextPos, discoverComicTipsError,
-          discoverComicTop, discoverComicUpdate);
+      return new DiscoverFragmentComicBinding((CoordinatorLayout) rootView,
+          binding_discoverComicAppbar, discoverComicRefresh, discoverComicRv,
+          discoverComicTipsError);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

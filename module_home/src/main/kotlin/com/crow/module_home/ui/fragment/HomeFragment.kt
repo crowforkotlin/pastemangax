@@ -5,6 +5,9 @@ import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Window
+import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE
+import android.widget.ScrollView
+import android.widget.Scroller
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -16,7 +19,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.BaseStrings.Key.OPEN_COMIC_INFO
+import com.crow.base.current_project.BaseStrings.Key.OPEN_BOOK_INFO
 import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.current_project.entity.BookType
 import com.crow.base.current_project.entity.BookType.Comic
@@ -76,25 +79,25 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     private fun initAdapter() {
         // 适配器可以作为局部成员，但不要直接初始化，不然会导致被View引用从而内存泄漏
         mHomeBannerRvAdapter = HomeBannerRvAdapter { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
         }
         mHomeRecAdapter = HomeComicRvAdapter(mType = BookType.Rec) { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
         }
         mHomeHotAdapter = HomeComicRvAdapter(mType = BookType.Hot) { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
         }
         mHomeNewAdapter = HomeComicRvAdapter(mType = BookType.New) { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
         }
         mHomeFinishAdapter = HomeComicRvAdapter(mType = BookType.Commit) { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
         }
         mHomeRankAapter = HomeComicRvAdapter(mType = BookType.Rank) { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
         }
         mHomeTopicAapter = HomeComicRvAdapter(mType = BookType.Topic) { type, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(type, pathword))
+            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(type, pathword))
         }
     }
 
@@ -160,7 +163,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     // 暴露的函数 提供给 ContainerFragment 用于通知主页刷新
     fun doRefresh() {
-        mBinding.homeRefresh.autoRefresh()
         mHomeVM.input(HomeIntent.GetHomePage())
     }
 
@@ -250,7 +252,10 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
 
         // MaterialToolBar NavigateIcon 点击事件
-        mBinding.homeToolbar.navigateIconClickGap { _, _ -> FlowBus.with<Unit>(BaseStrings.Key.OPEN_USER_BOTTOM).post(lifecycleScope, Unit) }
+        mBinding.homeToolbar.navigateIconClickGap { _, _ ->
+            FlowBus.with<Unit>(BaseStrings.Key.OPEN_USER_BOTTOM).post(lifecycleScope, Unit)
+        }
+
 
         // 每个主页漫画类型（显示更多）卡片的点击事件
         mBinding.homeComicRec.homeComicMore.clickGap { _, _ -> }

@@ -7,16 +7,22 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class NovelBrowserResp(
+
     @Json(name = "browse")
-    val browse: Browse,
+    val mBrowse: Browse?,
+
     @Json(name = "collect")
-    val collect: Int,
+    val mCollect: Int?,
+
     @Json(name = "is_lock")
-    val isLock: Boolean,
+    val mIsLock: Boolean,
+
     @Json(name = "is_login")
-    val isLogin: Boolean,
+    val mIsLogin: Boolean,
     @Json(name = "is_mobile_bind")
-    val isMobileBind: Boolean,
+
+    val mIsMobileBind: Boolean,
+
     @Json(name = "is_vip")
-    val isVip: Boolean
+    val mIsVip: Boolean
 )

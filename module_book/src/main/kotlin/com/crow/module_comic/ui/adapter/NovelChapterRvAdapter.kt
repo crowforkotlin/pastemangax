@@ -1,12 +1,15 @@
 package com.crow.module_comic.ui.adapter
 
 import android.content.res.ColorStateList
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.crow.base.app.appContext
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.clickGap
+import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_book.R
 import com.crow.module_book.databinding.BookComicInfoRvChapterBinding
 import com.crow.module_comic.model.resp.novel_chapter.NovelChapterResult
@@ -29,8 +32,8 @@ class NovelChapterRvAdapter(
     var mChapterName: String? = null
 
     private var mClickFlag = false
-    private var mSurfaceBtColor: ColorStateList? = null
-    private var mTextBtColor: ColorStateList? = null
+    private val mBtSurfaceColor = ContextCompat.getColor(appContext, R.color.book_button_bg_white)
+    private val mBtTextColor = ContextCompat.getColor(appContext, R.color.book_button_text_purple)
 
     inner class ViewHolder(rvBinding: BookComicInfoRvChapterBinding) : RecyclerView.ViewHolder(rvBinding.root) { val mButton = rvBinding.comicInfoRvChip }
 
@@ -52,18 +55,15 @@ class NovelChapterRvAdapter(
 
         val comic = mComic[position]
         vh.mButton.text = comic.name
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) vh.mButton.tooltipText = comic.name
+        else ToolTipsView.showToolTipsByLongClick(vh.mButton)
         if (mChapterName != null && comic.name == mChapterName!!) {
-            vh.mButton.setBackgroundColor(ContextCompat.getColor(vh.itemView.context, R.color.comic_blue))
+            vh.mButton.setBackgroundColor(ContextCompat.getColor(vh.itemView.context, R.color.book_blue))
             vh.mButton.setTextColor(ContextCompat.getColor(vh.itemView.context, android.R.color.white))
-            return
+        } else {
+            vh.mButton.background.setTint(mBtSurfaceColor)
+            vh.mButton.setTextColor(mBtTextColor)
         }
-
-        if (mSurfaceBtColor == null || mTextBtColor == null) {
-            mSurfaceBtColor = vh.mButton.backgroundTintList
-            mTextBtColor = vh.mButton.textColors
-        }
-        vh.mButton.background.setTintList(mSurfaceBtColor)
-        vh.mButton.setTextColor(mTextBtColor)
     }
 
     suspend fun doNotify(newDataResult: MutableList<NovelChapterResult>, delayMs: Long = 1L) {

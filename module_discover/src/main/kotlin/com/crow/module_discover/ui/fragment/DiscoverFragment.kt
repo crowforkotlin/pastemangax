@@ -2,14 +2,17 @@ package com.crow.module_discover.ui.fragment
 
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.crow.base.tools.extensions.getNavigationBarHeight
+import com.crow.base.current_project.BaseStrings
+import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverFragmentBinding
 import com.crow.module_discover.ui.adapter.DiscoverAdapter
+import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -20,10 +23,15 @@ import com.google.android.material.tabs.TabLayoutMediator
  * @formatter:on
  **************************/
 class DiscoverFragment : BaseMviFragment<DiscoverFragmentBinding>() {
+    init {
+        FlowBus.with<Int>(BaseStrings.Key.POST_CURRENT_ITEM).register(this) { mDiscoverVM.mCurrentItem = it }
+    }
 
     private val mFragmentList = mutableListOf<Fragment>(DiscoverComicFragment(), DiscoverNovelFragment())
 
     private var mDiscoverAdapter: DiscoverAdapter? = null
+
+    private val mDiscoverVM by sharedViewModel<DiscoverViewModel>()
 
     override fun getViewBinding(inflater: LayoutInflater) = DiscoverFragmentBinding.inflate(inflater)
 

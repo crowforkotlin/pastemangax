@@ -35,7 +35,7 @@ interface ComicService {
 
     // 获取当前漫画已浏览的记录
     @GET(URL.ComicBrowserHistory)
-    fun getComicBrowserHistory(@Path(PATH_WORD) pathword: String) : Flow<BaseResultResp<ComicBrowserHistoryResp>>
+    fun getComicBrowserHistory(@Path(PATH_WORD) pathword: String) : Flow<BaseResultResp<ComicBrowserResp>>
 
     // 获取小说信息
     @GET(URL.NovelInfo)

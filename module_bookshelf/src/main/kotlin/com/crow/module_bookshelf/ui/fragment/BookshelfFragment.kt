@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import com.crow.base.current_project.BaseLoadStateAdapter
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
 import com.crow.base.current_project.entity.BookTapEntity
@@ -75,7 +77,8 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         // 处理Token错误校验
         else mBinding.root.processTokenError(code, msg,
             doOnCancel = {
-                mBookshelfComicRvAdapter.refresh()
+                mBookshelfComicRvAdapter.retry()
+                mBookshelfNovelRvAdapter.retry()
                 FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).post(lifecycleScope, Unit)
             },
             doOnConfirm = {
@@ -144,17 +147,37 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         // 设置刷新时不允许列表滚动
         mBinding.bookshelfRefresh.setDisableContentWhenRefresh(true)
 
+
+
         // 初始化适配器
         mBookshelfComicRvAdapter = BookshelfComicRvAdapter {
-            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(BookType.Comic, it.mComic.mPathWord))
+            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Comic, it.mComic.mPathWord))
         }
         mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter {
-            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_COMIC_INFO).post(lifecycleScope, BookTapEntity(BookType.Novel, it.mNovel.mPathWord))
+            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Novel, it.mNovel.mPathWord))
         }
 
+
         // 设置适配器
-        mBinding.bookshelfRvComic.adapter = mBookshelfComicRvAdapter
-        mBinding.bookshelfRvNovel.adapter = mBookshelfNovelRvAdapter
+        mBinding.bookshelfRvComic.adapter = mBookshelfComicRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
+        (mBinding.bookshelfRvComic.layoutManager as GridLayoutManager).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return if (position == mBookshelfComicRvAdapter.itemCount  && mBookshelfComicRvAdapter.itemCount > 0) 3
+                    else 1
+                }
+            }
+        }
+
+        mBinding.bookshelfRvNovel.adapter = mBookshelfNovelRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfNovelRvAdapter.retry() })
+        (mBinding.bookshelfRvNovel.layoutManager as GridLayoutManager).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return if (position == mBookshelfNovelRvAdapter.itemCount  && mBookshelfNovelRvAdapter.itemCount > 0) 3
+                    else 1
+                }
+            }
+        }
 
     }
 
@@ -253,8 +276,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBsVM.onOutput { intent ->
             when(intent) {
                 is BookshelfIntent.GetBookshelfComic -> {
-                    "GetBoookshelfComic : ${intent.mViewState}".logMsg()
+                    "BookshelfComic ${intent.mViewState}".logMsg()
                     intent.mViewState
+                        .doOnSuccess { if (mBinding.bookshelfRefresh.isRefreshing) mBinding.bookshelfRefresh.finishRefresh() }
                         .doOnResultSuspend {
 
                             // 漫画数量为空 则设置总数
@@ -279,7 +303,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                         }
                 }
                 is BookshelfIntent.GetBookshelfNovel -> {
-                    "GetBoookshelfNovel : ${intent.mViewState}".logMsg()
+                    "BookshelfNovel ${intent.mViewState}".logMsg()
                     intent.mViewState
                         .doOnSuccess { if (mBinding.bookshelfRefresh.isRefreshing) mBinding.bookshelfRefresh.finishRefresh() }
                         .doOnError { code, msg ->
