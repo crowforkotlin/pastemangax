@@ -2,10 +2,12 @@ package com.crow.module_home.ui.fragment
 
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Window
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
@@ -250,9 +252,8 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     // 初始化刷新按钮
     private fun initRecRefreshView(): MaterialButton {
         return MaterialButton(mContext, null, materialIconButtonStyle).apply {
-            layoutParams = ConstraintLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                endToEnd = PARENT_ID
-                topToBottom = mBinding.homeComicRec.homeComicBookRv.id
+            layoutParams = LinearLayoutCompat.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).also {
+                it.gravity = Gravity.END or Gravity.CENTER_VERTICAL
             }
             icon = ContextCompat.getDrawable(mContext, R.drawable.home_ic_refresh_24dp)
             iconSize = mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp24)
@@ -278,8 +279,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                 mBinding.homeRefresh.finishRefresh()
                 delay(BASE_ANIM_300L)
             }
-
-
 
 
             mHomeBannerRvAdapter.doBannerNotify(results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList(), mHomePageLayoutRefreshTime)

@@ -55,13 +55,12 @@
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
 				tools:visibility="visible"
-				android:visibility="visible">
+				android:visibility="invisible">
 
 				<com.to.aboomy.pager2banner.Banner
 					android:id="@+id/home_banner"
 					android:layout_width="match_parent"
 					android:layout_marginTop="@dimen/base_dp10"
-					android:visibility="invisible"
 					android:layout_height="wrap_content"
 					android:nestedScrollingEnabled="false" />
 
