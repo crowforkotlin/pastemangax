@@ -66,27 +66,27 @@
 
 				<include
 					android:id="@+id/home_comic_rec"
-					layout="@layout/home_comic" />
+					layout="@layout/home_fragment_comic" />
 
 				<include
 					android:id="@+id/home_comic_hot"
-					layout="@layout/home_comic" />
+					layout="@layout/home_fragment_comic" />
 
 				<include
 					android:id="@+id/home_comic_new"
-					layout="@layout/home_comic" />
+					layout="@layout/home_fragment_comic" />
 
 				<include
 					android:id="@+id/home_comic_finish"
-					layout="@layout/home_comic" />
+					layout="@layout/home_fragment_comic" />
 
 				<include
 					android:id="@+id/home_comic_rank"
-					layout="@layout/home_comic" />
+					layout="@layout/home_fragment_comic" />
 
 				<include
 					android:id="@+id/home_comic_topic"
-					layout="@layout/home_comic" />
+					layout="@layout/home_fragment_comic" />
 
 			</androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -16,8 +16,7 @@ import com.crow.base.current_project.getComicCardHeight
 import com.crow.base.current_project.getComicCardWidth
 import com.crow.base.tools.extensions.clickGap
 import com.crow.base.ui.view.ToolTipsView
-import com.crow.module_home.databinding.HomeComicRvBinding
-import com.crow.module_home.databinding.HomeComicRvBinding.inflate
+import com.crow.module_home.databinding.HomeFragmentComicRvBinding
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.AuthorResult
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
@@ -38,7 +37,7 @@ class HomeComicRvAdapter<T>(
     inline val doOnTap: (BookType, String) -> Unit
 ) : RecyclerView.Adapter<HomeComicRvAdapter<T>.ViewHolder>() {
 
-    inner class ViewHolder(val rvBinding: HomeComicRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
+    inner class ViewHolder(val rvBinding: HomeFragmentComicRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
 
     // 父布局高度
     private var mParentHeight: Int? = null
@@ -48,7 +47,7 @@ class HomeComicRvAdapter<T>(
     private val mSize10 = appContext.resources.getDimension(R.dimen.base_dp10).toInt()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(inflate(from(parent.context), parent, false)).also { vh ->
+        return ViewHolder(HomeFragmentComicRvBinding.inflate(from(parent.context), parent, false)).also { vh ->
 
             // 推荐 设置底部间距0
             if(mType == BookType.Rec) (vh.rvBinding.homeComicRvHot.layoutParams as ConstraintLayout.LayoutParams).bottomMargin = 0

@@ -106,6 +106,6 @@
 		app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
 		app:spanCount="3"
 		tools:itemCount="3"
-		tools:listitem="@layout/home_comic_rv" />
+		tools:listitem="@layout/home_fragment_comic_rv" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
