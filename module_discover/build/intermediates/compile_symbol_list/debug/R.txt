@@ -3,10 +3,16 @@ int color discover_grey 0x0
 int color discover_indigo 0x0
 int color discover_purple 0x0
 int color discover_red 0x0
+int drawable discover_ic_edit_24dp 0x0
+int drawable discover_ic_forward_sort_24dp 0x0
+int drawable discover_ic_move_bottom_24dp 0x0
+int drawable discover_ic_move_top_24dp 0x0
+int drawable discover_ic_reverse_sort_24dp 0x0
 int id discover_appbar_bottom 0x0
 int id discover_appbar_button_group 0x0
 int id discover_appbar_edit 0x0
 int id discover_appbar_hot 0x0
+int id discover_appbar_sort 0x0
 int id discover_appbar_tag_text 0x0
 int id discover_appbar_text_pos 0x0
 int id discover_appbar_top 0x0

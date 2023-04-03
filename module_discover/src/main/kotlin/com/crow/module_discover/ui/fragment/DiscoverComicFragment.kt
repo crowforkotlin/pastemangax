@@ -1,5 +1,7 @@
 package com.crow.module_discover.ui.fragment
 
+import android.annotation.SuppressLint
+import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -12,10 +14,7 @@ import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.current_project.entity.BookType
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.repeatOnLifecycle
-import com.crow.base.tools.extensions.showSnackBar
+import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.ViewState
 import com.crow.base.ui.viewmodel.doOnError
@@ -26,8 +25,9 @@ import com.crow.module_discover.databinding.DiscoverFragmentComicBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.ui.adapter.DiscoverComicAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.math.abs
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -45,6 +45,9 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     // 漫画适配器
     private lateinit var mDiscoverComicAdapter: DiscoverComicAdapter
 
+    // 默认的Appbar状态
+    private var mAppbarState = BottomSheetBehavior.STATE_EXPANDED
+
     override fun getViewBinding(inflater: LayoutInflater) = DiscoverFragmentComicBinding.inflate(inflater)
 
     override fun initData() {
@@ -54,27 +57,13 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     }
 
     override fun initListener() {
-        mBinding.discoverComicRefresh.setOnRefreshListener {
-            mDiscoverComicAdapter.refresh()
-        }
-    }
 
-    override fun initView() {
-
-        mDiscoverComicAdapter = DiscoverComicAdapter {
-            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Comic, it.mPathWord))
-        }
-        mBinding.discoverComicRv.adapter = mDiscoverComicAdapter.withLoadStateFooter(BaseLoadStateAdapter { mDiscoverComicAdapter.retry() })
-        (mBinding.discoverComicRv.layoutManager as GridLayoutManager).apply {
-            spanSizeLookup = object : SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return if (position == mDiscoverComicAdapter.itemCount  && mDiscoverComicAdapter.itemCount > 0) 3
-                    else 1
-                }
-            }
+        // 记录AppBar的状态 （展开、折叠）偏移监听
+        mBinding.discoverComicAppbar.root.addOnOffsetChangedListener { appBar, offset ->
+            mAppbarState = if (offset == 0) BottomSheetBehavior.STATE_EXPANDED else if (abs(offset) >= appBar.totalScrollRange) BottomSheetBehavior.STATE_COLLAPSED else BottomSheetBehavior.STATE_COLLAPSED
         }
 
-
+        mBinding.discoverComicRefresh.setOnRefreshListener { mDiscoverComicAdapter.refresh() }
 
         mBinding.discoverComicRv.setOnScrollChangeListener { _, _, _, _, _ ->
             val layoutManager = mBinding.discoverComicRv.layoutManager
@@ -84,13 +73,49 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         }
     }
 
-    override fun initObserver() {
+    @SuppressLint("SetTextI18n")
+    override fun initView() {
+
+        mDiscoverComicAdapter = DiscoverComicAdapter { FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Comic, it.mPathWord)) }
+
+        mBinding.discoverComicRv.adapter = mDiscoverComicAdapter.withLoadStateFooter(BaseLoadStateAdapter { mDiscoverComicAdapter!!.retry() })
+
+        (mBinding.discoverComicRv.layoutManager as GridLayoutManager).apply {
+            spanSizeLookup = object : SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return if (position == mDiscoverComicAdapter.itemCount  && mDiscoverComicAdapter.itemCount > 0) 3
+                    else 1
+                }
+            }
+        }
+
+        // 重建View时设置 错误提示 是否可见，记录漫画主页数据是否保存
+        if (mDiscoverVM.mComicHomeData != null) {
+            mBinding.discoverComicTipsError.isVisible = false
+            mBinding.discoverComicAppbar.discoverAppbarTextPos.isVisible = true
+            mBinding.discoverComicAppbar.discoverAppbarTagText.isVisible = true
+            mBinding.discoverComicAppbar.discoverAppbarTagText.text = "全部 — 全部 （${mDiscoverVM.mComicHomeData!!.mTotal}）"
+        } else {
+            mBinding.discoverComicTipsError.isVisible = true
+            mBinding.discoverComicAppbar.discoverAppbarTextPos.isVisible = false
+            mBinding.discoverComicAppbar.discoverAppbarTagText.isVisible = false
+            mBinding.discoverComicAppbar.discoverAppbarTagText.text = null
+        }
+
+        // 重新创建View之后 appBarLayout会展开折叠，记录一个状态进行初始化
+        if (mAppbarState == BottomSheetBehavior.STATE_COLLAPSED) mBinding.discoverComicAppbar.root.setExpanded(false, false)
+        else mBinding.discoverComicAppbar.root.setExpanded(true, false)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         // 获取发现主页
         mDiscoverVM.input(DiscoverIntent.GetComicHome())
+    }
 
-        // 收集状态 通知适配器
-        repeatOnLifecycle { mDiscoverVM.mDiscoverComicHomeFlowPager?.collect { mDiscoverComicAdapter.submitData(it) } }
+    @SuppressLint("SetTextI18n")
+    override fun initObserver() {
 
         // 意图观察者
         mDiscoverVM.onOutput { intent ->
@@ -139,5 +164,8 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                 else -> {}
             }
         }
+
+        // 收集状态 通知适配器
+        repeatOnLifecycle { mDiscoverVM.mDiscoverComicHomeFlowPager?.collect { mDiscoverComicAdapter.submitData(it) } }
     }
 }

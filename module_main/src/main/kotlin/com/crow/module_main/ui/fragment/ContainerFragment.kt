@@ -2,8 +2,14 @@ package com.crow.module_main.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
 import com.crow.base.current_project.entity.BookTapEntity
@@ -13,14 +19,18 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.module_bookshelf.ui.fragment.BookshelfFragment
 import com.crow.module_discover.ui.fragment.DiscoverFragment
 import com.crow.module_home.ui.fragment.HomeFragment
+import com.crow.module_home.ui.fragment.NewHomeFragment
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentContainerBinding
 import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.viewmodel.ContainerViewModel
 import com.crow.module_user.ui.fragment.UserBottomSheetFragment
 import com.crow.module_user.ui.viewmodel.UserViewModel
+import com.orhanobut.logger.Logger
+import kotlinx.coroutines.NonCancellable.children
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.logging.Level
 import com.crow.base.R as baseR
 
 
@@ -38,7 +48,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
         // 登录成功后响应回来进行刷新
         FlowBus.with<Unit>(BaseStrings.Key.LOGIN_SUCUESS).register(this) {
-            (mFragmentList[0] as HomeFragment).doRefresh()
+            (mFragmentList[0] as NewHomeFragment).doRefresh()
             (mFragmentList[2] as BookshelfFragment).doRefresh()
         }
 
@@ -66,19 +76,21 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     // 碎片容器适配器
-    private lateinit var mContainerAdapter: ContainerAdapter
+    private var mContainerAdapter: ContainerAdapter? = null
 
     // 容器VM
     private val mContaienrVM by viewModel<ContainerViewModel>()
 
     // 共享用户VM
-    private val mUserVM by sharedViewModel<UserViewModel>()
+    private val mUserVM by viewModel<UserViewModel>()
 
     // 碎片集
-    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment(), DiscoverFragment(), BookshelfFragment()) }
+    private val mFragmentList by lazy { mutableListOf<Fragment>(NewHomeFragment(), DiscoverFragment(), BookshelfFragment()) }
 
     // 点击标志 用于防止多次显示 ComicInfoBottomSheetFragment
     private var mTapFlag: Boolean = false
+
+
 
     private fun switchFragment(position: Int) {
         if (mBinding.mainViewPager.currentItem != position) {
@@ -91,13 +103,14 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     override fun initView() {
 
-        "(Container Fragment) InitView Start".logMsg()
+        "(Container Fragment) InitView Start".logMsg(Logger.WARN)
+
         // 适配器 初始化 （设置Adapter、预加载页数）
-        mContainerAdapter = ContainerAdapter(mFragmentList, requireActivity().supportFragmentManager, viewLifecycleOwner.lifecycle)
+        mContainerAdapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
         mBinding.mainViewPager.adapter = mContainerAdapter
         mBinding.mainViewPager.offscreenPageLimit = 3
         mBinding.mainViewPager.isUserInputEnabled = false
-        "(Container Fragment) InitView End".logMsg()
+        "(Container Fragment) InitView End".logMsg(Logger.WARN)
 
         // 设置底部导航视图点击Itemhi见
         mBinding.mainBottomNavigation.setOnItemSelectedListener {
@@ -116,10 +129,26 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mUserVM.userInfo.onCollect(this) {
 
             // 加载 Icon  无链接或加载失败 则默认Drawable
-            mUserVM.doLoadIcon(mContext, true) { resource ->  (mFragmentList[0] as HomeFragment).setIconResource(resource) }
+            mUserVM.doLoadIcon(mContext, true) { resource ->  (mFragmentList[0] as NewHomeFragment).setIconResource(resource) }
 
             // 初始化 用户Tokne
             BaseUser.CURRENT_USER_TOKEN = it?.mToken ?: return@onCollect
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mContainerAdapter = null
+        "(Container Fragment) onDestoryView".logMsg(Logger.WARN)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        "(Container Fragment) onDestory".logMsg(Logger.WARN)
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        "(Container Fragment) LowMemory".logMsg(Logger.WARN)
     }
 }

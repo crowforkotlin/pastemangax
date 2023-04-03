@@ -81,7 +81,7 @@ class HomeComicRvAdapter<T>(
                 val comic = (mData as MutableList<NewComic>)[pos].mComic
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }
-            BookType.Commit -> {
+            BookType.Finish -> {
                 val comic = (mData as MutableList<FinishComic>)[pos]
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
             }

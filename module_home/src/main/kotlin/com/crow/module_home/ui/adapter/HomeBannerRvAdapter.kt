@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.crow.base.app.appContext
 import com.crow.base.current_project.entity.BookType
 import com.crow.base.tools.extensions.clickGap
+import com.crow.base.tools.extensions.logMsg
 import com.crow.module_home.databinding.HomeFragmentBannerRvBinding
 import com.crow.module_home.model.resp.homepage.Banner
 import kotlinx.coroutines.delay
@@ -16,13 +17,13 @@ class HomeBannerRvAdapter(
     inline val onTap: (BookType, String) -> Unit,
 ) : RecyclerView.Adapter<HomeBannerRvAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val rvBinding: HomeFragmentBannerRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathword: String = "" }
+    inner class ViewHolder(val rvBinding: HomeFragmentBannerRvBinding) : RecyclerView.ViewHolder(rvBinding.root)
 
     override fun getItemCount(): Int = mBannerList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(HomeFragmentBannerRvBinding.inflate(from(parent.context), parent, false)).also { vh ->
-            vh.rvBinding.baneerImage.clickGap { _, _ -> onTap(BookType.Banner, vh.mPathword) }
+            vh.rvBinding.baneerImage.clickGap { _, _ -> onTap(BookType.Banner, mBannerList[vh.absoluteAdapterPosition].mComic?.mPathWord ?: return@clickGap) }
         }
     }
 
@@ -32,7 +33,6 @@ class HomeBannerRvAdapter(
             .load(banner.mImgUrl)
             .into(vh.rvBinding.baneerImage)
         vh.rvBinding.bannerText.text = banner.mBrief
-        vh.mPathword = banner.mComic!!.mPathWord
     }
 
     suspend fun doBannerNotify(banners: MutableList<Banner>, delay: Long) {

@@ -5,12 +5,14 @@ import androidx.fragment.app.Fragment
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverFragmentBinding
 import com.crow.module_discover.ui.adapter.DiscoverAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -41,7 +43,8 @@ class DiscoverFragment : BaseMviFragment<DiscoverFragmentBinding>() {
         mBinding.discoverTabLayout.setPadding(0, mContext.getStatusBarHeight(),0, 0)
 
         // 初始 viewpager2
-        mDiscoverAdapter = DiscoverAdapter(mFragmentList, requireActivity().supportFragmentManager, lifecycle)
+        "(Discover Fragment) InitView Start".logMsg(Logger.WARN)
+        mDiscoverAdapter = DiscoverAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
         mBinding.discoverVp.adapter = mDiscoverAdapter
         mBinding.discoverVp.offscreenPageLimit = 2
 
@@ -56,7 +59,7 @@ class DiscoverFragment : BaseMviFragment<DiscoverFragmentBinding>() {
                 }
             }
         }.attach()
-
+        "(Discover Fragment) InitView End".logMsg(Logger.WARN)
     }
 
     override fun onDestroyView() {

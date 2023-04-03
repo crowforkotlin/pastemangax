@@ -4,10 +4,16 @@ color discover_grey
 color discover_indigo
 color discover_purple
 color discover_red
+drawable discover_ic_edit_24dp
+drawable discover_ic_forward_sort_24dp
+drawable discover_ic_move_bottom_24dp
+drawable discover_ic_move_top_24dp
+drawable discover_ic_reverse_sort_24dp
 id discover_appbar_bottom
 id discover_appbar_button_group
 id discover_appbar_edit
 id discover_appbar_hot
+id discover_appbar_sort
 id discover_appbar_tag_text
 id discover_appbar_text_pos
 id discover_appbar_top

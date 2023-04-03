@@ -40,31 +40,44 @@
 		</com.google.android.material.button.MaterialButtonToggleGroup>
 
 		<com.google.android.material.button.MaterialButton
-			android:id="@+id/discover_appbar_edit"
-			style="@style/Widget.Material3.Button.IconButton"
+			android:id="@+id/discover_appbar_sort"
+			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
 			android:layout_width="wrap_content"
+			android:elevation="1dp"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			app:icon="@drawable/discover_ic_reverse_sort_24dp"
+			app:iconTint="@null" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/discover_appbar_edit"
+			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+			android:layout_width="wrap_content"
+			android:elevation="1dp"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
 			android:layout_margin="@dimen/base_dp5"
-			app:icon="@drawable/base_ic_edit_24dp"
+			app:icon="@drawable/discover_ic_edit_24dp"
 			app:iconTint="@null" />
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/discover_appbar_bottom"
-			style="@style/Widget.Material3.Button.IconButton"
+			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
-			app:icon="@drawable/base_ic_move_bottom_24dp"
+			android:elevation="1dp"
+			app:icon="@drawable/discover_ic_move_bottom_24dp"
 			app:iconTint="@null" />
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/discover_appbar_top"
-			style="@style/Widget.Material3.Button.IconButton"
+			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+			android:elevation="1dp"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
-			app:icon="@drawable/base_ic_move_top_24dp"
+			app:icon="@drawable/discover_ic_move_top_24dp"
 			app:iconTint="@null" />
 
 	</androidx.appcompat.widget.LinearLayoutCompat>

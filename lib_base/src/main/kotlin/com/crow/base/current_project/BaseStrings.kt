@@ -37,6 +37,7 @@ object BaseStrings {
         const val POST_CURRENT_ITEM = "POST_CURRENT_ITEM"
         const val OPEN_USER_BOTTOM = "OPEN_USER_BOTTOM"
         const val OPEN_BOOK_INFO = "OPEN_BOOK_INFO"
+        const val OPEN_BOOK_INFO_MANAGER = "OPEN_BOOK_INFO_MANAGER"
         const val LOGIN_SUCUESS = "LOGIN_SUCUESS"
         const val CLEAR_USER_INFO = "CLEAR_USER_INFO"
         const val EXIT_USER = "EXIT_USER"

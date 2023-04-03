@@ -7,7 +7,9 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_discover.model.intent.DiscoverIntent
+import com.crow.module_discover.model.resp.DiscoverComicHomeResp
 import com.crow.module_discover.model.resp.DiscoverComicTagResp
+import com.crow.module_discover.model.resp.DiscoverNovelHomeResp
 import com.crow.module_discover.model.resp.DiscoverNovelTagResp
 import com.crow.module_discover.model.resp.comic_home.DiscoverComicHomeResult
 import com.crow.module_discover.model.resp.novel_home.DiscoverNovelHomeResult
@@ -42,6 +44,12 @@ class DiscoverViewModel(val repository: DiscoverRepository) : BaseMviViewModel<D
     // 轻小说标签数据
     private var mNovelTagResp: DiscoverNovelTagResp? = null
 
+    var mComicHomeData: DiscoverComicHomeResp? = null
+        private set
+
+    var mNovelHomeData: DiscoverNovelHomeResp? = null
+        private set
+
     // 排序方式
     private var mOrder: String = "-datetime_updated"
 
@@ -68,7 +76,8 @@ class DiscoverViewModel(val repository: DiscoverRepository) : BaseMviViewModel<D
             ),
             pagingSourceFactory = {
                 DiscoverComicHomeDataSource { position, pageSize ->
-                    flowResult(repository.getComicHome(position, pageSize, mOrder), intent) { value -> intent.copy(comicHomeResp = value.mResults) }.mResults
+                    mComicHomeData = flowResult(repository.getComicHome(position, pageSize, mOrder), intent) { value -> intent.copy(comicHomeResp = value.mResults) }.mResults
+                    mComicHomeData
                 }
             }
         ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
@@ -83,7 +92,8 @@ class DiscoverViewModel(val repository: DiscoverRepository) : BaseMviViewModel<D
             ),
             pagingSourceFactory = {
                 DiscoverNovelHomeDataSource { position, pageSize ->
-                    flowResult(repository.getNovelHome(position, pageSize, mOrder), intent) { value -> intent.copy(novelHomeResp = value.mResults) }.mResults
+                    mNovelHomeData = flowResult(repository.getNovelHome(position, pageSize, mOrder), intent) { value -> intent.copy(novelHomeResp = value.mResults) }.mResults
+                    mNovelHomeData
                 }
             }
         ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)

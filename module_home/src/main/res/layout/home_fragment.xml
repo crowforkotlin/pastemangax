@@ -56,7 +56,7 @@
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
 				tools:visibility="visible"
-				android:visibility="invisible">
+				android:visibility="visible">
 
 				<com.to.aboomy.pager2banner.Banner
 					android:id="@+id/home_banner"

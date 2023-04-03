@@ -5,9 +5,8 @@ import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Window
-import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE
-import android.widget.ScrollView
-import android.widget.Scroller
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -15,7 +14,9 @@ import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTE
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.get
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.current_project.BaseStrings
@@ -42,11 +43,13 @@ import com.google.android.material.R.attr.materialIconButtonStyle
 import com.google.android.material.button.MaterialButton
 import com.to.aboomy.pager2banner.IndicatorView
 import com.to.aboomy.pager2banner.ScaleInTransformer
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.coroutines.resume
 import com.crow.base.R as baseR
-
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -56,7 +59,12 @@ import com.crow.base.R as baseR
  * @Description: HomeBodyFragment
  * @formatter:on
  **************************/
-class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
+
+class HomeFragment private constructor() : BaseMviFragment<HomeFragmentBinding>() {
+
+    companion object {
+        fun newInstance() = NewHomeFragment.newInstance()
+    }
 
     // 主页 VM
     private val mHomeVM by viewModel<HomeViewModel>()
@@ -77,27 +85,54 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     private lateinit var mHomeRankAapter: HomeComicRvAdapter<RankComics>
 
     private fun initAdapter() {
+
         // 适配器可以作为局部成员，但不要直接初始化，不然会导致被View引用从而内存泄漏
-        mHomeBannerRvAdapter = HomeBannerRvAdapter { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
-        }
-        mHomeRecAdapter = HomeComicRvAdapter(mType = BookType.Rec) { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
-        }
-        mHomeHotAdapter = HomeComicRvAdapter(mType = BookType.Hot) { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
-        }
-        mHomeNewAdapter = HomeComicRvAdapter(mType = BookType.New) { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
-        }
-        mHomeFinishAdapter = HomeComicRvAdapter(mType = BookType.Commit) { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
-        }
-        mHomeRankAapter = HomeComicRvAdapter(mType = BookType.Rank) { _, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
-        }
-        mHomeTopicAapter = HomeComicRvAdapter(mType = BookType.Topic) { type, pathword ->
-            FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(type, pathword))
+        val result = mHomeVM.getResult()
+        if (result != null) {
+            mHomeBannerRvAdapter = HomeBannerRvAdapter(result.mBanners.toMutableList()) { _, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            }
+            mHomeRecAdapter = HomeComicRvAdapter(result.mRecComicsResult.mResult.toMutableList(), mType = BookType.Rec) { _, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            }
+            mHomeHotAdapter = HomeComicRvAdapter(result.mHotComics.toMutableList(), mType = BookType.Hot) { _, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            }
+            mHomeNewAdapter = HomeComicRvAdapter(result.mNewComics.toMutableList(), mType = BookType.New) { _, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            }
+            mHomeFinishAdapter = HomeComicRvAdapter(result.mFinishComicDatas.mResult.toMutableList(), mType = BookType.Finish) { _, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            }
+            mHomeRankAapter = HomeComicRvAdapter(result.mRankDayComics.mResult.toMutableList(), mType = BookType.Rank) { _, pathword ->
+
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            }
+            mHomeTopicAapter = HomeComicRvAdapter(result.mTopics.mResult.toMutableList(), mType = BookType.Topic) { type, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(type, pathword))
+            }
+        } else {
+            mHomeBannerRvAdapter = HomeBannerRvAdapter { _, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            }
+            mHomeRecAdapter = HomeComicRvAdapter(mType = BookType.Rec) { _, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            }
+            mHomeHotAdapter = HomeComicRvAdapter(mType = BookType.Hot) { _, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            }
+            mHomeNewAdapter = HomeComicRvAdapter(mType = BookType.New) { _, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            }
+            mHomeFinishAdapter = HomeComicRvAdapter(mType = BookType.Finish) { _, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            }
+            mHomeRankAapter = HomeComicRvAdapter(mType = BookType.Rank) { _, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(Comic, pathword))
+            }
+            mHomeTopicAapter = HomeComicRvAdapter(mType = BookType.Topic) { type, pathword ->
+                FlowBus.with<BookTapEntity>(OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(type, pathword))
+            }
         }
     }
 
@@ -167,11 +202,15 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     }
 
     // 暴露的函数 提供给 ContainerFragment 用于通知主页设置Icon
-    fun setIconResource(resource: Drawable) { mBinding.homeToolbar.navigationIcon = resource }
+    fun setIconResource(resource: Drawable) {
+        repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            mBinding.homeToolbar.navigationIcon = resource
+        }
+    }
 
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentBinding.inflate(inflater)
 
-    override fun onDestroyView() {
+   override fun onDestroyView() {
         super.onDestroyView()
 
         // 置空 避免内存泄漏
@@ -191,6 +230,8 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
         // 初始化适配器
         initAdapter()
+
+        if (mHomeVM.getResult() == null) { mBinding.homeLinearLayout.isInvisible = true }
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.homeAppbar.setPadding(0, mContext.getStatusBarHeight(), 0, 0)
@@ -215,15 +256,13 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             .adapter = mHomeBannerRvAdapter
 
         // 设置每一个子布局的 （Icon、标题、适配器）
-        mBinding.homeComicRec.initHomeComicRvView(mHomeRecAdapter, R.drawable.home_ic_recommed_24dp, R.string.home_recommend_comic).also{ it.homeComicConstraint.addView(mRecRefreshButton) }
+        mBinding.homeComicRec.initHomeComicRvView(mHomeRecAdapter, R.drawable.home_ic_recommed_24dp, R.string.home_recommend_comic).also { it.homeComicConstraint.addView(mRecRefreshButton) }
         mBinding.homeComicHot.initHomeComicRvView(mHomeHotAdapter, R.drawable.home_ic_hot_24dp, R.string.home_hot_comic)
         mBinding.homeComicNew.initHomeComicRvView(mHomeNewAdapter, R.drawable.home_ic_new_24dp, R.string.home_new_comic)
         mBinding.homeComicFinish.initHomeComicRvView(mHomeFinishAdapter, R.drawable.home_ic_finish_24dp, R.string.home_commit_finish)
         mBinding.homeComicRank.initHomeComicRvView(mHomeRankAapter, R.drawable.home_ic_rank_24dp, R.string.home_rank_comic)
         mBinding.homeComicTopic.initHomeComicRvView(mHomeTopicAapter,R.drawable.home_ic_topic_24dp, R.string.home_topic_comic).also { it.homeComicBookRv.layoutManager = GridLayoutManager(mContext, 2) }
 
-        // 判断数据是否为空 不为空则加载数据
-        doLoadHomePage(mHomeVM.getResult() ?: return)
     }
 
     override fun initListener() {
@@ -311,5 +350,4 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             }
         }
     }
-
 }

@@ -222,7 +222,7 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
     // 书页章节意图处理
     private fun doBookInfoChapterIntent(intent: BookIntent) {
         intent.mViewState
-            .doOnError { _, _ -> mBinding.comicInfoErrorTips.visibility = View.VISIBLE }
+            .doOnError { _, _ -> dismissLoadingAnim { mBinding.comicInfoErrorTips.animateFadeIn() } }
             .doOnSuccess {
                 mBinding.bookInfoRvChapterSelector.isEnabled = true
                 if (mBinding.bookInfoRefresh.isRefreshing) mBinding.bookInfoRefresh.finishRefresh()

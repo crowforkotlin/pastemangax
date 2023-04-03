@@ -1,9 +1,13 @@
 package com.crow.copymanga
 
+import android.app.Activity
+import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crow.base.app.BaseApp
+import com.crow.base.tools.extensions.logMsg
 import com.crow.copymanga.di.factoryModule
 import com.crow.copymanga.di.netWorkModule
 import com.crow.copymanga.di.servicesModule

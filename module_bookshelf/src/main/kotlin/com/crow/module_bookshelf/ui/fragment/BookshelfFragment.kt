@@ -1,5 +1,6 @@
 package com.crow.module_bookshelf.ui.fragment
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.isVisible
@@ -147,16 +148,12 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         // 设置刷新时不允许列表滚动
         mBinding.bookshelfRefresh.setDisableContentWhenRefresh(true)
 
-
-
-        // 初始化适配器
-        mBookshelfComicRvAdapter = BookshelfComicRvAdapter {
-            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Comic, it.mComic.mPathWord))
-        }
         mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter {
             FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Novel, it.mNovel.mPathWord))
         }
-
+        mBookshelfComicRvAdapter = BookshelfComicRvAdapter {
+            FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Comic, it.mComic.mPathWord))
+        }
 
         // 设置适配器
         mBinding.bookshelfRvComic.adapter = mBookshelfComicRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
@@ -169,7 +166,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             }
         }
 
-        mBinding.bookshelfRvNovel.adapter = mBookshelfNovelRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfNovelRvAdapter.retry() })
+        mBinding.bookshelfRvNovel.adapter = mBookshelfNovelRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
         (mBinding.bookshelfRvNovel.layoutManager as GridLayoutManager).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
@@ -260,12 +257,6 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
     override fun initObserver() {
 
-        // 发送获取书架 漫画 的意图 需要动态收集书架状态才可
-        mBsVM.input(BookshelfIntent.GetBookshelfComic())
-
-        // 发送获取书架 轻小说 的意图 需要动态收集书架状态才可
-        mBsVM.input(BookshelfIntent.GetBookshelfNovel())
-
         // 每隔观察者需要一个单独的生命周期块，在同一个会导致第二个观察者失效 收集书架 漫画Pager状态
         repeatOnLifecycle { mBsVM.mBookshelfComicFlowPager?.collect { data -> mBookshelfComicRvAdapter.submitData(data) } }
 
@@ -332,5 +323,15 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                 }
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // 发送获取书架 漫画 的意图 需要动态收集书架状态才可
+        mBsVM.input(BookshelfIntent.GetBookshelfComic())
+
+        // 发送获取书架 轻小说 的意图 需要动态收集书架状态才可
+        mBsVM.input(BookshelfIntent.GetBookshelfNovel())
+        "onCreate".logMsg()
     }
 }
