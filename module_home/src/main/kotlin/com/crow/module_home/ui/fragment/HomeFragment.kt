@@ -63,7 +63,7 @@ import com.crow.base.R as baseR
 class HomeFragment private constructor() : BaseMviFragment<HomeFragmentBinding>() {
 
     companion object {
-        fun newInstance() = NewHomeFragment.newInstance()
+        fun newInstance() = HomeFragment()
     }
 
     // 主页 VM

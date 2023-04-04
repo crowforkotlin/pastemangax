@@ -32,7 +32,12 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mContext = requireContext()
-        initObserver()
         super.onViewCreated(view, savedInstanceState)
+        initObserver()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _mBinding = null
     }
 }

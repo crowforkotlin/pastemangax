@@ -2,6 +2,7 @@ package com.crow.module_discover.ui.fragment
 
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.getStatusBarHeight
@@ -44,7 +45,7 @@ class DiscoverFragment : BaseMviFragment<DiscoverFragmentBinding>() {
 
         // 初始 viewpager2
         "(Discover Fragment) InitView Start".logMsg(Logger.WARN)
-        mDiscoverAdapter = DiscoverAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
+        mDiscoverAdapter = DiscoverAdapter(mFragmentList, requireActivity())
         mBinding.discoverVp.adapter = mDiscoverAdapter
         mBinding.discoverVp.offscreenPageLimit = 2
 

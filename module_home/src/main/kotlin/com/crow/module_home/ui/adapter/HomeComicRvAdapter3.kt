@@ -6,14 +6,19 @@ import android.view.LayoutInflater.from
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.R
 import com.crow.base.app.appContext
+import com.crow.base.current_project.BaseStrings
+import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.current_project.entity.BookType
 import com.crow.base.current_project.formatValue
 import com.crow.base.current_project.getComicCardHeight
 import com.crow.base.current_project.getComicCardWidth
+import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.clickGap
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_home.databinding.HomeFragmentComicRvBinding
@@ -33,8 +38,8 @@ import java.util.*
  **************************/
 class HomeComicRvAdapter3<T>(
     private var mData: MutableList<T> = mutableListOf(),
+    private val viewLifecycleOwner: LifecycleOwner,
     private val mBookType: BookType,
-    inline val doOnTap: (BookType, String) -> Unit
 ) : RecyclerView.Adapter<HomeComicRvAdapter3<T>.ViewHolder>() {
 
     inner class ViewHolder(val rvBinding: HomeFragmentComicRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
@@ -66,8 +71,14 @@ class HomeComicRvAdapter3<T>(
             }
 
             // 点击 父布局卡片 以及漫画卡片 事件 回调给上级 HomeFragment --> ContainerFragment
-            vh.rvBinding.root.clickGap { _, _ -> doOnTap(mBookType, vh.mPathWord) }
-            vh.rvBinding.homeBookCard.clickGap { _, _ -> doOnTap(mBookType, vh.mPathWord) }
+            vh.rvBinding.root.clickGap { _, _ ->
+                if (mBookType == BookType.Topic) { }
+                else FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(viewLifecycleOwner, BookTapEntity(BookType.Comic, vh.mPathWord))
+            }
+            vh.rvBinding.homeBookCard.clickGap { _, _ ->
+                if (mBookType == BookType.Topic) { }
+                else FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(viewLifecycleOwner, BookTapEntity(BookType.Comic, vh.mPathWord))
+            }
 
             // Tooltips漫画名称设置
             ToolTipsView.showToolTipsByLongClick(vh.rvBinding.homeComicRvName)

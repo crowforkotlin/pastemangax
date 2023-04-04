@@ -19,10 +19,14 @@ import com.crow.module_user.model.UserIntent
 import com.crow.module_user.model.resp.LoginResultErrorResp
 import com.crow.module_user.model.resp.LoginResultsOkResp
 import com.crow.module_user.network.UserRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.net.HttpURLConnection
+import kotlin.coroutines.resume
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -45,9 +49,7 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
 
     init {
         // 初始化 用户信息
-        viewModelScope.launch {
-            _userInfo.emit((DataStoreAgent.DATA_USER.asyncDecode().toTypeEntity<LoginResultsOkResp>() ?: return@launch).also { mIconUrl = it.mIconUrl })
-        }
+        viewModelScope.launch { _userInfo.emit((DataStoreAgent.DATA_USER.asyncDecode().toTypeEntity<LoginResultsOkResp>())?.also { mIconUrl = it.mIconUrl }) }
     }
 
     override fun dispatcher(intent: UserIntent) {

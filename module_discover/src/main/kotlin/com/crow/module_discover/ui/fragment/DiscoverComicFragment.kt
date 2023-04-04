@@ -78,7 +78,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
         mDiscoverComicAdapter = DiscoverComicAdapter { FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Comic, it.mPathWord)) }
 
-        mBinding.discoverComicRv.adapter = mDiscoverComicAdapter.withLoadStateFooter(BaseLoadStateAdapter { mDiscoverComicAdapter!!.retry() })
+        mBinding.discoverComicRv.adapter = mDiscoverComicAdapter.withLoadStateFooter(BaseLoadStateAdapter { mDiscoverComicAdapter.retry() })
 
         (mBinding.discoverComicRv.layoutManager as GridLayoutManager).apply {
             spanSizeLookup = object : SpanSizeLookup() {

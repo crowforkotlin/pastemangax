@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:visibility="gone"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/home_comic_rv_rec_refresh"
+		style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end"
+		android:gravity="end"
+		android:text="@string/home_refresh"
+		android:textAlignment="center"
+		android:textStyle="bold"
+		app:icon="@drawable/home_ic_refresh_24dp"
+		app:iconPadding="@dimen/base_dp5"
+		app:iconTint="@null" />
+	
+</FrameLayout>

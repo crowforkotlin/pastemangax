@@ -5,4 +5,5 @@
 	android:layout_width="match_parent"
 	android:layout_marginTop="@dimen/base_dp10"
 	android:nestedScrollingEnabled="false"
+	android:visibility="gone"
 	android:layout_height="wrap_content"/>

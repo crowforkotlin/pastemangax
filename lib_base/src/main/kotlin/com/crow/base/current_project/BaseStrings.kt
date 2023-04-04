@@ -41,5 +41,6 @@ object BaseStrings {
         const val LOGIN_SUCUESS = "LOGIN_SUCUESS"
         const val CLEAR_USER_INFO = "CLEAR_USER_INFO"
         const val EXIT_USER = "EXIT_USER"
+        const val SET_HOME_ICON = "SET_HOME_ICON"
     }
 }

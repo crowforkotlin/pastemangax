@@ -1,14 +1,17 @@
 package com.crow.module_main.ui.fragment
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
@@ -29,6 +32,7 @@ import com.crow.module_user.ui.viewmodel.UserViewModel
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.NonCancellable.children
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.logging.Level
 import com.crow.base.R as baseR
@@ -81,15 +85,14 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     // 容器VM
     private val mContaienrVM by viewModel<ContainerViewModel>()
 
-    // 共享用户VM
-    private val mUserVM by viewModel<UserViewModel>()
+    // 用户VM
+    private val mUserVM by sharedViewModel<UserViewModel>()
 
     // 碎片集
-    private val mFragmentList by lazy { mutableListOf<Fragment>(NewHomeFragment(), DiscoverFragment(), BookshelfFragment()) }
+    private val mFragmentList by lazy { mutableListOf<Fragment>(NewHomeFragment.newInstance(), DiscoverFragment(), BookshelfFragment()) }
 
     // 点击标志 用于防止多次显示 ComicInfoBottomSheetFragment
     private var mTapFlag: Boolean = false
-
 
 
     private fun switchFragment(position: Int) {
@@ -106,10 +109,11 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         "(Container Fragment) InitView Start".logMsg(Logger.WARN)
 
         // 适配器 初始化 （设置Adapter、预加载页数）
-        mContainerAdapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
+        mContainerAdapter = ContainerAdapter(mFragmentList, requireActivity())
         mBinding.mainViewPager.adapter = mContainerAdapter
         mBinding.mainViewPager.offscreenPageLimit = 3
         mBinding.mainViewPager.isUserInputEnabled = false
+
         "(Container Fragment) InitView End".logMsg(Logger.WARN)
 
         // 设置底部导航视图点击Itemhi见
@@ -129,7 +133,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mUserVM.userInfo.onCollect(this) {
 
             // 加载 Icon  无链接或加载失败 则默认Drawable
-            mUserVM.doLoadIcon(mContext, true) { resource ->  (mFragmentList[0] as NewHomeFragment).setIconResource(resource) }
+            mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseStrings.Key.SET_HOME_ICON).post(lifecycleScope, resource) }
 
             // 初始化 用户Tokne
             BaseUser.CURRENT_USER_TOKEN = it?.mToken ?: return@onCollect

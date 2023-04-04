@@ -1,33 +1,21 @@
 package com.crow.module_home.ui.fragment
 
 import android.graphics.drawable.Drawable
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Window
-import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
-import androidx.core.content.ContextCompat
 import androidx.core.view.get
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.entity.BookType
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.dialog.LoadingAnimDialog
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.*
-import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeFragment2Binding
 import com.crow.module_home.model.intent.HomeIntent
-import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.model.resp.homepage.results.Results
-import com.crow.module_home.ui.adapter.HomeBannerRvAdapter
 import com.crow.module_home.ui.adapter.HomeComicRvAdapter2
-import com.crow.module_home.ui.adapter.HomeComicRvAdapter3
-import com.crow.module_home.ui.adapter.HomeComicRvAdapter4
 import com.crow.module_home.ui.viewmodel.HomeViewModel
-import com.google.android.material.R.attr.materialIconButtonStyle
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -52,67 +40,53 @@ class NewHomeFragment : BaseMviFragment<HomeFragment2Binding>() {
     // 主页布局刷新的时间 第一次进入布局默认10Ms 之后刷新 为 50Ms
     private var mHomePageLayoutRefreshTime = 10L
 
-    // 主页数据量较多， 采用Rv方式
-    private lateinit var mHomeComicRvAdapter: HomeComicRvAdapter2
+    // 推荐 “换一批” 刷新按钮
+    private var mRecRefresh: MaterialButton? = null
 
-    // 初始化刷新按钮
-    private fun initRecRefreshView(): MaterialButton {
-        return MaterialButton(mContext, null, materialIconButtonStyle).apply {
-            layoutParams = LinearLayoutCompat.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).also { it.gravity = Gravity.END or Gravity.CENTER_VERTICAL }
-            icon = ContextCompat.getDrawable(mContext, R.drawable.home_ic_refresh_24dp)
-            iconSize = mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp24)
-            iconTint = null
-            iconPadding = mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp6)
-            text = mContext.getString(R.string.home_refresh)
-        }
-    }
+    // 主页数据量较多， 采用Rv方式
+    private var mHomeComicRvAdapter: HomeComicRvAdapter2? = null
+
+    init { FlowBus.with<Drawable>(BaseStrings.Key.SET_HOME_ICON).register(this) { mBinding.homeToolbar.navigationIcon = it } }
 
     // 加载主页数据
     private fun doLoadHomePage(results: Results) {
 
-        // 刷新控件动画消失
-        if (mBinding.homeRefresh.isRefreshing) mBinding.homeRefresh.finishRefresh()
-
-        /*mHomeComicRvAdapter = HomeComicRvAdapter2((mutableListOf(
+        val datas = mutableListOf(
             results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList(),
-            results.mRecComicsResult.mResult.toMutableList(),
-            results.mHotComics.toMutableList(),
-            results.mNewComics.toMutableList(),
-            results.mFinishComicDatas.mResult.toMutableList(),
-            results.mRankDayComics.mResult.toMutableList(),
-            results.mTopics.mResult.toMutableList()
-        )), viewLifecycleOwner) { _, _ -> }
-*/
-        mHomeComicRvAdapter = HomeComicRvAdapter2((mutableListOf(
-            HomeBannerRvAdapter(results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList()) { _, _ -> },
-            HomeComicRvAdapter3(results.mRecComicsResult.mResult.toMutableList() ,mBookType = BookType.Rec) { _, _ -> },
-            HomeComicRvAdapter3(results.mHotComics.toMutableList() ,mBookType = BookType.Hot) { _, _ -> },
-            HomeComicRvAdapter3(results.mNewComics.toMutableList() ,mBookType = BookType.New) { _, _ -> },
-            HomeComicRvAdapter3(results.mFinishComicDatas.mResult.toMutableList() ,mBookType = BookType.Finish) { _, _ -> },
-            HomeComicRvAdapter3(results.mRankDayComics.mResult.toMutableList() ,mBookType = BookType.Rank) { _, _ -> },
-            HomeComicRvAdapter3(results.mTopics.mResult.toMutableList() ,mBookType = BookType.Topic) { _, _ -> },
-        )), viewLifecycleOwner) { _, _ -> }
+            null, results.mRecComicsResult.mResult.toMutableList(), null,
+            null, results.mHotComics.toMutableList(),
+            null, results.mNewComics.toMutableList(),
+            null, results.mFinishComicDatas.mResult.toMutableList(),
+            null, results.mRankDayComics.mResult.toMutableList(),
+            null, results.mTopics.mResult.toMutableList()
+        )
 
 
-        mBinding.homeRv.adapter = mHomeComicRvAdapter
+        viewLifecycleOwner.lifecycleScope.launch {
 
-        // 取消加载动画
-        dismissLoadingAnim()
-    }
+            // 刷新控件动画消失
+            if (mBinding.homeRefresh.isRefreshing) {
+                mBinding.homeRefresh.finishRefresh()
+                mHomeComicRvAdapter?.doNotify(datas.toMutableList(), true,100L, 0L)
+            }
 
-    // 暴露的函数 提供给 ContainerFragment 用于通知主页刷新
-    fun doRefresh() {
-        mHomeVM.input(HomeIntent.GetHomePage())
-    }
+            else mHomeComicRvAdapter?.doNotify(datas.toMutableList(), false, 100L, 100L)
 
-    // 暴露的函数 提供给 ContainerFragment 用于通知主页设置Icon
-    fun setIconResource(resource: Drawable) {
-        repeatOnLifecycle(Lifecycle.State.RESUMED) {
-            mBinding.homeToolbar.navigationIcon = resource
+
+            // 取消加载动画
+            dismissLoadingAnim()
         }
     }
 
+    // 暴露的函数 提供给 ContainerFragment 用于通知主页刷新
+    fun doRefresh() { mHomeVM.input(HomeIntent.GetHomePage()) }
+
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragment2Binding.inflate(inflater)
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mRecRefresh = null
+    }
 
     override fun initData() {
 
@@ -130,6 +104,15 @@ class NewHomeFragment : BaseMviFragment<HomeFragment2Binding>() {
 
         // 设置刷新时不允许列表滚动
         mBinding.homeRefresh.setDisableContentWhenRefresh(true)
+
+        mHomeComicRvAdapter = HomeComicRvAdapter2(mutableListOf(), viewLifecycleOwner = viewLifecycleOwner) {
+            mRecRefresh = it
+            mRecRefresh!!.isEnabled = false
+            mHomeVM.input(HomeIntent.GetRecPageByRefresh())
+        }
+
+        // 设置适配器
+        mBinding.homeRv.adapter = mHomeComicRvAdapter
 
         doLoadHomePage(mHomeVM.getResult() ?: return)
     }
@@ -159,6 +142,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragment2Binding>() {
     }
 
     override fun initObserver() {
+
         mHomeVM.onOutput { intent ->
             when (intent) {
 
@@ -189,10 +173,11 @@ class NewHomeFragment : BaseMviFragment<HomeFragment2Binding>() {
                 // （刷新获取）不启用 加载动画 正常加载数据 -> 反馈View
                 is HomeIntent.GetRecPageByRefresh -> {
                     intent.mViewState
-                        .doOnSuccess { }
+                        .doOnSuccess { mRecRefresh?.isEnabled = true }
                         .doOnError { _, _ -> mBinding.root.showSnackBar(getString(baseR.string.BaseLoadingError)) }
                         .doOnResult {
                             viewLifecycleOwner.lifecycleScope.launch {
+                                mHomeComicRvAdapter?.doRecNotify(intent.recPageData?.mResults?.mResult?.toMutableList() ?: return@launch)
                             }
                         }
                 }
