@@ -16,10 +16,7 @@ import androidx.lifecycle.LifecycleOwner
 import br.com.simplepass.loadingbutton.customViews.ProgressButton
 import com.crow.base.R
 import com.crow.base.app.appContext
-import com.crow.base.tools.extensions.newMaterialDialog
-import com.crow.base.tools.extensions.showSnackBar
-import com.crow.base.tools.extensions.toTypeEntity
-import com.crow.base.tools.extensions.toast
+import com.crow.base.tools.extensions.*
 import com.crow.base.ui.viewmodel.ViewState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.DecimalFormat
@@ -65,7 +62,7 @@ private val comic_card_height: Int by lazy {
 fun getComicCardHeight() = comic_card_height
 fun getComicCardWidth() = (comic_card_height / 1.25).toInt()
 
-val mSize10 by lazy { appContext.resources.getDimensionPixelSize(R.dimen.base_dp20) }
+val mSize10 by lazy { appContext.px2dp(appContext.resources.getDimensionPixelSize(R.dimen.base_dp10).toFloat()).toInt() }
 
 // Fix Memory Leak
 fun ProgressButton.updateLifecycleObserver(lifecycle: Lifecycle?) {
