@@ -26,7 +26,7 @@ abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment, IBase
     }
 
     // 初始化View
-    override fun initView() {}
+    override fun initView(bundle: Bundle?) {}
 
     // 初始化监听事件
     override fun initListener() {}
@@ -45,6 +45,10 @@ abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment, IBase
         LoadingAnimDialog.dismiss(parentFragmentManager)
     }
 
+    override fun dismissLoadingAnim(loadingAnimCallBack: LoadingAnimDialog.LoadingAnimCallBack) {
+        LoadingAnimDialog.dismiss(parentFragmentManager, loadingAnimCallBack)
+    }
+
     override var iBasePerEvent: IBasePerEvent? = null
 
     override fun requestPermission(permissions: Array<String>, iBasePerEvent: IBasePerEvent) {
@@ -58,7 +62,7 @@ abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment, IBase
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        initView(savedInstanceState)
         initData()
         initListener()
     }

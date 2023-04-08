@@ -54,6 +54,7 @@ fun String.getSpannableString(color: Int, start: Int, end: Int = length): Spanna
     return SpannableString(this).also { it.setSpan(ForegroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE) }
 }
 
+
 // 漫画卡片高度
 private val comic_card_height: Int by lazy {
     val width = appContext.resources.displayMetrics.widthPixels
@@ -63,6 +64,8 @@ private val comic_card_height: Int by lazy {
 
 fun getComicCardHeight() = comic_card_height
 fun getComicCardWidth() = (comic_card_height / 1.25).toInt()
+
+val mSize10 by lazy { appContext.resources.getDimensionPixelSize(R.dimen.base_dp20) }
 
 // Fix Memory Leak
 fun ProgressButton.updateLifecycleObserver(lifecycle: Lifecycle?) {

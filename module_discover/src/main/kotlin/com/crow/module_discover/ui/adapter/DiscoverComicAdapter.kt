@@ -11,6 +11,7 @@ import com.crow.base.app.appContext
 import com.crow.base.current_project.formatValue
 import com.crow.base.current_project.getComicCardHeight
 import com.crow.base.current_project.getComicCardWidth
+import com.crow.base.current_project.mSize10
 import com.crow.base.tools.extensions.clickGap
 import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverFragmentRvBinding
@@ -40,7 +41,7 @@ class DiscoverComicAdapter(inline val mDoOnTapComic: (DiscoverComicHomeResult) -
         return ViewHolder(DiscoverFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also {  vh ->
 
             vh.rvBinding.discoverRvImage.layoutParams.apply {
-                width = getComicCardWidth()
+                width = getComicCardWidth() - mSize10
                 height = getComicCardHeight()
             }
 

@@ -31,7 +31,7 @@ abstract class BaseVBDialogFragment<VB : ViewBinding, out VM : BaseViewModel> : 
     protected val mBinding get() = _mBinding!!
     protected val mViewModel by lazy { getViewModel().value }
 
-    override fun initView() {}
+    override fun initView(bundle: Bundle?) {}
 
     override fun initListener() {}
 

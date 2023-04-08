@@ -43,7 +43,6 @@ class DiscoverComicHomeDataSource(inline val mDoOnPageResults: suspend (position
             // 返回数据
             mutableListOf<DiscoverComicHomeResult>().run {
                 addAll(result.mList)
-                "nextKey : $nextKey\ttotal : ${result.mTotal} isEmpty : ${isEmpty()} mList : ${result.mList}".logMsg()
                 if (isEmpty()) LoadResult.Page(this, prevKey = null, nextKey = null)
                 else LoadResult.Page(this, prevKey = null, nextKey = nextKey)
             }

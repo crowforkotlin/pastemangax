@@ -1,0 +1,12 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.crow.base" >
+4
+5    <uses-sdk android:minSdkVersion="23" />
+5-->D:\Programing\Android\2023\CopyManga_Crow\lib_base\src\main\AndroidManifest.xml
+6
+7    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+7-->D:\Programing\Android\2023\CopyManga_Crow\lib_base\src\main\AndroidManifest.xml:4:5-79
+7-->D:\Programing\Android\2023\CopyManga_Crow\lib_base\src\main\AndroidManifest.xml:4:22-76
+8
+9</manifest>

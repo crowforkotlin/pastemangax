@@ -1,6 +1,5 @@
 package com.crow.module_discover.ui.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.isInvisible
@@ -14,7 +13,10 @@ import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.current_project.entity.BookType
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.repeatOnLifecycle
+import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.ViewState
 import com.crow.base.ui.viewmodel.doOnError
@@ -25,9 +27,7 @@ import com.crow.module_discover.databinding.DiscoverFragmentComicBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.ui.adapter.DiscoverComicAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import kotlin.math.abs
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -45,41 +45,29 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     // 漫画适配器
     private lateinit var mDiscoverComicAdapter: DiscoverComicAdapter
 
-    // 默认的Appbar状态
-    private var mAppbarState = BottomSheetBehavior.STATE_EXPANDED
-
     override fun getViewBinding(inflater: LayoutInflater) = DiscoverFragmentComicBinding.inflate(inflater)
-
-    override fun initData() {
-
-        // 获取标签
-        mDiscoverVM.input(DiscoverIntent.GetComicTag())
-    }
 
     override fun initListener() {
 
-        // 记录AppBar的状态 （展开、折叠）偏移监听
-        mBinding.discoverComicAppbar.root.addOnOffsetChangedListener { appBar, offset ->
-            mAppbarState = if (offset == 0) BottomSheetBehavior.STATE_EXPANDED else if (abs(offset) >= appBar.totalScrollRange) BottomSheetBehavior.STATE_COLLAPSED else BottomSheetBehavior.STATE_COLLAPSED
-        }
-
+        // 刷新监听
         mBinding.discoverComicRefresh.setOnRefreshListener { mDiscoverComicAdapter.refresh() }
 
+        // Rv滑动监听
         mBinding.discoverComicRv.setOnScrollChangeListener { _, _, _, _, _ ->
             val layoutManager = mBinding.discoverComicRv.layoutManager
-            if(layoutManager is LinearLayoutManager) {
-                mBinding.discoverComicAppbar.discoverAppbarTextPos.text = getString(R.string.discover_comic_count, layoutManager.findLastVisibleItemPosition() + 1)
-            }
+            if(layoutManager is LinearLayoutManager) mBinding.discoverComicAppbar.discoverAppbarTextPos.text = getString(R.string.discover_comic_count, layoutManager.findLastVisibleItemPosition() + 1)
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun initView() {
+    override fun initView(bundle: Bundle?) {
 
+        // 初始化 发现页 漫画适配器
         mDiscoverComicAdapter = DiscoverComicAdapter { FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Comic, it.mPathWord)) }
 
+        // 设置适配器
         mBinding.discoverComicRv.adapter = mDiscoverComicAdapter.withLoadStateFooter(BaseLoadStateAdapter { mDiscoverComicAdapter.retry() })
 
+        // 设置加载动画独占1行，漫画卡片3行
         (mBinding.discoverComicRv.layoutManager as GridLayoutManager).apply {
             spanSizeLookup = object : SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
@@ -88,33 +76,14 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                 }
             }
         }
-
-        // 重建View时设置 错误提示 是否可见，记录漫画主页数据是否保存
-        if (mDiscoverVM.mComicHomeData != null) {
-            mBinding.discoverComicTipsError.isVisible = false
-            mBinding.discoverComicAppbar.discoverAppbarTextPos.isVisible = true
-            mBinding.discoverComicAppbar.discoverAppbarTagText.isVisible = true
-            mBinding.discoverComicAppbar.discoverAppbarTagText.text = "全部 — 全部 （${mDiscoverVM.mComicHomeData!!.mTotal}）"
-        } else {
-            mBinding.discoverComicTipsError.isVisible = true
-            mBinding.discoverComicAppbar.discoverAppbarTextPos.isVisible = false
-            mBinding.discoverComicAppbar.discoverAppbarTagText.isVisible = false
-            mBinding.discoverComicAppbar.discoverAppbarTagText.text = null
-        }
-
-        // 重新创建View之后 appBarLayout会展开折叠，记录一个状态进行初始化
-        if (mAppbarState == BottomSheetBehavior.STATE_COLLAPSED) mBinding.discoverComicAppbar.root.setExpanded(false, false)
-        else mBinding.discoverComicAppbar.root.setExpanded(true, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // 获取发现主页
-        mDiscoverVM.input(DiscoverIntent.GetComicHome())
+        mDiscoverVM.input(DiscoverIntent.GetComicTag())     // 获取标签
+        mDiscoverVM.input(DiscoverIntent.GetComicHome())    // 获取发现主页
     }
 
-    @SuppressLint("SetTextI18n")
     override fun initObserver() {
 
         // 意图观察者
@@ -122,21 +91,34 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
             when(intent) {
                 is DiscoverIntent.GetComicHome -> {
                     intent.mViewState
+                        .doOnSuccess { if (mBinding.discoverComicRefresh.isRefreshing) mBinding.discoverComicRefresh.finishRefresh() }
                         .doOnError { code, msg ->
 
-                            // 解析地址失败 且 Resumed的状态才提示
-                            if (code == ViewState.Error.UNKNOW_HOST && isResumed) mBinding.root.showSnackBar(msg ?: getString(com.crow.base.R.string.BaseLoadingError))
+                            // 解析地址失败 且 选中的时当前页面的状态才提示
+                            if (code == ViewState.Error.UNKNOW_HOST && mDiscoverVM.mCurrentItem == 1) mBinding.root.showSnackBar(msg ?: getString(com.crow.base.R.string.BaseLoadingError))
+
                             if (mDiscoverComicAdapter.itemCount == 0) {
                                 if (mDiscoverVM.mCurrentItem == 1) {
+
+                                    // 错误提示淡入
                                     mBinding.discoverComicTipsError.animateFadeIn()
+
+                                    // “标签”文本 淡出
                                     mBinding.discoverComicAppbar.discoverAppbarTagText.animateFadeOut().withEndAction { mBinding.discoverComicAppbar.discoverAppbarTagText.isInvisible = true }
+
+                                    // 发现页 “漫画” 淡出
                                     mBinding.discoverComicRv.animateFadeOut().withEndAction { mBinding.discoverComicRv.isInvisible = true }
+
+                                    // “当前位置”文本 淡出
                                     mBinding.discoverComicAppbar.discoverAppbarTextPos.animateFadeOut().withEndAction { mBinding.discoverComicRv.isInvisible = true }
-                                } else {
-                                    mBinding.discoverComicTipsError.isVisible = true
-                                    mBinding.discoverComicRv.isInvisible = true
-                                    mBinding.discoverComicAppbar.discoverAppbarTagText.isInvisible = true
-                                    mBinding.discoverComicAppbar.discoverAppbarTextPos.isInvisible = true
+                                }
+
+                                // 这里没有使用淡入淡出动画 而是直接设置可见性，因为在未预览当前页面的时候（在主界面没必要使用动画，减少卡顿）
+                                else {
+                                    mBinding.discoverComicTipsError.isVisible = true                        // 错误提示可见
+                                    mBinding.discoverComicRv.isInvisible = true                             // 漫画Rv不可见
+                                    mBinding.discoverComicAppbar.discoverAppbarTagText.isInvisible = true   // 标签文本消失
+                                    mBinding.discoverComicAppbar.discoverAppbarTextPos.isInvisible = true   // 当前位置消失
                                 }
                             }
                         }
@@ -145,7 +127,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                             if (mBinding.discoverComicTipsError.isVisible) {
                                 mBinding.discoverComicAppbar.discoverAppbarTagText.text = "全部 — 全部 （${intent.comicHomeResp!!.mTotal}）"
 
-                                // 若VP 显示的是当前页 则动画淡入 否则直接显示
+                                // 若 VP 显示的是当前页 则动画淡入 否则直接显示（减少动画带来的卡顿）
                                 if (mDiscoverVM.mCurrentItem == 1) {
                                     mBinding.discoverComicTipsError.animateFadeOut().withEndAction { mBinding.discoverComicTipsError.isVisible = false }
                                     mBinding.discoverComicAppbar.discoverAppbarTagText.animateFadeIn()
@@ -159,7 +141,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                                 }
                             }
                         }
-                        .doOnSuccess { if (mBinding.discoverComicRefresh.isRefreshing) mBinding.discoverComicRefresh.finishRefresh() }
                 }
                 else -> {}
             }

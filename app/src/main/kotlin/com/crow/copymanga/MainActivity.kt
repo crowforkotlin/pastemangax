@@ -6,6 +6,7 @@ import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -35,24 +36,21 @@ class MainActivity : AppCompatActivity()  {
         super.onCreate(savedInstanceState)
 
         "(MainActivity) onCreate".logMsg(Logger.WARN)
+
         // 设置屏幕方向
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         // 全屏布局
         WindowCompat.setDecorFitsSystemWindows(window, true)
 
         setContentView(mBinding.root)
+
+        if (savedInstanceState == null) supportFragmentManager.beginTransaction().add(R.id.app_main_fcv, ContainerFragment.newInstance()).commit()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         "(MainActivity) onDestory".logMsg(Logger.WARN)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        // 保存导航状态
-        outState.putBundle("navState", findNavController(R.id.app_main_fcv).saveState())
     }
 
     override fun onStop() {

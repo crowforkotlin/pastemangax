@@ -4,14 +4,17 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.net.Uri
+import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.setPadding
+import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -42,13 +45,22 @@ import com.crow.base.R as baseR
 
 class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
 
+    companion object { fun newInstance() = UserIconFragment() }
+
     // WindowInsets属性 （状态栏属性设置等...）
     private var mWindowInsets: WindowInsetsControllerCompat? = null
 
     // 共享 用户VM
     private val mUserVM by sharedViewModel<UserViewModel>()
 
+    private fun navigateUp() = parentFragmentManager.popAsyncWithClear("UserIconFragment", "ContainerFragmentByUserBottom")
+
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentIconBinding.inflate(inflater)
+
+    override fun onStart() {
+        super.onStart()
+        mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) { navigateUp() }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -71,7 +83,7 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
         }
     }
 
-    override fun initView() {
+    override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())

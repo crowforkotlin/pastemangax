@@ -1,8 +1,10 @@
 package com.crow.module_user.ui.fragment
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
@@ -36,6 +38,8 @@ import com.crow.base.R as baseR
  **************************/
 class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
 
+    companion object { fun newInstance() = UserUpdateInfoFragment() }
+
     // 共享用户VM
     private val mUserVM by sharedViewModel<UserViewModel>()
 
@@ -48,12 +52,19 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
     // 手动退出标志位
     private var mExitFragment = false
 
-    // 系统返回 事件
-    private lateinit var mOnBackCallback: OnBackPressedCallback
+    private fun navigateUp() {
+        parentFragmentManager.popSyncWithClear("UserUpdateInfoFragment", "ContainerFragment")
+        mUserUpdateInfoVM.doClearUserUpdateInfoData()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) { navigateUp() }
+    }
 
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentInfoBinding.inflate(inflater)
 
-    override fun initView() {
+    override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())
@@ -62,14 +73,10 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
 
     override fun initListener() {
 
-        // 返回事件 回调 则清空当前界面的用户数据
-        mOnBackCallback = requireActivity().onBackPressedDispatcher.addCallback {
-            requireActivity().findNavController(baseR.id.app_main_fcv).navigateUp()
-            mUserUpdateInfoVM.doClearUserUpdateInfoData()
-        }
-
         // 头像 点击事件
-        mBinding.userUpdateInfoIcon.clickGap { _, _ -> navigate(baseR.id.mainUsericonfragment) }
+        mBinding.userUpdateInfoIcon.clickGap { _, _ ->
+            parentFragmentManager.navigateByAddWithBackStack(baseR.id.app_main_fcv, UserIconFragment.newInstance(), "UserIconFragment") { it.withFadeAnimation() }
+        }
 
         // 退出账号 点击事件
         mBinding.userUpdateInfoExitButton.clickGap { _, _ -> doExitFragment() }
@@ -89,6 +96,9 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
             // 初始化 Icon链接 设置用户名 退出可见 修改适配器数据
             mUserVM.doLoadIcon(mContext, false) { resource -> mBinding.userUpdateInfoIcon.setImageDrawable(resource) }
 
+            // 第一次UserInfo初始化NULL是会观察到的，需做判断设置完头像后退出
+            if (it == null) return@onCollect
+
             // 初始化Rv
             mUserUpdateInfoRvAdapter = UserUpdateInfoRvAdapter(mUserUpdateInfoVM.mUserUpdateInfoData) { _, _ -> }
 
@@ -98,7 +108,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
             // itemCount == 0 则设置数据
             if (mUserUpdateInfoRvAdapter!!.itemCount == 0) mUserUpdateInfoVM.setData(it ?: return@onCollect)
 
-            // 初始化InfoRv
+            // 设置InfoRv适配器
             mBinding.userUpdateInfoRv.adapter = mUserUpdateInfoRvAdapter
         }
 
@@ -121,6 +131,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
                                 return@dismissLoadingAnim
                             }
 
+                            "SetData".logMsg()
                             // 设置 InfoVM的数据
                             mUserUpdateInfoVM.setData(intent.userUpdateInfoResp.mInfo)
 
@@ -135,7 +146,6 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         mUserUpdateInfoRvAdapter = null
-        mOnBackCallback.remove()
     }
 
     private fun doExitFragment(isNeedNavigateLogin: Boolean = false) {
@@ -157,14 +167,10 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
             navigateUp()
 
             // 为true则 深链跳转至登录界面
-            if (isNeedNavigateLogin)
-                navigate(baseR.id.mainUserloginfragment, navOptions = NavOptions.Builder()
-                    .setEnterAnim(android.R.anim.slide_in_left)
-                    .setExitAnim(android.R.anim.slide_out_right)
-                    .setPopEnterAnim(android.R.anim.slide_in_left)
-                    .setPopExitAnim(android.R.anim.slide_out_right)
-                    .build())
-
+            if (isNeedNavigateLogin) {
+                parentFragmentManager.remove(this@UserUpdateInfoFragment)
+                parentFragmentManager.navigateByAddWithBackStack(baseR.id.app_main_fcv, UserLoginFragment.newInstance(), "UserLoginFragment")
+            }
         }
     }
 }

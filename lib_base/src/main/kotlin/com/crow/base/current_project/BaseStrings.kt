@@ -6,9 +6,13 @@ object BaseStrings {
 
 
     object URL {
+        const val UpdateInfo = "https://gitee.com/llzzppFlash/copy-manga/raw/main/update_info.json"
+        const val QQGroup = "https://gitee.com/llzzppFlash/copy-manga/raw/main/qq_group"
+
         const val MangaFuna = "https://hi77-overseas.mangafuna.xyz/"
         const val CopyManga = "https://api.copymanga.site/"
         const val Login = "/api/v3/login"
+        const val Reg = "/api/v3/register"
 
         const val ComicInfo = "/api/v3/comic2/{pathword}?platform=1&_update=true"
         const val ComicChapter = "/api/v3/comic/{pathword}/group/default/chapters?_update=true"
@@ -42,5 +46,7 @@ object BaseStrings {
         const val CLEAR_USER_INFO = "CLEAR_USER_INFO"
         const val EXIT_USER = "EXIT_USER"
         const val SET_HOME_ICON = "SET_HOME_ICON"
+        const val CHECK_UPDATE = "CHECK_UPDATE"
+        const val OPEN_LOGIN_FRAGMENT = "OPEN_LOGIN_FRAGMENT"
     }
 }

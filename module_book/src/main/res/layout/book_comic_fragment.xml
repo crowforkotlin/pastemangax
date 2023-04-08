@@ -5,7 +5,8 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<com.crow.module_comic.ui.view.GalleryView
+	<com.crow.module_book.ui.view.GalleryView
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 		android:id="@+id/comic_rv"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

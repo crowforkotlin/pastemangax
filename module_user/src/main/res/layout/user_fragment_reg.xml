@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".ui.fragment.UserLoginFragment">
+
+	<TextView
+		android:id="@+id/user_reg_tootips"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/base_dp20"
+		android:textSize="@dimen/base_sp13"
+		android:drawablePadding="@dimen/base_dp10"
+		android:text="@string/user_reg_tips"
+		android:textStyle="bold"
+		app:drawableStartCompat="@drawable/user_ic_login_tips"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/user_reg_layout_usr"
+		style="@style/Widget.Material3.TextInputLayout.FilledBox"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_margin="@dimen/base_dp30"
+		android:elevation="@dimen/base_dp1"
+		android:hint="@string/user_usr"
+		app:boxCornerRadiusBottomEnd="20dp"
+		app:boxCornerRadiusBottomStart="20dp"
+		app:boxCornerRadiusTopEnd="20dp"
+		app:boxCornerRadiusTopStart="20dp"
+		app:boxStrokeWidth="0dp"
+		app:boxStrokeWidthFocused="0dp"
+		app:counterEnabled="true"
+		app:counterMaxLength="36"
+		app:endIconMode="clear_text"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/user_reg_tootips"
+		app:startIconDrawable="@drawable/user_ic_usr_24dp"
+		app:startIconTint="@null">
+
+		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/user_reg_edit_text_usr"
+			style="@style/Widget.Material3.TextInputEditText.FilledBox"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:inputType="text|textNoSuggestions"
+			android:maxLength="36"
+			android:maxLines="1"
+			android:textStyle="bold" />
+
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/user_reg_layout_pwd"
+		style="@style/Widget.Material3.TextInputLayout.FilledBox"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_marginStart="@dimen/base_dp30"
+		android:layout_marginEnd="@dimen/base_dp30"
+		android:elevation="@dimen/base_dp1"
+		android:hint="@string/user_pwd"
+		app:boxCornerRadiusBottomEnd="20dp"
+		app:boxCornerRadiusBottomStart="20dp"
+		app:boxCornerRadiusTopEnd="20dp"
+		app:boxCornerRadiusTopStart="20dp"
+		app:boxStrokeWidth="0dp"
+		app:boxStrokeWidthFocused="0dp"
+		app:counterEnabled="true"
+		app:counterMaxLength="36"
+		app:endIconMode="password_toggle"
+		app:layout_constraintEnd_toEndOf="@id/user_reg_layout_usr"
+		app:layout_constraintStart_toStartOf="@+id/user_reg_layout_usr"
+		app:layout_constraintTop_toBottomOf="@+id/user_reg_layout_usr"
+		app:startIconDrawable="@drawable/user_ic_pwd_24dp"
+		app:startIconTint="@null">
+
+		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/user_reg_edit_text_pwd"
+			style="@style/Widget.Material3.TextInputEditText.FilledBox"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:inputType="textPassword|textNoSuggestions"
+			android:maxLength="36"
+			android:maxLines="1"
+			android:textStyle="bold" />
+
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/user_reg_layout_re_pwd"
+		style="@style/Widget.Material3.TextInputLayout.FilledBox"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_marginStart="@dimen/base_dp30"
+		android:layout_marginEnd="@dimen/base_dp30"
+		android:elevation="@dimen/base_dp1"
+		android:hint="@string/user_re_pwd"
+		app:boxCornerRadiusBottomEnd="20dp"
+		app:boxCornerRadiusBottomStart="20dp"
+		app:boxCornerRadiusTopEnd="20dp"
+		app:boxCornerRadiusTopStart="20dp"
+		app:boxStrokeWidth="0dp"
+		app:boxStrokeWidthFocused="0dp"
+		app:counterEnabled="true"
+		app:counterMaxLength="36"
+		app:endIconMode="password_toggle"
+		app:layout_constraintEnd_toEndOf="@id/user_reg_layout_usr"
+		app:layout_constraintStart_toStartOf="@+id/user_reg_layout_usr"
+		app:layout_constraintTop_toBottomOf="@+id/user_reg_layout_pwd"
+		app:startIconDrawable="@drawable/user_ic_pwd_24dp"
+		app:startIconTint="@null">
+
+		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/user_reg_edit_text_re_pwd"
+			style="@style/Widget.Material3.TextInputEditText.FilledBox"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:inputType="textPassword|textNoSuggestions"
+			android:maxLength="36"
+			android:maxLines="1"
+			android:textStyle="bold" />
+
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<br.com.simplepass.loadingbutton.customViews.CircularProgressButton
+		android:id="@+id/user_reg"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/base_dp10"
+		android:backgroundTint="#2196F3"
+		android:letterSpacing="1"
+		android:text="@string/user_reg"
+		android:textColor="@android:color/white"
+		android:textSize="@dimen/base_sp16"
+		android:textStyle="bold"
+		app:finalCornerAngle="50dp"
+		app:initialCornerAngle="@dimen/base_dp20"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/user_reg_layout_re_pwd"
+		app:spinning_bar_color="#FFF"
+		app:spinning_bar_padding="6dp"
+		app:spinning_bar_width="4dp" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/user_blank_white_tips"
+		android:textSize="@dimen/base_sp8"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

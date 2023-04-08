@@ -25,9 +25,7 @@ abstract class BaseBottomSheetDFImpl : BottomSheetDialogFragment(), IBaseFragmen
 
     override fun dismissLoadingAnim() { LoadingAnimDialog.dismiss(parentFragmentManager) }
 
-    inline fun dismissLoadingAnim(crossinline animEnd: () -> Unit) {
-        LoadingAnimDialog.dismiss(parentFragmentManager) { animEnd()  }
-    }
+    override fun dismissLoadingAnim(loadingAnimCallBack: LoadingAnimDialog.LoadingAnimCallBack) { LoadingAnimDialog.dismiss(parentFragmentManager, loadingAnimCallBack) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +37,7 @@ abstract class BaseBottomSheetDFImpl : BottomSheetDialogFragment(), IBaseFragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        initView(savedInstanceState)
         initData()
         initListener()
     }

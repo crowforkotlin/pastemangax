@@ -30,10 +30,12 @@ inline fun Context.newDialog(dialogConfig: AlertDialog.Builder.() -> Unit) {
     }
 }
 
-fun Context.newMaterialDialog(iMaterialDialogCallback: IMaterialDialogCallback) {
-    val dialog = MaterialAlertDialogBuilder(this)
-    iMaterialDialogCallback.doOnConfig(dialog)
+fun Context.newMaterialDialog(iMaterialDialogCallback: IMaterialDialogCallback): androidx.appcompat.app.AlertDialog {
+    val materialAlertDialogBuilder = MaterialAlertDialogBuilder(this)
+    iMaterialDialogCallback.doOnConfig(materialAlertDialogBuilder)
+    val dialog = materialAlertDialogBuilder.create()
     dialog.show()
+    return dialog
 }
 
 // 重写onStart并在内部使用

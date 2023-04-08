@@ -28,6 +28,8 @@ class UserUpdateInfoRvAdapter(
         }
     }
 
+    override fun getItemViewType(position: Int) = position
+
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
 
         // 单个数据源

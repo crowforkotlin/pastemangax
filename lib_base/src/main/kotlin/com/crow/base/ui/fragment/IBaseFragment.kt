@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import com.crow.base.ui.dialog.LoadingAnimDialog
 
 /*************************
@@ -23,12 +22,15 @@ interface IBaseFragment {
     // 隐藏加载动画
     fun dismissLoadingAnim()
 
+    // 隐藏加载动画 With 动画回调
+    fun dismissLoadingAnim(loadingAnimCallBack: LoadingAnimDialog.LoadingAnimCallBack)
+
 
     // 获取View
     fun getView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 
     // 初始化View
-    fun initView()
+    fun initView(bundle: Bundle?)
 
     // 初始化监听事件
     fun initListener()

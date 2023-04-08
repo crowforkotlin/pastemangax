@@ -73,6 +73,8 @@ android {
 
             // 添加ProGuard配置，优化发行版性能
             proguardFiles(getDefaultProguardFile(AppConfigs.proguard_android_optimize_txt), AppConfigs.proguard_rules_pro)
+
+            setProperty("archivesBaseName", "CopyMangaX")
         }
 
         // 调试版本

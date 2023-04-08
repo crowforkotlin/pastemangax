@@ -141,7 +141,6 @@ dependencies {
 
     api(Dependencies.zguop_banner)
     api(Dependencies.circular_imageview)
-    api(Dependencies.shimmerlayout)
     api(Dependencies.bigImageViewPager)
     api(Dependencies.tencent_bugly)
     api(Dependencies.loading_button)

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.to.aboomy.pager2banner.Banner
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/home_fragment_banner2"
-	android:layout_width="match_parent"
-	android:layout_marginTop="@dimen/base_dp10"
-	android:nestedScrollingEnabled="false"
-	android:visibility="gone"
-	android:layout_height="wrap_content"/>

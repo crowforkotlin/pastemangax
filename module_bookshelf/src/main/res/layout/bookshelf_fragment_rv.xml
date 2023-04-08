@@ -3,6 +3,9 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="wrap_content"
+	android:layout_marginStart="@dimen/base_dp5"
+	android:layout_marginTop="@dimen/base_dp10"
+	android:layout_marginEnd="@dimen/base_dp5"
 	android:layout_height="wrap_content"
 	tools:context="com.crow.module_bookshelf.ui.fragment.BookshelfFragment">
 
@@ -11,9 +14,6 @@
 		style="@style/Widget.Material3.CardView.Filled"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginStart="@dimen/base_dp10"
-		android:layout_marginTop="@dimen/base_dp10"
-		android:layout_marginEnd="@dimen/base_dp10"
 		app:cardCornerRadius="@dimen/base_dp20"
 		app:cardElevation="@dimen/base_dp10"
 		app:layout_constraintEnd_toEndOf="parent"

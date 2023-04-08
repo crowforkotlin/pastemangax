@@ -18,10 +18,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class ContainerAdapter(
     private val fragmentList: MutableList<Fragment>,
-    fragmentManager: FragmentActivity,
-) : FragmentStateAdapter(fragmentManager) {
+    fragmentManager: FragmentManager,
+    lifecycle: Lifecycle
+) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun getItemCount(): Int = fragmentList.size
+
     override fun createFragment(position: Int): Fragment = fragmentList[position]
 }
 

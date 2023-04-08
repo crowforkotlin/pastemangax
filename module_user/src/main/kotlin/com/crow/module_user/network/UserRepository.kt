@@ -33,4 +33,7 @@ class UserRepository(val service: UserService) {
     fun getUserUpdateInfo() = service.getUserUpdateInfo()
 
     fun getUserInfo() = service.getUserInfo()
+    fun reg(username: String, password: String): Flow<BaseResultResp<Any>> {
+        return service.reg(username, password)
+    }
 }

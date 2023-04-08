@@ -1,6 +1,5 @@
 package com.crow.module_discover.ui.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.isInvisible
@@ -24,9 +23,7 @@ import com.crow.module_discover.databinding.DiscoverFragmentNovelBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.ui.adapter.DiscoverNovelAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.math.abs
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -44,17 +41,11 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
     // 轻小说适配器
     private lateinit var mDiscoverNovelAdapter: DiscoverNovelAdapter
 
-    // 默认的Appbar状态
-    private var mAppbarState = BottomSheetBehavior.STATE_EXPANDED
-
     override fun getViewBinding(inflater: LayoutInflater) = DiscoverFragmentNovelBinding.inflate(inflater)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // 获取发现主页
-        mDiscoverVM.input(DiscoverIntent.GetNovelHome())
+        mDiscoverVM.input(DiscoverIntent.GetNovelHome())    // 获取发现主页
     }
 
     override fun initListener() {
@@ -65,53 +56,22 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
         // 滑动 同时更新text
         mBinding.discoverNovelRv.setOnScrollChangeListener { _, _, _, _, _ ->
             val layoutManager = mBinding.discoverNovelRv.layoutManager
-            if(layoutManager is LinearLayoutManager) {
-                mBinding.discoverNovelAppbar.discoverAppbarTextPos.text = getString(R.string.discover_comic_count, layoutManager.findLastVisibleItemPosition() + 1)
-            }
-        }
-
-        // 记录AppBar的状态 （展开、折叠）偏移监听
-        mBinding.discoverNovelAppbar.root.addOnOffsetChangedListener { appBar, offset ->
-            mAppbarState = if (offset == 0) BottomSheetBehavior.STATE_EXPANDED else if (abs(offset) >= appBar.totalScrollRange) BottomSheetBehavior.STATE_COLLAPSED else BottomSheetBehavior.STATE_COLLAPSED
+            if(layoutManager is LinearLayoutManager) mBinding.discoverNovelAppbar.discoverAppbarTextPos.text = getString(R.string.discover_comic_count, layoutManager.findLastVisibleItemPosition() + 1)
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun initView() {
+    override fun initView(bundle: Bundle?) {
 
+        // 初始化适配器
         mDiscoverNovelAdapter = DiscoverNovelAdapter { FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Novel, it.mPathWord)) }
 
         // 设置Rv适配器 添加页脚 回调则重试
         mBinding.discoverNovelRv.adapter = mDiscoverNovelAdapter.withLoadStateFooter(BaseLoadStateAdapter { mDiscoverNovelAdapter.retry() })
 
-        // 设置Span的大小 当失败后可以让重试独占一行
-        (mBinding.discoverNovelRv.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return if (position == mDiscoverNovelAdapter.itemCount  && mDiscoverNovelAdapter.itemCount > 0) 3 else 1
-            }
-        }
-
-        // 重建View时设置 错误提示 是否可见，记录轻小说主页数据是否保存
-        if (mDiscoverVM.mNovelHomeData != null) {
-            mBinding.discoverNovelTipsError.isVisible = false
-            mBinding.discoverNovelAppbar.discoverAppbarTextPos.isVisible = true
-            mBinding.discoverNovelAppbar.discoverAppbarTagText.isVisible = true
-            mBinding.discoverNovelAppbar.discoverAppbarTagText.text = "全部 — 全部 （${mDiscoverVM.mNovelHomeData!!.mTotal}）"
-        } else {
-            mBinding.discoverNovelTipsError.isVisible = true
-            mBinding.discoverNovelAppbar.discoverAppbarTextPos.isVisible = false
-            mBinding.discoverNovelAppbar.discoverAppbarTagText.isVisible = false
-            mBinding.discoverNovelAppbar.discoverAppbarTagText.text = null
-        }
-
-
-        // 重新创建View之后 appBarLayout会展开折叠，记录一个状态进行初始化
-        if (mAppbarState == BottomSheetBehavior.STATE_COLLAPSED) mBinding.discoverNovelAppbar.root.setExpanded(false, false)
-        else mBinding.discoverNovelAppbar.root.setExpanded(true, false)
-
+        // 设置加载动画独占1行，轻小说卡片3行
+        (mBinding.discoverNovelRv.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() { override fun getSpanSize(position: Int) = if (position == mDiscoverNovelAdapter.itemCount  && mDiscoverNovelAdapter.itemCount > 0) 3 else 1 }
     }
 
-    @SuppressLint("SetTextI18n")
     override fun initObserver() {
 
         // 意图观察者
