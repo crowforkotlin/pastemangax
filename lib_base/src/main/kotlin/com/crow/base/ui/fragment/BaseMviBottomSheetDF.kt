@@ -49,7 +49,7 @@ abstract class BaseMviBottomSheetDF<out VB : ViewBinding> : BaseBottomSheetDFImp
         _mBinding = null
     }
 
-    override fun initView() { }
+    override fun initView(bundle: Bundle?) { }
 
     override fun initListener() { }
 

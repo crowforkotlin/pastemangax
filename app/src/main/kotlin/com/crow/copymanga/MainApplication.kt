@@ -1,9 +1,16 @@
 package com.crow.copymanga
 
+import android.app.Activity
+import android.app.Application
 import android.content.Context
+import android.os.Build
+import android.os.Bundle
+import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crow.base.app.BaseApp
+import com.crow.base.tools.extensions.getCurrentVersionName
+import com.crow.base.tools.extensions.logMsg
 import com.crow.copymanga.di.factoryModule
 import com.crow.copymanga.di.netWorkModule
 import com.crow.copymanga.di.servicesModule
@@ -27,18 +34,16 @@ class MainApplication : BaseApp() {
         super.onCreate()
 
         val strategy = UserStrategy(applicationContext)
-
-        strategy.deviceID = "CrowForKotlin";
-        strategy.deviceModel = "TestUnit"
-        strategy.appChannel = "MyChannel"
-        strategy.appVersion = "1.0.0"
-        strategy.appPackageName = "com.crow.copymanga"
+        strategy.deviceID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID);
+        strategy.deviceModel = Build.MODEL
+        strategy.appChannel = "Crow_Channel"
+        strategy.appVersion = getCurrentVersionName()
+        strategy.appPackageName = packageName
         strategy.appReportDelay = 10000
 
         CrashReport.initCrashReport(applicationContext, "b848968d52", false, strategy);
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
 
         startKoin {
             androidContext(this@MainApplication)

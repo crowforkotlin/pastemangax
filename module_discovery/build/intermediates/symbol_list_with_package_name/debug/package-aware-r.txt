@@ -1,2 +1,0 @@
-com.crow.module_discovery
-layout discovery_fragment

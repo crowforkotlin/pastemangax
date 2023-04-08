@@ -8,6 +8,7 @@ import com.crow.base.databinding.BaseDialogOriginalLoadingBinding
 import com.crow.base.tools.extensions.setBackgroundTransparent
 import com.crow.base.tools.extensions.setMaskAmount
 import com.crow.base.ui.viewmodel.BaseViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11

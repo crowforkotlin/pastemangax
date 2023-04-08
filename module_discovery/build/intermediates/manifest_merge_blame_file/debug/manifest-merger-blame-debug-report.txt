@@ -1,8 +1,0 @@
-1<?xml version="1.0" encoding="utf-8"?>
-2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-3    package="com.crow.module_discovery" >
-4
-5    <uses-sdk android:minSdkVersion="23" />
-5-->D:\Programing\Android\2023\CopyManga_Crow\module_discovery\src\main\AndroidManifest.xml
-6
-7</manifest>

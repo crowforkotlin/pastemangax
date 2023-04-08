@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+
+	<TextView
+		android:id="@+id/main_update_title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:maxLines="1"
+		android:ellipsize="end"
+		android:textStyle="bold"
+		android:layout_marginTop="@dimen/base_dp10"
+		android:gravity="center"
+		android:textSize="@dimen/base_sp24"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintVertical_bias="0"
+		app:layout_constraintStart_toStartOf="parent"
+		android:drawablePadding="@dimen/base_dp5"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:text="有新的更新啦"
+		app:drawableStartCompat="@drawable/user_ic_update_24dp" />
+
+	<TextView
+		android:id="@+id/main_update_time"
+		android:layout_width="wrap_content"
+		android:textSize="@dimen/base_sp10"
+		android:maxLines="1"
+		android:ellipsize="end"
+		android:layout_height="wrap_content"
+		android:textStyle="bold"
+		android:layout_margin="@dimen/base_dp5"
+		app:layout_constraintEnd_toEndOf="@+id/main_update_title"
+		app:layout_constraintStart_toStartOf="@+id/main_update_title"
+		app:layout_constraintTop_toBottomOf="@+id/main_update_title"
+		tools:text="更新日期：2023年4月18日" />
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/main_update_scrollview"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/base_dp10"
+		android:maxHeight="@dimen/base_dp200"
+		app:layout_constraintBottom_toTopOf="@+id/main_update_go"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/main_update_time">
+
+		<TextView
+			android:id="@+id/main_update_text"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:autoLink="web"
+			android:textSize="@dimen/base_sp16"
+			android:textStyle="bold"
+			tools:text="@string/BaseTodoTextView" />
+
+	</androidx.core.widget.NestedScrollView>
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/main_update_cancel"
+		style="@style/Widget.Material3.Button.ElevatedButton"
+		app:layout_constraintHorizontal_bias="0"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/base_dp10"
+		android:text="@string/main_update_cancel"
+		android:textColor="@android:color/black"
+		android:textStyle="bold"
+		app:backgroundTint="@color/user_deep_purple_300"
+		app:iconTint="@null"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@+id/main_update_go"
+		app:layout_constraintStart_toStartOf="parent" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/main_update_go"
+		style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/base_dp10"
+		android:text="@string/main_update_go"
+		android:textColor="@android:color/black"
+		android:textStyle="bold"
+		app:backgroundTint="@color/user_deep_purple_300"
+		app:icon="@drawable/user_ic_air_plane_24dp"
+		app:iconTint="@null"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

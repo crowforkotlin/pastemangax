@@ -1,6 +1,7 @@
 package com.crow.base.ui.activity
 
 import android.os.Handler
+import com.crow.base.ui.dialog.LoadingAnimDialog
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -29,5 +30,8 @@ interface IBaseActivity {
 
     // 隐藏加载动画
     fun dismissLoadingAnim()
+
+    // 隐藏加载动画 With 动画回调
+    fun dismissLoadingAnim(animCallBack: LoadingAnimDialog.LoadingAnimCallBack?)
 
 }

@@ -12,6 +12,7 @@
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/base_dp20"
 		android:drawablePadding="@dimen/base_dp10"
+		android:textSize="@dimen/base_sp13"
 		android:text="@string/user_login_tips"
 		android:textStyle="bold"
 		app:drawableStartCompat="@drawable/user_ic_login_tips"

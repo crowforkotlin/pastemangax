@@ -16,8 +16,9 @@ import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_user.R
 import com.crow.module_user.model.UserIntent
-import com.crow.module_user.model.resp.LoginResultErrorResp
+import com.crow.module_user.model.resp.UserResultErrorResp
 import com.crow.module_user.model.resp.LoginResultsOkResp
+import com.crow.module_user.model.resp.RegResultsOkResp
 import com.crow.module_user.network.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,14 +46,13 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
 
     init {
         // 初始化 用户信息
-        viewModelScope.launch {
-            _userInfo.emit((DataStoreAgent.DATA_USER.asyncDecode().toTypeEntity<LoginResultsOkResp>() ?: return@launch).also { mIconUrl = it.mIconUrl })
-        }
+        viewModelScope.launch { _userInfo.emit((DataStoreAgent.DATA_USER.asyncDecode().toTypeEntity<LoginResultsOkResp>())?.also { mIconUrl = it.mIconUrl }) }
     }
 
     override fun dispatcher(intent: UserIntent) {
         when (intent) {
             is UserIntent.Login -> doLogin(intent)
+            is UserIntent.Reg -> doReg(intent)
             is UserIntent.GetUserUpdateInfo -> doGetUserInfo(intent)
             is UserIntent.GetUserInfo -> { }
         }
@@ -65,9 +65,17 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
                 mIconUrl = it.mIconUrl
                 _userInfo.emit(it)
             })
-            else intent.copy(loginResultErrorResp = (toTypeEntity<LoginResultErrorResp>(value.mResults) ?: return@flowResult intent))
+            else intent.copy(userResultErrorResp = (toTypeEntity<UserResultErrorResp>(value.mResults) ?: return@flowResult intent))
         }
     }
+
+    private fun doReg(intent: UserIntent.Reg) {
+        flowResult(intent, repository.reg(intent.username, intent.password)) { value ->
+            if (value.mCode == HttpURLConnection.HTTP_OK) intent.copy(regResultsOkResp = (toTypeEntity<RegResultsOkResp>(value.mResults) ?: return@flowResult intent))
+            else intent.copy(userResultErrorResp = (toTypeEntity<UserResultErrorResp>(value.mResults) ?: return@flowResult intent))
+        }
+    }
+
 
     private fun doGetUserInfo(intent: UserIntent.GetUserUpdateInfo) {
         flowResult(intent, repository.getUserUpdateInfo()) { value ->
@@ -85,12 +93,18 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
         }
     }
 
+    // 长度不小于6且不包含空
+    fun getUsername(text: String): String? = text.run { if (length < 6 || contains(" ")) return null else this }
+
+    fun getPassword(text: String): String? = text.run { if (length < 6 || contains(" ")) return null else this }
+
+
     // 加载Icon --- needApply : 是否需要适配固定大小
     inline fun doLoadIcon(context: Context, needApply: Boolean = true, crossinline doOnReady: (resource: Drawable) -> Unit) {
         if (needApply) {
             Glide.with(context)
-                .load(if (mIconUrl == null) R.drawable.user_ic_icon else BaseStrings.URL.MangaFuna.plus(mIconUrl))
-                .placeholder(R.drawable.user_ic_icon)
+                .load(if (mIconUrl == null) R.drawable.user_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl))
+                .placeholder(R.drawable.user_icon_app)
                 .apply(RequestOptions().circleCrop().override(context.resources.getDimensionPixelSize(com.crow.base.R.dimen.base_dp36)))
                 .into(object : CustomTarget<Drawable>() {
                     override fun onLoadCleared(placeholder: Drawable?) {}
@@ -99,8 +113,8 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
             return
         }
         Glide.with(context)
-            .load(if (mIconUrl == null) R.drawable.user_ic_icon else BaseStrings.URL.MangaFuna.plus(mIconUrl))
-            .placeholder(R.drawable.user_ic_icon)
+            .load(if (mIconUrl == null) R.drawable.user_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl))
+            .placeholder(R.drawable.user_icon_app)
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { doOnReady(resource) }

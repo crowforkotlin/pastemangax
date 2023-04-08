@@ -2,4 +2,5 @@
 <resources>
 	<color name="user_grey_bdbdbd">#bdbdbd</color>
 	<color name="user_deep_purple">#ede7f6</color>
+	<color name="user_deep_purple_300">#ffa320</color>
 </resources>

@@ -8,4 +8,9 @@ package com.crow.module_main.network
  * @Description: ContainerRepository
  * @formatter:on
  **************************/
-class ContainerRepository(private val service: ContainerService)
+class ContainerRepository(private val service: ContainerService) {
+
+    fun getUpdateInfo() = service.getUpdateInfo()
+
+    fun getQQGroup() = service.getQQGroup()
+}

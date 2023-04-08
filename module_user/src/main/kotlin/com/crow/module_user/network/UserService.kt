@@ -24,6 +24,10 @@ interface UserService {
     @FormUrlEncoded
     fun login(@Field("username") username: String, @Field("password") password: String, @Field("salt") salt: String) : Flow<BaseResultResp<Any>>
 
+    @POST(BaseStrings.URL.Reg)
+    @FormUrlEncoded
+    fun reg(@Field("username") username: String, @Field("password") password: String): Flow<BaseResultResp<Any>>
+
     @GET(BaseStrings.URL.UserUpdateInfo)
     fun getUserUpdateInfo() : Flow<BaseResultResp<UserUpdateInfoResp>>
 

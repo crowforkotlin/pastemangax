@@ -7,11 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.crow.base.tools.extensions.permissionext.IBasePerEvent
 import com.crow.base.tools.extensions.permissionext.IBasePermission
 import com.crow.base.ui.dialog.LoadingAnimDialog
+import com.crow.base.ui.viewmodel.mvi.IBaseMviExt
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -30,7 +30,7 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
     }
 
     // 初始化View
-    override fun initView() {}
+    override fun initView(bundle: Bundle?) {}
 
     // 初始化监听事件
     override fun initListener() {}
@@ -40,13 +40,12 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
 
     override var iBasePerEvent: IBasePerEvent? = null
 
-    override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) { LoadingAnimDialog.show(parentFragmentManager, loadingAnimConfig) }
+    override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) { LoadingAnimDialog.show(childFragmentManager, loadingAnimConfig) }
 
+    override fun dismissLoadingAnim() { LoadingAnimDialog.dismiss(childFragmentManager) }
 
-    override fun dismissLoadingAnim() { LoadingAnimDialog.dismiss(parentFragmentManager) }
-
-    fun dismissLoadingAnim(loadingAnimCallBack: LoadingAnimDialog.LoadingAnimCallBack) {
-        LoadingAnimDialog.dismiss(parentFragmentManager) { loadingAnimCallBack.onAnimEnd()  }
+    override fun dismissLoadingAnim(loadingAnimCallBack: LoadingAnimDialog.LoadingAnimCallBack) {
+        LoadingAnimDialog.dismiss(childFragmentManager) { loadingAnimCallBack.onAnimEnd()  }
     }
 
     override fun requestPermission(permissions: Array<String>, iBasePerEvent: IBasePerEvent) {
@@ -60,7 +59,7 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?){
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        initView(savedInstanceState)
         initData()
         initListener()
     }

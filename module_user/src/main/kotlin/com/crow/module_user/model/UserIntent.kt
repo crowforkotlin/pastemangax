@@ -1,8 +1,9 @@
 package com.crow.module_user.model
 
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
-import com.crow.module_user.model.resp.LoginResultErrorResp
+import com.crow.module_user.model.resp.UserResultErrorResp
 import com.crow.module_user.model.resp.LoginResultsOkResp
+import com.crow.module_user.model.resp.RegResultsOkResp
 import com.crow.module_user.model.resp.UserUpdateInfoResp
 
 /*************************
@@ -13,13 +14,22 @@ import com.crow.module_user.model.resp.UserUpdateInfoResp
  * @Description: UserIntent
  * @formatter:on
  **************************/
-sealed class UserIntent : BaseMviIntent() {
+open class UserIntent : BaseMviIntent() {
+
     data class Login(
         var username: String,
         var password: String,
         val loginResultsOkResp: LoginResultsOkResp? = null,
-        val loginResultErrorResp: LoginResultErrorResp? = null,
+        val userResultErrorResp: UserResultErrorResp? = null,
     ) : UserIntent()
+
+    data class Reg(
+        var username: String,
+        var password: String,
+        val regResultsOkResp: RegResultsOkResp? = null,
+        val userResultErrorResp: UserResultErrorResp? = null,
+    ) : UserIntent()
+
 
     data class GetUserUpdateInfo(val userUpdateInfoResp: UserUpdateInfoResp? = null): UserIntent()
 

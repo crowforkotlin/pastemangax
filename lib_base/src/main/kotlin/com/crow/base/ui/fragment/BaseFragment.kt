@@ -41,7 +41,7 @@ abstract class BaseFragment<VB : ViewBinding, out VM : BaseViewModel> : BaseFrag
     }
 
     override fun initListener() {}
-    override fun initView() {}
+    override fun initView(bundle: Bundle?) {}
     override fun onDestroyView() {
         super.onDestroyView()
         _mBinding = null

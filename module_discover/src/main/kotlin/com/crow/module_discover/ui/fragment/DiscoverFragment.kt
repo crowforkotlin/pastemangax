@@ -1,15 +1,20 @@
 package com.crow.module_discover.ui.fragment
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.crow.base.tools.extensions.getNavigationBarHeight
+import com.crow.base.current_project.BaseStrings
+import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverFragmentBinding
 import com.crow.module_discover.ui.adapter.DiscoverAdapter
+import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import com.orhanobut.logger.Logger
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -21,19 +26,26 @@ import com.google.android.material.tabs.TabLayoutMediator
  **************************/
 class DiscoverFragment : BaseMviFragment<DiscoverFragmentBinding>() {
 
+    companion object { fun newInstance() = DiscoverFragment() }
+
+    init { FlowBus.with<Int>(BaseStrings.Key.POST_CURRENT_ITEM).register(this) { mDiscoverVM.mCurrentItem = it } }
+
     private val mFragmentList = mutableListOf<Fragment>(DiscoverComicFragment(), DiscoverNovelFragment())
 
     private var mDiscoverAdapter: DiscoverAdapter? = null
 
+    private val mDiscoverVM by sharedViewModel<DiscoverViewModel>()
+
     override fun getViewBinding(inflater: LayoutInflater) = DiscoverFragmentBinding.inflate(inflater)
 
-    override fun initView() {
+    override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.discoverTabLayout.setPadding(0, mContext.getStatusBarHeight(),0, 0)
 
         // 初始 viewpager2
-        mDiscoverAdapter = DiscoverAdapter(mFragmentList, requireActivity().supportFragmentManager, lifecycle)
+        "(Discover Fragment) InitView Start".logMsg(Logger.WARN)
+        mDiscoverAdapter = DiscoverAdapter(mFragmentList, childFragmentManager, lifecycle)
         mBinding.discoverVp.adapter = mDiscoverAdapter
         mBinding.discoverVp.offscreenPageLimit = 2
 
@@ -48,7 +60,7 @@ class DiscoverFragment : BaseMviFragment<DiscoverFragmentBinding>() {
                 }
             }
         }.attach()
-
+        "(Discover Fragment) InitView End".logMsg(Logger.WARN)
     }
 
     override fun onDestroyView() {

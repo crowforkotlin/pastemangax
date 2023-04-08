@@ -1,4 +1,17 @@
 <resources>
 
 	<string name="main_user">用户</string>
+	<string name="main_update_go">前往更新</string>
+	<string name="main_update_time">更新日期：%s</string>
+	<string name="main_update_url_title">更新节点</string>
+	<string name="main_update_cancel">暂不更新</string>
+
+	<string name="main_about_crow">开发人员：CrowForKotlin</string>
+	<string name="main_about_crow_email">电子邮箱：CrowForKotlin@gmail.com</string>
+	<string name="main_about_crow_github_url">Github主页：<u>https://github.com/CrowForKotlin</u></string>
+	<string name="main_about_crow_github_project_url">项目开源链接：<u>https://github.com/CrowForKotlin/CopyManga_Crow</u></string>
+	<string name="main_about_add_to_qq_group">加入QQ群</string>
+	<string name="main_about_app_version">当前版本：%s</string>
+	<string name="main_about_qq_gropu">https://jq.qq.com/?_wv=1027&amp;k=XIMjBxZW</string>
+
 </resources>

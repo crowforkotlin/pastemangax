@@ -1,6 +1,7 @@
 package com.crow.base.tools.extensions
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import com.crow.base.ui.viewmodel.ViewStateException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
@@ -78,8 +79,8 @@ suspend inline fun <T> Flow<T>.toData(): T? {
 fun interface IBaseFlowCollectLifecycle<T> {
     suspend fun onCollect(value : T)
 }
-fun<T> Flow<T>.onCollect(fragment: Fragment, iBaseFlowCollectLifecycle: IBaseFlowCollectLifecycle<T>) {
-    fragment.repeatOnLifecycle { collect { iBaseFlowCollectLifecycle.onCollect(it) } }
+fun<T> Flow<T>.onCollect(fragment: Fragment, lifecycleState: Lifecycle.State = Lifecycle.State.STARTED, iBaseFlowCollectLifecycle: IBaseFlowCollectLifecycle<T>) {
+    fragment.repeatOnLifecycle(lifecycleState) { collect { iBaseFlowCollectLifecycle.onCollect(it) } }
 }
 
 

@@ -152,7 +152,7 @@
 				tools:listitem="@layout/bookshelf_fragment_rv" />
 
 			<TextView
-				android:id="@+id/bookshelf_text"
+				android:id="@+id/bookshelf_tips_empty"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:layout_gravity="center"

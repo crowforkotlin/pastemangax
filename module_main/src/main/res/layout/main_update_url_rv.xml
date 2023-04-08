@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/main_update_url_content"
+	style="@style/Widget.Material3.Button.TextButton"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:gravity="center"
+	android:layout_marginStart="@dimen/base_dp10"
+	android:layout_marginTop="@dimen/base_dp20"
+	android:layout_marginEnd="@dimen/base_dp10"
+	android:ellipsize="end"
+	android:maxLines="1"
+	android:textSize="@dimen/base_sp16"
+	android:textStyle="bold"
+	tools:text="@string/BaseTodoTextView" />

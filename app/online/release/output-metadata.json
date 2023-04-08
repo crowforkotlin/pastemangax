@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.crow.copymanga",
+  "variantName": "onlineRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 1,
+      "versionName": "1.0.0_online",
+      "outputFile": "CopyMangaX-online-release.apk"
+    }
+  ],
+  "elementType": "File"
+}

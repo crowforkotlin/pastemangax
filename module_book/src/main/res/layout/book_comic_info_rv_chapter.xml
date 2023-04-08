@@ -7,8 +7,10 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:layout_marginStart="@dimen/base_dp4"
+	android:maxLines="1"
 	android:layout_marginEnd="@dimen/base_dp4"
 	android:textAlignment="center"
+	android:ellipsize="end"
 	android:textSize="@dimen/base_sp10"
 	app:elevation="@dimen/base_dp10"
 	tools:text="@string/BaseTodoTextView" />

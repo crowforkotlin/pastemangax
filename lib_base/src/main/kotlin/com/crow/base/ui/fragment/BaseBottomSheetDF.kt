@@ -26,7 +26,7 @@ abstract class BaseBottomSheetDF<out VB : ViewBinding, out VM : BaseViewModel> :
 
     protected val mViewModel by lazy { getViewModel().value }
 
-    override fun initView() {}
+    override fun initView(bundle: Bundle?) {}
 
     override fun initListener() {}
 

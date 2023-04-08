@@ -1,9 +1,10 @@
 package com.crow.module_user.ui.fragment
 
+import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.crow.base.app.appContext
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.updateLifecycleObserver
@@ -34,6 +35,8 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
 
     constructor(iUserLoginSuccessCallback: IUserLoginSuccessCallback) : this() { mLoginSuccessCallback = iUserLoginSuccessCallback }
 
+    companion object { fun newInstance() = UserLoginFragment() }
+
     fun interface IUserLoginSuccessCallback {
         fun onLoginSuccess()
     }
@@ -41,16 +44,37 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
     // VM
     private val mUserVM by sharedViewModel<UserViewModel>()
 
-    // 系统返回 事件回调
-    private lateinit var mOnBackCallback: OnBackPressedCallback
-
     // 是否登录成功
     private var mIsLoginSuccess: Boolean = false
 
     // 登录成功回调
     private var mLoginSuccessCallback: IUserLoginSuccessCallback? = null
 
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear("UserLoginFragment", "ContainerFragment")
+
+    // 反转登录按钮
+    private fun doRevertLoginButton() {
+
+        // 停止动画
+        mBinding.userLogin.stopAnimation()
+
+        // 反转动画
+        mBinding.userLogin.revertAnimation()
+
+        // 判断标志是否成功 (true : 然后返回上一个界面)
+        if (mIsLoginSuccess) {
+            val msg = getString(R.string.user_login_ok)
+            navigateUp()
+            FlowBus.with<String>(BaseStrings.Key.LOGIN_SUCUESS).post(lifecycleScope, msg)
+        }
+    }
+
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentLoginBinding.inflate(inflater)
+
+    override fun onStart() {
+        super.onStart()
+        mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) { navigateUp() }
+    }
 
     override fun initObserver() {
         mUserVM.onOutput { intent ->
@@ -71,8 +95,8 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
                                 mIsLoginSuccess = true
                                 return@doOnResult
                             }
-                            runCatching { intent.loginResultErrorResp!!.mDetail.removePrefix("Error: ") }
-                                .onFailure { toast(intent.loginResultErrorResp!!.mDetail, false) }
+                            runCatching { intent.userResultErrorResp!!.mDetail.removePrefix("Error: ") }
+                                .onFailure { toast(intent.userResultErrorResp!!.mDetail, false) }
                                 .onSuccess { toast(it, false) }
                         }
                 }
@@ -82,7 +106,7 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
         }
     }
 
-    override fun initView() {
+    override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())
@@ -93,45 +117,19 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
 
     override fun initListener() {
 
-        // 初始化添加返回事件回调
-        mOnBackCallback = object : OnBackPressedCallback(true) { override fun handleOnBackPressed() { findNavController().navigateUp() } }
-        requireActivity().onBackPressedDispatcher.addCallback(mOnBackCallback)
-
         mBinding.userLogin.clickGap { _, _ ->
             // 执行登录
             mUserVM.input(UserIntent.Login(
-                getUsername() ?: return@clickGap toast(getString(R.string.user_usr_invalid)),
-                getPassword() ?: return@clickGap toast(getString(R.string.user_pwd_invalid))
+                mUserVM.getUsername(mBinding.userLoginEditTextUsr.text.toString()) ?: return@clickGap toast(getString(R.string.user_usr_invalid)),
+                mUserVM.getPassword(mBinding.userLoginEditTextPwd.text.toString()) ?: return@clickGap toast(getString(R.string.user_pwd_invalid))
             ))
 
             // 开启按钮动画
             mBinding.userLogin.startAnimation()
         }
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mOnBackCallback.remove() // 移除返回事件回调 防止影响其他界面使用返回冲突
-    }
-
-    private fun doRevertLoginButton() {
-
-        // 停止动画
-        mBinding.userLogin.stopAnimation()
-
-        // 反转动画
-        mBinding.userLogin.revertAnimation()
-
-        // 判断标志是否成功 (true : 然后返回上一个界面)
-        if (mIsLoginSuccess) {
-            mBinding.root.showSnackBar(getString(R.string.user_login_success))
-            navigateUp()
-            FlowBus.with<Unit>(BaseStrings.Key.LOGIN_SUCUESS).post(lifecycleScope, Unit)
+        mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback {
+            parentFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
     }
-
-    // 长度不小于6且不包含空
-    private fun getUsername(): String? = mBinding.userLoginEditTextUsr.text.toString().run { if (length < 6 || contains(" ")) return null else this }
-    private fun getPassword(): String? = mBinding.userLoginEditTextPwd.text.toString().run { if (length < 6 || contains(" ")) return null else this }
-
 }

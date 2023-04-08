@@ -64,20 +64,13 @@ class LoadingAnimDialog : DialogFragment() {
             val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: return
             val consumeTime = System.currentTimeMillis() - mShowTime
             // 判断 取消时间是否大于 显示超1S 时间
-            if (mDismissFlagTime > consumeTime) {
-                dialog.doAfterDelay(mDismissFlagTime - consumeTime) {
-                    if (dialog.isVisible) {
-                        dialog.requireView().animateFadeOut(mAnimateDuration).withEndAction {
-                            dialog.dismissAllowingStateLoss()
-                            animCallBack?.onAnimEnd()
-                        }
-                    }
-                }
-            } else if (dialog.isVisible) {
-                dialog.requireView().animateFadeOut(mAnimateDuration).withEndAction {
-                    dialog.dismissAllowingStateLoss()
-                    animCallBack?.onAnimEnd()
-                }
+            if (mDismissFlagTime > consumeTime) dialog.doAfterDelay(mDismissFlagTime - consumeTime) { dismissWithAnim(dialog, animCallBack) } else dismissWithAnim(dialog, animCallBack)
+        }
+
+        private fun dismissWithAnim(dialog: LoadingAnimDialog, animCallBack: LoadingAnimCallBack?) {
+            dialog.requireView().animateFadeOut(mAnimateDuration).withEndAction {
+                dialog.dismissAllowingStateLoss()
+                animCallBack?.onAnimEnd()
             }
         }
     }
