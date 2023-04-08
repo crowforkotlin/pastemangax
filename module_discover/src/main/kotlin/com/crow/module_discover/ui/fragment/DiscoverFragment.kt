@@ -37,7 +37,6 @@ class DiscoverFragment : BaseMviFragment<DiscoverFragmentBinding>() {
     private val mDiscoverVM by sharedViewModel<DiscoverViewModel>()
 
     override fun getViewBinding(inflater: LayoutInflater) = DiscoverFragmentBinding.inflate(inflater)
-
     override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
