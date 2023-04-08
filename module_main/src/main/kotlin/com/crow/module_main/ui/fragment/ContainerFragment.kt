@@ -55,7 +55,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).register(this) { doExitUser() }                       // 退出账号
         FlowBus.with<Unit>(BaseStrings.Key.OPEN_USER_BOTTOM).register(this) { doShowUserBottom() }          // 打开用户界面
         FlowBus.with<Unit>(BaseStrings.Key.OPEN_LOGIN_FRAGMENT).register(this) { doShowLoginFragment() }    // 打开登录界面
-        FlowBus.with<Unit>(BaseStrings.Key.CHECK_UPDATE).register(this) { mContaienrVM.input(ContainerIntent.GetUpdateInfo()) } // 查询更新
+        FlowBus.with<Unit>(BaseStrings.Key.CHECK_UPDATE).register(this) {
+            mContaienrVM.input(ContainerIntent.GetUpdateInfo())
+        } // 查询更新
     }
 
     // 碎片容器适配器
@@ -69,6 +71,8 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     // 碎片集
     private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment.newInstance(), DiscoverFragment.newInstance(), BookshelfFragment.newInstance()) }
+
+    private var mInitUpdate: Boolean = false
 
     // 点击标志 用于防止多次显示 BookInfo 以及 UserBottom
     private var mTapBookFlag: Boolean = false
@@ -193,7 +197,8 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     private fun doUpdateChecker(appUpdateResp: MainAppUpdateResp) {
         val update = appUpdateResp.mUpdates.first()
-        if (!isLatestVersion(latest = update.mVersionCode.toLong())) return
+        if (!isLatestVersion(latest = update.mVersionCode.toLong())) return run { if (mInitUpdate) toast("版本已经是最新的了！") }
+        mInitUpdate = true
         val updateBd = MainUpdateLayoutBinding.inflate(layoutInflater)
         val updateDialog = mContext.newMaterialDialog { dialog ->
             dialog.setCancelable(false)
