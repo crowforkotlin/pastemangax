@@ -102,7 +102,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     private fun processResult(bookshelfComicResp: BookshelfComicResp?, bookshelfNovelResp: BookshelfNovelResp?) {
 
         // “空提示” 文本不可见
-        if (mBinding.bookshelfTipsEmpty.isVisible && mBookshelfComicRvAdapter.itemCount != 0) {
+        if (mBinding.bookshelfTipsEmpty.isVisible) {
 
 
 
