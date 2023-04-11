@@ -8,6 +8,7 @@ import com.crow.module_main.ui.viewmodel.ContainerViewModel
 import com.crow.module_user.ui.viewmodel.UserInfoViewModel
 import com.crow.module_user.ui.viewmodel.UserViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /*************************
@@ -28,5 +29,4 @@ val viewModelModule = module {
     viewModel { BookInfoViewModel(get()) }
     viewModel { UserViewModel(get()) }
     viewModel { UserInfoViewModel() }
-
 }

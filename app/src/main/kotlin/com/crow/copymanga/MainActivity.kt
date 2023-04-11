@@ -2,24 +2,19 @@ package com.crow.copymanga
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.os.PersistableBundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
+import com.crow.base.current_project.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.logMsg
+import com.crow.base.tools.extensions.navigateByAddWithBackStack
 import com.crow.copymanga.databinding.AppActivityMainBinding
 import com.crow.module_main.ui.fragment.ContainerFragment
 import com.orhanobut.logger.Logger
-import java.util.ResourceBundle.getBundle
+import org.koin.androidx.fragment.android.setupKoinFragmentFactory
+import org.koin.androidx.scope.ScopeActivity
 
-class MainActivity : AppCompatActivity()  {
+class MainActivity : ScopeActivity()  {
 
     private val mBinding by lazy { AppActivityMainBinding.inflate(layoutInflater) }
 
@@ -33,9 +28,10 @@ class MainActivity : AppCompatActivity()  {
             setOnExitAnimationListener { provider -> provider.view.animateFadeOut(500L).withEndAction { provider.remove() } }
         }
 
-        super.onCreate(savedInstanceState)
+        // 配置KoinFragmentFactory
+        setupKoinFragmentFactory()
 
-        "(MainActivity) onCreate".logMsg(Logger.WARN)
+        super.onCreate(savedInstanceState)
 
         // 设置屏幕方向
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -43,9 +39,11 @@ class MainActivity : AppCompatActivity()  {
         // 全屏布局
         WindowCompat.setDecorFitsSystemWindows(window, true)
 
+        // 设置布局
         setContentView(mBinding.root)
 
-        if (savedInstanceState == null) supportFragmentManager.beginTransaction().add(R.id.app_main_fcv, ContainerFragment.newInstance()).commit()
+        // 内存重启后 避免再次添加布局
+        if (savedInstanceState == null) supportFragmentManager.navigateByAddWithBackStack<ContainerFragment>(R.id.app_main_fcv, null, Fragments.Container.toString(), Fragments.Container.toString())
     }
 
     override fun onDestroy() {

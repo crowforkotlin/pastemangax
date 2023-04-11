@@ -5,9 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Window
 import androidx.core.view.get
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
 import com.crow.base.current_project.BaseStrings
+import com.crow.base.current_project.entity.BookTapEntity
+import com.crow.base.current_project.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.dialog.LoadingAnimDialog
@@ -18,10 +21,13 @@ import com.crow.module_home.model.intent.HomeIntent
 import com.crow.module_home.model.resp.homepage.results.Results
 import com.crow.module_home.ui.adapter.HomeComicParentRvAdapter
 import com.crow.module_home.ui.viewmodel.HomeViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
 import com.crow.base.R as baseR
 
 /*************************
@@ -88,7 +94,8 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                 mHomeComicParentRvAdapter?.tryClearAndNotify()
                 mHomeComicParentRvAdapter = null
                 delay(200L)
-                mHomeComicParentRvAdapter = HomeComicParentRvAdapter(datas.toMutableList(), viewLifecycleOwner, mRecRefreshCallback)
+                mHomeComicParentRvAdapter = HomeComicParentRvAdapter(datas.toMutableList(), viewLifecycleOwner, mRecRefreshCallback) { navigateBookInfo(it) }
+
                 mBinding.homeRv.adapter = mHomeComicParentRvAdapter
             }
             
@@ -97,6 +104,15 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             // 取消加载动画
             dismissLoadingAnim()
         }
+    }
+
+    private fun navigateBookInfo(bookTapEntity: BookTapEntity) {
+        val bundle = Bundle()
+        bundle.putSerializable("tapEntity", bookTapEntity)
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
+            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
+            get<Fragment>(named(Fragments.BookInfo)).also { it.arguments = bundle }, Fragments.BookInfo.toString(), Fragments.BookInfo.toString()
+        )
     }
 
     // 暴露的函数 提供给 ContainerFragment 用于通知主页刷新
@@ -117,8 +133,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     override fun initView(bundle: Bundle?) {
 
-        "(HomeFragment) InitView Start".logMsg()
-
         // 设置 内边距属性 实现沉浸式效果
         mBinding.homeAppbar.setPadding(0, mContext.getStatusBarHeight(), 0, 0)
 
@@ -126,12 +140,10 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeRefresh.setDisableContentWhenRefresh(true)
 
         // 初始化适配器
-        mHomeComicParentRvAdapter = HomeComicParentRvAdapter(mutableListOf(), viewLifecycleOwner, mRecRefreshCallback)
+        mHomeComicParentRvAdapter = HomeComicParentRvAdapter(mutableListOf(), viewLifecycleOwner, mRecRefreshCallback) { navigateBookInfo(it) }
 
         // 设置适配器
         mBinding.homeRv.adapter = mHomeComicParentRvAdapter
-
-        "(HomeFragment) InitView End".logMsg()
     }
 
     override fun initListener() {
@@ -148,7 +160,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
 
         // MaterialToolBar NavigateIcon 点击事件
-        mBinding.homeToolbar.navigateIconClickGap { _, _ -> FlowBus.with<Unit>(BaseStrings.Key.OPEN_USER_BOTTOM).post(lifecycleScope, Unit) }
+        mBinding.homeToolbar.navigateIconClickGap { _, _ -> get<BottomSheetDialogFragment>(named(Fragments.User)).show(requireActivity().supportFragmentManager, null) }
 
         // 刷新
         mBinding.homeRefresh.setOnRefreshListener { mHomeVM.input(HomeIntent.GetHomePage()) }

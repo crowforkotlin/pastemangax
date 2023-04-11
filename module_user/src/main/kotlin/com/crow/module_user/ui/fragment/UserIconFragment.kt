@@ -14,8 +14,8 @@ import androidx.activity.addCallback
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.setPadding
-import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
+import com.crow.base.current_project.entity.Fragments
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.module_user.R
@@ -45,15 +45,13 @@ import com.crow.base.R as baseR
 
 class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
 
-    companion object { fun newInstance() = UserIconFragment() }
-
     // WindowInsets属性 （状态栏属性设置等...）
     private var mWindowInsets: WindowInsetsControllerCompat? = null
 
     // 共享 用户VM
     private val mUserVM by sharedViewModel<UserViewModel>()
 
-    private fun navigateUp() = parentFragmentManager.popAsyncWithClear("UserIconFragment", "ContainerFragmentByUserBottom")
+    private fun navigateUp() = parentFragmentManager.popAsyncWithClear(Fragments.Icon.toString())
 
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentIconBinding.inflate(inflater)
 

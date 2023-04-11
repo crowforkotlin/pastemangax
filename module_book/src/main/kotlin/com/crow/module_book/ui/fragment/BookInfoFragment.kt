@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.crow.base.current_project.*
 import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.current_project.entity.BookType
+import com.crow.base.current_project.entity.Fragments
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
@@ -50,12 +51,6 @@ import com.crow.base.R as baseR
  **************************/
 
 class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
-
-    companion object {
-
-        val TAG = this::class.java.simpleName
-        fun newInstance() = BookInfoFragment()
-    }
 
     // 书架VM
     private val mBookVM by viewModel<BookInfoViewModel>()
@@ -266,7 +261,7 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
         }
     }
 
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear("BookInfoFragment")
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.BookInfo.toString())
 
     override fun getViewBinding(inflater: LayoutInflater) = BookComicFragmentInfoBinding.inflate(inflater)
 
@@ -286,8 +281,6 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
         // 设置刷新时不允许列表滚动
         mBinding.bookInfoRefresh.setDisableContentWhenRefresh(true)
-
-        "InitView".logMsg()
 
         // 漫画
         if (mBookTapEntity.type == BookType.Comic) mComicChapterRvAdapter = ComicChapterRvAdapter { pos, comic: ComicChapterResult ->
@@ -309,12 +302,12 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
     override fun onResume() {
         super.onResume()
-        mChapterName.logMsg()
         if (mChapterName != null) {
             mComicChapterRvAdapter?.mChapterName = mChapterName
             mComicChapterRvAdapter?.notifyItemRangeChanged(0, mComicChapterRvAdapter?.itemCount ?: return)
         }
     }
+
     override fun initListener() {
 
         mBinding.bookInfoBack.clickGap { _, _ -> navigateUp() }
@@ -341,8 +334,6 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
                 else -> it.finishRefresh()
             }
         }
-
-        "Init Listener".logMsg()
     }
 
     override fun initData() {

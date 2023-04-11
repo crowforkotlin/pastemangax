@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.app.appContext
 import com.crow.base.current_project.BaseStrings
+import com.crow.base.current_project.entity.Fragments
 import com.crow.base.current_project.updateLifecycleObserver
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
@@ -35,8 +36,6 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
 
     constructor(iUserLoginSuccessCallback: IUserLoginSuccessCallback) : this() { mLoginSuccessCallback = iUserLoginSuccessCallback }
 
-    companion object { fun newInstance() = UserLoginFragment() }
-
     fun interface IUserLoginSuccessCallback {
         fun onLoginSuccess()
     }
@@ -50,7 +49,8 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
     // 登录成功回调
     private var mLoginSuccessCallback: IUserLoginSuccessCallback? = null
 
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear("UserLoginFragment", "ContainerFragment")
+    // 返回
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Login.toString())
 
     // 反转登录按钮
     private fun doRevertLoginButton() {

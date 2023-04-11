@@ -9,17 +9,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.crow.base.app.appContext
 import com.crow.base.current_project.*
 import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.current_project.entity.BookType
-import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.clickGap
-import com.crow.base.tools.extensions.logMsg
-import com.crow.base.tools.extensions.px2dp
 import com.crow.base.ui.view.ToolTipsView
-import com.crow.module_home.R
-import com.crow.module_home.databinding.HomeFragmentComicRvBinding
 import com.crow.module_home.databinding.HomeFragmentComicRvBodyBinding
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.AuthorResult
@@ -37,8 +31,8 @@ import java.util.*
  **************************/
 class HomeComicChildRvAdapter<T>(
     private var mData: MutableList<T> = mutableListOf(),
-    private val viewLifecycleOwner: LifecycleOwner,
     private val mBookType: BookType,
+    val doOnTap: (BookTapEntity) -> Unit
 ) : RecyclerView.Adapter<HomeComicChildRvAdapter<T>.ViewHolder>() {
 
     inner class ViewHolder(val rvBinding: HomeFragmentComicRvBodyBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
@@ -72,11 +66,11 @@ class HomeComicChildRvAdapter<T>(
             // 点击 父布局卡片 以及漫画卡片 事件 回调给上级 HomeFragment --> ContainerFragment
             vh.rvBinding.root.clickGap { _, _ ->
                 if (mBookType == BookType.Topic) { }
-                else FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(viewLifecycleOwner, BookTapEntity(BookType.Comic, vh.mPathWord))
+                else doOnTap(BookTapEntity(BookType.Comic, vh.mPathWord))
             }
             vh.rvBinding.homeBookCard.clickGap { _, _ ->
                 if (mBookType == BookType.Topic) { }
-                else FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(viewLifecycleOwner, BookTapEntity(BookType.Comic, vh.mPathWord))
+                else doOnTap(BookTapEntity(BookType.Comic, vh.mPathWord))
             }
 
             // Tooltips漫画名称设置

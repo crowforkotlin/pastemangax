@@ -37,13 +37,13 @@ class DiscoverFragment : BaseMviFragment<DiscoverFragmentBinding>() {
     private val mDiscoverVM by sharedViewModel<DiscoverViewModel>()
 
     override fun getViewBinding(inflater: LayoutInflater) = DiscoverFragmentBinding.inflate(inflater)
+
     override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.discoverTabLayout.setPadding(0, mContext.getStatusBarHeight(),0, 0)
 
         // 初始 viewpager2
-        "(Discover Fragment) InitView Start".logMsg(Logger.WARN)
         mDiscoverAdapter = DiscoverAdapter(mFragmentList, childFragmentManager, lifecycle)
         mBinding.discoverVp.adapter = mDiscoverAdapter
         mBinding.discoverVp.offscreenPageLimit = 2
@@ -59,7 +59,6 @@ class DiscoverFragment : BaseMviFragment<DiscoverFragmentBinding>() {
                 }
             }
         }.attach()
-        "(Discover Fragment) InitView End".logMsg(Logger.WARN)
     }
 
     override fun onDestroyView() {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +12,7 @@ import com.crow.base.current_project.BaseLoadStateAdapter
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.current_project.entity.BookType
+import com.crow.base.current_project.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -18,12 +20,14 @@ import com.crow.base.ui.viewmodel.ViewState
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
-import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverFragmentNovelBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.ui.adapter.DiscoverNovelAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
+import com.crow.base.R as baseR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -41,6 +45,17 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
     // 轻小说适配器
     private lateinit var mDiscoverNovelAdapter: DiscoverNovelAdapter
 
+    private val mLazyParentFragmentManager by lazy { requireParentFragment().requireParentFragment().parentFragmentManager }
+
+    private fun navigateBookInfo(bookTapEntity: BookTapEntity) {
+        val bundle = Bundle()
+        bundle.putSerializable("tapEntity", bookTapEntity)
+        mLazyParentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
+            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
+            get<Fragment>(named(Fragments.BookInfo)).also { it.arguments = bundle }, Fragments.BookInfo.toString(), Fragments.BookInfo.toString()
+        )
+    }
+
     override fun getViewBinding(inflater: LayoutInflater) = DiscoverFragmentNovelBinding.inflate(inflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,14 +71,15 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
         // 滑动 同时更新text
         mBinding.discoverNovelRv.setOnScrollChangeListener { _, _, _, _, _ ->
             val layoutManager = mBinding.discoverNovelRv.layoutManager
-            if(layoutManager is LinearLayoutManager) mBinding.discoverNovelAppbar.discoverAppbarTextPos.text = getString(R.string.discover_comic_count, layoutManager.findLastVisibleItemPosition() + 1)
+            if(layoutManager is LinearLayoutManager) mBinding.discoverNovelAppbar.discoverAppbarTextPos.text = getString(
+                com.crow.module_discover.R.string.discover_comic_count, layoutManager.findLastVisibleItemPosition() + 1)
         }
     }
 
     override fun initView(bundle: Bundle?) {
 
         // 初始化适配器
-        mDiscoverNovelAdapter = DiscoverNovelAdapter { FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Novel, it.mPathWord)) }
+        mDiscoverNovelAdapter = DiscoverNovelAdapter { navigateBookInfo(BookTapEntity(BookType.Novel, it.mPathWord)) }
 
         // 设置Rv适配器 添加页脚 回调则重试
         mBinding.discoverNovelRv.adapter = mDiscoverNovelAdapter.withLoadStateFooter(BaseLoadStateAdapter { mDiscoverNovelAdapter.retry() })

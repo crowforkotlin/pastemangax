@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.current_project.BaseLoadStateAdapter
@@ -12,6 +13,7 @@ import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
 import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.current_project.entity.BookType
+import com.crow.base.current_project.entity.Fragments
 import com.crow.base.current_project.processTokenError
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
@@ -28,7 +30,9 @@ import com.crow.module_bookshelf.model.resp.BookshelfNovelResp
 import com.crow.module_bookshelf.ui.adapter.BookshelfComicRvAdapter
 import com.crow.module_bookshelf.ui.adapter.BookshelfNovelRvAdapter
 import com.crow.module_bookshelf.ui.viewmodel.BookshelfViewModel
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
 import com.crow.base.R as baseR
 
 /*************************
@@ -92,7 +96,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                 FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).post(lifecycleScope, Unit)
             },
             doOnConfirm = {
-                FlowBus.with<Unit>(BaseStrings.Key.OPEN_LOGIN_FRAGMENT).post(lifecycleScope, Unit)
+                parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv, this, get(named(Fragments.Login)), Fragments.Login.toString(), Fragments.Login.toString())
                 FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).post(lifecycleScope, Unit)
             }
         )
@@ -103,8 +107,6 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
         // “空提示” 文本不可见
         if (mBinding.bookshelfTipsEmpty.isVisible) {
-
-
 
             if (bookshelfComicResp == null) mBinding.bookshelfRvComic.visibility = View.INVISIBLE           // 漫画 Rv 隐藏
             else {
@@ -132,6 +134,15 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         }
     }
 
+    private fun navigateBookInfo(bookTapEntity: BookTapEntity) {
+        val bundle = Bundle()
+        bundle.putSerializable("tapEntity", bookTapEntity)
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
+            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
+            get<Fragment>(named(Fragments.BookInfo)).also { it.arguments = bundle }, Fragments.BookInfo.toString(), Fragments.BookInfo.toString()
+        )
+    }
+
     // 暴露的函数 当登录成功、退出登录时 ContainerFragment可调用该函数
     fun doRefresh(msg: String? = null) {
         msg?.let { mBinding.root.showSnackBar(it) }
@@ -151,8 +162,8 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBinding.bookshelfRefresh.setDisableContentWhenRefresh(true)
 
         // 初始化适配器
-        mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter { FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Novel, it.mNovel.mPathWord)) }
-        mBookshelfComicRvAdapter = BookshelfComicRvAdapter { FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(lifecycleScope, BookTapEntity(BookType.Comic, it.mComic.mPathWord)) }
+        mBookshelfComicRvAdapter = BookshelfComicRvAdapter { navigateBookInfo(BookTapEntity(BookType.Comic, it.mComic.mPathWord)) }
+        mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter { navigateBookInfo(BookTapEntity(BookType.Novel, it.mNovel.mPathWord)) }
 
         // 设置加载动画独占1行，卡片3行
         (mBinding.bookshelfRvComic.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() { override fun getSpanSize(position: Int)= if (position == mBookshelfComicRvAdapter.itemCount  && mBookshelfComicRvAdapter.itemCount > 0) 3 else 1 }

@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.crow.base.current_project.entity.Fragments
 import com.crow.base.current_project.getSpannableString
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -34,11 +35,10 @@ import com.crow.base.R as baseR
  **************************/
 class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
 
+    // ContainerVM
     private val mContainerVm by viewModel<ContainerViewModel>()
 
-    companion object { fun newInstance(): AboutAuthorFragment = AboutAuthorFragment() }
-
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear("AboutAuthorFragment", "ContainerFragment")
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.About.toString())
 
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentAboutBinding.inflate(inflater)
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import com.crow.base.app.appContext
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
+import com.crow.base.current_project.entity.Fragments
 import com.crow.base.current_project.updateLifecycleObserver
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
@@ -31,13 +32,14 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  **************************/
 class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
 
-    companion object { fun newInstance() = UserRegFragment() }
-
+    // 共享用户VM
     private val mUserVM by sharedViewModel<UserViewModel>()
 
-    private fun String?.getIsSame(target: String) : String? = if(this == target) this else null
-
+    // 是否注冊成功？
     private var mIsRegSuccess = false
+
+    // 值是否相同？ true 返回 this false 返回 null
+    private fun String?.getIsSame(target: String) : String? = if(this == target) this else null
 
     // 反转登录按钮
     private fun doRevertRegButton() {
@@ -50,14 +52,13 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
 
         // 判断标志是否成功 (true : 然后返回上一个界面)
         if (mIsRegSuccess) {
-            val msg = getString(R.string.user_reg_ok)
+            FlowBus.with<String>(BaseStrings.Key.LOGIN_SUCUESS).post(lifecycleScope, getString(R.string.user_reg_ok))
             navigateUp()
-            FlowBus.with<String>(BaseStrings.Key.LOGIN_SUCUESS).post(lifecycleScope, msg)
         }
     }
 
-
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear("UserRegFragment", "ContainerFragment")
+    // 返回
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Reg.toString())
 
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentRegBinding.inflate(inflater)
 

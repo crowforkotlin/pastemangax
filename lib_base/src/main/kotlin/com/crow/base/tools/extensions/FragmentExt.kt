@@ -1,6 +1,7 @@
 package com.crow.base.tools.extensions
 
 import android.R.anim
+import android.icu.lang.UCharacter
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
@@ -94,17 +95,49 @@ inline fun FragmentManager.show(
 ) = transaction(beginTransaction()).show(fragment).commit()
 
 
-inline fun FragmentManager.navigateByAddWithBackStack(
+inline fun<reified T: Fragment> FragmentManager.navigateByAddWithBackStack(
     @IdRes id: Int,
-    fragment: Fragment,
+    bundle: Bundle? = null,
+    backStackName: String? = null,
+    tag: String? = null,
+    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.withFadeAnimation() },
+) {
+    transaction(beginTransaction())
+        .addToBackStack(backStackName)
+        .add(id, T::class.java, bundle, tag)
+        .commit()
+}
+
+inline fun<reified T: Fragment> FragmentManager.navigateToWithBackStack(
+    @IdRes id: Int,
+    hideTarget: Fragment,
+    bundle: Bundle? = null,
+    tag: String? = null,
     backStackName: String? = null,
     crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.withFadeAnimation() },
 ) {
     transaction(beginTransaction())
         .addToBackStack(backStackName)
-        .add(id, fragment)
+        .hide(hideTarget)
+        .add(id, T::class.java, bundle, tag)
         .commit()
 }
+
+inline fun FragmentManager.navigateToWithBackStack(
+    @IdRes id: Int,
+    hideTarget: Fragment,
+    addedTarget: Fragment,
+    tag: String? = null,
+    backStackName: String? = null,
+    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.withFadeAnimation() },
+) {
+    transaction(beginTransaction())
+        .addToBackStack(backStackName)
+        .hide(hideTarget)
+        .add(id, addedTarget, tag)
+        .commit()
+}
+
 
 fun FragmentManager.popSyncWithClear(vararg backStackName: String?, flags: Int = FragmentManager.POP_BACK_STACK_INCLUSIVE) {
     backStackName.forEach {

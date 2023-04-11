@@ -14,26 +14,25 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.appContext
-import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.current_project.entity.BookType
 import com.crow.base.current_project.entity.BookType.Comic
-import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.clickGap
 import com.crow.base.tools.extensions.logMsg
 import com.crow.module_home.R
-import com.crow.module_home.databinding.*
+import com.crow.module_home.databinding.HomeFragmentBannerRvBinding
+import com.crow.module_home.databinding.HomeFragmentComicRvBinding
+import com.crow.module_home.databinding.HomeFragmentComicRvHeaderBinding
+import com.crow.module_home.databinding.HomeFragmentComicRvRecRefreshBinding
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.google.android.material.button.MaterialButton
-import com.tencent.bugly.proguard.t
 import com.to.aboomy.pager2banner.IndicatorView
 import com.to.aboomy.pager2banner.ScaleInTransformer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.internal.notify
 import com.crow.base.R as baseR
 
 /*************************
@@ -48,7 +47,8 @@ import com.crow.base.R as baseR
 class HomeComicParentRvAdapter(
     private var mData: MutableList<Any?>? = null,
     private val viewLifecycleOwner: LifecycleOwner,
-    private val doOnRecRefresh: (MaterialButton) -> Unit
+    private val doOnRecRefresh: (MaterialButton) -> Unit,
+    val doOnTap: (BookTapEntity) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class ComicHeaderViewHolder(val rvBinding: HomeFragmentComicRvHeaderBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
@@ -123,7 +123,7 @@ class HomeComicParentRvAdapter(
     }
 
     private fun<T> HomeComicParentRvAdapter.ComicBodyViewHolder.doComicNotify(bookType: BookType, pos: Int, delay: Long = mRvDelayMs) {
-        val adapter = HomeComicChildRvAdapter<T>(viewLifecycleOwner = viewLifecycleOwner, mBookType = bookType)
+        val adapter = HomeComicChildRvAdapter<T>(mBookType = bookType) { doOnTap(it) }
         if (bookType == BookType.Rec) mHomeRecComicRvAdapter = adapter as HomeComicChildRvAdapter<RecComicsResult>
         viewLifecycleOwner.lifecycleScope.launch {
             rvBinding.homeComicRv.adapter = adapter
@@ -132,9 +132,9 @@ class HomeComicParentRvAdapter(
         }
     }
 
-    private fun HomeComicParentRvAdapter.BannerViewHolder.doBannerNotify(pos: Int, delay: Long = mRvDelayMs) {
+    private fun HomeComicParentRvAdapter.BannerViewHolder.doBannerNotify(pos: Int) {
         rvBinding.homeBannerRv.isAutoPlay = false
-        val adapter = HomeBannerRvAdapter { _, pathword -> FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(viewLifecycleOwner, BookTapEntity(Comic, pathword)) }
+        val adapter = HomeBannerRvAdapter { _, pathword -> doOnTap(BookTapEntity(Comic, pathword)) }
         viewLifecycleOwner.lifecycleScope.launch {
             rvBinding.homeBannerRv.adapter = adapter
             adapter.doBannerNotify((mData!![pos] as MutableList<Banner>), 0L)

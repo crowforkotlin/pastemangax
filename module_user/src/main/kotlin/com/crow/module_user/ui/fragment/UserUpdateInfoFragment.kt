@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import com.crow.base.current_project.BaseStrings
+import com.crow.base.current_project.entity.Fragments
 import com.crow.base.current_project.processTokenError
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
@@ -38,8 +39,6 @@ import com.crow.base.R as baseR
  **************************/
 class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
 
-    companion object { fun newInstance() = UserUpdateInfoFragment() }
-
     // 共享用户VM
     private val mUserVM by sharedViewModel<UserViewModel>()
 
@@ -53,7 +52,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
     private var mExitFragment = false
 
     private fun navigateUp() {
-        parentFragmentManager.popSyncWithClear("UserUpdateInfoFragment", "ContainerFragment")
+        parentFragmentManager.popSyncWithClear(Fragments.UserInfo.toString())
         mUserUpdateInfoVM.doClearUserUpdateInfoData()
     }
 
@@ -75,7 +74,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
 
         // 头像 点击事件
         mBinding.userUpdateInfoIcon.clickGap { _, _ ->
-            parentFragmentManager.navigateByAddWithBackStack(baseR.id.app_main_fcv, UserIconFragment.newInstance(), "UserIconFragment") { it.withFadeAnimation() }
+            parentFragmentManager.navigateToWithBackStack<UserIconFragment>(baseR.id.app_main_fcv, this, null, Fragments.Icon.toString(), Fragments.Icon.toString())
         }
 
         // 退出账号 点击事件
@@ -131,7 +130,6 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
                                 return@dismissLoadingAnim
                             }
 
-                            "SetData".logMsg()
                             // 设置 InfoVM的数据
                             mUserUpdateInfoVM.setData(intent.userUpdateInfoResp.mInfo)
 
@@ -168,8 +166,8 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
 
             // 为true则 深链跳转至登录界面
             if (isNeedNavigateLogin) {
-                parentFragmentManager.remove(this@UserUpdateInfoFragment)
-                parentFragmentManager.navigateByAddWithBackStack(baseR.id.app_main_fcv, UserLoginFragment.newInstance(), "UserLoginFragment")
+                // parentFragmentManager.remove(this@UserUpdateInfoFragment)
+                // parentFragmentManager.navigateByAddWithBackStack(baseR.id.app_main_fcv, UserLoginFragment.newInstance(), "UserLoginFragment")
             }
         }
     }

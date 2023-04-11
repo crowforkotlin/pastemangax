@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.R.id.app_main_fcv
 import com.crow.base.app.appContext
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
+import com.crow.base.current_project.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviBottomSheetDF
@@ -19,8 +19,9 @@ import com.crow.module_user.databinding.UserFragmentBinding
 import com.crow.module_user.ui.adapter.UserRvAdapter
 import com.crow.module_user.ui.viewmodel.UserViewModel
 import com.google.android.material.R.id.design_bottom_sheet
-import com.google.gson.annotations.Until
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.core.qualifier.named
 import com.crow.base.R as baseR
 
 /*************************
@@ -32,20 +33,10 @@ import com.crow.base.R as baseR
  * @formatter:on
  **************************/
 
-class UserBottomSheetFragment() : BaseMviBottomSheetDF<UserFragmentBinding>() {
-
-    companion object { val TAG = UserBottomSheetFragment::class.java.simpleName }
-
-    constructor(hideOnFade: (Fragment) -> Unit, navigateAbout: () -> Unit) : this() {
-        mHideOnFade = hideOnFade
-        mNavigateAbout = navigateAbout
-    }
+class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
 
     // 用戶 VM
     private val mUserVM by sharedViewModel<UserViewModel>()
-
-    private var mHideOnFade: ((Fragment) -> Unit)? = null
-    private var mNavigateAbout: (() -> Unit)? = null
 
     // 用户适配器数据
     private val mAdapterData = mutableListOf (
@@ -75,17 +66,20 @@ class UserBottomSheetFragment() : BaseMviBottomSheetDF<UserFragmentBinding>() {
 
             // 根据 位置 做对应的逻辑处理
             dismissAllowingStateLoss()
-            if (pos !in 2..3 && pos != 5) mHideOnFade?.invoke(this)
+            val parentFragment = parentFragmentManager.findFragmentByTag(Fragments.Container.toString())!!
             when (pos) {
                 // 登录 ＆ 个人信息
                 0 -> {
-                    if (content == getString(R.string.user_info)) parentFragmentManager.navigateByAddWithBackStack(app_main_fcv, UserUpdateInfoFragment.newInstance(), "UserUpdateInfoFragment") { it.withFadeAnimation() }
-                    else parentFragmentManager.navigateByAddWithBackStack(app_main_fcv, UserLoginFragment.newInstance(), "UserLoginFragment") { it.withFadeAnimation() }
+                    if (content == getString(R.string.user_info))
+                        parentFragmentManager.navigateToWithBackStack<UserUpdateInfoFragment>(app_main_fcv, parentFragment, null, Fragments.UserInfo.toString(), Fragments.UserInfo.toString())
+                    else
+                        parentFragmentManager.navigateToWithBackStack<UserLoginFragment>(app_main_fcv, parentFragment, null, Fragments.Login.toString(), Fragments.Login.toString())
+
                 }
-                1 -> parentFragmentManager.navigateByAddWithBackStack(app_main_fcv, UserRegFragment.newInstance(), "UserRegFragment") { it.withFadeAnimation() }
+                1 -> parentFragmentManager.navigateToWithBackStack<UserRegFragment>(app_main_fcv, parentFragment, null, Fragments.Reg.toString(), Fragments.Reg.toString())
                 2 -> toast("还在开发中...")
                 3 -> toast("还在开发中...")
-                4 -> mNavigateAbout?.invoke()
+                4 -> parentFragmentManager.navigateToWithBackStack(app_main_fcv, parentFragment, get(named(Fragments.About)), Fragments.About.toString(), Fragments.About.toString())
                 5 -> FlowBus.with<Unit>(BaseStrings.Key.CHECK_UPDATE).post(lifecycleScope, Unit)
             }
         }
@@ -117,6 +111,9 @@ class UserBottomSheetFragment() : BaseMviBottomSheetDF<UserFragmentBinding>() {
             // 索引0插入数据
             mAdapterData.add(0, R.drawable.user_ic_usr_24dp to getString(R.string.user_info))
         }
+    }
+
+    override fun initListener() {
 
         // 点击 头像事件
         mBinding.userIcon.clickGap { _, _ ->
@@ -124,10 +121,12 @@ class UserBottomSheetFragment() : BaseMviBottomSheetDF<UserFragmentBinding>() {
             // 点击头像 并 深链接跳转
             dismissAllowingStateLoss()
 
-            parentFragmentManager.hide(this, "ContainerFragmentByUserBottom")
-
             // 导航至头像Fragment Token不为空则跳转
-            parentFragmentManager.navigateByAddWithBackStack(app_main_fcv, UserIconFragment.newInstance().also { it.arguments = bundleOf("iconUrl" to if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mUserVM.mIconUrl else null) }, "UserIconFragment")
+            parentFragmentManager.navigateToWithBackStack<UserIconFragment>(
+                app_main_fcv, this,
+                bundleOf("iconUrl" to if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mUserVM.mIconUrl else null),
+                Fragments.Icon.toString(), Fragments.Icon.toString()
+            )
         }
 
         // 点击 退出事件
@@ -142,11 +141,5 @@ class UserBottomSheetFragment() : BaseMviBottomSheetDF<UserFragmentBinding>() {
             // 关闭当前界面
             dismissAllowingStateLoss()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mHideOnFade = null
-        mNavigateAbout = null
     }
 }

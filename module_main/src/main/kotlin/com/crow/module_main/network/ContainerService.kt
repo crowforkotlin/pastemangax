@@ -5,6 +5,7 @@ import com.crow.module_main.model.resp.MainAppUpdateResp
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
 import retrofit2.http.GET
+import retrofit2.http.Url
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -16,9 +17,9 @@ import retrofit2.http.GET
  **************************/
 interface ContainerService {
 
-    @GET(BaseStrings.URL.UpdateInfo)
-    fun getUpdateInfo(): Flow<MainAppUpdateResp>
+    @GET
+    fun getUpdateInfo(@Url url: String = BaseStrings.URL.UpdateInfo): Flow<MainAppUpdateResp>
 
-    @GET(BaseStrings.URL.QQGroup)
-    fun getQQGroup(): Flow<ResponseBody>
+    @GET
+    fun getQQGroup(@Url url: String = BaseStrings.URL.QQGroup): Flow<ResponseBody>
 }
