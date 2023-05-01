@@ -12,7 +12,7 @@ import com.crow.base.current_project.formatValue
 import com.crow.base.current_project.getComicCardHeight
 import com.crow.base.current_project.getComicCardWidth
 import com.crow.base.current_project.mSize10
-import com.crow.base.tools.extensions.clickGap
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverFragmentRvBinding
 import com.crow.module_discover.model.resp.comic_home.DiscoverComicHomeResult
@@ -45,8 +45,8 @@ class DiscoverComicAdapter(inline val mDoOnTapComic: (DiscoverComicHomeResult) -
                 height = getComicCardHeight()
             }
 
-            vh.rvBinding.discoverRvBookCard.clickGap { _, _ ->
-                mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@clickGap)
+            vh.rvBinding.discoverRvBookCard.doOnClickInterval {
+                mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
         }
     }

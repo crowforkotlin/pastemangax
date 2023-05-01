@@ -94,7 +94,7 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
     override fun initListener() {
 
         // 修改头像 点击事件监听
-        mBinding.userIconEdit.clickGap { _, _ ->
+        mBinding.userIconEdit.doOnClickInterval {
 
             //  创建一个MaterialDialog用于提示，同意后打开相册（支持裁剪）
             mContext.newMaterialDialog { dialog ->

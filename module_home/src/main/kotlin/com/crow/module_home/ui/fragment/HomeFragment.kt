@@ -12,10 +12,20 @@ import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.current_project.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.coroutine.globalCoroutineException
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.navigateIconClickGap
+import com.crow.base.tools.extensions.navigateToWithBackStack
+import com.crow.base.tools.extensions.setMaskAmount
+import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.ui.dialog.LoadingAnimDialog
 import com.crow.base.ui.fragment.BaseMviFragment
-import com.crow.base.ui.viewmodel.*
+import com.crow.base.ui.viewmodel.ViewState
+import com.crow.base.ui.viewmodel.doOnError
+import com.crow.base.ui.viewmodel.doOnLoading
+import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_home.databinding.HomeFragmentBinding
 import com.crow.module_home.model.intent.HomeIntent
 import com.crow.module_home.model.resp.homepage.results.Results
@@ -23,6 +33,7 @@ import com.crow.module_home.ui.adapter.HomeComicParentRvAdapter
 import com.crow.module_home.ui.viewmodel.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
@@ -66,7 +77,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     init {
         FlowBus.with<Drawable>(BaseStrings.Key.SET_HOME_ICON).register(this) {
             if (!isHidden) {
-                lifecycleScope.launch { withStarted {  mBinding.homeToolbar.navigationIcon = it } }
+                lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) { withStarted {  mBinding.homeToolbar.navigationIcon = it } }
             }
         }
     }
@@ -106,6 +117,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
     }
 
+    // 导航至BookInfo
     private fun navigateBookInfo(bookTapEntity: BookTapEntity) {
         val bundle = Bundle()
         bundle.putSerializable("tapEntity", bookTapEntity)
@@ -113,6 +125,14 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
             get<Fragment>(named(Fragments.BookInfo)).also { it.arguments = bundle }, Fragments.BookInfo.toString(), Fragments.BookInfo.toString()
         )
+    }
+
+    // 导航至设置Fragment
+    private fun navigateSettings() {
+            requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
+                requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
+                get(named(Fragments.Settings)), Fragments.Settings.toString(), Fragments.Settings.toString()
+            )
     }
 
     // 暴露的函数 提供给 ContainerFragment 用于通知主页刷新
@@ -149,18 +169,13 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     override fun initListener() {
 
         // 搜索
-        mBinding.homeToolbar.menu[0].clickGap { _, _ -> mBinding.homeSearchView.show() }
+        mBinding.homeToolbar.menu[0].doOnClickInterval { mBinding.homeSearchView.show() }
 
         // 设置
-        mBinding.homeToolbar.menu[1].clickGap { _, _ ->
-            mContext.newMaterialDialog { dialog ->
-                dialog.setTitle("拷贝漫画")
-                dialog.setPositiveButton("知道了~", null)
-            }
-        }
+        mBinding.homeToolbar.menu[1].doOnClickInterval { navigateSettings() }
 
         // MaterialToolBar NavigateIcon 点击事件
-        mBinding.homeToolbar.navigateIconClickGap { _, _ -> get<BottomSheetDialogFragment>(named(Fragments.User)).show(requireActivity().supportFragmentManager, null) }
+        mBinding.homeToolbar.navigateIconClickGap(true) { get<BottomSheetDialogFragment>(named(Fragments.User)).show(requireActivity().supportFragmentManager, null) }
 
         // 刷新
         mBinding.homeRefresh.setOnRefreshListener { mHomeVM.input(HomeIntent.GetHomePage()) }

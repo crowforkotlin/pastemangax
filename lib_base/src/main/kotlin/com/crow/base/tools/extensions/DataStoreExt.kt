@@ -24,6 +24,7 @@ import kotlinx.coroutines.runBlocking
 
 object DataStoreAgent {
 
+    val APP_CONFIG = stringPreferencesKey("app.config")
     val USER_CONFIG = stringPreferencesKey("user.config")
     val DATA_USER = stringPreferencesKey("data.user")
     val USER_COOKIE = stringPreferencesKey("user.cookie")
@@ -31,6 +32,7 @@ object DataStoreAgent {
 }
 
 val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(appContext.getString(R.string.BaseAppName))
+val Context.appConfigDataStore: DataStore<Preferences> by preferencesDataStore(appContext.getString(R.string.BaseAppName).plus(DataStoreAgent.APP_CONFIG.name))
 
 suspend fun DataStore<Preferences>.getIntData(name: String) =
     data.map { preferences -> preferences[intPreferencesKey(name)] ?: 0 }.first()
@@ -55,6 +57,10 @@ suspend fun DataStore<Preferences>.getStringSetData(name: String) =
 
 suspend fun <T> DataStore<Preferences>.asyncEncode(key: Preferences.Key<T>, value: T) {
     edit { it[key] = value }
+}
+
+suspend fun <T> DataStore<Preferences>.asyncDecode(preferencesKey: Preferences.Key<T>): T? {
+    return data.map { it[preferencesKey] }.first()
 }
 
 /*

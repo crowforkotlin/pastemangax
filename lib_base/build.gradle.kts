@@ -134,8 +134,11 @@ dependencies {
     api(Dependencies.logger)
     api(Dependencies.lottie)
     api(Dependencies.glide)
+    api(Dependencies.glide_integration)
     annotationProcessor(Dependencies.glide_compiler)
     api(Dependencies.photoview)
+    api(Dependencies.reactivex_rxjava)
+    api(Dependencies.reactivex_rxjava_android)
 
     // api(Dependencies.autosize)
 

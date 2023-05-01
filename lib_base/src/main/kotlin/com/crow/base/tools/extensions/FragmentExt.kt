@@ -1,7 +1,6 @@
 package com.crow.base.tools.extensions
 
 import android.R.anim
-import android.icu.lang.UCharacter
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
@@ -137,6 +136,18 @@ inline fun FragmentManager.navigateToWithBackStack(
         .add(id, addedTarget, tag)
         .commit()
 }
+
+inline fun<reified T: Fragment> FragmentManager.navigateByAdd(
+    @IdRes id: Int,
+    bundle: Bundle? = null,
+    tag: String? = null,
+    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.withFadeAnimation() },
+) {
+    transaction(beginTransaction())
+        .add(id, T::class.java, bundle, tag)
+        .commit()
+}
+
 
 
 fun FragmentManager.popSyncWithClear(vararg backStackName: String?, flags: Int = FragmentManager.POP_BACK_STACK_INCLUSIVE) {

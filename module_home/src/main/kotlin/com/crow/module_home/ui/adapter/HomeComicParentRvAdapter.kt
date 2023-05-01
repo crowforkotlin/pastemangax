@@ -19,14 +19,18 @@ import com.crow.base.current_project.entity.BookType
 import com.crow.base.current_project.entity.BookType.Comic
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.clickGap
-import com.crow.base.tools.extensions.logMsg
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeFragmentBannerRvBinding
 import com.crow.module_home.databinding.HomeFragmentComicRvBinding
 import com.crow.module_home.databinding.HomeFragmentComicRvHeaderBinding
 import com.crow.module_home.databinding.HomeFragmentComicRvRecRefreshBinding
-import com.crow.module_home.model.resp.homepage.*
+import com.crow.module_home.model.resp.homepage.Banner
+import com.crow.module_home.model.resp.homepage.FinishComic
+import com.crow.module_home.model.resp.homepage.HotComic
+import com.crow.module_home.model.resp.homepage.NewComic
+import com.crow.module_home.model.resp.homepage.RankComics
+import com.crow.module_home.model.resp.homepage.Topices
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.google.android.material.button.MaterialButton
 import com.to.aboomy.pager2banner.IndicatorView
@@ -74,7 +78,7 @@ class HomeComicParentRvAdapter(
             0 -> 创建轮播图持有者(parent)
             1 -> 创建漫画头部持有者(parent, R.drawable.home_ic_recommed_24dp, R.string.home_recommend_comic)
             2 -> 创建漫画内容持有者<RecComicsResult>(parent, BookType.Rec, viewType)
-            3 -> 创建推荐换一批按钮(parent).also { it.rvBinding.homeComicRvRecRefresh.clickGap { _, _ -> doOnRecRefresh(it.rvBinding.homeComicRvRecRefresh) } }
+            3 -> 创建推荐换一批按钮(parent).also { it.rvBinding.homeComicRvRecRefresh.doOnClickInterval { _ -> doOnRecRefresh(it.rvBinding.homeComicRvRecRefresh) } }
             4 -> 创建漫画头部持有者(parent, R.drawable.home_ic_hot_24dp, R.string.home_hot_comic)
             5 -> 创建漫画内容持有者<HotComic>(parent, BookType.Hot, viewType)
             6 -> 创建漫画头部持有者(parent, R.drawable.home_ic_new_24dp, R.string.home_new_comic)
@@ -173,7 +177,6 @@ class HomeComicParentRvAdapter(
     }
 
     suspend fun doRecNotify(datas: MutableList<RecComicsResult>, notifyMs: Long = 25L) {
-        "notify $mHomeRecComicRvAdapter".logMsg()
         mHomeRecComicRvAdapter?.doNotify(datas, notifyMs)
     }
 

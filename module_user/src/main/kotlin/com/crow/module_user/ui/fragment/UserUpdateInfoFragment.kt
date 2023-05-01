@@ -2,12 +2,8 @@ package com.crow.module_user.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.entity.Fragments
 import com.crow.base.current_project.processTokenError
@@ -73,12 +69,12 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
     override fun initListener() {
 
         // 头像 点击事件
-        mBinding.userUpdateInfoIcon.clickGap { _, _ ->
+        mBinding.userUpdateInfoIcon.doOnClickInterval {
             parentFragmentManager.navigateToWithBackStack<UserIconFragment>(baseR.id.app_main_fcv, this, null, Fragments.Icon.toString(), Fragments.Icon.toString())
         }
 
         // 退出账号 点击事件
-        mBinding.userUpdateInfoExitButton.clickGap { _, _ -> doExitFragment() }
+        mBinding.userUpdateInfoExitButton.doOnClickInterval { doExitFragment() }
     }
 
     override fun initObserver() {

@@ -37,3 +37,10 @@ class UserRepository(val service: UserService) {
         return service.reg(username, password)
     }
 }
+
+fun main() {
+    val content = "api.copymanga.tv"
+    val encodeContent = java.util.Base64.getEncoder().encode(content.toByteArray()).decodeToString()
+    println(encodeContent)
+    println(java.util.Base64.getDecoder().decode("YXBpLmNvcHltYW5nYS50dg==").decodeToString())
+}

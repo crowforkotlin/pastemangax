@@ -6,6 +6,14 @@
 	<string name="main_update_url_title">更新节点</string>
 	<string name="main_update_cancel">暂不更新</string>
 
+	<string name="main_settings_titile">设置</string>
+	<string name="main_site_tips">静态站点：APP的默认的站点\n动态站点：当静态站点都无效时可选用此站点</string>
+	<string name="main_site_static">静态站点</string>
+	<string name="main_site_one">[推荐]（无需梯子）站点① </string>
+	<string name="main_site_two">（需要梯子）站点② </string>
+	<string name="main_site_three">（需要梯子）站点③ </string>
+	<string name="main_site_dynamic">动态站点</string>
+
 	<string name="main_about_crow">开发人员：CrowForKotlin</string>
 	<string name="main_about_crow_email">电子邮箱：CrowForKotlin@gmail.com</string>
 	<string name="main_about_crow_github_url">Github主页：<u>https://github.com/CrowForKotlin</u></string>

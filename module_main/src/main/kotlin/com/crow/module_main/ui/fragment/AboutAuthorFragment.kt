@@ -14,7 +14,11 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.crow.base.current_project.entity.Fragments
 import com.crow.base.current_project.getSpannableString
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.getCurrentVersionName
+import com.crow.base.tools.extensions.getNavigationBarHeight
+import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
@@ -90,8 +94,8 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
     }
 
     override fun initListener() {
-        mBinding.mainAboutBack.clickGap { _, _ -> navigateUp() }
-        mBinding.userAboutAddQqGroup.clickGap { _, _ ->
+        mBinding.mainAboutBack.doOnClickInterval { navigateUp() }
+        mBinding.userAboutAddQqGroup.doOnClickInterval {
             mContainerVm.input(ContainerIntent.GetQQGroup())
         }
     }

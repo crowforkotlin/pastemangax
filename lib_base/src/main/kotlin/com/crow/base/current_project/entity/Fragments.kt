@@ -9,5 +9,5 @@ package com.crow.base.current_project.entity
  * @formatter:on
  **************************/
 enum class Fragments {
-    Container, Icon, Login, Reg, About, BookInfo, UserInfo, User
+    Container, Icon, Login, Reg, About, BookInfo, UserInfo, User, Settings
 }

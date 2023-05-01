@@ -1,4 +1,4 @@
-package com.crow.copymanga.di
+package com.crow.module_main.di
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -6,6 +6,7 @@ import com.crow.base.current_project.entity.Fragments
 import com.crow.module_book.ui.fragment.BookInfoFragment
 import com.crow.module_main.ui.fragment.AboutAuthorFragment
 import com.crow.module_main.ui.fragment.ContainerFragment
+import com.crow.module_main.ui.fragment.SettingsFragment
 import com.crow.module_user.ui.fragment.*
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.fragment.dsl.fragment
@@ -30,4 +31,5 @@ val fragmentModule = module {
     fragment<Fragment>(named(Fragments.Icon)) { UserIconFragment() }
     fragment<Fragment>(named(Fragments.About)) { AboutAuthorFragment() }
     fragment<Fragment>(named(Fragments.BookInfo)) { BookInfoFragment() }
+    fragment<Fragment>(named(Fragments.Settings)) { SettingsFragment() }
 }

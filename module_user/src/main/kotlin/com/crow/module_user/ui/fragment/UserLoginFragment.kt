@@ -117,11 +117,11 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
 
     override fun initListener() {
 
-        mBinding.userLogin.clickGap { _, _ ->
+        mBinding.userLogin.doOnClickInterval {
             // 执行登录
             mUserVM.input(UserIntent.Login(
-                mUserVM.getUsername(mBinding.userLoginEditTextUsr.text.toString()) ?: return@clickGap toast(getString(R.string.user_usr_invalid)),
-                mUserVM.getPassword(mBinding.userLoginEditTextPwd.text.toString()) ?: return@clickGap toast(getString(R.string.user_pwd_invalid))
+                mUserVM.getUsername(mBinding.userLoginEditTextUsr.text.toString()) ?: return@doOnClickInterval toast(getString(R.string.user_usr_invalid)),
+                mUserVM.getPassword(mBinding.userLoginEditTextPwd.text.toString()) ?: return@doOnClickInterval toast(getString(R.string.user_pwd_invalid))
             ))
 
             // 开启按钮动画

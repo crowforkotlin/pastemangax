@@ -12,7 +12,11 @@ import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
 import com.crow.base.current_project.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.navigateToWithBackStack
+import com.crow.base.tools.extensions.onCollect
+import com.crow.base.tools.extensions.showSnackBar
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviBottomSheetDF
 import com.crow.module_user.R
 import com.crow.module_user.databinding.UserFragmentBinding
@@ -77,8 +81,8 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
 
                 }
                 1 -> parentFragmentManager.navigateToWithBackStack<UserRegFragment>(app_main_fcv, parentFragment, null, Fragments.Reg.toString(), Fragments.Reg.toString())
-                2 -> toast("还在开发中...")
-                3 -> toast("还在开发中...")
+                2 -> toast(getString(baseR.string.BaseStillInDevelopment))
+                3 -> toast(getString(baseR.string.BaseStillInDevelopment))
                 4 -> parentFragmentManager.navigateToWithBackStack(app_main_fcv, parentFragment, get(named(Fragments.About)), Fragments.About.toString(), Fragments.About.toString())
                 5 -> FlowBus.with<Unit>(BaseStrings.Key.CHECK_UPDATE).post(lifecycleScope, Unit)
             }
@@ -116,7 +120,7 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
     override fun initListener() {
 
         // 点击 头像事件
-        mBinding.userIcon.clickGap { _, _ ->
+        mBinding.userIcon.doOnClickInterval {
 
             // 点击头像 并 深链接跳转
             dismissAllowingStateLoss()
@@ -130,7 +134,7 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
         }
 
         // 点击 退出事件
-        mBinding.userExit.clickGap { _, _ ->
+        mBinding.userExit.doOnClickInterval {
 
             // 发送事件清除用户数据
             FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).post(lifecycleScope, Unit)

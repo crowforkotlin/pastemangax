@@ -162,6 +162,7 @@ object Dependencies {
     * */
     const val glide = "com.github.bumptech.glide:glide:${Versions.glide_version}"
     const val glide_compiler = "com.github.bumptech.glide:compiler:${Versions.glide_version}"
+    const val glide_integration = "com.github.bumptech.glide:okhttp3-integration:${Versions.glide_version}"
 
     /* PhotoView
     * - Github : [https://github.com/Baseflow/PhotoView]
@@ -251,4 +252,7 @@ object Dependencies {
     const val luksiege_compress = "io.github.lucksiege:compress:v3.10.8"
     const val luksiege_ucrop = "io.github.lucksiege:ucrop:v3.10.8"
     const val luksiege_camerax = "io.github.lucksiege:camerax:v3.10.8"
+
+    const val reactivex_rxjava = "io.reactivex.rxjava3:rxjava:3.1.6"
+    const val reactivex_rxjava_android = "io.reactivex.rxjava3:rxandroid:3.0.2"
 }

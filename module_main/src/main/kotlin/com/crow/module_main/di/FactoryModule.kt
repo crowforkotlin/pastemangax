@@ -1,7 +1,7 @@
-package com.crow.copymanga.di
+package com.crow.module_main.di
 
-import com.crow.module_bookshelf.network.BookShelfRepository
 import com.crow.module_book.network.BookRepository
+import com.crow.module_bookshelf.network.BookShelfRepository
 import com.crow.module_discover.network.DiscoverRepository
 import com.crow.module_home.network.HomeRepository
 import com.crow.module_main.network.ContainerRepository

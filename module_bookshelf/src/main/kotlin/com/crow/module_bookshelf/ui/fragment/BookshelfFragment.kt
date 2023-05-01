@@ -191,7 +191,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         }
 
         // 移至顶部 点击事件
-        mBinding.bookshelfMoveTop.clickGap { _, _ ->
+        mBinding.bookshelfMoveTop.doOnClickInterval {
 
             // 点击书架的当前类型为“漫画” 并且漫画适配器个数不为0 则滑动至顶部
             if (mBinding.bookshelfButtonGropu.checkedButtonId == R.id.bookshelf_comic) if (mBookshelfComicRvAdapter.itemCount != 0) mBinding.bookshelfRvComic.smoothScrollToPosition(0)
@@ -201,7 +201,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         }
 
         // 移至底部 点击事件
-        mBinding.bookshelfMoveBottom.clickGap { _, _ ->
+        mBinding.bookshelfMoveBottom.doOnClickInterval {
 
             // 点击漫画 并且漫画适配器个数不为0 则滑动至 适配器总数 - 1
             if (mBinding.bookshelfButtonGropu.checkedButtonId == R.id.bookshelf_comic) if (mBookshelfComicRvAdapter.itemCount != 0) mBinding.bookshelfRvComic.smoothScrollToPosition(mBookshelfComicRvAdapter.itemCount - 1)

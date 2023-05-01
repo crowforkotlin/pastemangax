@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.app.appContext
 import com.crow.base.current_project.entity.BookType
-import com.crow.base.tools.extensions.clickGap
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_home.databinding.HomeFragmentBannerRvItemBinding
 import com.crow.module_home.model.resp.homepage.Banner
 import kotlinx.coroutines.delay
@@ -22,7 +22,7 @@ class HomeBannerRvAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(HomeFragmentBannerRvItemBinding.inflate(from(parent.context), parent, false)).also { vh ->
-            vh.rvBinding.baneerImage.clickGap { _, _ -> onTap(BookType.Banner, vh.mPathword) }
+            vh.rvBinding.baneerImage.doOnClickInterval { onTap(BookType.Banner, vh.mPathword) }
         }
     }
 

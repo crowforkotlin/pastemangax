@@ -7,7 +7,7 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.databinding.BasePagingFooterRetryBinding
-import com.crow.base.tools.extensions.clickGap
+import com.crow.base.tools.extensions.doOnClickInterval
 
 class BaseLoadStateAdapter(private val doOnRetry: () -> Unit) : LoadStateAdapter<BaseLoadStateAdapter.LoadStateViewHolder>() {
 
@@ -24,7 +24,7 @@ class BaseLoadStateAdapter(private val doOnRetry: () -> Unit) : LoadStateAdapter
             vh.rvBinding.root.layoutParams.apply {
                 height = getComicCardHeight() / 2
             }
-            vh.rvBinding.baseLoadingRetry.clickGap { _, _ -> doOnRetry() }
+            vh.rvBinding.baseLoadingRetry.doOnClickInterval { doOnRetry() }
         }
     }
 

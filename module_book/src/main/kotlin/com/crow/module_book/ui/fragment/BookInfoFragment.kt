@@ -11,11 +11,23 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.crow.base.current_project.*
+import com.crow.base.current_project.BaseUser
 import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.current_project.entity.BookType
 import com.crow.base.current_project.entity.Fragments
-import com.crow.base.tools.extensions.*
+import com.crow.base.current_project.formatValue
+import com.crow.base.current_project.getComicCardHeight
+import com.crow.base.current_project.getComicCardWidth
+import com.crow.base.current_project.getSpannableString
+import com.crow.base.tools.extensions.BASE_ANIM_300L
+import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.getNavigationBarHeight
+import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.popSyncWithClear
+import com.crow.base.tools.extensions.showSnackBar
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
@@ -201,9 +213,10 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
             // 发生错误 取消动画 退出界面 提示
             .doOnError { _, _ ->
-                dismissLoadingAnim()
-                navigateUp()
-                toast(getString(baseR.string.BaseLoadingError))
+                dismissLoadingAnim {
+                    toast(getString(baseR.string.BaseLoadingError))
+                    navigateUp()
+                }
             }
 
             // 显示书页内容 根据意图类型 再次发送获取章节意图的请求
@@ -310,7 +323,7 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
     override fun initListener() {
 
-        mBinding.bookInfoBack.clickGap { _, _ -> navigateUp() }
+        mBinding.bookInfoBack.doOnClickInterval { navigateUp() }
 
         // 章节选择器 Tab 点击事件 0-100话 101-200话
         mBinding.bookInfoRvChapterSelector.addOnTabSelectedListener(object : OnTabSelectedListener {

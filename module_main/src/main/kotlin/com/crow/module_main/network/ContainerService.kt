@@ -2,6 +2,7 @@ package com.crow.module_main.network
 
 import com.crow.base.current_project.BaseStrings
 import com.crow.module_main.model.resp.MainAppUpdateResp
+import com.crow.module_main.model.resp.MainSiteResp
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
 import retrofit2.http.GET
@@ -18,8 +19,11 @@ import retrofit2.http.Url
 interface ContainerService {
 
     @GET
-    fun getUpdateInfo(@Url url: String = BaseStrings.URL.UpdateInfo): Flow<MainAppUpdateResp>
+    fun getUpdateInfo(@Url url: String = BaseStrings.URL.Crow_UpdateInfo): Flow<MainAppUpdateResp>
 
     @GET
-    fun getQQGroup(@Url url: String = BaseStrings.URL.QQGroup): Flow<ResponseBody>
+    fun getQQGroup(@Url url: String = BaseStrings.URL.Crow_QQGroup): Flow<ResponseBody>
+
+    @GET
+    fun getSite(@Url url: String = BaseStrings.URL.Crow_Site): Flow<MainSiteResp>
 }

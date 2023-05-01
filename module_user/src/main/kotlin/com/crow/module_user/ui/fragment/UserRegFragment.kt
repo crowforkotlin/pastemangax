@@ -78,13 +78,13 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
 
     override fun initListener() {
 
-        mBinding.userReg.clickGap { _, _ ->
+        mBinding.userReg.doOnClickInterval {
             // 执行登录
             mUserVM.input(UserIntent.Reg(
-                mUserVM.getUsername(mBinding.userRegEditTextUsr.text.toString()) ?: return@clickGap toast(getString(
+                mUserVM.getUsername(mBinding.userRegEditTextUsr.text.toString()) ?: return@doOnClickInterval toast(getString(
                     R.string.user_usr_invalid)),
-                (mUserVM.getPassword(mBinding.userRegEditTextPwd.text.toString()) ?: return@clickGap toast(getString(R.string.user_pwd_invalid)))
-                    .getIsSame(mBinding.userRegEditTextRePwd.text.toString()) ?: return@clickGap toast(getString(R.string.user_repwd_notmatch)
+                (mUserVM.getPassword(mBinding.userRegEditTextPwd.text.toString()) ?: return@doOnClickInterval toast(getString(R.string.user_pwd_invalid)))
+                    .getIsSame(mBinding.userRegEditTextRePwd.text.toString()) ?: return@doOnClickInterval toast(getString(R.string.user_repwd_notmatch)
             )))
 
             // 开启按钮动画

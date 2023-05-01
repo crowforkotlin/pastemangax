@@ -1,17 +1,14 @@
 package com.crow.module_discover.ui.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.current_project.getComicCardHeight
-import com.crow.base.current_project.getComicCardWidth
 import com.crow.base.databinding.BasePagingFooterRetryBinding
-import com.crow.base.tools.extensions.clickGap
-import com.crow.base.tools.extensions.logMsg
+import com.crow.base.tools.extensions.doOnClickInterval
 
 class DiscoverLoadStateAdapter(private val retry: () -> Unit) : LoadStateAdapter<DiscoverLoadStateAdapter.LoadStateViewHolder>() {
 
@@ -28,7 +25,7 @@ class DiscoverLoadStateAdapter(private val retry: () -> Unit) : LoadStateAdapter
             vh.rvBinding.root.layoutParams.apply {
                 height = getComicCardHeight() / 2
             }
-            vh.rvBinding.baseLoadingRetry.clickGap { _, _ -> retry() }
+            vh.rvBinding.baseLoadingRetry.doOnClickInterval { retry() }
         }
     }
 

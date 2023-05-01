@@ -1,17 +1,18 @@
 package com.crow.copymanga
 
-import android.app.Activity
-import android.app.Application
 import android.content.Context
 import android.os.Build
-import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crow.base.app.BaseApp
 import com.crow.base.tools.extensions.getCurrentVersionName
-import com.crow.base.tools.extensions.logMsg
-import com.crow.copymanga.di.*
+import com.crow.module_main.di.factoryModule
+import com.crow.module_main.di.fragmentModule
+import com.crow.module_main.di.okhttpModule
+import com.crow.module_main.di.retrofitModule
+import com.crow.module_main.di.servicesModule
+import com.crow.module_main.di.viewModelModule
 import com.tencent.bugly.crashreport.CrashReport
 import com.tencent.bugly.crashreport.CrashReport.UserStrategy
 import org.koin.android.ext.koin.androidContext
@@ -46,7 +47,7 @@ class MainApplication : BaseApp() {
         startKoin {
             fragmentFactory()
             androidContext(this@MainApplication)
-            modules(listOf(netWorkModule, servicesModule, viewModelModule, factoryModule, fragmentModule))
+            modules(listOf(retrofitModule, okhttpModule, servicesModule, viewModelModule, factoryModule, fragmentModule))
         }
     }
 

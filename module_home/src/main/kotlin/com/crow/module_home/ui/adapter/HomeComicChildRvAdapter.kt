@@ -6,13 +6,12 @@ import android.view.LayoutInflater.from
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.current_project.*
 import com.crow.base.current_project.entity.BookTapEntity
 import com.crow.base.current_project.entity.BookType
-import com.crow.base.tools.extensions.clickGap
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_home.databinding.HomeFragmentComicRvBodyBinding
 import com.crow.module_home.model.resp.homepage.*
@@ -42,7 +41,9 @@ class HomeComicChildRvAdapter<T>(
 
     // 初始化卡片内部视图
     private fun ViewHolder.initView(pathword: String, name: String, imageUrl: String, author: List<AuthorResult>, hot: Int) {
-        Glide.with(itemView).load(imageUrl).into(rvBinding.homeComicRvImage)   // 加载封面
+        Glide.with(itemView)
+            .load(imageUrl)
+            .into(rvBinding.homeComicRvImage)   // 加载封面
         rvBinding.homeComicRvName.text = name                                  // 漫画名
         rvBinding.homeComicRvAuthor.text = author.joinToString { it.name }     // 作者 ：Crow
         rvBinding.homeComicRvHot.text = formatValue(hot)                       // 热度 ： 12.3456 W
@@ -64,11 +65,11 @@ class HomeComicChildRvAdapter<T>(
             }
 
             // 点击 父布局卡片 以及漫画卡片 事件 回调给上级 HomeFragment --> ContainerFragment
-            vh.rvBinding.root.clickGap { _, _ ->
+            vh.rvBinding.root.doOnClickInterval {
                 if (mBookType == BookType.Topic) { }
                 else doOnTap(BookTapEntity(BookType.Comic, vh.mPathWord))
             }
-            vh.rvBinding.homeBookCard.clickGap { _, _ ->
+            vh.rvBinding.homeBookCard.doOnClickInterval {
                 if (mBookType == BookType.Topic) { }
                 else doOnTap(BookTapEntity(BookType.Comic, vh.mPathWord))
             }

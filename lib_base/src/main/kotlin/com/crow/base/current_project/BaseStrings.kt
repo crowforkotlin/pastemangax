@@ -6,11 +6,22 @@ object BaseStrings {
 
 
     object URL {
-        const val UpdateInfo = "https://gitee.com/llzzppFlash/copy-manga/raw/main/update_info.json"
-        const val QQGroup = "https://gitee.com/llzzppFlash/copy-manga/raw/main/qq_group"
+
+        fun setCopyMangaUrl(tld: String) {
+            CopyManga = "https://api.copymanga$tld"
+        }
+
+        // (Top-Level Domain，TLD)
+        const val CopyManga_TLD_TV = ".tv"
+        const val CopyManga_TLD_COM = ".com"
+        const val CopyManga_TLD_SITE = ".site"
+
+        const val Crow_Site = "https://gitee.com/llzzppFlash/copy-manga/raw/main/site.json"
+        const val Crow_UpdateInfo = "https://gitee.com/llzzppFlash/copy-manga/raw/main/update_info.json"
+        const val Crow_QQGroup = "https://gitee.com/llzzppFlash/copy-manga/raw/main/qq_group"
 
         const val MangaFuna = "https://hi77-overseas.mangafuna.xyz/"
-        const val CopyManga = "https://api.copymanga.site/"
+        var CopyManga = "https://api.copymanga$CopyManga_TLD_TV"
         const val Login = "/api/v3/login"
         const val Reg = "/api/v3/register"
 

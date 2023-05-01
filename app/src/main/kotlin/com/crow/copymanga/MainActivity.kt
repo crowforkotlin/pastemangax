@@ -7,10 +7,21 @@ import androidx.core.view.WindowCompat
 import com.crow.base.current_project.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.logMsg
-import com.crow.base.tools.extensions.navigateByAddWithBackStack
+import com.crow.base.tools.extensions.navigateByAdd
 import com.crow.copymanga.databinding.AppActivityMainBinding
 import com.crow.module_main.ui.fragment.ContainerFragment
 import com.orhanobut.logger.Logger
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.disposables.DisposableContainer
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.ScopeActivity
 
@@ -43,7 +54,7 @@ class MainActivity : ScopeActivity()  {
         setContentView(mBinding.root)
 
         // 内存重启后 避免再次添加布局
-        if (savedInstanceState == null) supportFragmentManager.navigateByAddWithBackStack<ContainerFragment>(R.id.app_main_fcv, null, Fragments.Container.toString(), Fragments.Container.toString())
+        if (savedInstanceState == null) supportFragmentManager.navigateByAdd<ContainerFragment>(R.id.app_main_fcv, null, Fragments.Container.toString())
     }
 
     override fun onDestroy() {
@@ -60,4 +71,137 @@ class MainActivity : ScopeActivity()  {
         super.onLowMemory()
         "(MainActivity) onLowMemory".logMsg(Logger.ERROR)
     }
+}
+
+fun main() = runBlocking<Unit> {
+
+    launch {
+        delay(1000L)
+        println("------------------------------------")
+        flow { emit(1) }
+            .onStart { println("start") }
+            .onEach { println("onEach1") }
+            .onEach {throw Exception("onEach2") }
+            .catch { println("catch : $it") }
+            .collect { println(it) }
+    }
+
+    println("-----------")
+
+
+    fun getResult() : String {
+        return "Result"
+    }
+
+    Flowable.just(getResult())
+        .doOnSubscribe {
+            println("[Flowable] : doOnSubscribe")
+        }
+        .doOnComplete {
+            println("[Flowable] : doOnComplete")
+        }
+        .doOnEach {
+            println("[Flowable] : doOnEach : $it")
+        }
+        .doOnNext {
+            println("[Flowable] : doOnNext : $it")
+        }
+        .doAfterNext {
+            println("[Flowable] : doAfterNext : $it")
+        }
+        .doOnError {
+            println("[Flowable] : doOnError : $it")
+        }
+        .doAfterTerminate {
+            println("[Flowable] : doAfterTerminate")
+        }
+        .doFinally {
+            println("[Flowable] : doFinally")
+        }
+        .doOnLifecycle({
+            println("doOnLifecycle : Disposable $it")
+        }, {
+            println("[Flowable] : doOnLifecycle : Run Action")
+        }, {
+            println("[Flowable] : doOnLifecycle : Run Action")
+        })
+        .subscribe({
+            println("[Flowable] [subscribe] : value is $it")
+        }, {
+            println("[Flowable] [subscribe] : Throwable : $it")
+        }, {
+            println("[Flowable] [subscribe] : Run Action")
+        }, object : DisposableContainer {
+            override fun add(d: Disposable?): Boolean {
+                println("[Flowable] [subscribe] : Add $d")
+                return true
+            }
+
+            override fun remove(d: Disposable?): Boolean {
+                println("[Flowable] [subscribe] : Remove")
+                return true
+            }
+
+            override fun delete(d: Disposable?): Boolean {
+                println("[Flowable] [subscribe] : delete $d")
+                return true
+            }
+        })
+
+    println("------------------------")
+    Observable.create { it.onNext("onNext") }.subscribe {
+        println("123123132123123132")
+    }
+    Observable.just(getResult())
+        .doOnSubscribe {
+            println("doOnSubscribe")
+        }
+        .doOnComplete {
+            println("doOnComplete")
+        }
+        .doOnEach {
+            println("doOnEach : $it")
+        }
+        .doOnNext {
+            println("doOnNext : $it")
+        }
+        .doAfterNext {
+            println("doAfterNext : $it")
+        }
+        .doOnError {
+            println("doOnError : $it")
+        }
+        .doAfterTerminate {
+            println("doAfterTerminate")
+        }
+        .doFinally {
+            println("doFinally")
+        }
+        .doOnLifecycle({
+            println("doOnLifecycle : Disposable $it")
+        }, {
+            println("doOnLifecycle : Run Action")
+        })
+        .subscribe({
+            println("[subscribe] : value is $it")
+        }, {
+            println("[subscribe] : Throwable : $it")
+        }, {
+            println("[subscribe] : Run Action")
+        }, object : DisposableContainer {
+            override fun add(d: Disposable?): Boolean {
+                println("[subscribe] : Add $d")
+                return true
+            }
+
+            override fun remove(d: Disposable?): Boolean {
+                println("[subscribe] : Remove")
+                return true
+            }
+
+            override fun delete(d: Disposable?): Boolean {
+                println("[subscribe] : delete $d")
+                return true
+            }
+        })
 }

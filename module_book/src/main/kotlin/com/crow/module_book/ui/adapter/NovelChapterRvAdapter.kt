@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.appContext
 import com.crow.base.tools.extensions.BASE_ANIM_200L
-import com.crow.base.tools.extensions.clickGap
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_book.R
 import com.crow.module_book.databinding.BookComicInfoRvChapterBinding
@@ -38,8 +38,8 @@ class NovelChapterRvAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(BookComicInfoRvChapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
-            vh.mButton.clickGap { _, _ ->
-                if (mClickFlag) return@clickGap
+            vh.mButton.doOnClickInterval {
+                if (mClickFlag) return@doOnClickInterval
                 mClickFlag = true
                 mDoOnTapChapter(mComic[vh.absoluteAdapterPosition])
             }

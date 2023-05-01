@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.current_project.getComicCardHeight
 import com.crow.base.current_project.getComicCardWidth
-import com.crow.base.tools.extensions.clickGap
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
 import com.crow.module_bookshelf.model.resp.bookshelf_novel.BookshelfNovelResults
 
@@ -47,8 +47,8 @@ class BookshelfNovelRvAdapter(inline val doOnTap: (BookshelfNovelResults) -> Uni
                 height = getComicCardHeight()
             }
 
-            vh.rvBinding.bookshelfRvImage.clickGap { _, _ ->
-                doOnTap(getItem(vh.absoluteAdapterPosition) ?: return@clickGap)
+            vh.rvBinding.bookshelfRvImage.doOnClickInterval {
+                doOnTap(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.crow.module_main.ui.fragment
 
 import android.graphics.drawable.Drawable
-import android.os.Bundle
+import android.util.Base64
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isInvisible
@@ -10,9 +10,19 @@ import androidx.lifecycle.lifecycleScope
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.DataStoreAgent
+import com.crow.base.tools.extensions.appConfigDataStore
+import com.crow.base.tools.extensions.asyncEncode
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.isLatestVersion
+import com.crow.base.tools.extensions.newMaterialDialog
+import com.crow.base.tools.extensions.onCollect
+import com.crow.base.tools.extensions.toJson
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.viewmodel.doOnErrorInCoroutine
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.base.ui.viewmodel.doOnResultInCoroutine
 import com.crow.module_bookshelf.ui.fragment.BookshelfFragment
 import com.crow.module_discover.ui.fragment.DiscoverFragment
 import com.crow.module_home.ui.fragment.HomeFragment
@@ -20,13 +30,13 @@ import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentContainerBinding
 import com.crow.module_main.databinding.MainUpdateLayoutBinding
 import com.crow.module_main.databinding.MainUpdateUrlLayoutBinding
+import com.crow.module_main.model.entity.MainAppConfigEntity
 import com.crow.module_main.model.intent.ContainerIntent
 import com.crow.module_main.model.resp.MainAppUpdateResp
 import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
 import com.crow.module_main.ui.viewmodel.ContainerViewModel
 import com.crow.module_user.ui.viewmodel.UserViewModel
-import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -43,9 +53,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     // FlowBus Init
     init {
-        FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).register(this) { mUserVM.doClearUserInfo() }                        // 清除用户数据
-        FlowBus.with<String>(BaseStrings.Key.LOGIN_SUCUESS).register(this) { doLoginSuccessRefresh(it) }                        // 登录成功后响应回来进行刷新
-        FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).register(this) { doExitUser() }                                           // 退出账号
+        FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).register(this) { mUserVM.doClearUserInfo() }                                       // 清除用户数据
+        FlowBus.with<String>(BaseStrings.Key.LOGIN_SUCUESS).register(this) { doLoginSuccessRefresh(it) }                                          // 登录成功后响应回来进行刷新
+        FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).register(this) { doExitUser() }                                                                           // 退出账号
         FlowBus.with<Unit>(BaseStrings.Key.CHECK_UPDATE).register(this) { mContaienrVM.input(ContainerIntent.GetUpdateInfo()) } // 查询更新
     }
 
@@ -70,15 +80,6 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
-    override fun initView(bundle: Bundle?) {
-
-        // 适配器 初始化 （设置Adapter、预加载页数）
-        mContainerAdapter = ContainerAdapter(mFragmentList, childFragmentManager, lifecycle)
-        mBinding.mainViewPager.adapter = mContainerAdapter
-        mBinding.mainViewPager.offscreenPageLimit = 3
-        mBinding.mainViewPager.isUserInputEnabled = false
-    }
-
     override fun initObserver() {
 
         // 用户信息 收集
@@ -91,16 +92,40 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             BaseUser.CURRENT_USER_TOKEN = it?.mToken ?: return@onCollect
         }
 
+        mContaienrVM.appConfig.onCollect(this) { appConfig ->
+            if (appConfig == null) return@onCollect
+            if (mBinding.mainViewPager.adapter == null) {
+                BaseStrings.URL.CopyManga = appConfig.mSite
+                initView()
+            }
+            if (appConfig!!.mAppFirstInit) {
+                mContaienrVM.input(ContainerIntent.GetSite())
+            }
+        }
+
         // 观察ContainerVM
         mContaienrVM.onOutput { intent ->
             when(intent) {
                 is ContainerIntent.GetUpdateInfo -> { intent.mViewState.doOnResult { doUpdateChecker(intent.appUpdateResp!!) } }
+                is ContainerIntent.GetSite -> {
+                    intent.mViewState
+                        .doOnErrorInCoroutine { _, msg ->
+                            mContext.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(MainAppConfigEntity(false, BaseStrings.URL.CopyManga)))
+                        }
+                        .doOnResultInCoroutine {
+                            val decodeSite = Base64.decode(intent.siteResp!!.mSiteList!!.first()!!.mEncodeSite, Base64.DEFAULT).decodeToString()
+                            mContext.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(MainAppConfigEntity(false, decodeSite)))
+                            BaseStrings.URL.CopyManga = decodeSite
+                        }
+                }
             }
         }
     }
 
     // 检查更新
-    override fun initData() { mContaienrVM.input(ContainerIntent.GetUpdateInfo()) }
+    override fun initData() {
+        mContaienrVM.input(ContainerIntent.GetUpdateInfo())
+    }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
@@ -120,6 +145,15 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             }
             true
         }
+    }
+
+    private fun initView() {
+
+        // 适配器 初始化 （设置Adapter、预加载页数）
+        mContainerAdapter = ContainerAdapter(mFragmentList, childFragmentManager, lifecycle)
+        mBinding.mainViewPager.adapter = mContainerAdapter
+        mBinding.mainViewPager.offscreenPageLimit = 3
+        mBinding.mainViewPager.isUserInputEnabled = false
     }
 
     // 执行退出用户
@@ -159,8 +193,8 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         updateBinding.mainUpdateTitle.text = update.mTitle
         updateBinding.mainUpdateText.text = update.mContent
         updateBinding.mainUpdateTime.text = getString(R.string.main_update_time, update.mTime)
-        if (!appUpdateResp.mForceUpdate) { updateBinding.mainUpdateCancel.clickGap { _, _ -> updateDialog.dismiss() } }
-        updateBinding.mainUpdateGo.clickGap { _, _ ->
+        if (!appUpdateResp.mForceUpdate) { updateBinding.mainUpdateCancel.doOnClickInterval { updateDialog.dismiss() } }
+        updateBinding.mainUpdateGo.doOnClickInterval {
             updateDialog.dismiss()
             val updateUrlBinding = MainUpdateUrlLayoutBinding.inflate(layoutInflater)
             val updateUrlDialog = mContext.newMaterialDialog {
@@ -170,7 +204,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             (updateUrlBinding.mainUpdateUrlScrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = screenHeight
             updateUrlBinding.mainUpdateUrlCancel.isInvisible = appUpdateResp.mForceUpdate
             updateUrlBinding.mainUpdateUrlRv.adapter = MainAppUpdateRv(update.mUrl)
-            if (!appUpdateResp.mForceUpdate) { updateUrlBinding.mainUpdateUrlCancel.clickGap { _, _ -> updateUrlDialog.dismiss() } }
+            if (!appUpdateResp.mForceUpdate) { updateUrlBinding.mainUpdateUrlCancel.doOnClickInterval { updateUrlDialog.dismiss() } }
         }
     }
 }

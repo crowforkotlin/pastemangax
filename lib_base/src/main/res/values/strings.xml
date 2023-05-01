@@ -12,6 +12,7 @@
     <string name="BaseConfirm">确认</string>
     <string name="BaseCancel">取消</string>
     <string name="BaseTips">提示</string>
+    <string name="BaseStillInDevelopment">"正在开发中..."</string>
 
 
 
