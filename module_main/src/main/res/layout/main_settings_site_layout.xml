@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/base_dp10">
@@ -10,14 +11,28 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/base_dp20"
-        android:textSize="@dimen/base_sp12"
         android:drawablePadding="@dimen/base_dp10"
         android:text="@string/main_site_tips"
+        android:textSize="@dimen/base_sp12"
         android:textStyle="bold"
         app:drawableStartCompat="@drawable/user_ic_login_tips"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/settings_site_current"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_dp20"
+        android:text="@string/main_site_current"
+        android:textColor="@color/black"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textSize="@dimen/base_sp14"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_site_tips" />
 
     <TextView
         android:id="@+id/settings_site_static_title"
@@ -29,7 +44,8 @@
         android:textSize="@dimen/base_sp18"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_site_tips" />
+        app:layout_constraintTop_toBottomOf="@+id/settings_site_current" />
+
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/settings_site_static_scrollview"
@@ -60,12 +76,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/main_site_two" />
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/settings_site_static_radio_three"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/main_site_three" />
-
         </RadioGroup>
 
     </androidx.core.widget.NestedScrollView>
@@ -82,6 +92,21 @@
         app:lottie_fileName="lottie/loading_threepoint_0.80s.json"
         app:lottie_loop="true" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/settings_site_dynamic_reload"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/BaseLoadingRetry"
+        android:textColor="@color/base_black"
+        android:visibility="invisible"
+        app:backgroundTint="@color/main_blue_100"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_site_static_scrollview"
+        tools:visibility="visible" />
+
     <TextView
         android:id="@+id/settings_site_dynamic_title"
         android:layout_width="wrap_content"
@@ -93,16 +118,17 @@
         android:textStyle="bold"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_site_static_scrollview" />
+        app:layout_constraintTop_toBottomOf="@+id/settings_site_static_scrollview"
+        tools:visibility="visible" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/settings_site_dynamic_scrollview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/base_dp20"
+        android:layout_marginBottom="@dimen/base_dp10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="@dimen/base_dp10"
         app:layout_constraintStart_toStartOf="@+id/settings_site_dynamic_title"
         app:layout_constraintTop_toBottomOf="@+id/settings_site_dynamic_title">
 
@@ -110,7 +136,8 @@
             android:id="@+id/settings_site_dynamic_radio_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            tools:visibility="visible" />
 
     </androidx.core.widget.NestedScrollView>
 

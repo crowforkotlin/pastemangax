@@ -15,11 +15,13 @@ import com.crow.base.tools.extensions.appConfigDataStore
 import com.crow.base.tools.extensions.asyncEncode
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.isLatestVersion
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnErrorInCoroutine
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnResultInCoroutine
@@ -37,6 +39,8 @@ import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
 import com.crow.module_main.ui.viewmodel.ContainerViewModel
 import com.crow.module_user.ui.viewmodel.UserViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -53,6 +57,12 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     // FlowBus Init
     init {
+        lifecycleScope.launch {
+            repeat(Int.MAX_VALUE) {
+                delay(1000)
+                BaseUser.CURRENT_REGION.logMsg()
+            }
+        }
         FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).register(this) { mUserVM.doClearUserInfo() }                                       // 清除用户数据
         FlowBus.with<String>(BaseStrings.Key.LOGIN_SUCUESS).register(this) { doLoginSuccessRefresh(it) }                                          // 登录成功后响应回来进行刷新
         FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).register(this) { doExitUser() }                                                                           // 退出账号
@@ -96,6 +106,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             if (appConfig == null) return@onCollect
             if (mBinding.mainViewPager.adapter == null) {
                 BaseStrings.URL.CopyManga = appConfig.mSite
+                BaseUser.CURRENT_REGION = appConfig.mRoute
                 initView()
             }
             if (appConfig!!.mAppFirstInit) {
@@ -106,15 +117,17 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 观察ContainerVM
         mContaienrVM.onOutput { intent ->
             when(intent) {
-                is ContainerIntent.GetUpdateInfo -> { intent.mViewState.doOnResult { doUpdateChecker(intent.appUpdateResp!!) } }
+                is ContainerIntent.GetUpdateInfo -> { intent.mViewState
+                    .doOnError { _, _ -> toast(getString(R.string.main_update_error)) }
+                    .doOnResult { doUpdateChecker(intent.appUpdateResp!!) } }
                 is ContainerIntent.GetSite -> {
                     intent.mViewState
                         .doOnErrorInCoroutine { _, msg ->
-                            mContext.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(MainAppConfigEntity(false, BaseStrings.URL.CopyManga)))
+                            mContext.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(MainAppConfigEntity()))
                         }
                         .doOnResultInCoroutine {
                             val decodeSite = Base64.decode(intent.siteResp!!.mSiteList!!.first()!!.mEncodeSite, Base64.DEFAULT).decodeToString()
-                            mContext.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(MainAppConfigEntity(false, decodeSite)))
+                            mContext.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(MainAppConfigEntity()))
                             BaseStrings.URL.CopyManga = decodeSite
                         }
                 }
@@ -178,7 +191,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private fun doUpdateChecker(appUpdateResp: MainAppUpdateResp) {
         val update = appUpdateResp.mUpdates.first()
         if (isLatestVersion(latest = update.mVersionCode.toLong())) return run {
-            if (mInitUpdate) toast("版本已经是最新的了！")
+            if (mInitUpdate) toast(getString(R.string.main_update_tips))
             mInitUpdate = true
         }
         mInitUpdate = true

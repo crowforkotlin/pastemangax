@@ -102,6 +102,6 @@ inline fun View.processTokenError(
         }
         .onFailure {
             if (code == ViewState.Error.UNKNOW_HOST) this.showSnackBar(msg ?: appContext.getString(R.string.BaseLoadingError))
-            else toast(appContext.getString(R.string.BaseUnknow))
+            else toast(appContext.getString(R.string.BaseUnknowError))
         }
 }

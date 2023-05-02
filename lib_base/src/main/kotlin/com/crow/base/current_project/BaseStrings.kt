@@ -13,7 +13,6 @@ object BaseStrings {
 
         // (Top-Level Domain，TLD)
         const val CopyManga_TLD_TV = ".tv"
-        const val CopyManga_TLD_COM = ".com"
         const val CopyManga_TLD_SITE = ".site"
 
         const val Crow_Site = "https://gitee.com/llzzppFlash/copy-manga/raw/main/site.json"

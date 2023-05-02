@@ -2,6 +2,7 @@
 
 package com.crow.base.tools.extensions
 
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
@@ -12,14 +13,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.view.event.BaseEvent.Companion.BASE_FLAG_TIME
-import com.crow.base.ui.view.event.BaseEventEntity
 import com.crow.base.ui.view.event.click.BaseIEventInterval
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
 
 /************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -31,83 +30,61 @@ import kotlin.math.absoluteValue
  **************************/
 
 
-private fun<T> T.getIntervalResult(flagTime: Long, msg: String? = null, baseEvent: BaseEvent): BaseEventEntity<T>? {
-    baseEvent.mCurrentTime = System.currentTimeMillis()
-    val gapTime = baseEvent.mCurrentTime - flagTime
-    return if (gapTime > baseEvent.mLastClickGapTime) {
-        baseEvent.mLastClickGapTime = baseEvent.mCurrentTime
-        BaseEventEntity(this, baseEvent)
-    } else {
-        if (msg != null) toast(msg)
-        null
-    }
-}
 
-private fun<T> T.doOnIntervalResult(flagTime: Long, baseEvent: BaseEvent, iEven: BaseIEventIntervalExt<T>) {
-    val result = getIntervalResult(flagTime, null, baseEvent)
-    if (result != null) {
-        iEven.onIntervalOk(result)
-    } else {
-        iEven.onIntervalFailure((flagTime / 1000) - ((baseEvent.mLastClickGapTime - baseEvent.mCurrentTime).absoluteValue / 1000))
-    }
-}
-
-// 事件限制仅一次初始化
-inline fun <T> BaseEvent.eventInitLimitOnce(block: () -> T) {
-    if (!mInitOnce) {
-        mInitOnce = true
-        block()
-    }
-}
 
 // View 点击事件间隔 默认1秒
 fun View.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME, msg: String? = null, iEven: BaseIEventInterval<View>) {
-    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance()
-    setOnClickListener { iEven.onIntervalOk(getIntervalResult(flagTime, msg, baseEvent) ?: return@setOnClickListener) }
+    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance(flagTime) else BaseEvent.newInstance(flagTime)
+    setOnClickListener { iEven.onIntervalOk(baseEvent.getIntervalResult(this, msg, baseEvent) ?: return@setOnClickListener) }
 }
 
 // View 扩展 onFailure
 fun View.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME, iEven: BaseIEventIntervalExt<View>) {
-    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance()
-    setOnClickListener { doOnIntervalResult(flagTime, baseEvent, iEven) }
+    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance(flagTime) else BaseEvent.newInstance(flagTime)
+    setOnClickListener { baseEvent.doOnIntervalResult(this, baseEvent, iEven) }
 }
 
 // MenuItem 点击事件间隔 默认1秒
 fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME, msg: String? = null, iEven: BaseIEventInterval<MenuItem>) {
-    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance()
+    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance(flagTime) else BaseEvent.newInstance(flagTime)
     setOnMenuItemClickListener {
-        iEven.onIntervalOk(getIntervalResult(flagTime, msg, baseEvent) ?: return@setOnMenuItemClickListener true)
+        iEven.onIntervalOk(baseEvent.getIntervalResult(this, msg, baseEvent) ?: return@setOnMenuItemClickListener true)
         true
     }
 }
 
 // MenuItem 扩展 onFailure
-fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME, iEven: BaseIEventIntervalExt<MenuItem>) {
-    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance()
+fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME, iEvent: BaseIEventIntervalExt<MenuItem>) {
+    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance(flagTime) else BaseEvent.newInstance(flagTime)
     setOnMenuItemClickListener {
-        doOnIntervalResult(flagTime, baseEvent, iEven)
+        baseEvent.doOnIntervalResult(this, baseEvent, iEvent)
         true
     }
 }
 
 // MaterialToolbar 点击事件间隔 默认1秒
 fun MaterialToolbar.navigateIconClickGap(isGlobal: Boolean = true, flagTime: Long = BASE_FLAG_TIME, msg: String? = null, iEven: BaseIEventInterval<MaterialToolbar>) {
-    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance()
+    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance(flagTime) else BaseEvent.newInstance(flagTime)
     setNavigationOnClickListener {
-        iEven.onIntervalOk(getIntervalResult(flagTime, msg, baseEvent) ?: return@setNavigationOnClickListener)
+        iEven.onIntervalOk(baseEvent.getIntervalResult(this, msg, baseEvent) ?: return@setNavigationOnClickListener)
     }
 }
 
 // BaseEvent通用事件回调间隔 默认1秒，需手动创建EventGapTimeExt对象
-fun BaseEvent.doOnInterval(flagTime: Long = BASE_FLAG_TIME, msg: String? = null, iEven: BaseIEventInterval<BaseEvent>) {
-    iEven.onIntervalOk(getIntervalResult(flagTime, msg, this) ?: return)
+fun BaseEvent.doOnInterval(msg: String? = null, iEvent: BaseIEventInterval<BaseEvent>) : BaseEvent? {
+    iEvent.onIntervalOk(getIntervalResult(this, msg, this) ?: return null)
+    return this
 }
 
 // BaseEvent扩展 onFailure
-fun BaseEvent.doOnInterval(flagTime: Long = BASE_FLAG_TIME, iEven: BaseIEventIntervalExt<BaseEvent>) {
-    doOnIntervalResult(flagTime, this, iEven)
+fun BaseEvent.doOnInterval(iEvent: BaseIEventIntervalExt<BaseEvent>) {
+    doOnIntervalResult(this, this, iEvent)
 }
 
+fun BaseEvent.doOnInterval(mHandler: Handler, runnable: Runnable): BaseEvent {
+    mHandler.postDelayed({ runnable.run() }, mCurrentFlagTime)
+    return this
+}
 
 // BaseEvent扩展 onFailure 使用内联
 inline fun SwipeRefreshLayout.setAutoCancelRefreshing(lifecycleOwner: LifecycleOwner, cancelTime: Long = 5_000L, crossinline block: () -> Unit) {

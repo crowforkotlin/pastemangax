@@ -1,16 +1,18 @@
-package com.crow.module_main.di
+package com.crow.copymanga.di
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import com.crow.base.current_project.entity.Fragments
 import com.crow.module_book.ui.fragment.BookInfoFragment
 import com.crow.module_main.ui.fragment.AboutAuthorFragment
 import com.crow.module_main.ui.fragment.ContainerFragment
 import com.crow.module_main.ui.fragment.SettingsFragment
-import com.crow.module_user.ui.fragment.*
+import com.crow.module_user.ui.fragment.UserBottomSheetFragment
+import com.crow.module_user.ui.fragment.UserIconFragment
+import com.crow.module_user.ui.fragment.UserLoginFragment
+import com.crow.module_user.ui.fragment.UserRegFragment
+import com.crow.module_user.ui.fragment.UserUpdateInfoFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.fragment.dsl.fragment
-import org.koin.androidx.fragment.dsl.fragmentOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 

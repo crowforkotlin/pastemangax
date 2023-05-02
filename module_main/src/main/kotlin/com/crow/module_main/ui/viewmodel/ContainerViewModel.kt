@@ -2,7 +2,6 @@ package com.crow.module_main.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.crow.base.app.appContext
-import com.crow.base.current_project.BaseStrings
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.appConfigDataStore
 import com.crow.base.tools.extensions.asyncDecode
@@ -31,7 +30,7 @@ class ContainerViewModel(val repository: ContainerRepository) : BaseMviViewModel
 
     init {
         viewModelScope.launch {
-            _appConfig.value = appContext.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG).toTypeEntity<MainAppConfigEntity>() ?: MainAppConfigEntity(true, BaseStrings.URL.CopyManga)
+            _appConfig.value = appContext.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG).toTypeEntity<MainAppConfigEntity>() ?: MainAppConfigEntity(true)
         }
     }
 

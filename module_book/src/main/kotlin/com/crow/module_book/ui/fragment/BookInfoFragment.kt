@@ -75,7 +75,7 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
         } else {
             arguments?.getSerializable("tapEntity") as BookTapEntity
         } ?: run {
-            toast(getString(baseR.string.BaseUnknow))
+            toast(getString(baseR.string.BaseUnknowError))
             navigateUp()
         } as BookTapEntity
     }
@@ -267,10 +267,10 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
     }
 
     private fun 失败的结果取消加载动画或刷新控件(invalidResp: String?) {
-        if (mBinding.bookInfoRefresh.isRefreshing) mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknow))
+        if (mBinding.bookInfoRefresh.isRefreshing) mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknowError))
         else dismissLoadingAnim {
             mBinding.comicInfoErrorTips.animateFadeIn()
-            mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknow))
+            mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknowError))
         }
     }
 

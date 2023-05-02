@@ -1,4 +1,4 @@
-package com.crow.module_main.di.glide
+package com.crow.copymanga.di.glide
 
 import android.content.Context
 import com.bumptech.glide.Glide

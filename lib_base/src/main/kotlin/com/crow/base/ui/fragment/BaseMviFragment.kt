@@ -2,6 +2,8 @@ package com.crow.base.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +19,9 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
 
     private var _mBinding: VB? = null
     protected val mBinding get() = _mBinding!!
-    protected lateinit var mContext: Context
     protected var mBackDispatcher: OnBackPressedCallback? = null
+    protected var mHandler: Handler = Handler(Looper.getMainLooper())
+    protected lateinit var mContext: Context
 
     abstract fun getViewBinding(inflater: LayoutInflater): VB
     override fun initObserver() {}
@@ -47,6 +50,7 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
     override fun onDestroyView() {
         super.onDestroyView()
         _mBinding = null
+        mHandler.removeCallbacksAndMessages(null)
         mBackDispatcher?.remove()
         mBackDispatcher = null
     }

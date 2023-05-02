@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.crow.base.R
 import com.crow.base.app.appContext
-import com.crow.base.tools.extensions.logMsg
 import com.crow.base.ui.viewmodel.ViewState
 import com.crow.base.ui.viewmodel.ViewState.*
 import com.crow.base.ui.viewmodel.ViewStateException
@@ -49,7 +48,7 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
             flow
                 .onStart { _sharedFlow.emit(intent.also { it.mViewState = Loading }) }
                 .onCompletion { _sharedFlow.emit(intent.also { it.mViewState = Success }) }
-                .catch { catch -> _sharedFlow.emit(intent.also { it.mViewState = Error(if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, msg = catch.message ?: appContext.getString(R.string.BaseUnknow)) }) }
+                .catch { catch -> _sharedFlow.emit(intent.also { it.mViewState = Error(if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, msg = catch.message ?: appContext.getString(R.string.BaseUnknowError)) }) }
                 .collect { _sharedFlow.emit(result.onResult(it).also { event -> event.mViewState = Result }) }
         }
     }
@@ -61,7 +60,7 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
                 .onStart { trySendIntent(intent, Loading) }
                 .onCompletion { catch -> trySendIntent(intent, Success) { if (catch != null && !continuation.isCompleted) continuation.resumeWithException(catch) } }
                 .catch { catch ->
-                    trySendIntent(intent, Error (if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT , catch.message ?: appContext.getString(R.string.BaseUnknow))) {
+                    trySendIntent(intent, Error (if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT , catch.message ?: appContext.getString(R.string.BaseUnknowError))) {
                         if (!continuation.isCompleted) continuation.resumeWithException(catch)
                     }
                 }

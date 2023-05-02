@@ -122,7 +122,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
                     .doOnResult {
                         dismissLoadingAnim {
                             if (intent.userUpdateInfoResp == null) {
-                                toast(getString(baseR.string.BaseUnknow))
+                                toast(getString(baseR.string.BaseUnknowError))
                                 return@dismissLoadingAnim
                             }
 

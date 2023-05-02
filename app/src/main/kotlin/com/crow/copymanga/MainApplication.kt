@@ -7,12 +7,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crow.base.app.BaseApp
 import com.crow.base.tools.extensions.getCurrentVersionName
-import com.crow.module_main.di.factoryModule
-import com.crow.module_main.di.fragmentModule
-import com.crow.module_main.di.okhttpModule
-import com.crow.module_main.di.retrofitModule
-import com.crow.module_main.di.servicesModule
-import com.crow.module_main.di.viewModelModule
+import com.crow.copymanga.di.factoryModule
+import com.crow.copymanga.di.fragmentModule
+import com.crow.copymanga.di.networkModule
+import com.crow.copymanga.di.servicesModule
+import com.crow.copymanga.di.viewModelModule
 import com.tencent.bugly.crashreport.CrashReport
 import com.tencent.bugly.crashreport.CrashReport.UserStrategy
 import org.koin.android.ext.koin.androidContext
@@ -47,7 +46,7 @@ class MainApplication : BaseApp() {
         startKoin {
             fragmentFactory()
             androidContext(this@MainApplication)
-            modules(listOf(retrofitModule, okhttpModule, servicesModule, viewModelModule, factoryModule, fragmentModule))
+            modules(listOf(networkModule, servicesModule, viewModelModule, factoryModule, fragmentModule))
         }
     }
 

@@ -85,7 +85,7 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
                     intent.mViewState
                         .doOnLoading { showLoadingAnim() }
                         .doOnSuccess { dismissLoadingAnim { doRevertLoginButton() } }
-                        .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: appContext.getString(baseR.string.BaseUnknow)) }
+                        .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: appContext.getString(baseR.string.BaseUnknowError)) }
                         .doOnResult {
                             /* 两个结果 OK 和 Error
                             * OK：设置 mIsLoginSuccess = true 用于标记

@@ -101,7 +101,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
                         .doOnError { _, msg ->
                             dismissLoadingAnim { doRevertRegButton() }
                             toast(msg ?: appContext.getString(
-                                com.crow.base.R.string.BaseUnknow))
+                                com.crow.base.R.string.BaseUnknowError))
                         }
                         .doOnResult {
                             /* 两个结果 OK 和 Error
@@ -130,7 +130,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
                     intent.mViewState
                         .doOnSuccess { dismissLoadingAnim { doRevertRegButton() } }
                         .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: appContext.getString(
-                            com.crow.base.R.string.BaseUnknow)) }
+                            com.crow.base.R.string.BaseUnknowError)) }
                         .doOnResult {
                             /* 两个结果 OK 和 Error
                             * OK：设置 mIsRegSuccess = true 用于标记

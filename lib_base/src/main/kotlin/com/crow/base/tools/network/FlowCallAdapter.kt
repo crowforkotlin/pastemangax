@@ -1,7 +1,6 @@
 package com.crow.base.tools.network
 
 import com.crow.base.tools.extensions.callEnqueueFlow
-import com.crow.base.tools.extensions.logMsg
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -23,7 +22,6 @@ class FlowCallAdapter<R>(private val responseType: Type) : CallAdapter<R, Flow<R
 
     override fun adapt(call: Call<R>): Flow<R?> {
         return callbackFlow<R> {
-            call.request().url.logMsg()
             callEnqueueFlow(call)
             awaitClose { call.cancel() }
         }

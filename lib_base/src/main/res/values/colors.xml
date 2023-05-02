@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="base_RedError">#FD0000</color>
-    <color name="base_RightGreen">#12AB18</color>
+    <color name="base_white">#FFFFFF</color>
+    <color name="base_black">#000000</color>
+    <color name="base_red_A400">#d50000</color>
+    <color name="base_green_A400">#00c853</color>
     <color name="base_background_panda">#D1D1D1</color>
     <color name="base_buttonBackground">#BE9AE3</color>
     <color name="base_buttonRipper">#7D3DEF</color>

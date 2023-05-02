@@ -8,7 +8,8 @@
     <string name="BaseLoadingErrorNeedRefresh">加载失败，请刷新重试！</string>
     <string name="BaseLoadingRetry">重新加载</string>
     <string name="BaseRefreshScucess">"刷新成功~"</string>
-    <string name="BaseUnknow">Unknow Error!</string>
+    <string name="BaseUnknowError">Unknow Error!</string>
+    <string name="BaseUnknow">未知</string>
     <string name="BaseConfirm">确认</string>
     <string name="BaseCancel">取消</string>
     <string name="BaseTips">提示</string>

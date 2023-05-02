@@ -1,4 +1,4 @@
-package com.crow.module_main.di.glide
+package com.crow.copymanga.di.glide
 
 import android.text.TextUtils
 import cc.shinichi.library.glide.progress.OnProgressListener

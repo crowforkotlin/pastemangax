@@ -1,4 +1,4 @@
-package com.crow.module_main.di
+package com.crow.copymanga.di
 
 import com.crow.module_book.network.ComicService
 import com.crow.module_bookshelf.network.BookShelfService
