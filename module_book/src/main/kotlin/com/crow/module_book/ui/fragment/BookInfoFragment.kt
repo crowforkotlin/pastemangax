@@ -101,7 +101,7 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
 
         // 类型有两个 漫画 和 小说
         if (bookResult is ComicInfoResult) {
-            Glide.with(this).load(bookResult.mCover).into(mBinding.bookInfoImage)
+            Glide.with(this).load(bookResult.mCover).placeholder(baseR.drawable.base_icon_crow).into(mBinding.bookInfoImage)
             mBinding.bookInfoAuthor.text = getString(R.string.BookComicAuthor, bookResult.mAuthor.joinToString { it.mName })
             mBinding.bookInfoHot.text = getString(R.string.BookComicHot, formatValue(bookResult.mPopular))
             mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, bookResult.mDatetimeUpdated)
@@ -289,8 +289,8 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(),0 , mContext.getNavigationBarHeight())
 
         // 设置 漫画图的卡片 宽高
-        mBinding.bookInfoCard.layoutParams.height = getComicCardHeight()
-        mBinding.bookInfoCard.layoutParams.width = getComicCardWidth()
+        mBinding.bookInfoShadowLayout.layoutParams.height = getComicCardHeight()
+        mBinding.bookInfoShadowLayout.layoutParams.width = getComicCardWidth()
 
         // 设置刷新时不允许列表滚动
         mBinding.bookInfoRefresh.setDisableContentWhenRefresh(true)

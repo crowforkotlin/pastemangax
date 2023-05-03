@@ -9,6 +9,7 @@ import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -16,11 +17,15 @@ import androidx.lifecycle.LifecycleOwner
 import br.com.simplepass.loadingbutton.customViews.ProgressButton
 import com.crow.base.R
 import com.crow.base.app.appContext
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.newMaterialDialog
+import com.crow.base.tools.extensions.px2dp
+import com.crow.base.tools.extensions.showSnackBar
+import com.crow.base.tools.extensions.toTypeEntity
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.ViewState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.DecimalFormat
-import java.util.*
+import java.util.Locale
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11

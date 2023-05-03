@@ -56,15 +56,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/book_info_card"
-        style="@style/Widget.Material3.CardView.Filled"
+    <com.crow.base.ui.view.custom.BaseShadowLayout
+        android:id="@+id/book_info_shadow_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
-        app:cardCornerRadius="@dimen/base_dp20"
-        app:cardElevation="@dimen/base_dp10"
+        app:base_borderColor="@color/base_grey_400_40"
+        app:base_borderEnable="true"
+        app:base_borderWidth="1dp"
+        app:base_shadowSides="ALL"
+        app:base_shadowRadius="1dp"
+        app:base_shadowColor="@color/base_grey_400_40"
+        app:base_cornerRadius="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/book_info_back">
 
@@ -78,7 +82,7 @@
             tools:layout_height="@dimen/base_dp168"
             tools:layout_width="@dimen/base_dp120" />
 
-    </androidx.cardview.widget.CardView>
+    </com.crow.base.ui.view.custom.BaseShadowLayout>
 
     <TextView
         android:id="@+id/book_info_status"
@@ -89,8 +93,8 @@
         android:maxLines="1"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/book_info_card"
-        app:layout_constraintTop_toTopOf="@id/book_info_card"
+        app:layout_constraintStart_toEndOf="@+id/book_info_shadow_layout"
+        app:layout_constraintTop_toTopOf="@id/book_info_shadow_layout"
         tools:text="@string/BaseTodoTextView" />
 
     <TextView
@@ -103,7 +107,7 @@
         android:maxLines="2"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/book_info_card"
+        app:layout_constraintStart_toEndOf="@+id/book_info_shadow_layout"
         app:layout_constraintTop_toBottomOf="@+id/book_info_status"
         tools:text="@string/BaseTodoTextView" />
 
@@ -117,7 +121,7 @@
         android:maxLines="1"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/book_info_card"
+        app:layout_constraintStart_toEndOf="@+id/book_info_shadow_layout"
         app:layout_constraintTop_toBottomOf="@+id/book_info_author"
         tools:text="@string/BaseTodoTextView" />
 
@@ -131,7 +135,7 @@
         android:maxLines="1"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/book_info_card"
+        app:layout_constraintStart_toEndOf="@+id/book_info_shadow_layout"
         app:layout_constraintTop_toBottomOf="@+id/book_info_hot"
         tools:text="@string/BaseTodoTextView" />
 
@@ -145,7 +149,7 @@
         android:maxLines="1"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/book_info_card"
+        app:layout_constraintStart_toEndOf="@+id/book_info_shadow_layout"
         app:layout_constraintTop_toBottomOf="@+id/book_info_update"
         tools:text="@string/BaseTodoTextView" />
 
@@ -179,7 +183,7 @@
         app:iconGravity="top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_info_card" />
+        app:layout_constraintTop_toBottomOf="@+id/book_info_shadow_layout" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/bookMaterialbutton3"

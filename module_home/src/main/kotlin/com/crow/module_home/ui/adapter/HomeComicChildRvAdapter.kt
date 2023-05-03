@@ -69,7 +69,7 @@ class HomeComicChildRvAdapter<T>(
                 if (mBookType == BookType.Topic) { }
                 else doOnTap(BookTapEntity(BookType.Comic, vh.mPathWord))
             }
-            vh.rvBinding.homeBookCard.doOnClickInterval {
+            vh.rvBinding.homeBookShadowLayout.doOnClickInterval {
                 if (mBookType == BookType.Topic) { }
                 else doOnTap(BookTapEntity(BookType.Comic, vh.mPathWord))
             }

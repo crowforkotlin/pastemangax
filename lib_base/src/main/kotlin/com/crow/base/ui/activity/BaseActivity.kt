@@ -21,7 +21,8 @@ abstract class BaseActivity<out VB : ViewBinding, out VM : BaseViewModel> : Base
     protected val mBinding by lazy { getViewBinding() }
     protected val mViewModel by lazy { getViewModel().value }
 
-    override fun initView() {}
+    override fun initView(savedInstanceState: Bundle?) {}
+
     override fun initListener() {}
 
     /* 子类强制重写下方三个函数 获取ViewModel ViewBinding OnCreate初始化 */

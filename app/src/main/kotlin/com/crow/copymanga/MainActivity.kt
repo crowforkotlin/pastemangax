@@ -1,15 +1,22 @@
 package com.crow.copymanga
 
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import com.crow.base.current_project.BaseStrings
+import com.crow.base.current_project.BaseUser
 import com.crow.base.current_project.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.navigateByAdd
+import com.crow.base.tools.extensions.onCollect
+import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.copymanga.databinding.AppActivityMainBinding
+import com.crow.module_main.model.intent.ContainerIntent
 import com.crow.module_main.ui.fragment.ContainerFragment
+import com.crow.module_main.ui.viewmodel.ContainerViewModel
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
@@ -23,11 +30,16 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
-import org.koin.androidx.scope.ScopeActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : ScopeActivity()  {
+class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
 
-    private val mBinding by lazy { AppActivityMainBinding.inflate(layoutInflater) }
+    private var mInitOnce = false
+
+    private val mContainerVM by viewModel<ContainerViewModel>()
+
+    override fun getViewBinding() = AppActivityMainBinding.inflate(layoutInflater)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -43,6 +55,10 @@ class MainActivity : ScopeActivity()  {
         setupKoinFragmentFactory()
 
         super.onCreate(savedInstanceState)
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    override fun initView(savedInstanceState: Bundle?) {
 
         // 设置屏幕方向
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -55,6 +71,20 @@ class MainActivity : ScopeActivity()  {
 
         // 内存重启后 避免再次添加布局
         if (savedInstanceState == null) supportFragmentManager.navigateByAdd<ContainerFragment>(R.id.app_main_fcv, null, Fragments.Container.toString())
+    }
+
+    override fun initObserver() {
+        mContainerVM.appConfig.onCollect(this) { appConfig ->
+            if (appConfig == null) return@onCollect
+            if (!mInitOnce) {
+                mInitOnce = true
+                BaseStrings.URL.CopyManga = appConfig.mSite
+                BaseUser.CURRENT_ROUTE = appConfig.mRoute
+            }
+            if (appConfig!!.mAppFirstInit) {
+                mContainerVM.input(ContainerIntent.GetDynamicSite())
+            }
+        }
     }
 
     override fun onDestroy() {

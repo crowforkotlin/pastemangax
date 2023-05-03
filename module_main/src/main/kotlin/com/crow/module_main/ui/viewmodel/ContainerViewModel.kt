@@ -5,6 +5,8 @@ import com.crow.base.app.appContext
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.appConfigDataStore
 import com.crow.base.tools.extensions.asyncDecode
+import com.crow.base.tools.extensions.asyncEncode
+import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_main.model.entity.MainAppConfigEntity
@@ -13,6 +15,8 @@ import com.crow.module_main.network.ContainerRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -34,6 +38,18 @@ class ContainerViewModel(val repository: ContainerRepository) : BaseMviViewModel
         }
     }
 
+    fun saveAppConfig() { viewModelScope.launch { appContext.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(MainAppConfigEntity())) } }
+
+    suspend fun getReadedAppConfig(): MainAppConfigEntity? {
+        return suspendCancellableCoroutine<MainAppConfigEntity?> { continuation ->
+            viewModelScope.launch {
+                runCatching { continuation.resume(appContext.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG).toTypeEntity<MainAppConfigEntity>()) }.onFailure { continuation.resume(null) }
+            }
+        }
+    }
+
+
+
     private fun getUpdateInfo(intent: ContainerIntent.GetUpdateInfo) {
         flowResult(intent, repository.getUpdateInfo()) { value -> intent.copy(appUpdateResp = value) }
     }
@@ -42,7 +58,7 @@ class ContainerViewModel(val repository: ContainerRepository) : BaseMviViewModel
         flowResult(intent, repository.getQQGroup()) { value -> intent.copy(link = value.string()) }
     }
 
-    private fun getSite(intent: ContainerIntent.GetSite) {
+    private fun getSite(intent: ContainerIntent.GetDynamicSite) {
         flowResult(intent, repository.getSite()) { value -> intent.copy(siteResp = value) }
     }
 
@@ -50,7 +66,7 @@ class ContainerViewModel(val repository: ContainerRepository) : BaseMviViewModel
         when(intent) {
             is ContainerIntent.GetUpdateInfo -> getUpdateInfo(intent)
             is ContainerIntent.GetQQGroup -> getQQGropu(intent)
-            is ContainerIntent.GetSite -> getSite(intent)
+            is ContainerIntent.GetDynamicSite -> getSite(intent)
         }
     }
 }

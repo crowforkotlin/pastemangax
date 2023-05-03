@@ -13,6 +13,7 @@ import com.crow.base.current_project.getComicCardHeight
 import com.crow.base.current_project.getComicCardWidth
 import com.crow.base.current_project.mSize10
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverFragmentRvBinding
 import com.crow.module_discover.model.resp.comic_home.DiscoverComicHomeResult
@@ -45,11 +46,18 @@ class DiscoverComicAdapter(inline val mDoOnTapComic: (DiscoverComicHomeResult) -
                 height = getComicCardHeight()
             }
 
-            vh.rvBinding.discoverRvBookCard.doOnClickInterval {
+            vh.rvBinding.discoverRvBookShadowLayout.doOnClickInterval {
                 mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
+
+            vh.rvBinding.root.doOnClickInterval {
+                mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
+            }
+
+            ToolTipsView.showToolTipsByLongClick(vh.rvBinding.discoverRvName)
         }
     }
+
 
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
         val item = getItem(position) ?: return

@@ -14,5 +14,5 @@ data class MainAppConfigEntity(
     val mSite: String = BaseStrings.URL.CopyManga,
 
     // 路线 "0", "1"
-    val mRoute: String = BaseUser.CURRENT_REGION
+    val mRoute: String = BaseUser.CURRENT_ROUTE
 )

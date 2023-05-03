@@ -12,36 +12,27 @@ import com.crow.base.app.appContext
 import com.crow.base.current_project.BaseStrings
 import com.crow.base.current_project.BaseUser
 import com.crow.base.current_project.entity.Fragments
-import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.appConfigDataStore
-import com.crow.base.tools.extensions.asyncDecode
-import com.crow.base.tools.extensions.asyncEncode
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.popSyncWithClear
-import com.crow.base.tools.extensions.toJson
-import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
-import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentSettingsBinding
 import com.crow.module_main.databinding.MainSettingsProxyLayoutBinding
 import com.crow.module_main.databinding.MainSettingsSiteLayoutBinding
-import com.crow.module_main.model.entity.MainAppConfigEntity
 import com.crow.module_main.model.intent.ContainerIntent
 import com.crow.module_main.ui.adapter.SettingsAdapter
 import com.crow.module_main.ui.viewmodel.ContainerViewModel
 import com.crow.module_user.ui.adapter.Res
 import com.google.android.material.radiobutton.MaterialRadioButton
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.crow.base.R as baseR
@@ -60,78 +51,87 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
     private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Settings.toString())
 
-    private suspend fun getReadedAppConfig() : MainAppConfigEntity? {
-        return viewLifecycleOwner.lifecycleScope.async { mContext.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG) }.await().toTypeEntity<MainAppConfigEntity>()
-    }
-
-    private fun saveConfig() {
-        lifecycleScope.launch {
-            mContext.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(MainAppConfigEntity()))
-        }
-    }
-
     private suspend fun initSiteView() {
 
-        val readedAppConfigEntity = getReadedAppConfig() ?: return run { toast(getString(baseR.string.BaseUnknowError)) }
+        // 获取APP的配置
+        val readedAppConfigEntity = mContainerVM.getReadedAppConfig() ?: return run { toast(getString(baseR.string.BaseUnknowError)) }
 
         mSiteDialogBinding = MainSettingsSiteLayoutBinding.inflate(layoutInflater)
+
         mSiteDialogBinding?.apply {
             mSiteAlertDialog = mContext.newMaterialDialog { dialog -> dialog.setView(root) }
-            mSiteAlertDialog?.setOnDismissListener { mSiteAlertDialog = null }
 
+            // 取消弹窗的时候吧 局部AlerDialog和DialogBinding置空 防止泄漏
+            mSiteAlertDialog?.setOnDismissListener {
+                mSiteDialogBinding = null
+                mSiteAlertDialog = null
+            }
+
+            // TV后缀设置当前站点为...
             if (readedAppConfigEntity.mSite.endsWith(BaseStrings.URL.CopyManga_TLD_TV)) {
                 settingsSiteStaticRadioOne.isChecked = true
                 settingsSiteCurrent.text = getString(R.string.main_site_current, settingsSiteStaticRadioOne.text)
             }
 
+            // SITE后缀设置当前站点为...
             else if (readedAppConfigEntity.mSite.endsWith(BaseStrings.URL.CopyManga_TLD_SITE)) {
                 settingsSiteStaticRadioTwo.isChecked = true
                 settingsSiteCurrent.text = getString(R.string.main_site_current, settingsSiteStaticRadioTwo.text)
             }
 
+            // 否则 当前站点位置
             else { settingsSiteCurrent.text = getString(R.string.main_site_current, getString(baseR.string.BaseUnknow)) }
 
-            (settingsSiteDynamicScrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = screenHeight
+            // 设置 静态、动态站点的ScrollView最大高度为 屏幕高度像素 / 6
             (settingsSiteStaticScrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = screenHeight
+            (settingsSiteDynamicScrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = screenHeight
 
+            // 动态站点 重新加载按钮点击事件： 发送动态站点意图、加载动画淡入、按钮淡出
             settingsSiteDynamicReload.doOnClickInterval {
-                mContainerVM.input(ContainerIntent.GetSite())
+                mContainerVM.input(ContainerIntent.GetDynamicSite())
                 settingsSiteLoadingLottie.animateFadeIn()
                 settingsSiteDynamicReload.animateFadeOut().withEndAction { settingsSiteDynamicReload.isInvisible = true }
             }
+
+            // 静态站点按钮组点击事件：根据CheckedID设置全局URL的后缀、保存APP配置、延时关闭DIALOG
             settingsSiteStaticRadioGroup.setOnCheckedChangeListener { _, checkedId ->
                 when(checkedId) {
                     settingsSiteStaticRadioOne.id -> BaseStrings.URL.setCopyMangaUrl(BaseStrings.URL.CopyManga_TLD_TV)
                     settingsSiteStaticRadioTwo.id -> BaseStrings.URL.setCopyMangaUrl(BaseStrings.URL.CopyManga_TLD_SITE)
                 }
-                saveConfig()
+                mContainerVM.saveAppConfig()
                 mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME)
             }
-
-
         }
-        mContainerVM.input(ContainerIntent.GetSite())
+
+        // 打开弹窗后 发送获取动态站点意图
+        mContainerVM.input(ContainerIntent.GetDynamicSite())
     }
 
-    private suspend fun initProxyView() {
-
-        val readedAppConfigEntity = getReadedAppConfig() ?: return run { toast(getString(baseR.string.BaseUnknowError)) }
+    private fun initProxyView() {
 
         val binding = MainSettingsProxyLayoutBinding.inflate(layoutInflater)
-
         val alertDialog = mContext.newMaterialDialog { dialog -> dialog.setView(binding.root) }
 
-        when(BaseUser.CURRENT_REGION) {
+        // 根据用户的路线 设置RadioButton的状态
+        when(BaseUser.CURRENT_ROUTE) {
             "0" -> binding.settingsProxyDomesticRoute.isChecked = true
             "1" -> binding.settingsProxyOverseasRoute.isChecked = true
         }
 
-        binding.settingsProxyRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+        // 代理组设置 选中监听
+        binding.settingsProxyRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+
+            // 根据选中的RadioButton设置 用户路线
             when(checkedId) {
-                binding.settingsProxyDomesticRoute.id -> BaseUser.CURRENT_REGION = "0"
-                binding.settingsProxyOverseasRoute.id -> BaseUser.CURRENT_REGION = "1"
+                binding.settingsProxyDomesticRoute.id -> BaseUser.CURRENT_ROUTE = "0"
+                binding.settingsProxyOverseasRoute.id -> BaseUser.CURRENT_ROUTE = "1"
             }
-            saveConfig()
+
+            // 保存配置
+            mContainerVM.saveAppConfig()
+
+            // 延时关闭Dialog 让RadioButton选中后的过渡效果执行完毕
             mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME)
         }
     }
@@ -144,16 +144,14 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
         mBinding.settingsRv.adapter = SettingsAdapter(mSettingsList) { pos ->
             when(pos) {
-                0 -> {
-                    toast(getString(baseR.string.BaseStillInDevelopment))
-                }
+                0 -> { toast(getString(baseR.string.BaseStillInDevelopment)) }
                 1 -> viewLifecycleOwner.lifecycleScope.launch { initSiteView() }
-                2 -> viewLifecycleOwner.lifecycleScope.launch { initProxyView() }
+                2 -> initProxyView()
             }
         }
     }
 
-    override fun initData() { mContainerVM.input(ContainerIntent.GetSite()) }
+    override fun initData() { mContainerVM.input(ContainerIntent.GetDynamicSite()) }
 
     override fun initListener() {
         mBinding.settingsBack.doOnClickInterval { navigateUp() }
@@ -165,49 +163,68 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
         mContainerVM.onOutput { intent ->
             when(intent) {
-                is ContainerIntent.GetSite -> {
+                is ContainerIntent.GetDynamicSite -> {
                     intent.mViewState
-                        .doOnLoading {
-
-                        }
                         .doOnError { _, _ ->
-                            mSiteDialogBinding?.also { binding ->
+                            if (mSiteDialogBinding != null) {
+                                // 加载失败 等待一段间隔后 利用Hanlder 延时处理行为 重新加载Button淡入 加载动画淡出
                                 baseEvent.doOnInterval(mHandler) {
-                                    binding.settingsSiteDynamicReload.animateFadeIn()
-                                    binding.settingsSiteLoadingLottie.animateFadeOut().withEndAction { binding.settingsSiteLoadingLottie.isInvisible = false }
+                                    mSiteDialogBinding!!.settingsSiteDynamicReload.animateFadeIn()
+                                    mSiteDialogBinding!!.settingsSiteLoadingLottie.animateFadeOut().withEndAction { mSiteDialogBinding?.settingsSiteLoadingLottie?.isInvisible = false }
                                 }
                             }
                         }
                         .doOnResult {
                             if (mSiteDialogBinding == null) return@doOnResult
                             baseEvent.doOnInterval(mHandler) {
+
+                                // 遍历站点列表
                                 intent.siteResp!!.mSiteList?.forEach { site ->
+
+                                    // 解码站点
                                     val decodeSite = Base64.decode(site!!.mEncodeSite, Base64.DEFAULT).decodeToString()
+
+                                    // 添加RadioButton To RadioGroup
                                     mSiteDialogBinding!!.settingsSiteDynamicRadioGroup.addView(MaterialRadioButton(mContext).also { button ->
-                                        button.text = site.mName
-                                        button.tag = decodeSite
+
+                                        // 站点链接 和 解码站点链接相同
                                         if((BaseStrings.URL.CopyManga == decodeSite)) {
+
                                             button.isChecked = true
+
+                                            // 静态站点选中按钮ID为-1代表 选中为空 此时给已选中的标题设置 当前获取数据的站点名
                                             if (mSiteDialogBinding!!.settingsSiteStaticRadioGroup.checkedRadioButtonId == -1) {
-                                                mSiteDialogBinding!!.settingsSiteCurrent.text = getString(R.string.main_site_current, button.text)
+                                                mSiteDialogBinding!!.settingsSiteCurrent.text = getString(R.string.main_site_current, site.mName)
                                                 mSiteDialogBinding!!.settingsSiteCurrent.animateFadeIn()
                                             }
                                         }
+
+                                        // 按钮名称 为 站点名称
+                                        button.text = site.mName
+
+                                        // 利用tag存储 解码的站点
+                                        button.tag = decodeSite
+
+                                        /*
+                                        * 1：这一段处理逻辑 -> radioButton 被选中添加到group后会触发回调 需要手动处理逻辑
+                                        * 按钮选中后遍历group中的子View根据当前选中的button和子View的id做比较，不等则吧button选中状态为false
+                                        * 2：获取tag的解码站点赋值给公共URL
+                                        * 3：保存配置
+                                        * 4：Handler延时关闭dialog 让选中的radiobutton有一个过渡效果
+                                        * */
                                         button.setOnCheckedChangeListener { buttonView, isChecked ->
                                             if (isChecked) {
-                                                mSiteDialogBinding!!.settingsSiteDynamicRadioGroup.forEach {
-                                                    if (buttonView.id != (it as MaterialRadioButton).id) {
-                                                        it.isChecked = false
-                                                    }
-                                                }
+                                                mSiteDialogBinding!!.settingsSiteDynamicRadioGroup.forEach { childView -> if (buttonView.id != (childView as MaterialRadioButton).id) childView.isChecked = false }
                                                 BaseStrings.URL.CopyManga = buttonView.tag.toString()
-                                                saveConfig()
+                                                mContainerVM.saveAppConfig()
                                                 mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME)
                                             }
                                         }
                                     })
                                 }
-                                mSiteDialogBinding!!.settingsSiteLoadingLottie.animateFadeOut().withEndAction { mSiteDialogBinding!!.settingsSiteLoadingLottie.isInvisible = true }
+
+                                // 加载动画淡出 动态站点Title、RadioGroup 淡入
+                                mSiteDialogBinding!!.settingsSiteLoadingLottie.animateFadeOut().withEndAction { mSiteDialogBinding?.settingsSiteLoadingLottie?.isInvisible = true }
                                 mSiteDialogBinding!!.settingsSiteDynamicTitle.animateFadeIn()
                                 mSiteDialogBinding!!.settingsSiteDynamicRadioGroup.animateFadeIn()
                             }

@@ -1,10 +1,11 @@
 package com.crow.module_book.ui.activity
 
 import android.content.Context
+import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.core.view.WindowCompat
 import com.crow.base.current_project.BaseStrings
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.startActivity
 import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
@@ -50,7 +51,7 @@ class ComicActivity : BaseMviActivity<BookComicFragmentBinding>() {
         mComicVM.input(BookIntent.GetComicPage(pathword, uuid))
     }
 
-    override fun initView() {
+    override fun initView(savedInstanceState: Bundle?) {
 
         // 全屏布局
         WindowCompat.setDecorFitsSystemWindows(window, true)

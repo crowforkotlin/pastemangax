@@ -24,7 +24,7 @@ abstract class BaseActivityImpl : AppCompatActivity(), IBaseActivity {
 
     open fun initData() {}
 
-    abstract fun initView()
+    abstract fun initView(savedInstanceState: Bundle?)
 
     abstract fun initListener()
 
@@ -54,7 +54,7 @@ abstract class BaseActivityImpl : AppCompatActivity(), IBaseActivity {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView()
+        initView(savedInstanceState)
         initData()
         initListener()
     }

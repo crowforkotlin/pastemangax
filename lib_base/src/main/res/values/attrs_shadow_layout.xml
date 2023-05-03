@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <declare-styleable name="BaseShadowLayout">
+        <attr name="base_cornerRadius" format="dimension" />
+        <attr name="base_shadowRadius" format="dimension" />
+        <attr name="base_shadowColor" format="color" />
+        <attr name="base_dx" format="dimension" />
+        <attr name="base_dy" format="dimension" />
+        <attr name="base_borderColor" format="color" />
+        <attr name="base_borderWidth" format="dimension" />
+        <attr name="base_borderEnable" format="boolean" />
+        <attr name="base_shadowSides" format="flags">
+            <flag name="TOP" value="1" />
+            <flag name="RIGHT" value="2" />
+            <flag name="BOTTOM" value="4" />
+            <flag name="LEFT" value="8" />
+            <flag name="ALL" value="15" />
+        </attr>
+    </declare-styleable>
+</resources>

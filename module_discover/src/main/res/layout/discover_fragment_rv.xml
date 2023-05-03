@@ -5,19 +5,15 @@
 	style="@style/Widget.Material3.CardView.Filled"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
+	android:layout_marginTop="@dimen/base_dp20"
 	android:layout_marginStart="@dimen/base_dp5"
 	android:layout_marginEnd="@dimen/base_dp5"
-	android:foreground="?android:attr/selectableItemBackground"
 	android:orientation="vertical">
 
-	<androidx.cardview.widget.CardView
-		android:id="@+id/discover_rv_book_card"
-		style="@style/Widget.Material3.CardView.Filled"
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/discover_rv_book_shadow_layout"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:foreground="?android:attr/selectableItemBackground"
-		app:cardCornerRadius="@dimen/base_dp20"
-		app:cardElevation="@dimen/base_dp5"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
@@ -26,13 +22,42 @@
 			android:id="@+id/discover_rv_image"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:foreground="@drawable/base_bg_item_ripper"
 			tools:src="@drawable/base_steve"
 			android:contentDescription="@string/BaseTodoTextView"
 			android:scaleType="centerCrop"
 			tools:layout_height="@dimen/base_dp168"
 			tools:layout_width="@dimen/base_dp120" />
 
-	</androidx.cardview.widget.CardView>
+	</com.google.android.material.card.MaterialCardView>
+
+	<!--<com.crow.base.ui.view.custom.BaseShadowLayout
+		android:id="@+id/discover_rv_book_shadow_layout"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:base_borderColor="@color/base_grey_400_40"
+		app:base_borderEnable="true"
+		app:base_borderWidth="1dp"
+		app:base_shadowSides="ALL"
+		app:base_shadowRadius="1dp"
+		app:base_shadowColor="@color/base_grey_400_40"
+		app:base_cornerRadius="20dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<ImageView
+			android:id="@+id/discover_rv_image"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:foreground="@drawable/base_bg_item_ripper"
+			tools:src="@drawable/base_steve"
+			android:contentDescription="@string/BaseTodoTextView"
+			android:scaleType="centerCrop"
+			tools:layout_height="@dimen/base_dp168"
+			tools:layout_width="@dimen/base_dp120" />
+
+	</com.crow.base.ui.view.custom.BaseShadowLayout>-->
 
 	<TextView
 		android:id="@+id/discover_rv_name"
@@ -45,9 +70,9 @@
 		android:textSize="@dimen/base_sp11"
 		android:textStyle="bold"
 		app:layout_constraintBottom_toTopOf="@+id/discover_rv_author"
-		app:layout_constraintEnd_toEndOf="@id/discover_rv_book_card"
-		app:layout_constraintStart_toStartOf="@id/discover_rv_book_card"
-		app:layout_constraintTop_toBottomOf="@+id/discover_rv_book_card"
+		app:layout_constraintEnd_toEndOf="@id/discover_rv_book_shadow_layout"
+		app:layout_constraintStart_toStartOf="@id/discover_rv_book_shadow_layout"
+		app:layout_constraintTop_toBottomOf="@+id/discover_rv_book_shadow_layout"
 		tools:text="书名:xxxx" />
 
 	<TextView
@@ -88,7 +113,6 @@
 		android:id="@+id/discover_rv_time"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginBottom="@dimen/base_dp20"
 		android:ellipsize="end"
 		android:gravity="center"
 		android:maxLines="2"

@@ -13,5 +13,5 @@ open class ContainerIntent : BaseMviIntent() {
     data class GetQQGroup(val link: String? = null) : ContainerIntent()
 
     // 获取站点
-    data class GetSite(val siteResp: MainSiteResp? = null) : ContainerIntent()
+    data class GetDynamicSite(val siteResp: MainSiteResp? = null) : ContainerIntent()
 }

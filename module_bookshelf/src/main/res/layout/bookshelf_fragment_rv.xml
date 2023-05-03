@@ -9,13 +9,10 @@
 	android:layout_height="wrap_content"
 	tools:context="com.crow.module_bookshelf.ui.fragment.BookshelfFragment">
 
-	<androidx.cardview.widget.CardView
-		android:id="@+id/bookshelf_rv_card"
-		style="@style/Widget.Material3.CardView.Filled"
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/bookshelf_rv_shadowLayout"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		app:cardCornerRadius="@dimen/base_dp20"
-		app:cardElevation="@dimen/base_dp5"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
@@ -30,7 +27,34 @@
 			tools:layout_height="@dimen/base_dp168"
 			tools:layout_width="@dimen/base_dp120" />
 
-	</androidx.cardview.widget.CardView>
+	</com.google.android.material.card.MaterialCardView>
+
+	<!--<com.crow.base.ui.view.custom.BaseShadowLayout
+		android:id="@+id/bookshelf_rv_shadowLayout"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:base_borderColor="@color/base_grey_400_40"
+		app:base_borderEnable="true"
+		app:base_borderWidth="1dp"
+		app:base_shadowSides="ALL"
+		app:base_shadowRadius="1dp"
+		app:base_shadowColor="@color/base_grey_400_40"
+		app:base_cornerRadius="20dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<ImageView
+			android:id="@+id/bookshelf_rv_image"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:contentDescription="@string/BaseTodoTextView"
+			android:foreground="?attr/selectableItemBackground"
+			android:scaleType="centerCrop"
+			tools:layout_height="@dimen/base_dp168"
+			tools:layout_width="@dimen/base_dp120" />
+
+	</com.crow.base.ui.view.custom.BaseShadowLayout>-->
 
 	<TextView
 		android:id="@+id/bookshelf_rv_name"
@@ -44,9 +68,9 @@
 		android:textSize="@dimen/base_sp12"
 		android:textStyle="bold"
 		app:layout_constraintBottom_toTopOf="@+id/bookshelf_rv_time"
-		app:layout_constraintEnd_toEndOf="@id/bookshelf_rv_card"
-		app:layout_constraintStart_toStartOf="@id/bookshelf_rv_card"
-		app:layout_constraintTop_toBottomOf="@id/bookshelf_rv_card"
+		app:layout_constraintEnd_toEndOf="@id/bookshelf_rv_shadowLayout"
+		app:layout_constraintStart_toStartOf="@id/bookshelf_rv_shadowLayout"
+		app:layout_constraintTop_toBottomOf="@id/bookshelf_rv_shadowLayout"
 		tools:text="@string/BaseAppName" />
 
 	<TextView

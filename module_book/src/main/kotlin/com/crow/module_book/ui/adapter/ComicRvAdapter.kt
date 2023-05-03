@@ -14,7 +14,6 @@ import com.bumptech.glide.request.target.Target
 import com.crow.base.app.appContext
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.logMsg
-import com.crow.module_book.R
 import com.crow.module_book.databinding.BookComicRvBinding
 import com.crow.module_book.model.resp.comic_page.Content
 import kotlinx.coroutines.delay
@@ -60,7 +59,6 @@ class ComicRvAdapter(private var mComicContent: MutableList<Content> = mutableLi
         Glide.with(vh.itemView)
             .load(mComicContent[position].url)
             .listener(doListener(vh))
-            .placeholder(com.crow.base.R.drawable.base_steve)
             .into(vh.rvBinding.comicRvImageView)
     }
 

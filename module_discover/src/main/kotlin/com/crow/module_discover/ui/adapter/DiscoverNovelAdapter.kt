@@ -45,7 +45,7 @@ class DiscoverNovelAdapter(inline val mDoOnTapComic: (DiscoverNovelHomeResult) -
                 height = getComicCardHeight()
             }
 
-            vh.rvBinding.discoverRvBookCard.doOnClickInterval {
+            vh.rvBinding.discoverRvBookShadowLayout.doOnClickInterval {
                 mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
         }

@@ -38,7 +38,7 @@ val networkModule = module {
                     .addHeader("User-Agent", "Dart/2.16 (dart:io)")
                     .addHeader("Platform", "1")
                     .addHeader("Authorization","Token ${BaseUser.CURRENT_USER_TOKEN}")
-                    .addHeader("region", BaseUser.CURRENT_REGION)
+                    .addHeader("region", BaseUser.CURRENT_ROUTE)
                     .build()
                 )
             })
