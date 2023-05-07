@@ -7,5 +7,6 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Content(
     @Json(name = "url")
-    val url: String
+    val mImageUrl: String,
+
 )

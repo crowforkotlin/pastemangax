@@ -1,4 +1,4 @@
-package com.crow.base.current_project
+package com.crow.base.copymanga
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

@@ -1,7 +1,7 @@
-package com.crow.copymanga.di
+package com.crow.copymanga.model.di
 
 import androidx.fragment.app.Fragment
-import com.crow.base.current_project.entity.Fragments
+import com.crow.base.copymanga.entity.Fragments
 import com.crow.module_book.ui.fragment.BookInfoFragment
 import com.crow.module_main.ui.fragment.AboutAuthorFragment
 import com.crow.module_main.ui.fragment.ContainerFragment

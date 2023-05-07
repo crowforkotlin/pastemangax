@@ -106,8 +106,8 @@ class BaseShadowLayout @JvmOverloads constructor(context: Context, attrs: Attrib
     private var mBorderRecF: RectF? = null
 
     init {
-        initAttributes(context, attrs)                                               // 初始化自定义属性
-        processPadding()                                                              // 处理View的Padding为阴影留出空间
+        initAttributes(context, attrs)                                                // 初始化自定义属性
+        processPadding()                                                               // 处理View的Padding为阴影留出空间
         setLayerType(View.LAYER_TYPE_HARDWARE, null)   //设置硬件渲染类型
     }
 

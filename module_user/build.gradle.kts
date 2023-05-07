@@ -71,5 +71,4 @@ dependencies {
 
     // 引入Base库
     implementation(project(mapOf("path" to ":lib_base")))
-
 }

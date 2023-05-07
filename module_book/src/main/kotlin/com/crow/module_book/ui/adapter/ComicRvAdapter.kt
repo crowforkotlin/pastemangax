@@ -6,17 +6,19 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.crow.base.app.appContext
+import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
-import com.crow.base.tools.extensions.logMsg
+import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.ui.adapter.BaseGlideViewHolder
 import com.crow.module_book.databinding.BookComicRvBinding
 import com.crow.module_book.model.resp.comic_page.Content
 import kotlinx.coroutines.delay
+import org.koin.java.KoinJavaComponent
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -28,40 +30,61 @@ import kotlinx.coroutines.delay
  **************************/
 class ComicRvAdapter(private var mComicContent: MutableList<Content> = mutableListOf()) : RecyclerView.Adapter<ComicRvAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val rvBinding: BookComicRvBinding) : RecyclerView.ViewHolder(rvBinding.root)
+    private val mGenericTransitionOptions = KoinJavaComponent.getKoin().get<GenericTransitionOptions<Drawable>>()
 
-    private val mHeight by lazy { (appContext.resources.displayMetrics.heightPixels / 3 ) * 2}
+    inner class ViewHolder(binding: BookComicRvBinding) : BaseGlideViewHolder<BookComicRvBinding>(binding)
 
-    private fun doListener(vh: ViewHolder): RequestListener<Drawable>{
-        return object : RequestListener<Drawable> {
-            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                "Failure".logMsg()
-                vh.rvBinding.comicRvRetry.isVisible = true
-                vh.rvBinding.comicRvImageView.layoutParams.height = mHeight
-                return false
-            }
+    private fun ViewHolder.loadComicImage(position: Int) {
 
-            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                vh.rvBinding.comicRvImageView.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
-                return false
-            }
+        val item = mComicContent[position]
+
+        mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
+            rvBinding.comicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
         }
+
+        Glide.with(itemView.context)
+            .load(item.mImageUrl)
+            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)   // 指定图片尺寸
+            .error {
+
+            }
+            .addListener(mAppGlideProgressFactory?.getRequestListener ({
+                rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
+                rvBinding.comicRvRetry.isVisible = true
+                rvBinding.comicRvRetry.doOnClickInterval(false) {
+                    rvBinding.comicRvRetry.animateFadeOut()
+                    loadComicImage(position)
+                }
+                false
+            }))
+            .transition(mGenericTransitionOptions.transition { _ ->
+                rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
+                rvBinding.comicRvRetry.isVisible = false
+                rvBinding.comicRvImageView.animateFadeIn()
+                rvBinding.comicRvProgressText.animateFadeOut().withEndAction { rvBinding.comicRvProgressText.alpha = 1f }
+                rvBinding.comicRvLoading.animateFadeOut().withEndAction { rvBinding.comicRvLoading.alpha = 1f }
+            })
+            .into(rvBinding.comicRvImageView)
     }
 
 
+    override fun onViewRecycled(vh: ViewHolder) {
+        super.onViewRecycled(vh)
+        vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+        vh.mAppGlideProgressFactory = null
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(BookComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return ViewHolder(BookComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also {
+
+        }
     }
 
     override fun getItemCount(): Int = mComicContent.size
 
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
-        Glide.with(vh.itemView)
-            .load(mComicContent[position].url)
-            .listener(doListener(vh))
-            .into(vh.rvBinding.comicRvImageView)
+        vh.loadComicImage(position)
     }
-
 
     suspend fun doNotify(newDataResult: MutableList<Content>, delayMs: Long = 1L) {
         val isCountSame = itemCount == newDataResult.size

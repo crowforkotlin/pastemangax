@@ -3,6 +3,7 @@ package com.crow.base.ui.activity
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.viewbinding.ViewBinding
+import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
@@ -27,7 +28,7 @@ abstract class BaseMviActivity<out VB: ViewBinding> : BaseActivityImpl(), IBaseM
     /* 子类强制重写下方三个函数 获取ViewModel ViewBinding OnCreate初始化 */
     abstract fun getViewBinding(): VB
 
-    open fun initObserver() {}
+    open fun initObserver(savedInstanceState: Bundle?) {}
 
     override fun <I : BaseMviIntent> BaseMviViewModel<I>.onOutput(state: Lifecycle.State, baseMviSuspendResult: BaseMviViewModel.BaseMviSuspendResult<I>) {
         repeatOnLifecycle(state) { output { intent -> baseMviSuspendResult.onResult(intent) } }
@@ -35,8 +36,13 @@ abstract class BaseMviActivity<out VB: ViewBinding> : BaseActivityImpl(), IBaseM
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initObserver()
+        initObserver(savedInstanceState)
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppGlideProgressFactory.doReset()
     }
 }

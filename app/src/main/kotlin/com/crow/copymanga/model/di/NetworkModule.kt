@@ -1,14 +1,17 @@
-package com.crow.copymanga.di
+package com.crow.copymanga.model.di
 
 import com.crow.base.BuildConfig
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.BaseUser
+import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.base.copymanga.glide.AppGlideProgressResponseBody
 import com.crow.base.tools.extensions.baseMoshi
 import com.crow.base.tools.network.FlowCallAdapterFactory
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -47,6 +50,27 @@ val networkModule = module {
             callTimeout(10, TimeUnit.SECONDS)
             readTimeout(15, TimeUnit.SECONDS)
             writeTimeout(15, TimeUnit.SECONDS)
+            retryOnConnectionFailure(false)
+        }.build()
+    }
+
+    single(named("ProgressGlide")) {
+        OkHttpClient.Builder().apply {
+            addNetworkInterceptor { chain ->
+                val request = chain.request()
+                val response = chain.proceed(request)
+                val appGlideProgressFactory = AppGlideProgressFactory.getGlideProgressFactory(request.url.toString())
+                if (appGlideProgressFactory == null) response
+                else {
+                    response.newBuilder().body(response.body?.let { AppGlideProgressResponseBody(request.url.toString(), appGlideProgressFactory.mListener, it) }).build()
+                }
+            }
+
+            pingInterval(10, TimeUnit.SECONDS)
+            connectTimeout(15, TimeUnit.SECONDS)
+            callTimeout(20, TimeUnit.SECONDS)
+            readTimeout(20, TimeUnit.SECONDS)
+            writeTimeout(20, TimeUnit.SECONDS)
             retryOnConnectionFailure(false)
         }.build()
     }

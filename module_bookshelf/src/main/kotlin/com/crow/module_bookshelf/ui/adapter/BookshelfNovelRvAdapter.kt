@@ -1,18 +1,26 @@
 package com.crow.module_bookshelf.ui.adapter
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
-import com.crow.base.current_project.getComicCardHeight
-import com.crow.base.current_project.getComicCardWidth
+import com.crow.base.copymanga.getComicCardHeight
+import com.crow.base.copymanga.getComicCardWidth
+import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.ui.adapter.BaseGlideViewHolder
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
 import com.crow.module_bookshelf.model.resp.bookshelf_novel.BookshelfNovelResults
 
-class BookshelfNovelRvAdapter(inline val doOnTap: (BookshelfNovelResults) -> Unit) : PagingDataAdapter<BookshelfNovelResults, BookshelfNovelRvAdapter.ViewHolder>(DiffCallback()) {
+class BookshelfNovelRvAdapter(
+    private val mGenericTransitionOptions: GenericTransitionOptions<Drawable>,
+    inline val doOnTap: (BookshelfNovelResults) -> Unit
+) : PagingDataAdapter<BookshelfNovelResults, BookshelfNovelRvAdapter.ViewHolder>(DiffCallback()) {
 
     class DiffCallback: DiffUtil.ItemCallback<BookshelfNovelResults>() {
         override fun areItemsTheSame(oldItem: BookshelfNovelResults, newItem: BookshelfNovelResults): Boolean {
@@ -24,20 +32,7 @@ class BookshelfNovelRvAdapter(inline val doOnTap: (BookshelfNovelResults) -> Uni
         }
     }
 
-    inner class ViewHolder(val rvBinding: BookshelfFragmentRvBinding): RecyclerView.ViewHolder(rvBinding.root) {
-
-
-    }
-
-    override fun onBindViewHolder(vh: ViewHolder, position: Int) {
-        val item = getItem(position) ?: return
-        Glide.with(vh.itemView.context).load(item.mNovel.mCover).into(vh.rvBinding.bookshelfRvImage)
-        vh.rvBinding.bookshelfRvName.text = item.mNovel.mName
-        vh.rvBinding.bookshelfRvTime.text = item.mNovel.mDatetimeUpdated
-    }
-
-    // 父布局高度
-    private var mParentHeight: Int? = null
+    inner class ViewHolder(binding: BookshelfFragmentRvBinding) : BaseGlideViewHolder<BookshelfFragmentRvBinding>(binding)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(BookshelfFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent,false)).also { vh ->
@@ -51,5 +46,31 @@ class BookshelfNovelRvAdapter(inline val doOnTap: (BookshelfNovelResults) -> Uni
                 doOnTap(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
         }
+    }
+
+    override fun onViewRecycled(vh: ViewHolder) {
+        super.onViewRecycled(vh)
+        vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+        vh.mAppGlideProgressFactory = null
+    }
+
+
+    override fun onBindViewHolder(vh: ViewHolder, position: Int) {
+        val item = getItem(position) ?: return
+        vh.mAppGlideProgressFactory =AppGlideProgressFactory.createGlideProgressListener(item.mNovel.mCover) { _, _, percentage, _, _ ->
+            vh.rvBinding.bookshelfRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+        }
+
+        Glide.with(vh.itemView.context)
+            .load(item.mNovel.mCover)
+            .addListener(vh.mAppGlideProgressFactory?.getRequestListener())
+            .transition(mGenericTransitionOptions.transition { _ ->
+                vh.rvBinding.bookshelfRvImage.animateFadeIn()
+                vh.rvBinding.bookshelfRvLoading.animateFadeOut().withEndAction { vh.rvBinding.bookshelfRvLoading.alpha =1f }
+                vh.rvBinding.bookshelfRvProgressText.animateFadeOut().withEndAction { vh.rvBinding.bookshelfRvProgressText.alpha =1f }
+            })
+            .into(vh.rvBinding.bookshelfRvImage)
+        vh.rvBinding.bookshelfRvName.text = item.mNovel.mName
+        vh.rvBinding.bookshelfRvTime.text = item.mNovel.mDatetimeUpdated
     }
 }

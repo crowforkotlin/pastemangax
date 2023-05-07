@@ -8,9 +8,9 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.R.id.app_main_fcv
 import com.crow.base.app.appContext
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.BaseUser
-import com.crow.base.current_project.entity.Fragments
+import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.navigateToWithBackStack

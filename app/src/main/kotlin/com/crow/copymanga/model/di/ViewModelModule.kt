@@ -1,4 +1,4 @@
-package com.crow.copymanga.di
+package com.crow.copymanga.model.di
 
 import com.crow.module_bookshelf.ui.viewmodel.BookshelfViewModel
 import com.crow.module_book.ui.viewmodel.BookInfoViewModel

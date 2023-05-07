@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="discover_red">#EF5350</color>
-	<color name="discover_grey">#616161</color>
-	<color name="discover_purple">#9C27B0</color>
-	<color name="discover_green">#4CAF50</color>
-	<color name="discover_indigo">#3F51B5</color>
+
 </resources>

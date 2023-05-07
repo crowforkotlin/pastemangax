@@ -14,9 +14,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.appContext
-import com.crow.base.current_project.entity.BookTapEntity
-import com.crow.base.current_project.entity.BookType
-import com.crow.base.current_project.entity.BookType.Comic
+import com.crow.base.copymanga.entity.BookTapEntity
+import com.crow.base.copymanga.entity.BookType
+import com.crow.base.copymanga.entity.BookType.Comic
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -176,7 +176,7 @@ class HomeComicParentRvAdapter(
         }
     }
 
-    suspend fun doRecNotify(datas: MutableList<RecComicsResult>, notifyMs: Long = 25L) {
+    suspend fun doRecNotify(datas: MutableList<RecComicsResult>, notifyMs: Long = 20L) {
         mHomeRecComicRvAdapter?.doNotify(datas, notifyMs)
     }
 

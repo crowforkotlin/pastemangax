@@ -3,17 +3,15 @@ package com.crow.module_discover.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
-import com.crow.base.current_project.BaseStrings
+import com.crow.base.copymanga.BaseStrings
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.getStatusBarHeight
-import com.crow.base.tools.extensions.logMsg
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverFragmentBinding
 import com.crow.module_discover.ui.adapter.DiscoverAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
 import com.google.android.material.tabs.TabLayoutMediator
-import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /*************************

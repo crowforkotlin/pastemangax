@@ -1,4 +1,4 @@
-package com.crow.base.current_project
+package com.crow.base.copymanga
 
 object BaseUser {
     var CURRENT_USER_TOKEN = ""

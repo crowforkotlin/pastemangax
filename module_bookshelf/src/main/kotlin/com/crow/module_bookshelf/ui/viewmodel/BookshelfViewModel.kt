@@ -5,7 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.crow.base.current_project.BaseUser
+import com.crow.base.copymanga.BaseUser
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.clear
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel

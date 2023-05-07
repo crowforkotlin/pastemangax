@@ -2,6 +2,7 @@
 
 package com.crow.module_book.ui.fragment
 
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,15 +11,17 @@ import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
-import com.crow.base.current_project.BaseUser
-import com.crow.base.current_project.entity.BookTapEntity
-import com.crow.base.current_project.entity.BookType
-import com.crow.base.current_project.entity.Fragments
-import com.crow.base.current_project.formatValue
-import com.crow.base.current_project.getComicCardHeight
-import com.crow.base.current_project.getComicCardWidth
-import com.crow.base.current_project.getSpannableString
+import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.entity.BookTapEntity
+import com.crow.base.copymanga.entity.BookType
+import com.crow.base.copymanga.entity.Fragments
+import com.crow.base.copymanga.formatValue
+import com.crow.base.copymanga.getComicCardHeight
+import com.crow.base.copymanga.getComicCardWidth
+import com.crow.base.copymanga.getSpannableString
+import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
@@ -50,6 +53,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.crow.base.R as baseR
 
@@ -93,15 +97,32 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
     // 轻小说章节Rv
     private var mNovelChapterRvAdapter: NovelChapterRvAdapter? = null
 
+    private var mAppGlideProgressFactory: AppGlideProgressFactory? = null
+
     // 显示书页信息
     private fun showBookInfoPage() {
 
         // 根据VM 数据得到单独的一个完整数据（未确定类型）
         val bookResult = if (mBookVM.mComicInfoPage != null) mBookVM.mComicInfoPage!!.mComic else mBookVM.mNovelInfoPage!!.mNovel
 
+        // 获取单例Generic...
+        val mGenericTransitionOptions = get<GenericTransitionOptions<Drawable>>()
+
+
         // 类型有两个 漫画 和 小说
         if (bookResult is ComicInfoResult) {
-            Glide.with(this).load(bookResult.mCover).placeholder(baseR.drawable.base_icon_crow).into(mBinding.bookInfoImage)
+            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(bookResult.mCover) { _, _, percentage, _, _ ->
+                mBinding.bookInfoProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+            }
+            Glide.with(this)
+                .load(bookResult.mCover)
+                .addListener(mAppGlideProgressFactory?.getRequestListener())
+                .transition(mGenericTransitionOptions.transition { _ ->
+                    mBinding.bookInfoImage.animateFadeIn()
+                    mBinding.bookInfoLoading.animateFadeOut().withEndAction { mBinding.bookInfoLoading.alpha = 1f }
+                    mBinding.bookInfoProgressText.animateFadeOut().withEndAction { mBinding.bookInfoProgressText.alpha = 1f }
+                })
+                .into(mBinding.bookInfoImage)
             mBinding.bookInfoAuthor.text = getString(R.string.BookComicAuthor, bookResult.mAuthor.joinToString { it.mName })
             mBinding.bookInfoHot.text = getString(R.string.BookComicHot, formatValue(bookResult.mPopular))
             mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, bookResult.mDatetimeUpdated)
@@ -120,7 +141,18 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
                 })
             }
         } else if (bookResult is NovelInfoResult) {
-            Glide.with(this).load(bookResult.mCover).into(mBinding.bookInfoImage)
+            mAppGlideProgressFactory =  AppGlideProgressFactory.createGlideProgressListener(bookResult.mCover) { _, _, percentage, _, _ ->
+                mBinding.bookInfoProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+            }
+            Glide.with(this)
+                .load(bookResult.mCover)
+                .addListener(mAppGlideProgressFactory?.getRequestListener())
+                .transition(mGenericTransitionOptions.transition { _ ->
+                    mBinding.bookInfoImage.animateFadeIn()
+                    mBinding.bookInfoLoading.animateFadeOut().withEndAction { mBinding.bookInfoLoading.alpha = 1f }
+                    mBinding.bookInfoProgressText.animateFadeOut().withEndAction { mBinding.bookInfoProgressText.alpha = 1f }
+                })
+                .into(mBinding.bookInfoImage)
             mBinding.bookInfoAuthor.text = getString(R.string.BookComicAuthor, bookResult.mAuthor.joinToString { it.mName })
             mBinding.bookInfoHot.text = getString(R.string.BookComicHot, formatValue(bookResult.mPopular))
             mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, bookResult.mDatetimeUpdated)
@@ -422,5 +454,11 @@ class BookInfoFragment : BaseMviFragment<BookComicFragmentInfoBinding>() {
                 else -> { }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mAppGlideProgressFactory?.doClean()?.doRemoveListener()
+        mAppGlideProgressFactory = null
     }
 }

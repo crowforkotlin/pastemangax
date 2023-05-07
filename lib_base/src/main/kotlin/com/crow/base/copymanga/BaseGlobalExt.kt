@@ -1,4 +1,4 @@
-package com.crow.base.current_project
+package com.crow.base.copymanga
 
 import android.content.Context
 import android.graphics.Typeface
@@ -9,7 +9,6 @@ import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver

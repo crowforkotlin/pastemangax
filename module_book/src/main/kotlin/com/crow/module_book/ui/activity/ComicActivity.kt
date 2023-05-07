@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.core.view.WindowCompat
-import com.crow.base.current_project.BaseStrings
+import com.crow.base.copymanga.BaseStrings
 import com.crow.base.tools.extensions.startActivity
 import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.base.ui.viewmodel.doOnError
@@ -59,7 +59,7 @@ class ComicActivity : BaseMviActivity<BookComicFragmentBinding>() {
         showComicPage(mComicVM.comicPage ?: return)
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
         mComicVM.onOutput { intent ->
             when(intent) {
                 is BookIntent.GetComicPage -> {

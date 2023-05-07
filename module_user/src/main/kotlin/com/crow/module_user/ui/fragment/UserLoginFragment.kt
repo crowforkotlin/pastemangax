@@ -6,9 +6,9 @@ import androidx.activity.addCallback
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.app.appContext
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.entity.Fragments
-import com.crow.base.current_project.updateLifecycleObserver
+import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.entity.Fragments
+import com.crow.base.copymanga.updateLifecycleObserver
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment

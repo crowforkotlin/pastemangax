@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 plugins {
     // Android 应用程序插件
     id(Plugins.android_application)
@@ -10,17 +8,24 @@ plugins {
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
 
+    // kapt
+    kotlin(Plugins.kotlin_kapt)
+
     // 使用Kotlin序列化插件
     // kotlin(Plugins.kotlin_serialization) version Versions.kotlin_version
 }
 
+kotlin { jvmToolchain(11) }
+
 android {
 
     // 配置构建功能相关的选项
-    buildFeatures {
+    buildFeatures(Action {
+
         // 开启 ViewBinding
         viewBinding = true
-    }
+    })
+
 
     // 应用程序的默认配置信息
     defaultConfig {
@@ -32,7 +37,7 @@ android {
         namespace = AppConfigs.namespace
 
         // 构建工具版本
-        buildToolsVersion = AppConfigs.build_tools_version
+        buildToolsVersion =  AppConfigs.build_tools_version
 
         // 标识应用程序ID （设备上的唯一标识符）
         applicationId = AppConfigs.application_id
@@ -56,7 +61,7 @@ android {
         multiDexEnabled = true
 
         // 资源前缀（所有资源前缀必须添加）
-        resourcePrefix = AppConfigs.app_resource_prefix
+        resourcePrefix(AppConfigs.app_resource_prefix)
     }
 
     // 应用程序的构建类型
@@ -106,6 +111,7 @@ android {
 
         // 指定编译器的命令行参数 可启用额外功能
         freeCompilerArgs = AppConfigs.free_compile_args
+
     }
 
     // （产品口味） 是一个抽象的概念，表示应用程序的不同版本
@@ -143,9 +149,17 @@ android {
             buildConfigField("boolean", "IS_ONLINE_ENV", "false")
         }
     }
+
+    kapt {
+        generateStubs = true
+    }
 }
 
+
 dependencies {
+
+    // Glide编译器
+    kapt(Dependencies.glide_compiler)
 
     // 引入Base库
     implementation(project(mapOf("path" to ":lib_base")))
@@ -155,5 +169,4 @@ dependencies {
 
     // 引入MultiDex依赖
     implementation(Dependencies.androidx_multidex)
-
 }

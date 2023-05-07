@@ -5,17 +5,19 @@ import android.view.LayoutInflater
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.crow.base.current_project.BaseLoadStateAdapter
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.entity.BookTapEntity
-import com.crow.base.current_project.entity.BookType
-import com.crow.base.current_project.entity.Fragments
-import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.*
+import com.crow.base.copymanga.BaseLoadStateAdapter
+import com.crow.base.copymanga.entity.BookTapEntity
+import com.crow.base.copymanga.entity.BookType
+import com.crow.base.copymanga.entity.Fragments
+import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.navigateToWithBackStack
+import com.crow.base.tools.extensions.repeatOnLifecycle
+import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.ViewState
 import com.crow.base.ui.viewmodel.doOnError
@@ -26,9 +28,9 @@ import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.ui.adapter.DiscoverComicAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
 import org.koin.android.ext.android.get
-import com.crow.base.R as baseR
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.qualifier.named
+import com.crow.base.R as baseR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -159,5 +161,10 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
         // 收集状态 通知适配器
         repeatOnLifecycle { mDiscoverVM.mDiscoverComicHomeFlowPager?.collect { mDiscoverComicAdapter.submitData(it) } }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        AppGlideProgressFactory.doReset()
     }
 }

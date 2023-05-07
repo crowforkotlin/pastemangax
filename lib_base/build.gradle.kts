@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.LibraryBuildFeatures
+
 plugins {
 
     // 使用插件库
@@ -8,18 +10,19 @@ plugins {
 
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
+
+    // kapt
+    kotlin(Plugins.kotlin_kapt)
 }
 
 android {
 
-
     // 配置构建功能相关的选项
-    buildFeatures {
+    buildFeatures(Action<LibraryBuildFeatures> {
 
         // 开启 ViewBinding
         viewBinding = true
-    }
-
+    })
 
     defaultConfig {
 
@@ -27,7 +30,7 @@ android {
         namespace = AppConfigs.base_namespace
 
         // 资源前缀（所有资源前缀必须添加）
-        resourcePrefix = AppConfigs.base_resource_prefix
+        resourcePrefix(AppConfigs.base_resource_prefix)
 
         // 编译的SDK版本
         compileSdk = AppConfigs.compile_sdk_version
@@ -43,7 +46,6 @@ android {
             abiFilters.add("armeabi")
         }
     }
-
 
     // Android Gradle 构建时的编译选项
     compileOptions {
@@ -78,7 +80,12 @@ android {
         jniLibs.srcDirs(AppConfigs.source_libs, AppConfigs.source_jniLibs)
     }
 
+    kapt {
+        generateStubs = true
+    }
 }
+
+kotlin { jvmToolchain(11) }
 
 dependencies {
 
@@ -111,13 +118,11 @@ dependencies {
     androidTestApi(Dependencies.androidx_test_junit_ktx)
     androidTestApi(Dependencies.androidx_test_espresso)
 
-
     /* Kotlin 协程 */
     api(Dependencies.kotlinx_coroutines)
     api(Dependencies.kotlinx_datetime)
     api(Dependencies.kotlin_stdlib)
     api(Dependencies.kotlin_reflect)
-
 
     /* Koin 注入框架 */
     api(Dependencies.android_koin)
@@ -127,24 +132,29 @@ dependencies {
     api(Dependencies.retrofit_gson)
     api(Dependencies.retrofit_scalars)
     api(Dependencies.retrofit_moshi)
+
     api(Dependencies.moshi)
     api(Dependencies.kotlin_serialization)
+
     api(Dependencies.okhttp)
     api(Dependencies.okhttp_loggin)
+
     api(Dependencies.logger)
     api(Dependencies.lottie)
-    api(Dependencies.glide)
-    api(Dependencies.glide_integration)
-    annotationProcessor(Dependencies.glide_compiler)
     api(Dependencies.photoview)
+
     api(Dependencies.reactivex_rxjava)
     api(Dependencies.reactivex_rxjava_android)
+
+    api(Dependencies.glide)
+    api(Dependencies.glide_integration) { exclude(group = "glide-parent") }
+    kapt(Dependencies.glide_compiler)
 
     // api(Dependencies.autosize)
 
     api(Dependencies.zguop_banner)
     api(Dependencies.circular_imageview)
-    api(Dependencies.bigImageViewPager)
+    // api(Dependencies.bigImageViewPager)
     api(Dependencies.tencent_bugly)
     api(Dependencies.loading_button)
     api(Dependencies.luksiege_picture_selector)

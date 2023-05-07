@@ -4,34 +4,22 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.BaseUser
+import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.BaseUser
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.isLatestVersion
-import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
-import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
-import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnErrorInCoroutine
-import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnResultInCoroutine
 import com.crow.module_bookshelf.ui.fragment.BookshelfFragment
 import com.crow.module_discover.ui.fragment.DiscoverFragment
 import com.crow.module_home.ui.fragment.HomeFragment
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentContainerBinding
-import com.crow.module_main.databinding.MainUpdateLayoutBinding
-import com.crow.module_main.databinding.MainUpdateUrlLayoutBinding
 import com.crow.module_main.model.intent.ContainerIntent
-import com.crow.module_main.model.resp.MainAppUpdateResp
 import com.crow.module_main.ui.adapter.ContainerAdapter
-import com.crow.module_main.ui.adapter.MainAppUpdateRv
 import com.crow.module_main.ui.viewmodel.ContainerViewModel
 import com.crow.module_user.ui.viewmodel.UserViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -52,7 +40,6 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).register(this) { mUserVM.doClearUserInfo() }                                       // 清除用户数据
         FlowBus.with<String>(BaseStrings.Key.LOGIN_SUCUESS).register(this) { doLoginSuccessRefresh(it) }                                          // 登录成功后响应回来进行刷新
         FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).register(this) { doExitUser() }                                                                           // 退出账号
-        FlowBus.with<Unit>(BaseStrings.Key.CHECK_UPDATE).register(this) { mContainerVM.input(ContainerIntent.GetUpdateInfo()) } // 查询更新
     }
 
     // 碎片容器适配器
@@ -66,13 +53,6 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     // 碎片集
     private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment.newInstance(), DiscoverFragment.newInstance(), BookshelfFragment.newInstance()) }
-
-    // 初始化更新是否完成
-    private var mInitUpdate: Boolean = false
-
-    // 点击标志 用于防止多次显示 BookInfo 以及 UserBottom
-    private var mTapBookFlag: Boolean = false
-    private var mTapUserFlag: Boolean = false
 
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
@@ -88,13 +68,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             BaseUser.CURRENT_USER_TOKEN = it?.mToken ?: return@onCollect
         }
 
-
         // 观察ContainerVM
         mContainerVM.onOutput { intent ->
             when(intent) {
-                is ContainerIntent.GetUpdateInfo -> { intent.mViewState
-                    .doOnError { _, _ -> toast(getString(R.string.main_update_error)) }
-                    .doOnResult { doUpdateChecker(intent.appUpdateResp!!) } }
                 is ContainerIntent.GetDynamicSite -> {
                     intent.mViewState
                         .doOnErrorInCoroutine { _, _ -> mContainerVM.saveAppConfig() }
@@ -112,13 +88,12 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 适配器 初始化 （设置Adapter、预加载页数）
         mContainerAdapter = ContainerAdapter(mFragmentList, childFragmentManager, lifecycle)
         mBinding.mainViewPager.adapter = mContainerAdapter
-        mBinding.mainViewPager.offscreenPageLimit = 1
+        mBinding.mainViewPager.offscreenPageLimit = 3
         mBinding.mainViewPager.isUserInputEnabled = false
     }
+
     // 检查更新
-    override fun initData() {
-        // mContainerVM.input(ContainerIntent.GetUpdateInfo())
-    }
+    override fun initData() { mContainerVM.input(ContainerIntent.GetUpdateInfo()) }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
@@ -156,39 +131,5 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private fun doSwitchFragment(position: Int) {
         if (mBinding.mainViewPager.currentItem != position) mBinding.mainViewPager.setCurrentItem(position, true)
         FlowBus.with<Int>(BaseStrings.Key.POST_CURRENT_ITEM).post(lifecycleScope, position)
-    }
-
-    // 检查更新
-    private fun doUpdateChecker(appUpdateResp: MainAppUpdateResp) {
-        val update = appUpdateResp.mUpdates.first()
-        if (isLatestVersion(latest = update.mVersionCode.toLong())) return run {
-            if (mInitUpdate) toast(getString(R.string.main_update_tips))
-            mInitUpdate = true
-        }
-        mInitUpdate = true
-        val updateBinding = MainUpdateLayoutBinding.inflate(layoutInflater)
-        val updateDialog = mContext.newMaterialDialog { dialog ->
-            dialog.setCancelable(false)
-            dialog.setView(updateBinding.root)
-        }
-        val screenHeight = mContext.resources.displayMetrics.heightPixels / 3
-        (updateBinding.mainUpdateScrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = screenHeight
-        updateBinding.mainUpdateCancel.isInvisible = appUpdateResp.mForceUpdate
-        updateBinding.mainUpdateTitle.text = update.mTitle
-        updateBinding.mainUpdateText.text = update.mContent
-        updateBinding.mainUpdateTime.text = getString(R.string.main_update_time, update.mTime)
-        if (!appUpdateResp.mForceUpdate) { updateBinding.mainUpdateCancel.doOnClickInterval { updateDialog.dismiss() } }
-        updateBinding.mainUpdateGo.doOnClickInterval {
-            updateDialog.dismiss()
-            val updateUrlBinding = MainUpdateUrlLayoutBinding.inflate(layoutInflater)
-            val updateUrlDialog = mContext.newMaterialDialog {
-                it.setCancelable(false)
-                it.setView(updateUrlBinding.root)
-            }
-            (updateUrlBinding.mainUpdateUrlScrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = screenHeight
-            updateUrlBinding.mainUpdateUrlCancel.isInvisible = appUpdateResp.mForceUpdate
-            updateUrlBinding.mainUpdateUrlRv.adapter = MainAppUpdateRv(update.mUrl)
-            if (!appUpdateResp.mForceUpdate) { updateUrlBinding.mainUpdateUrlCancel.doOnClickInterval { updateUrlDialog.dismiss() } }
-        }
     }
 }

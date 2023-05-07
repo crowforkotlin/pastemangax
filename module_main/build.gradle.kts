@@ -15,11 +15,11 @@ plugins {
 android {
 
     // 配置构建功能相关的选项
-    buildFeatures {
+    buildFeatures(Action {
 
         // 开启 ViewBinding
         viewBinding = true
-    }
+    })
 
     // 应用程序的默认配置信息
     defaultConfig {
@@ -77,5 +77,4 @@ dependencies {
     api(project(mapOf("path" to ":module_bookshelf")))
     api(project(mapOf("path" to ":module_book")))
     api(project(mapOf("path" to ":module_user")))
-
 }

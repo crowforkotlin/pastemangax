@@ -1,5 +1,6 @@
 package com.crow.module_bookshelf.ui.fragment
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,15 +9,23 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.crow.base.current_project.BaseLoadStateAdapter
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.BaseUser
-import com.crow.base.current_project.entity.BookTapEntity
-import com.crow.base.current_project.entity.BookType
-import com.crow.base.current_project.entity.Fragments
-import com.crow.base.current_project.processTokenError
+import com.bumptech.glide.GenericTransitionOptions
+import com.crow.base.copymanga.BaseLoadStateAdapter
+import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.entity.BookTapEntity
+import com.crow.base.copymanga.entity.BookType
+import com.crow.base.copymanga.entity.Fragments
+import com.crow.base.copymanga.processTokenError
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.navigateToWithBackStack
+import com.crow.base.tools.extensions.repeatOnLifecycle
+import com.crow.base.tools.extensions.showSnackBar
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.ViewState
 import com.crow.base.ui.viewmodel.doOnError
@@ -162,8 +171,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBinding.bookshelfRefresh.setDisableContentWhenRefresh(true)
 
         // 初始化适配器
-        mBookshelfComicRvAdapter = BookshelfComicRvAdapter { navigateBookInfo(BookTapEntity(BookType.Comic, it.mComic.mPathWord)) }
-        mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter { navigateBookInfo(BookTapEntity(BookType.Novel, it.mNovel.mPathWord)) }
+        val mGenericTransitionOptions = get<GenericTransitionOptions<Drawable>>()
+        mBookshelfComicRvAdapter = BookshelfComicRvAdapter(mGenericTransitionOptions) { navigateBookInfo(BookTapEntity(BookType.Comic, it.mComic.mPathWord)) }
+        mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter(mGenericTransitionOptions) { navigateBookInfo(BookTapEntity(BookType.Novel, it.mNovel.mPathWord)) }
 
         // 设置加载动画独占1行，卡片3行
         (mBinding.bookshelfRvComic.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() { override fun getSpanSize(position: Int)= if (position == mBookshelfComicRvAdapter.itemCount  && mBookshelfComicRvAdapter.itemCount > 0) 3 else 1 }

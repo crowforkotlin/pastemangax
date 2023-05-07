@@ -9,9 +9,9 @@ import androidx.core.view.forEach
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.app.appContext
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.BaseUser
-import com.crow.base.current_project.entity.Fragments
+import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval

@@ -56,21 +56,37 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.crow.base.ui.view.custom.BaseShadowLayout
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/book_info_shadow_layout"
+        style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
-        app:base_borderColor="@color/base_grey_400_40"
-        app:base_borderEnable="true"
-        app:base_borderWidth="1dp"
-        app:base_shadowSides="ALL"
-        app:base_shadowRadius="1dp"
-        app:base_shadowColor="@color/base_grey_400_40"
-        app:base_cornerRadius="20dp"
+        app:cardElevation="1dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_info_back">
+        app:layout_constraintTop_toBottomOf="@+id/book_info_back"
+        app:strokeColor="@color/base_grey_400_40"
+        app:strokeWidth="1dp">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/book_info_loading"
+            style="@style/Widget.Material3.CircularProgressIndicator.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:indicatorSize="@dimen/base_dp36"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            app:trackCornerRadius="@dimen/base_dp99" />
+
+        <TextView
+            android:id="@+id/book_info_progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/base_sp10"
+            android:text="@string/BaseZero"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/book_info_image"
@@ -82,7 +98,7 @@
             tools:layout_height="@dimen/base_dp168"
             tools:layout_width="@dimen/base_dp120" />
 
-    </com.crow.base.ui.view.custom.BaseShadowLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/book_info_status"

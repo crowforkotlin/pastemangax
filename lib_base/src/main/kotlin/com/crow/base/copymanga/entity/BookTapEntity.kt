@@ -1,4 +1,4 @@
-package com.crow.base.current_project.entity
+package com.crow.base.copymanga.entity
 
 import java.io.Serializable
 

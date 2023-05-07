@@ -8,9 +8,9 @@ import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.entity.BookTapEntity
-import com.crow.base.current_project.entity.Fragments
+import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.entity.BookTapEntity
+import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.globalCoroutineException
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -75,9 +75,13 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     // 注册FlowBus 设置主页头像
     init {
-        FlowBus.with<Drawable>(BaseStrings.Key.SET_HOME_ICON).register(this) {
+        FlowBus.with<Drawable>(BaseStrings.Key.SET_HOME_ICON).register(this) { drawable ->
             if (!isHidden) {
-                lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) { withStarted {  mBinding.homeToolbar.navigationIcon = it } }
+                lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
+                    withStarted {
+                        mBinding.homeToolbar.navigationIcon = drawable
+                    }
+                }
             }
         }
     }

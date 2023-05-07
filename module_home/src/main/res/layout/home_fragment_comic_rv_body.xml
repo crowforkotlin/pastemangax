@@ -6,54 +6,50 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/base_dp5"
     android:layout_marginEnd="@dimen/base_dp5"
-    android:orientation="vertical">
+    android:layout_marginBottom="@dimen/base_dp25">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/home_book_shadow_layout"
+        style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:cardElevation="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/base_grey_400_40"
+        app:strokeWidth="1dp">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/home_comic_rv_loading"
+            style="@style/Widget.Material3.CircularProgressIndicator.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:indicatorSize="@dimen/base_dp36"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            app:trackCornerRadius="@dimen/base_dp99" />
+
+        <TextView
+            android:id="@+id/home_comic_rv_progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/base_sp10"
+            android:text="@string/BaseZero"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/home_comic_rv_image"
             android:layout_width="wrap_content"
-            android:foreground="@drawable/base_bg_item_ripper"
             android:layout_height="wrap_content"
             android:contentDescription="@string/home_comic"
+            android:foreground="@drawable/base_bg_item_ripper"
             android:scaleType="centerCrop"
             tools:layout_height="@dimen/base_dp168"
             tools:layout_width="@dimen/base_dp120" />
 
     </com.google.android.material.card.MaterialCardView>
-
-    <!--<com.crow.base.ui.view.custom.BaseShadowLayout
-        android:id="@+id/home_book_shadow_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:base_borderColor="@color/base_grey_400_40"
-        app:base_borderEnable="true"
-        app:base_borderWidth="1dp"
-        app:base_shadowSides="ALL"
-        app:base_shadowRadius="1dp"
-        app:base_shadowColor="@color/base_grey_400_40"
-        app:base_cornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/home_comic_rv_image"
-            android:layout_width="wrap_content"
-            android:foreground="@drawable/base_bg_item_ripper"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/home_comic"
-            android:scaleType="centerCrop"
-            tools:layout_height="@dimen/base_dp168"
-            tools:layout_width="@dimen/base_dp120" />
-
-    </com.crow.base.ui.view.custom.BaseShadowLayout>-->
 
     <TextView
         android:id="@+id/home_comic_rv_name"
@@ -63,16 +59,35 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
-        android:textSize="@dimen/base_sp11"
+        android:minHeight="@dimen/base_dp48"
+        android:textSize="@dimen/base_sp12"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/home_comic_rv_author"
         app:layout_constraintEnd_toEndOf="@id/home_book_shadow_layout"
         app:layout_constraintStart_toStartOf="@id/home_book_shadow_layout"
         app:layout_constraintTop_toBottomOf="@+id/home_book_shadow_layout"
-        tools:text="@string/BaseTodoTextView" />
+        tools:text="书名" />
 
     <TextView
         android:id="@+id/home_comic_rv_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/base_dp2_5"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:visibility="gone"
+        android:paddingStart="@dimen/base_dp10"
+        android:paddingEnd="@dimen/base_dp10"
+        android:textSize="@dimen/base_sp10"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/home_comic_rv_lastest_chapter"
+        app:layout_constraintEnd_toEndOf="@+id/home_comic_rv_name"
+        app:layout_constraintStart_toStartOf="@+id/home_comic_rv_name"
+        tools:text="作者" />
+
+    <TextView
+        android:id="@+id/home_comic_rv_lastest_chapter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/base_dp2_5"
@@ -83,26 +98,23 @@
         android:paddingEnd="@dimen/base_dp10"
         android:textSize="@dimen/base_sp10"
         android:textStyle="bold"
-        app:drawableStartCompat="@drawable/home_ic_author_24dp"
         app:layout_constraintBottom_toTopOf="@id/home_comic_rv_hot"
         app:layout_constraintEnd_toEndOf="@+id/home_comic_rv_name"
         app:layout_constraintStart_toStartOf="@+id/home_comic_rv_name"
-        tools:text="@string/BaseTodoTextView" />
+        tools:text="最新章节" />
 
     <TextView
         android:id="@+id/home_comic_rv_hot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/base_dp25"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
         android:textSize="@dimen/base_sp10"
         android:textStyle="bold"
-        app:drawableStartCompat="@drawable/home_ic_comic_hot_12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/home_comic_rv_author"
         app:layout_constraintStart_toStartOf="@+id/home_comic_rv_author"
-        tools:text="@string/BaseTodoTextView" />
+        tools:text="热度" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,8 +1,8 @@
 package com.crow.module_book.network
 
-import com.crow.base.current_project.BaseResultResp
-import com.crow.base.current_project.BaseStrings.PATH_WORD
-import com.crow.base.current_project.BaseStrings.URL
+import com.crow.base.copymanga.BaseResultResp
+import com.crow.base.copymanga.BaseStrings.PATH_WORD
+import com.crow.base.copymanga.BaseStrings.URL
 import com.crow.module_book.model.resp.*
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody

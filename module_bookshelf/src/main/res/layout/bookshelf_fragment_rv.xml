@@ -14,8 +14,31 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		app:layout_constraintEnd_toEndOf="parent"
+		style="@style/Widget.Material3.CardView.Filled"
+		app:cardElevation="1dp"
+		app:strokeWidth="1dp"
+		app:strokeColor="@color/base_grey_400_40"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
+
+		<com.google.android.material.progressindicator.CircularProgressIndicator
+			android:id="@+id/bookshelf_rv_loading"
+			style="@style/Widget.Material3.CircularProgressIndicator.Small"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			app:indicatorSize="@dimen/base_dp36"
+			android:layout_gravity="center"
+			android:indeterminate="true"
+			app:trackCornerRadius="@dimen/base_dp99" />
+
+		<TextView
+			android:id="@+id/bookshelf_rv_progress_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:textSize="@dimen/base_sp10"
+			android:text="@string/BaseZero"
+			android:textStyle="bold" />
 
 		<ImageView
 			android:id="@+id/bookshelf_rv_image"
@@ -28,33 +51,6 @@
 			tools:layout_width="@dimen/base_dp120" />
 
 	</com.google.android.material.card.MaterialCardView>
-
-	<!--<com.crow.base.ui.view.custom.BaseShadowLayout
-		android:id="@+id/bookshelf_rv_shadowLayout"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		app:base_borderColor="@color/base_grey_400_40"
-		app:base_borderEnable="true"
-		app:base_borderWidth="1dp"
-		app:base_shadowSides="ALL"
-		app:base_shadowRadius="1dp"
-		app:base_shadowColor="@color/base_grey_400_40"
-		app:base_cornerRadius="20dp"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent">
-
-		<ImageView
-			android:id="@+id/bookshelf_rv_image"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:contentDescription="@string/BaseTodoTextView"
-			android:foreground="?attr/selectableItemBackground"
-			android:scaleType="centerCrop"
-			tools:layout_height="@dimen/base_dp168"
-			tools:layout_width="@dimen/base_dp120" />
-
-	</com.crow.base.ui.view.custom.BaseShadowLayout>-->
 
 	<TextView
 		android:id="@+id/bookshelf_rv_name"
