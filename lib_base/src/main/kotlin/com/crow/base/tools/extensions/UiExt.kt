@@ -20,6 +20,7 @@ import kotlin.math.sin
 
 const val BASE_ANIM_300L = 300L
 const val BASE_ANIM_200L = 200L
+const val BASE_ANIM_100L = 100L
 
 fun interface IBaseUiCanvasEvent { fun doOnCanvas(canvas: Canvas) }
 

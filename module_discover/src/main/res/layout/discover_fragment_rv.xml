@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Widget.Material3.CardView.Filled"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/base_dp5"
@@ -42,7 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="true"
-            app:trackCornerRadius="@dimen/base_dp99" />
+            app:trackCornerRadius="@dimen/base_dp99"
+app:indicatorColor="@color/base_light_blue_500" />
 
         <TextView
             android:id="@+id/discover_progress_text"

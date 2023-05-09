@@ -7,18 +7,19 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.crow.base.copymanga.getComicCardHeight
 import com.crow.base.copymanga.getComicCardWidth
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
-import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
+
 import com.crow.base.ui.adapter.BaseGlideViewHolder
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
 import com.crow.module_bookshelf.model.resp.bookshelf_novel.BookshelfNovelResults
 
 class BookshelfNovelRvAdapter(
-    private val mGenericTransitionOptions: GenericTransitionOptions<Drawable>,
     inline val doOnTap: (BookshelfNovelResults) -> Unit
 ) : PagingDataAdapter<BookshelfNovelResults, BookshelfNovelRvAdapter.ViewHolder>(DiffCallback()) {
 
@@ -57,17 +58,22 @@ class BookshelfNovelRvAdapter(
 
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
         val item = getItem(position) ?: return
-        vh.mAppGlideProgressFactory =AppGlideProgressFactory.createGlideProgressListener(item.mNovel.mCover) { _, _, percentage, _, _ ->
+
+
+        vh.rvBinding.bookshelfRvLoading.alpha = 1f
+        vh.rvBinding.bookshelfRvProgressText.alpha = 1f
+        vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+        vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mNovel.mCover) { _, _, percentage, _, _ ->
             vh.rvBinding.bookshelfRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
         }
 
         Glide.with(vh.itemView.context)
             .load(item.mNovel.mCover)
             .addListener(vh.mAppGlideProgressFactory?.getRequestListener())
-            .transition(mGenericTransitionOptions.transition { _ ->
-                vh.rvBinding.bookshelfRvImage.animateFadeIn()
-                vh.rvBinding.bookshelfRvLoading.animateFadeOut().withEndAction { vh.rvBinding.bookshelfRvLoading.alpha =1f }
-                vh.rvBinding.bookshelfRvProgressText.animateFadeOut().withEndAction { vh.rvBinding.bookshelfRvProgressText.alpha =1f }
+            .transition(GenericTransitionOptions<Drawable>().transition { _, _ ->
+                vh.rvBinding.bookshelfRvLoading.animateFadeOut()
+                vh.rvBinding.bookshelfRvProgressText.animateFadeOut()
+                DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
             })
             .into(vh.rvBinding.bookshelfRvImage)
         vh.rvBinding.bookshelfRvName.text = item.mNovel.mName

@@ -2,7 +2,8 @@ package com.crow.copymanga.model.di
 
 import androidx.fragment.app.Fragment
 import com.crow.base.copymanga.entity.Fragments
-import com.crow.module_book.ui.fragment.BookInfoFragment
+import com.crow.module_book.ui.fragment.BookComicFragment
+import com.crow.module_book.ui.fragment.BookNovelFragment
 import com.crow.module_main.ui.fragment.AboutAuthorFragment
 import com.crow.module_main.ui.fragment.ContainerFragment
 import com.crow.module_main.ui.fragment.SettingsFragment
@@ -32,6 +33,7 @@ val fragmentModule = module {
     fragment<Fragment>(named(Fragments.Reg)) { UserRegFragment() }
     fragment<Fragment>(named(Fragments.Icon)) { UserIconFragment() }
     fragment<Fragment>(named(Fragments.About)) { AboutAuthorFragment() }
-    fragment<Fragment>(named(Fragments.BookInfo)) { BookInfoFragment() }
     fragment<Fragment>(named(Fragments.Settings)) { SettingsFragment() }
+    fragment<Fragment>(named(Fragments.BookComicInfo)) { BookComicFragment() }
+    fragment<Fragment>(named(Fragments.BookNovelInfo)) { BookNovelFragment() }
 }

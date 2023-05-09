@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.crow.base.copymanga.BaseLoadStateAdapter
-import com.crow.base.copymanga.entity.BookTapEntity
-import com.crow.base.copymanga.entity.BookType
+import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.showSnackBar
@@ -42,6 +42,8 @@ import com.crow.base.R as baseR
  **************************/
 class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
+    companion object { fun newInstance() = DiscoverComicFragment() }
+
     // 共享 发现VM
     private val mDiscoverVM by sharedViewModel<DiscoverViewModel>()
 
@@ -63,19 +65,21 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         }
     }
 
-    private fun navigateBookInfo(bookTapEntity: BookTapEntity) {
+    private fun navigateBookComicInfo(pathword: String) {
         val bundle = Bundle()
-        bundle.putSerializable("tapEntity", bookTapEntity)
-        requireParentFragment().requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
+        bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
-            get<Fragment>(named(Fragments.BookInfo)).also { it.arguments = bundle }, Fragments.BookInfo.toString(), Fragments.BookInfo.toString()
+            get<Fragment>(named(Fragments.BookComicInfo)).also { it.arguments = bundle }, Fragments.BookComicInfo.toString(), Fragments.BookComicInfo.toString()
         )
     }
 
     override fun initView(bundle: Bundle?) {
 
+        mBinding.discoverComicAppbar.root.setPadding(0, mContext.getStatusBarHeight(), 0,0)
+
         // 初始化 发现页 漫画适配器
-        mDiscoverComicAdapter = DiscoverComicAdapter { navigateBookInfo(BookTapEntity(BookType.Comic, it.mPathWord)) }
+        mDiscoverComicAdapter = DiscoverComicAdapter { navigateBookComicInfo(it.mPathWord) }
 
         // 设置适配器
         mBinding.discoverComicRv.adapter = mDiscoverComicAdapter.withLoadStateFooter(BaseLoadStateAdapter { mDiscoverComicAdapter.retry() })

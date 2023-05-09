@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
 import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.entity.BookTapEntity
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.globalCoroutineException
@@ -17,6 +16,8 @@ import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
+import com.crow.base.tools.extensions.setCenterAnimWithFadeOut
+import com.crow.base.tools.extensions.setFadeAnimation
 import com.crow.base.tools.extensions.setMaskAmount
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.ui.dialog.LoadingAnimDialog
@@ -109,7 +110,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                 mHomeComicParentRvAdapter?.tryClearAndNotify()
                 mHomeComicParentRvAdapter = null
                 delay(200L)
-                mHomeComicParentRvAdapter = HomeComicParentRvAdapter(datas.toMutableList(), viewLifecycleOwner, mRecRefreshCallback) { navigateBookInfo(it) }
+                mHomeComicParentRvAdapter = HomeComicParentRvAdapter(datas.toMutableList(), viewLifecycleOwner, mRecRefreshCallback) { navigateBookComicInfo(it) }
 
                 mBinding.homeRv.adapter = mHomeComicParentRvAdapter
             }
@@ -122,13 +123,13 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     }
 
     // 导航至BookInfo
-    private fun navigateBookInfo(bookTapEntity: BookTapEntity) {
+    private fun navigateBookComicInfo(pathword: String) {
+        val tag = Fragments.BookComicInfo.toString()
         val bundle = Bundle()
-        bundle.putSerializable("tapEntity", bookTapEntity)
+        bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
-            get<Fragment>(named(Fragments.BookInfo)).also { it.arguments = bundle }, Fragments.BookInfo.toString(), Fragments.BookInfo.toString()
-        )
+            get<Fragment>(named(Fragments.BookComicInfo)).also { it.arguments = bundle }, tag, tag) { it.setCenterAnimWithFadeOut() }
     }
 
     // 导航至设置Fragment
@@ -136,7 +137,9 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
                 requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
                 get(named(Fragments.Settings)), Fragments.Settings.toString(), Fragments.Settings.toString()
-            )
+            ) {
+                it.setFadeAnimation()
+            }
     }
 
     // 暴露的函数 提供给 ContainerFragment 用于通知主页刷新
@@ -164,7 +167,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeRefresh.setDisableContentWhenRefresh(true)
 
         // 初始化适配器
-        mHomeComicParentRvAdapter = HomeComicParentRvAdapter(mutableListOf(), viewLifecycleOwner, mRecRefreshCallback) { navigateBookInfo(it) }
+        mHomeComicParentRvAdapter = HomeComicParentRvAdapter(mutableListOf(), viewLifecycleOwner, mRecRefreshCallback) { navigateBookComicInfo(it) }
 
         // 设置适配器
         mBinding.homeRv.adapter = mHomeComicParentRvAdapter

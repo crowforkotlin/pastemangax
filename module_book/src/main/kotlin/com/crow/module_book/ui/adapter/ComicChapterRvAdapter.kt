@@ -29,7 +29,6 @@ class ComicChapterRvAdapter(
 
     var mChapterName: String? = null
 
-    private var mClickFlag = false
     private val mBtSurfaceColor = ContextCompat.getColor(appContext, R.color.book_button_bg_white)
     private val mBtTextColor = ContextCompat.getColor(appContext, R.color.book_button_text_purple)
 
@@ -37,19 +36,12 @@ class ComicChapterRvAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(BookComicInfoRvChapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
-            vh.mButton.doOnClickInterval {
-                if (mClickFlag) return@doOnClickInterval
-                mClickFlag = true
-                mDoOnTapChapter(vh.absoluteAdapterPosition, mComic[vh.absoluteAdapterPosition])
-                mClickFlag = false
-            }
+            vh.mButton.doOnClickInterval { mDoOnTapChapter(vh.absoluteAdapterPosition, mComic[vh.absoluteAdapterPosition]) }
             ToolTipsView.showToolTipsByLongClick(vh.mButton)
         }
     }
 
     override fun getItemCount(): Int = mComic.size
-
-    override fun getItemViewType(position: Int): Int = position
 
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
 

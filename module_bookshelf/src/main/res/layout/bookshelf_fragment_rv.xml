@@ -29,7 +29,8 @@
 			app:indicatorSize="@dimen/base_dp36"
 			android:layout_gravity="center"
 			android:indeterminate="true"
-			app:trackCornerRadius="@dimen/base_dp99" />
+			app:trackCornerRadius="@dimen/base_dp99"
+app:indicatorColor="@color/base_light_blue_500" />
 
 		<TextView
 			android:id="@+id/bookshelf_rv_progress_text"

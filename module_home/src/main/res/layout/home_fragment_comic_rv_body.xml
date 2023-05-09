@@ -9,7 +9,7 @@
     android:layout_marginBottom="@dimen/base_dp25">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/home_book_shadow_layout"
+        android:id="@+id/home_book_card_view"
         style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +28,8 @@
             app:indicatorSize="@dimen/base_dp36"
             android:layout_gravity="center"
             android:indeterminate="true"
-            app:trackCornerRadius="@dimen/base_dp99" />
+            app:trackCornerRadius="@dimen/base_dp99"
+app:indicatorColor="@color/base_light_blue_500" />
 
         <TextView
             android:id="@+id/home_comic_rv_progress_text"
@@ -63,9 +64,9 @@
         android:textSize="@dimen/base_sp12"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/home_comic_rv_author"
-        app:layout_constraintEnd_toEndOf="@id/home_book_shadow_layout"
-        app:layout_constraintStart_toStartOf="@id/home_book_shadow_layout"
-        app:layout_constraintTop_toBottomOf="@+id/home_book_shadow_layout"
+        app:layout_constraintEnd_toEndOf="@id/home_book_card_view"
+        app:layout_constraintStart_toStartOf="@id/home_book_card_view"
+        app:layout_constraintTop_toBottomOf="@+id/home_book_card_view"
         tools:text="书名" />
 
     <TextView

@@ -14,7 +14,8 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnErrorInCoroutine
 import com.crow.base.ui.viewmodel.doOnResultInCoroutine
 import com.crow.module_bookshelf.ui.fragment.BookshelfFragment
-import com.crow.module_discover.ui.fragment.DiscoverFragment
+import com.crow.module_discover.ui.fragment.DiscoverComicFragment
+import com.crow.module_discover.ui.fragment.DiscoverNovelFragment
 import com.crow.module_home.ui.fragment.HomeFragment
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentContainerBinding
@@ -52,7 +53,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private val mUserVM by sharedViewModel<UserViewModel>()
 
     // 碎片集
-    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment.newInstance(), DiscoverFragment.newInstance(), BookshelfFragment.newInstance()) }
+    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment.newInstance(), DiscoverComicFragment.newInstance(), DiscoverNovelFragment(),BookshelfFragment.newInstance()) }
 
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
@@ -88,7 +89,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 适配器 初始化 （设置Adapter、预加载页数）
         mContainerAdapter = ContainerAdapter(mFragmentList, childFragmentManager, lifecycle)
         mBinding.mainViewPager.adapter = mContainerAdapter
-        mBinding.mainViewPager.offscreenPageLimit = 3
+        mBinding.mainViewPager.offscreenPageLimit = 4
         mBinding.mainViewPager.isUserInputEnabled = false
     }
 
@@ -108,8 +109,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mBinding.mainBottomNavigation.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.main_menu_homepage -> doSwitchFragment(0)
-                R.id.main_menu_discovery -> doSwitchFragment(1)
-                R.id.main_menu_bookshelf -> doSwitchFragment(2)
+                R.id.main_menu_discovery_comic -> doSwitchFragment(1)
+                R.id.main_menu_discovery_novel -> doSwitchFragment(2)
+                R.id.main_menu_bookshelf -> doSwitchFragment(3)
             }
             true
         }

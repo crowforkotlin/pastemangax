@@ -11,22 +11,22 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.crow.base.copymanga.*
-import com.crow.base.copymanga.entity.BookTapEntity
-import com.crow.base.copymanga.entity.BookType
 import com.crow.base.copymanga.entity.IBookAdapterColor
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
-import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
+
 import com.crow.base.ui.adapter.BaseGlideViewHolder
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_home.databinding.HomeFragmentComicRvBodyBinding
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.AuthorResult
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
+import com.crow.module_home.ui.adapter.HomeComicParentRvAdapter.Type
 import kotlinx.coroutines.delay
-import org.koin.java.KoinJavaComponent
 import java.util.*
 
 /*************************
@@ -39,11 +39,9 @@ import java.util.*
  **************************/
 class HomeComicChildRvAdapter<T>(
     private var mData: MutableList<T> = mutableListOf(),
-    private val mBookType: BookType,
-    val doOnTap: (BookTapEntity) -> Unit
+    private val mType: Type,
+    val doOnTap: (String) -> Unit
 ) : RecyclerView.Adapter<HomeComicChildRvAdapter<T>.ViewHolder>() , IBookAdapterColor<HomeComicChildRvAdapter<T>.ViewHolder>{
-
-    private val mGenericTransitionOptions = KoinJavaComponent.getKoin().get<GenericTransitionOptions<Drawable>>()
 
     inner class ViewHolder(binding: HomeFragmentComicRvBodyBinding) : BaseGlideViewHolder<HomeFragmentComicRvBodyBinding>(binding) {
         var mPathWord: String = ""
@@ -63,6 +61,10 @@ class HomeComicChildRvAdapter<T>(
     private fun ViewHolder.initView(pathword: String, name: String, imageUrl: String, author: List<AuthorResult>, hot: Int, lastestChapter: String?) {
         mPathWord = pathword                                                                                             // 设置路径值 （用于后续请求）
 
+
+        rvBinding.homeComicRvLoading.alpha = 1f
+        rvBinding.homeComicRvProgressText.alpha = 1f
+        mAppGlideProgressFactory?.doRemoveListener()?.doClean()
         mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ ->
             rvBinding.homeComicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
         }
@@ -71,10 +73,10 @@ class HomeComicChildRvAdapter<T>(
         Glide.with(itemView)
             .load(imageUrl)
             .addListener(mAppGlideProgressFactory?.getRequestListener())
-            .transition(mGenericTransitionOptions.transition { _ ->
-                rvBinding.homeComicRvImage.animateFadeIn()
-                rvBinding.homeComicRvLoading.animateFadeOut().withEndAction { rvBinding.homeComicRvLoading.alpha = 1f }
-                rvBinding.homeComicRvProgressText.animateFadeOut().withEndAction { rvBinding.homeComicRvProgressText.alpha = 1f }
+            .transition(GenericTransitionOptions<Drawable>().transition { _, _ ->
+                rvBinding.homeComicRvLoading.animateFadeOut()
+                rvBinding.homeComicRvProgressText.animateFadeOut()
+                DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
             })
             .into(rvBinding.homeComicRvImage)
         rvBinding.homeComicRvName.text = name                                                                // 漫画名
@@ -103,22 +105,23 @@ class HomeComicChildRvAdapter<T>(
         return ViewHolder(HomeFragmentComicRvBodyBinding.inflate(from(parent.context), parent, false)).also { vh ->
 
             // 推荐 设置底部间距0
-            if(mBookType == BookType.Rec) (vh.rvBinding.homeComicRvHot.layoutParams as ConstraintLayout.LayoutParams).bottomMargin = 0
+            if(mType == Type.REC) (vh.rvBinding.homeComicRvHot.layoutParams as ConstraintLayout.LayoutParams).bottomMargin = 0
 
+            val isTopic = mType == Type.TOPIC
             // 漫画卡片高度
             vh.rvBinding.homeComicRvImage.layoutParams.apply {
-                width = (if (mBookType != BookType.Topic) getComicCardWidth() else getComicCardWidth() / 2 + getComicCardWidth()) - mSize10
+                width = (if (!isTopic) getComicCardWidth() else getComicCardWidth() / 2 + getComicCardWidth()) - mSize10
                 height = getComicCardHeight()
             }
 
             // 点击 父布局卡片 以及漫画卡片 事件 回调给上级 HomeFragment --> ContainerFragment
             vh.rvBinding.root.doOnClickInterval {
-                if (mBookType == BookType.Topic) { }
-                else doOnTap(BookTapEntity(BookType.Comic, vh.mPathWord))
+                if (isTopic) { }
+                else doOnTap(vh.mPathWord)
             }
-            vh.rvBinding.homeBookShadowLayout.doOnClickInterval {
-                if (mBookType == BookType.Topic) { }
-                else doOnTap(BookTapEntity(BookType.Comic, vh.mPathWord))
+            vh.rvBinding.homeBookCardView.doOnClickInterval {
+                if (isTopic) { }
+                else doOnTap(vh.mPathWord)
             }
 
             // Tooltips漫画名称设置
@@ -127,28 +130,28 @@ class HomeComicChildRvAdapter<T>(
     }
 
     override fun onBindViewHolder(vh: ViewHolder, pos: Int) {
-        when (mBookType) {
-            BookType.Rec -> {
+        when (mType) {
+            Type.REC -> {
                 val comic = (mData as MutableList<RecComicsResult>)[pos].mComic
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular, null)
             }
-            BookType.Hot -> {
+            Type.HOT -> {
                 val comic = (mData as MutableList<HotComic>)[pos].mComic
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular, comic.mLastChapterName)
             }
-            BookType.New -> {
+            Type.NEW -> {
                 val comic = (mData as MutableList<NewComic>)[pos].mComic
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular, comic.mLastChapterName)
             }
-            BookType.Finish -> {
+            Type.FINISH -> {
                 val comic = (mData as MutableList<FinishComic>)[pos]
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular, null)
             }
-            BookType.Rank -> {
+            Type.RANK -> {
                 val comic = (mData as MutableList<RankComics>)[pos].mComic
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular, null)
             }
-            BookType.Topic -> {
+            Type.TOPIC -> {
                 val comic = (mData as MutableList<Topices>)[pos]
                 Glide.with(vh.itemView).load(comic.mImageUrl).into(vh.rvBinding.homeComicRvImage)
                 vh.mPathWord = comic.mPathWord
@@ -163,7 +166,6 @@ class HomeComicChildRvAdapter<T>(
                     homeComicRvHot.visibility = View.GONE
                 }
             }
-            else -> { }
         }
     }
 

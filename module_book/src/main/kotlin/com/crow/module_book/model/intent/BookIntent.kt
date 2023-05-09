@@ -4,7 +4,7 @@ import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
 import com.crow.module_book.model.resp.*
 import okhttp3.ResponseBody
 
-sealed class BookIntent : BaseMviIntent() {
+open class BookIntent : BaseMviIntent() {
 
     data class GetComicInfo(val pathword: String, val comicInfo: ComicInfoResp? = null) : BookIntent()
 

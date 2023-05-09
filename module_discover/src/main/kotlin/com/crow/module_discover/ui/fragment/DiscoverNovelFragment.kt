@@ -8,11 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.crow.base.copymanga.BaseLoadStateAdapter
-import com.crow.base.copymanga.entity.BookTapEntity
-import com.crow.base.copymanga.entity.BookType
+import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.showSnackBar
@@ -40,20 +40,20 @@ import com.crow.base.R as baseR
  **************************/
 class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
 
+    companion object { fun newInstance() = DiscoverNovelFragment() }
+
     // 共享 发现VM
     private val mDiscoverVM by viewModel<DiscoverViewModel>()
 
     // 轻小说适配器
     private lateinit var mDiscoverNovelAdapter: DiscoverNovelAdapter
 
-    private val mLazyParentFragmentManager by lazy { requireParentFragment().requireParentFragment().parentFragmentManager }
-
-    private fun navigateBookInfo(bookTapEntity: BookTapEntity) {
+    private fun navigateBookNovelInfo(pathword: String) {
         val bundle = Bundle()
-        bundle.putSerializable("tapEntity", bookTapEntity)
-        mLazyParentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
+        bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
-            get<Fragment>(named(Fragments.BookInfo)).also { it.arguments = bundle }, Fragments.BookInfo.toString(), Fragments.BookInfo.toString()
+            get<Fragment>(named(Fragments.BookNovelInfo)).also { it.arguments = bundle }, Fragments.BookNovelInfo.toString(), Fragments.BookNovelInfo.toString()
         )
     }
 
@@ -79,8 +79,10 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
 
     override fun initView(bundle: Bundle?) {
 
+        mBinding.discoverNovelAppbar.root.setPadding(0, mContext.getStatusBarHeight(), 0,0)
+
         // 初始化适配器
-        mDiscoverNovelAdapter = DiscoverNovelAdapter { navigateBookInfo(BookTapEntity(BookType.Novel, it.mPathWord)) }
+        mDiscoverNovelAdapter = DiscoverNovelAdapter { navigateBookNovelInfo(it.mPathWord) }
 
         // 设置Rv适配器 添加页脚 回调则重试
         mBinding.discoverNovelRv.adapter = mDiscoverNovelAdapter.withLoadStateFooter(BaseLoadStateAdapter { mDiscoverNovelAdapter.retry() })

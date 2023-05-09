@@ -1,6 +1,5 @@
 package com.crow.module_bookshelf.ui.fragment
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +8,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.GenericTransitionOptions
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
-import com.crow.base.copymanga.entity.BookTapEntity
-import com.crow.base.copymanga.entity.BookType
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.processTokenError
 import com.crow.base.tools.coroutine.FlowBus
@@ -26,6 +22,7 @@ import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toast
+
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.ViewState
 import com.crow.base.ui.viewmodel.doOnError
@@ -143,12 +140,15 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         }
     }
 
-    private fun navigateBookInfo(bookTapEntity: BookTapEntity) {
+    private fun navigateBookComicInfo(pathword: String) = navigate(Fragments.BookComicInfo, pathword)
+    private fun navigateBookNovelInfo(pathword: String) = navigate(Fragments.BookNovelInfo, pathword)
+    private fun navigate(tag: Enum<Fragments>, pathword: String) {
         val bundle = Bundle()
-        bundle.putSerializable("tapEntity", bookTapEntity)
-        requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
+        bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(
+            baseR.id.app_main_fcv,
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
-            get<Fragment>(named(Fragments.BookInfo)).also { it.arguments = bundle }, Fragments.BookInfo.toString(), Fragments.BookInfo.toString()
+            get<Fragment>(named(tag)).also { it.arguments = bundle }, tag.toString(), tag.toString()
         )
     }
 
@@ -171,9 +171,8 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBinding.bookshelfRefresh.setDisableContentWhenRefresh(true)
 
         // 初始化适配器
-        val mGenericTransitionOptions = get<GenericTransitionOptions<Drawable>>()
-        mBookshelfComicRvAdapter = BookshelfComicRvAdapter(mGenericTransitionOptions) { navigateBookInfo(BookTapEntity(BookType.Comic, it.mComic.mPathWord)) }
-        mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter(mGenericTransitionOptions) { navigateBookInfo(BookTapEntity(BookType.Novel, it.mNovel.mPathWord)) }
+        mBookshelfComicRvAdapter = BookshelfComicRvAdapter { navigateBookComicInfo(it.mComic.mPathWord) }
+        mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter { navigateBookComicInfo(it.mNovel.mPathWord) }
 
         // 设置加载动画独占1行，卡片3行
         (mBinding.bookshelfRvComic.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() { override fun getSpanSize(position: Int)= if (position == mBookshelfComicRvAdapter.itemCount  && mBookshelfComicRvAdapter.itemCount > 0) 3 else 1 }

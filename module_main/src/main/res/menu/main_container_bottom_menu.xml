@@ -9,7 +9,13 @@
 		app:showAsAction="always" />
 
 	<item
-		android:id="@+id/main_menu_discovery"
+		android:id="@+id/main_menu_discovery_comic"
+		android:icon="@drawable/home_ic_discovery_24dp"
+		android:title="@string/home_recovery"
+		app:showAsAction="ifRoom" />
+
+	<item
+		android:id="@+id/main_menu_discovery_novel"
 		android:icon="@drawable/home_ic_discovery_24dp"
 		android:title="@string/home_recovery"
 		app:showAsAction="ifRoom" />
