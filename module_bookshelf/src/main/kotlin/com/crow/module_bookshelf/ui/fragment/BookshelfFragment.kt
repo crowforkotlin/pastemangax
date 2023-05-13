@@ -106,7 +106,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                 FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).post(lifecycleScope, Unit)
             },
             doOnConfirm = {
-                parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv, this, get(named(Fragments.Login)), Fragments.Login.toString(), Fragments.Login.toString())
+                requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv, this, get(named(Fragments.Login)), Fragments.Login.toString(), Fragments.Login.toString())
                 FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).post(lifecycleScope, Unit)
             }
         )

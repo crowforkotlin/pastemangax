@@ -10,7 +10,6 @@ import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.crow.base.tools.extensions.logMsg
 import com.crow.module_book.R
 import kotlin.math.max
 import kotlin.math.min
@@ -148,7 +147,6 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     private fun initDetector() {
         mScaleGestureDetector = ScaleGestureDetector(mContext, object : SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
-                "Scale $detector".logMsg(tag = "CustomRv")
                 /** 获取缩放中心  */
                 centerX = detector.focusX
                 centerY = detector.focusY
@@ -172,7 +170,6 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
             }
 
             override fun onDoubleTap(e: MotionEvent): Boolean {
-                "tab $isAutoScale".logMsg(tag = "CustomRv")
                 if (isAutoScale) {
                     return true
                 }
@@ -210,7 +207,7 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
             mDeltaX = 0.0f
             mDeltaY = 0.0f
         }
-        "scaleFactor : $scaleFactor \t mDeltaX : $mDeltaX \t mDeltaY : $mDeltaY".logMsg(tag = "CustomRv")
+        // "scaleFactor : $scaleFactor \t mDeltaX : $mDeltaX \t mDeltaY : $mDeltaY".logMsg(tag = "CustomRv")
         canvas.translate(mDeltaX, mDeltaY)
         //        canvas.scale(mScaleFactor, mScaleFactor, centerX, centerY);
         canvas.scale(scaleFactor, scaleFactor)

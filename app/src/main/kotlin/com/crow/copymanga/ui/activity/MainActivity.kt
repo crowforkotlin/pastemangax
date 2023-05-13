@@ -14,7 +14,6 @@ import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.isLatestVersion
-import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.navigateByAdd
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
@@ -31,7 +30,6 @@ import com.crow.module_main.model.resp.MainAppUpdateResp
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
 import com.crow.module_main.ui.fragment.ContainerFragment
 import com.crow.module_main.ui.viewmodel.ContainerViewModel
-import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -121,21 +119,6 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
                 }
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        "(MainActivity) onDestory".logMsg(Logger.WARN)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        "(MainActivity) onStop".logMsg(Logger.WARN)
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        "(MainActivity) onLowMemory".logMsg(Logger.ERROR)
     }
 
     // 检查更新

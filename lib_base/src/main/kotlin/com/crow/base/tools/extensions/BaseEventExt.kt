@@ -81,8 +81,8 @@ fun BaseEvent.doOnInterval(iEvent: BaseIEventIntervalExt<BaseEvent>) {
     doOnIntervalResult(this, this, iEvent)
 }
 
-fun BaseEvent.doOnInterval(mHandler: Handler, runnable: Runnable): BaseEvent {
-    mHandler.postDelayed({ runnable.run() }, mCurrentFlagTime)
+fun BaseEvent.doOnInterval(mHandler: Handler?, runnable: Runnable): BaseEvent {
+    mHandler?.postDelayed({ runnable.run() }, mCurrentFlagTime)
     return this
 }
 
