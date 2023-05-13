@@ -3,6 +3,7 @@ package com.crow.module_main.ui.fragment
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.forEach
@@ -138,6 +139,11 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) { navigateUp() }
+    }
+
     override fun getViewBinding(inflater: LayoutInflater) =  MainFragmentSettingsBinding.inflate(inflater)
 
     override fun initView(bundle: Bundle?) {
@@ -171,8 +177,8 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                             if (mSiteDialogBinding != null) {
                                 // 加载失败 等待一段间隔后 利用Hanlder 延时处理行为 重新加载Button淡入 加载动画淡出
                                 baseEvent.doOnInterval(mHandler) {
-                                    mSiteDialogBinding!!.settingsSiteDynamicReload.animateFadeIn()
-                                    mSiteDialogBinding!!.settingsSiteLoadingLottie.animateFadeOut().withEndAction { mSiteDialogBinding?.settingsSiteLoadingLottie?.isInvisible = false }
+                                    mSiteDialogBinding?.settingsSiteDynamicReload?.animateFadeIn()
+                                    mSiteDialogBinding?.settingsSiteLoadingLottie?.animateFadeOut()?.withEndAction { mSiteDialogBinding?.settingsSiteLoadingLottie?.isInvisible = false }
                                 }
                             }
                         }
@@ -187,7 +193,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                                     val decodeSite = Base64.decode(site!!.mEncodeSite, Base64.DEFAULT).decodeToString()
 
                                     // 添加RadioButton To RadioGroup
-                                    mSiteDialogBinding!!.settingsSiteDynamicRadioGroup.addView(MaterialRadioButton(mContext).also { button ->
+                                    mSiteDialogBinding?.settingsSiteDynamicRadioGroup?.addView(MaterialRadioButton(mContext).also { button ->
 
                                         // 站点链接 和 解码站点链接相同
                                         if((BaseStrings.URL.CopyManga == decodeSite)) {
@@ -226,9 +232,9 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                                 }
 
                                 // 加载动画淡出 动态站点Title、RadioGroup 淡入
-                                mSiteDialogBinding!!.settingsSiteLoadingLottie.animateFadeOutWithEndInVisible()
-                                mSiteDialogBinding!!.settingsSiteDynamicTitle.animateFadeIn()
-                                mSiteDialogBinding!!.settingsSiteDynamicRadioGroup.animateFadeIn()
+                                mSiteDialogBinding?.settingsSiteLoadingLottie?.animateFadeOutWithEndInVisible()
+                                mSiteDialogBinding?.settingsSiteDynamicTitle?.animateFadeIn()
+                                mSiteDialogBinding?.settingsSiteDynamicRadioGroup?.animateFadeIn()
                             }
                         }
                 }

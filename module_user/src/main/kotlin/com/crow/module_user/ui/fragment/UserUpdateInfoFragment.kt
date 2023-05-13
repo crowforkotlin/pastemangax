@@ -8,7 +8,14 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.processTokenError
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.getNavigationBarHeight
+import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.navigateToWithBackStack
+import com.crow.base.tools.extensions.onCollect
+import com.crow.base.tools.extensions.popSyncWithClear
+import com.crow.base.tools.extensions.showSnackBar
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
@@ -159,12 +166,6 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
 
             // 返回上一个界面
             navigateUp()
-
-            // 为true则 深链跳转至登录界面
-            if (isNeedNavigateLogin) {
-                // parentFragmentManager.remove(this@UserUpdateInfoFragment)
-                // parentFragmentManager.navigateByAddWithBackStack(baseR.id.app_main_fcv, UserLoginFragment.newInstance(), "UserLoginFragment")
-            }
         }
     }
 }

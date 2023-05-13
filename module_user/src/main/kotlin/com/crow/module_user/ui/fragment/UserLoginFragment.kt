@@ -3,7 +3,6 @@ package com.crow.module_user.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.app.appContext
 import com.crow.base.copymanga.BaseStrings
@@ -131,10 +130,6 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
 
             // 开启按钮动画
             mBinding.userLogin.startAnimation()
-        }
-
-        mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback {
-            parentFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
     }
 }
