@@ -5,20 +5,14 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
-/*
-* 如果是在Rv中使用回调监听 那么需要重写onViewRecycled去清空数据
-*     override fun onViewRecycled(vh: ViewHolder) {
-*        super.onViewRecycled(vh)
-*        vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
-*        vh.mAppGlideProgressFactory = null
-*     }
-* */
 
 class AppGlideProgressFactory private constructor (private val mUrl: String) {
 
     init { mProgressManagerMap[mUrl] = this }
 
     companion object {
+
+        const val PERCENT_0 = "0%"
 
         // 存储映射Url : Instance
         private val mProgressManagerMap: HashMap<String, AppGlideProgressFactory> = hashMapOf()

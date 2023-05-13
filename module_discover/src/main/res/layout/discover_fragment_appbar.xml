@@ -88,13 +88,14 @@
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
-	<androidx.appcompat.widget.LinearLayoutCompat
+	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal">
 
 		<TextView
 			android:id="@+id/discover_appbar_tag_text"
+			app:layout_constraintHorizontal_bias="0"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
@@ -104,6 +105,10 @@
 			android:maxLines="1"
 			android:textSize="@dimen/base_sp12"
 			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toStartOf="@+id/discover_appbar_text_pos"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
 			tools:text="校园-连载中（404）" />
 
 		<TextView
@@ -112,8 +117,33 @@
 			android:layout_height="wrap_content"
 			android:layout_margin="@dimen/base_dp5"
 			android:textStyle="bold"
-			tools:text="当前位置：（404）" />
+			app:layout_constraintBottom_toBottomOf="@+id/discover_pos_split"
+			app:layout_constraintEnd_toStartOf="@+id/discover_pos_split"
+			app:layout_constraintTop_toTopOf="@+id/discover_pos_split"
+			tools:text="123" />
 
-	</androidx.appcompat.widget.LinearLayoutCompat>
+		<TextView
+			android:id="@+id/discover_pos_split"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="@dimen/base_dp5"
+			android:text="/"
+			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="@+id/discover_appbar_pos_total"
+			app:layout_constraintEnd_toStartOf="@+id/discover_appbar_pos_total"
+			app:layout_constraintTop_toTopOf="@+id/discover_appbar_pos_total" />
+
+		<TextView
+			android:id="@+id/discover_appbar_pos_total"
+			tools:text="12345"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="@dimen/base_dp5"
+			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.appbar.AppBarLayout>

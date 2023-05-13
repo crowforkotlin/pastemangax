@@ -23,7 +23,7 @@
 	<application
 		android:name=".MainApplication"
 		android:allowBackup="true"
-		android:icon="@mipmap/app_ic_launcher"
+		android:icon="@mipmap/app_ic_launcher_new"
 		android:label="@string/BaseAppName"
 		android:supportsRtl="true"
 		android:theme="@style/App.Theme.CopyManga.Splash">
@@ -35,6 +35,7 @@
 
 		<activity
 			android:name=".ui.activity.MainActivity"
+			android:windowSoftInputMode="adjustNothing"
 			android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

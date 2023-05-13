@@ -5,6 +5,8 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.module_home.model.resp.homepage.ComicDatas
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.model.resp.homepage.results.Results
+import com.crow.module_home.model.resp.search.SearchComicResp
+import com.crow.module_home.model.resp.search.SearchNovelResp
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -23,5 +25,27 @@ interface HomeService {
     fun getHomePage(): Flow<BaseResultResp<Results>>
 
     @GET(BaseStrings.URL.RefreshRec)
-    fun getRecPage(@Query("limit") limit: Int, @Query("offset") start: Int, @Query("pos") pos:Int = 3200102): Flow<BaseResultResp<ComicDatas<RecComicsResult>>>
+    fun getRecPage(
+        @Query("offset") start: Int,
+        @Query("limit") limit: Int,
+        @Query("pos") pos: Int = 3200102
+    ): Flow<BaseResultResp<ComicDatas<RecComicsResult>>>
+
+    @GET(BaseStrings.URL.ComicSearch)
+    fun doSearchComic(
+        @Query("q") keyword: String,
+        @Query("q_type") type: String,
+        @Query("offset") start: Int,
+        @Query("limit") limit: Int,
+        @Query("platform") platform: Int = 1
+    ) : Flow<BaseResultResp<SearchComicResp>>
+
+    @GET(BaseStrings.URL.NovelSearch)
+    fun doSearchNovel(
+        @Query("q") keyword: String,
+        @Query("q_type") type: String,
+        @Query("offset") start: Int,
+        @Query("limit") limit: Int,
+        @Query("platform") platform: Int = 1
+    ) : Flow<BaseResultResp<SearchNovelResp>>
 }

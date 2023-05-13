@@ -44,6 +44,8 @@ abstract class BaseActivityImpl : AppCompatActivity(), IBaseActivity {
         LoadingAnimDialog.show(supportFragmentManager)
     }
 
+    override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) { LoadingAnimDialog.show(supportFragmentManager, loadingAnimConfig) }
+
     override fun dismissLoadingAnim() {
         LoadingAnimDialog.dismiss(supportFragmentManager)
     }

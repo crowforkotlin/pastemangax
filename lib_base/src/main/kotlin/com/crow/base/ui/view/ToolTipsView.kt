@@ -43,6 +43,16 @@ class ToolTipsView(context: Context, layoutInflater: LayoutInflater) {
                 true
             }
         }
+
+        fun showToolTipsByLongClick(view: View, text: CharSequence, offsetX: Int = 0, offsetY: Int = 0) {
+            view.setOnLongClickListener {
+                val toolTipsView = getToolTipsView()
+                toolTipsView.binding.textview.text = text.toString()
+                toolTipsView.popupWindow.update()                     // 更新后就可以点击提示视图外部取消提示
+                toolTipsView.popupWindow.showAsDropDown(view, view.measuredWidth / 2, offsetY)
+                true
+            }
+        }
     }
 
     private val binding by lazy { BaseTextviewBinding.inflate(layoutInflater) }

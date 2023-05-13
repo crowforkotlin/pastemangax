@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.extensions.logMsg
 import com.crow.module_book.R
-import com.orhanobut.logger.Logger
 import kotlin.math.max
 import kotlin.math.min
 
@@ -228,7 +227,6 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         }
         /** 缩放事件的处理  */
         mScaleGestureDetector!!.onTouchEvent(event)
-        event.logMsg(tag="CustomRv")
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 mLastDownX = event.x

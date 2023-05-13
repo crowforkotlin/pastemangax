@@ -39,7 +39,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     // FlowBus Init
     init {
         FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).register(this) { mUserVM.doClearUserInfo() }                                       // 清除用户数据
-        FlowBus.with<String>(BaseStrings.Key.LOGIN_SUCUESS).register(this) { doLoginSuccessRefresh(it) }                                          // 登录成功后响应回来进行刷新
+        FlowBus.with<Unit>(BaseStrings.Key.LOGIN_SUCUESS).register(this) { doLoginSuccessRefresh() }                                          // 登录成功后响应回来进行刷新
         FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).register(this) { doExitUser() }                                                                           // 退出账号
     }
 
@@ -87,7 +87,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     override fun initView(bundle: Bundle?) {
 
         // 适配器 初始化 （设置Adapter、预加载页数）
-        mContainerAdapter = ContainerAdapter(mFragmentList, childFragmentManager, lifecycle)
+        mContainerAdapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
         mBinding.mainViewPager.adapter = mContainerAdapter
         mBinding.mainViewPager.offscreenPageLimit = 4
         mBinding.mainViewPager.isUserInputEnabled = false
@@ -120,13 +120,13 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     // 执行退出用户
     private fun doExitUser() {
         mUserVM.doClearUserInfo()
-        (mFragmentList[2] as BookshelfFragment).doRefresh()
+        (mFragmentList[3] as BookshelfFragment).doExitFromUser()
     }
 
     // 执行登陆成功刷新
-    private fun doLoginSuccessRefresh(msg: String) {
+    private fun doLoginSuccessRefresh() {
         (mFragmentList[0] as HomeFragment).doRefresh()
-        (mFragmentList[2] as BookshelfFragment).doRefresh(msg)
+        (mFragmentList[3] as BookshelfFragment).doRefresh()
     }
 
     // 执行选择Fragment

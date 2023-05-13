@@ -46,6 +46,15 @@ import kotlinx.coroutines.runBlocking
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+/**
+ *
+ * 类名描述信息,测试文档生成类
+ * @param T 泛型类型
+ * @property value 属性value
+ * @constructor 创建DokkaDocTest的构造器.
+ * @Author haiyang
+ *
+ */
 class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
 
     init {

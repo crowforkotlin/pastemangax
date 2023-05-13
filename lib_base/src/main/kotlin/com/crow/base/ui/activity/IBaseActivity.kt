@@ -28,6 +28,9 @@ interface IBaseActivity {
     // 显示加载动画
     fun showLoadingAnim()
 
+    // 显示加载动画
+    fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig? = null)
+
     // 隐藏加载动画
     fun dismissLoadingAnim()
 

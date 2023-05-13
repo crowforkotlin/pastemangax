@@ -119,7 +119,7 @@ inline fun SwipeRefreshLayout.doOnCoroutineAutoRefresh(delayMs: Long = 0, lifecy
 }
 
 // 用于简化对 EditText 组件设置 afterTextChanged 操作的扩展函数。
-fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
+inline fun EditText.afterTextChanged(crossinline afterTextChanged: (String) -> Unit) {
     addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(editable: Editable?) { afterTextChanged.invoke(editable.toString()) }
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}

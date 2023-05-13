@@ -69,6 +69,8 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
         builder.appendLine(mContext.getString(R.string.main_about_crow).getSpannableString(purple, 5))
         builder.appendLine()
         builder.appendLine(mContext.getString(R.string.main_about_crow_email).getSpannableString(purple, 5))
+        builder.appendLine()
+        builder.appendLine(mContext.getString(R.string.main_about_crow_help))
         mBinding.mainAboutContent.text = builder
         mBinding.mainAboutAppVersion.text = getString(R.string.main_about_app_version, getCurrentVersionName().split("_")[0])
     }

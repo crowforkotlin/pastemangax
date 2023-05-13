@@ -10,9 +10,6 @@ buildscript {
         classpath("com.android.tools.build:gradle:8.0.1")
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3")
     }
-
-
-
 }
 
 allprojects {

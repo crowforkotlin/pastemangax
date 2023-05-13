@@ -1,12 +1,16 @@
 package com.crow.module_book.network
 
+import com.crow.base.copymanga.BaseNullableResultResp
 import com.crow.base.copymanga.BaseResultResp
 import com.crow.base.copymanga.BaseStrings.PATH_WORD
 import com.crow.base.copymanga.BaseStrings.URL
 import com.crow.module_book.model.resp.*
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Url
@@ -56,5 +60,13 @@ interface ComicService {
     // 获取当前小说已浏览记录
     @GET(URL.NovelBrowserHistory)
     fun getNovelBrowserHistory(@Path(PATH_WORD) pathword: String) : Flow<BaseResultResp<NovelBrowserResp>>
+
+    @POST(URL.ComicAddToBookshelf)
+    @FormUrlEncoded
+    fun addComicToBookshelf(@Field("comic_id") comicId: String, @Field("is_collect") isCollect: Int, @Field("_update") update: Boolean = true) : Flow<BaseNullableResultResp<Any?>>
+
+    @POST(URL.NovelAddToBookshelf)
+    @FormUrlEncoded
+    fun addNovelToBookshelf(@Field("book_id") comicId: String, @Field("is_collect") isCollect: Int) : Flow<BaseNullableResultResp<Any?>>
 
 }

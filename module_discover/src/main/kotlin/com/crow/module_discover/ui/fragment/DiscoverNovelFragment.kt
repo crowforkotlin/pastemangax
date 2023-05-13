@@ -12,6 +12,8 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
@@ -72,8 +74,7 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
         // 滑动 同时更新text
         mBinding.discoverNovelRv.setOnScrollChangeListener { _, _, _, _, _ ->
             val layoutManager = mBinding.discoverNovelRv.layoutManager
-            if(layoutManager is LinearLayoutManager) mBinding.discoverNovelAppbar.discoverAppbarTextPos.text = getString(
-                com.crow.module_discover.R.string.discover_comic_count, layoutManager.findLastVisibleItemPosition() + 1)
+            if(layoutManager is LinearLayoutManager) mBinding.discoverNovelAppbar.discoverAppbarTextPos.text = (layoutManager.findLastVisibleItemPosition() + 1).toString()
         }
     }
 
@@ -105,8 +106,8 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
                             if (mDiscoverNovelAdapter.itemCount == 0) {
                                 if (mDiscoverVM.mCurrentItem == 1) {
                                     mBinding.discoverNovelTipsError.animateFadeIn()
-                                    mBinding.discoverNovelAppbar.discoverAppbarTagText.animateFadeOut().withEndAction { mBinding.discoverNovelAppbar.discoverAppbarTagText.isInvisible = true }
-                                    mBinding.discoverNovelRv.animateFadeOut().withEndAction { mBinding.discoverNovelRv.isInvisible = true }
+                                    mBinding.discoverNovelAppbar.discoverAppbarTagText.animateFadeOutWithEndInVisibility()
+                                    mBinding.discoverNovelRv.animateFadeOutWithEndInVisibility()
                                     mBinding.discoverNovelAppbar.discoverAppbarTextPos.animateFadeOut().withEndAction { mBinding.discoverNovelRv.isInvisible = true }
                                 } else {
                                     mBinding.discoverNovelTipsError.isVisible = true
@@ -119,11 +120,12 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
                         .doOnResult {
                             // 错误提示 可见
                             if (mBinding.discoverNovelTipsError.isVisible) {
-                                mBinding.discoverNovelAppbar.discoverAppbarTagText.text = "全部 — 全部 （${intent.novelHomeResp!!.mTotal}）"
+                                mBinding.discoverNovelAppbar.discoverAppbarTagText.text = "全部 — 全部"
+                                mBinding.discoverNovelAppbar.discoverAppbarPosTotal.text = intent.novelHomeResp!!.mTotal.toString()
 
                                 // 若VP 显示的是当前页 则动画淡入 否则直接显示
                                 if (mDiscoverVM.mCurrentItem == 1) {
-                                    mBinding.discoverNovelTipsError.animateFadeOut().withEndAction { mBinding.discoverNovelTipsError.isVisible = false }
+                                    mBinding.discoverNovelTipsError.animateFadeOutWithEndInVisible()
                                     mBinding.discoverNovelAppbar.discoverAppbarTagText.animateFadeIn()
                                     mBinding.discoverNovelAppbar.discoverAppbarTextPos.animateFadeIn()
                                     mBinding.discoverNovelRv.animateFadeIn()

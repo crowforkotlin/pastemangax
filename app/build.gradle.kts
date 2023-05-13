@@ -151,10 +151,11 @@ android {
     }
 
     kapt {
+
+        // 生成（桩代码）
         generateStubs = true
     }
 }
-
 
 dependencies {
 

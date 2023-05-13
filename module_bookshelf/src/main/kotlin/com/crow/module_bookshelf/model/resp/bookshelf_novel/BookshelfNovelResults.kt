@@ -12,7 +12,7 @@ data class BookshelfNovelResults (
     val mNovel: Novel,
 
     @Json(name = "last_browse")
-    val mLastBrowse: LastBrowse,
+    val mLastBrowse: LastBrowse?,
 
     @Json(name = "uuid")
     val mUuid: Int

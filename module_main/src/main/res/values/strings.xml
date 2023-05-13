@@ -25,6 +25,7 @@
 
 	<string name="main_about_crow">开发人员：CrowForKotlin</string>
 	<string name="main_about_crow_email">电子邮箱：CrowForKotlin@gmail.com</string>
+	<string name="main_about_crow_help">CopyMangaX漫画App目前只有我一人在开发。如果您对我们的项目感兴趣，也想参与开发，请联系我！欢迎您的加入！</string>
 	<string name="main_about_crow_github_url">Github主页：<u>https://github.com/CrowForKotlin</u></string>
 	<string name="main_about_crow_github_project_url">项目开源链接：<u>https://github.com/CrowForKotlin/CopyManga_Crow</u></string>
 	<string name="main_about_add_to_qq_group">加入QQ群</string>
@@ -32,5 +33,5 @@
 	<string name="main_about_qq_gropu">https://jq.qq.com/?_wv=1027&amp;k=XIMjBxZW</string>
 	<string name="main_update_tips">版本已经是最新的了！</string>
 	<string name="main_update_error">检查版本更新错误！</string>
-
+    <string name="main_save_local">保存到本地</string>
 </resources>

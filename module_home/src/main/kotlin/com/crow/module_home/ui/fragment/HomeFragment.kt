@@ -1,9 +1,17 @@
+@file:SuppressWarnings("RestrictedApi")
 package com.crow.module_home.ui.fragment
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.view.Window
+import android.widget.FrameLayout
+import androidx.activity.addCallback
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -14,26 +22,30 @@ import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.globalCoroutineException
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
-import com.crow.base.tools.extensions.setCenterAnimWithFadeOut
-import com.crow.base.tools.extensions.setFadeAnimation
 import com.crow.base.tools.extensions.setMaskAmount
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.ui.dialog.LoadingAnimDialog
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.ViewState
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
+import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeFragmentBinding
+import com.crow.module_home.databinding.HomeFragmentSearchViewBinding
 import com.crow.module_home.model.intent.HomeIntent
 import com.crow.module_home.model.resp.homepage.results.Results
 import com.crow.module_home.ui.adapter.HomeComicParentRvAdapter
+import com.crow.module_home.ui.adapter.HomeVpAdapter
 import com.crow.module_home.ui.viewmodel.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -41,6 +53,7 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
 import com.crow.base.R as baseR
+
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -53,7 +66,12 @@ import com.crow.base.R as baseR
 
 class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
-    companion object { fun newInstance() = HomeFragment() }
+    companion object {
+
+        const val SEARCH_TAG = "INPUT"
+
+        fun newInstance() = HomeFragment()
+    }
 
     // 主页 VM
     private val mHomeVM by viewModel<HomeViewModel>()
@@ -72,6 +90,8 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mRecRefresh!!.isEnabled = false
         mHomeVM.input(HomeIntent.GetRecPageByRefresh())
     }
+
+    private val mBaseEvent = BaseEvent.newInstance()
 
 
     // 注册FlowBus 设置主页头像
@@ -115,7 +135,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                 mBinding.homeRv.adapter = mHomeComicParentRvAdapter
             }
             
-            else mHomeComicParentRvAdapter?.doNotify(datas.toMutableList(), false, 100L, 100L)
+            else mHomeComicParentRvAdapter?.doNotify(datas.toMutableList(), 100L, 100L)
 
             // 取消加载动画
             dismissLoadingAnim()
@@ -129,7 +149,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
-            get<Fragment>(named(Fragments.BookComicInfo)).also { it.arguments = bundle }, tag, tag) { it.setCenterAnimWithFadeOut() }
+            get<Fragment>(named(Fragments.BookComicInfo)).also { it.arguments = bundle }, tag, tag)
     }
 
     // 导航至设置Fragment
@@ -137,9 +157,43 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
                 requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
                 get(named(Fragments.Settings)), Fragments.Settings.toString(), Fragments.Settings.toString()
-            ) {
-                it.setFadeAnimation()
+            )
+    }
+
+    // 初始化SearchView
+    private fun initSearchView() {
+        mBaseEvent.eventInitLimitOnce {
+            mBinding.homeSearchView.apply {
+                val binding = HomeFragmentSearchViewBinding.inflate(layoutInflater)                                                                 // 获取SearchViewBinding
+                val searchComicFragment = SearchComicFragment(mBinding.homeSearchView) { navigateBookComicInfo(it) }   // 实例化SearchComicFragment
+                val searchNovelFragment = SearchNovelFragment(mBinding.homeSearchView) { navigateBookComicInfo(it) }     // 实例化SearchNovelFragment
+                toolbar.setNavigationIcon(baseR.drawable.base_ic_back_24dp)                                                                               // 设置SearchView toolbar导航图标
+                toolbar.setBackgroundColor(ContextCompat.getColor(mContext, baseR.color.base_white))                                    // 设置SearchView toolbar背景色白，沉浸式
+                setStatusBarSpacerEnabled(false)                                                                                                                         // 关闭状态栏空格间距
+                addHeaderView(View(mContext).also { view->
+                    view.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mContext.getStatusBarHeight())
+                    view.foreground = AppCompatResources.getDrawable(mContext, baseR.color.base_white)
+                })                                                                            // 添加一个自定义 View设置其高度为StatubarHeight实现沉浸式效果
+                addView(binding.root)                                                                                                         // 添加SearcViewBinding 视图内容
+                binding.homeSearchVp.adapter = HomeVpAdapter(mutableListOf(searchComicFragment, searchNovelFragment), childFragmentManager, viewLifecycleOwner.lifecycle)  // 创建适配器
+                binding.homeSearchVp.offscreenPageLimit = 2                                                                     // 设置预加载2页
+                TabLayoutMediator(binding.homeSearchTablayout, binding.homeSearchVp) { tab, pos ->
+                    when(pos) {
+                        0 -> { tab.text = getString(R.string.home_comic) }
+                        1 -> { tab.text = getString(R.string.home_novel) }
+                    }
+                }.attach()      // 关联VP和TabLayout
+                editText.setOnEditorActionListener { _, _, event->                                                                  // 监听EditText 通知对应VP对应页发送意图
+                    if (event?.action == MotionEvent.ACTION_DOWN) {
+                        when(binding.homeSearchVp.currentItem) {
+                            0 -> searchComicFragment.doInputSearchComicIntent()
+                            1 -> searchNovelFragment.doInputSearchNovelIntent()
+                        }
+                    }
+                    false
+                }
             }
+        }
     }
 
     // 暴露的函数 提供给 ContainerFragment 用于通知主页刷新
@@ -149,7 +203,20 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mRecRefresh = null // 置空“换一批”控件 防止内存泄漏
+        mRecRefresh = null  // 置空“换一批”控件 防止内存泄漏
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) {
+            if (mBinding.homeSearchView.isShowing) mBinding.homeSearchView.hide()
+            else requireActivity().moveTaskToBack(true)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mBaseEvent.remove(SEARCH_TAG)
     }
 
     override fun initData() {
@@ -161,7 +228,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
-        mBinding.homeAppbar.setPadding(0, mContext.getStatusBarHeight(), 0, 0)
+        mBinding.homeAppbar.immersionPadding(hideStatusBar = true, hideNaviateBar = false)
 
         // 设置刷新时不允许列表滚动
         mBinding.homeRefresh.setDisableContentWhenRefresh(true)
@@ -176,13 +243,16 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     override fun initListener() {
 
         // 搜索
-        mBinding.homeToolbar.menu[0].doOnClickInterval { mBinding.homeSearchView.show() }
+        mBinding.homeToolbar.menu[0].doOnClickInterval {
+            initSearchView()
+            mBinding.homeSearchView.show()
+        }
 
         // 设置
         mBinding.homeToolbar.menu[1].doOnClickInterval { navigateSettings() }
 
         // MaterialToolBar NavigateIcon 点击事件
-        mBinding.homeToolbar.navigateIconClickGap(true) { get<BottomSheetDialogFragment>(named(Fragments.User)).show(requireActivity().supportFragmentManager, null) }
+        mBinding.homeToolbar.navigateIconClickGap(flagTime = 1000L) { get<BottomSheetDialogFragment>(named(Fragments.User)).show(requireActivity().supportFragmentManager, null) }
 
         // 刷新
         mBinding.homeRefresh.setOnRefreshListener { mHomeVM.input(HomeIntent.GetHomePage()) }

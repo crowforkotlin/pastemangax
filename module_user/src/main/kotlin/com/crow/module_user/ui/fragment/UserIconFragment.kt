@@ -16,7 +16,12 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.setPadding
 import com.bumptech.glide.Glide
 import com.crow.base.copymanga.entity.Fragments
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.getNavigationBarHeight
+import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.newMaterialDialog
+import com.crow.base.tools.extensions.onCollect
+import com.crow.base.tools.extensions.popAsyncWithClear
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.module_user.R
 import com.crow.module_user.databinding.UserFragmentIconBinding
@@ -30,7 +35,6 @@ import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCropImageEngine
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.io.File
 import com.crow.base.R as baseR
 
 
@@ -123,8 +127,7 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
                         }
                         .forResult(object : OnResultCallbackListener<LocalMedia?> {
                             override fun onResult(result: ArrayList<LocalMedia?>?) {
-                                val cutImgFile = File(result?.get(0)?.cutPath ?: return)
-                                cutImgFile.logMsg()
+                                // val cutImgFile = File(result?.get(0)?.cutPath ?: return)
                             }
                             override fun onCancel() {}
                         })

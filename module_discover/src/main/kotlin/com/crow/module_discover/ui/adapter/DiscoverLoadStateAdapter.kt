@@ -22,9 +22,7 @@ class DiscoverLoadStateAdapter(private val retry: () -> Unit) : LoadStateAdapter
 
     override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState): LoadStateViewHolder {
         return LoadStateViewHolder(BasePagingFooterRetryBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also {  vh ->
-            vh.rvBinding.root.layoutParams.apply {
-                height = getComicCardHeight() / 2
-            }
+            vh.rvBinding.root.layoutParams.height = getComicCardHeight() / 2
             vh.rvBinding.baseLoadingRetry.doOnClickInterval { retry() }
         }
     }

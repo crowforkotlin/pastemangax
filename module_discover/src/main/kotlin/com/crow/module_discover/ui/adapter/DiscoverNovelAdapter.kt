@@ -3,9 +3,10 @@ package com.crow.module_discover.ui.adapter
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.doOnLayout
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -20,7 +21,7 @@ import com.crow.base.copymanga.mSize10
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
-
+import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_discover.databinding.DiscoverFragmentRvBinding
 import com.crow.module_discover.model.resp.novel_home.DiscoverNovelHomeResult
 
@@ -39,16 +40,20 @@ class DiscoverNovelAdapter(
         }
     }
 
-    inner class ViewHolder(val rvBinding: DiscoverFragmentRvBinding) : RecyclerView.ViewHolder(rvBinding.root) {
-        var mAppGlideProgressFactory: AppGlideProgressFactory? = null
-    }
+    inner class ViewHolder(binding: DiscoverFragmentRvBinding) : BaseGlideLoadingViewHolder<DiscoverFragmentRvBinding>(binding)
+
+    private var mNameHeight: Int? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : ViewHolder {
         return ViewHolder(DiscoverFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also {  vh ->
 
-            vh.rvBinding.discoverRvImage.layoutParams.apply {
-                width = getComicCardWidth() - mSize10
-                height = getComicCardHeight()
+            val layoutParams = vh.rvBinding.discoverRvImage.layoutParams
+            layoutParams.width = getComicCardWidth() - mSize10
+            layoutParams.height = getComicCardHeight()
+
+            vh.rvBinding.discoverRvName.doOnLayout { view ->
+                if (mNameHeight == null) mNameHeight = if (vh.rvBinding.discoverRvName.lineCount == 1) view.measuredHeight * 2 else view.measuredHeight
+                (vh.rvBinding.discoverRvName.layoutParams as ConstraintLayout.LayoutParams).height = mNameHeight!!
             }
 
             vh.rvBinding.discoverRvBookCard.doOnClickInterval {
@@ -62,8 +67,13 @@ class DiscoverNovelAdapter(
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
+        vh.mLoadingPropertyAnimator?.cancel()
+        vh.mTextPropertyAnimator?.cancel()
+        vh.mLoadingPropertyAnimator = null
+        vh.mTextPropertyAnimator = null
         vh.rvBinding.discoverLoading.alpha = 1f
         vh.rvBinding.discoverProgressText.alpha = 1f
+        vh.rvBinding.discoverProgressText.text = AppGlideProgressFactory.PERCENT_0
         vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
             vh.rvBinding.discoverProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
@@ -74,8 +84,8 @@ class DiscoverNovelAdapter(
             .listener(vh.mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    vh.rvBinding.discoverLoading.animateFadeOut(100)
-                    vh.rvBinding.discoverProgressText.animateFadeOut(100)
+                    vh.mLoadingPropertyAnimator = vh.rvBinding.discoverLoading.animateFadeOut(100)
+                    vh.mTextPropertyAnimator = vh.rvBinding.discoverProgressText.animateFadeOut(100)
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
                     vh.rvBinding.discoverLoading.alpha = 0f

@@ -23,8 +23,15 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
     protected var mHandler: Handler = Handler(Looper.getMainLooper())
     protected lateinit var mContext: Context
 
+    /**
+     * 获取ViewBinding
+     * @param inflater
+     * @return VB
+     * */
     abstract fun getViewBinding(inflater: LayoutInflater): VB
+
     override fun initObserver() {}
+
     override fun initListener() {}
 
     override fun initView(bundle: Bundle?) {}
@@ -51,6 +58,10 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
         super.onDestroyView()
         _mBinding = null
         mHandler.removeCallbacksAndMessages(null)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         mBackDispatcher?.remove()
         mBackDispatcher = null
     }

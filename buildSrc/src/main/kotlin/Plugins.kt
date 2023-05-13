@@ -28,4 +28,7 @@ object Plugins {
 
     // Kotlin 序列化插件
     const val kotlin_serialization = "plugin.serialization"
+
+    // dokka 文档 需要在buildScript中添加classpath
+    const val jetbrains_dokka = "org.jetbrains.dokka"
 }

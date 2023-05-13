@@ -10,7 +10,12 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.updateLifecycleObserver
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.getNavigationBarHeight
+import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.popSyncWithClear
+import com.crow.base.tools.extensions.showSnackBar
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
@@ -63,9 +68,9 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
 
         // 判断标志是否成功 (true : 然后返回上一个界面)
         if (mIsLoginSuccess) {
-            val msg = getString(R.string.user_login_ok)
+            toast(getString(R.string.user_login_ok))
             navigateUp()
-            FlowBus.with<String>(BaseStrings.Key.LOGIN_SUCUESS).post(lifecycleScope, msg)
+            FlowBus.with<Unit>(BaseStrings.Key.LOGIN_SUCUESS).post(lifecycleScope, Unit)
         }
     }
 

@@ -3,6 +3,8 @@ package com.crow.base.copymanga
 object BaseStrings {
 
     const val PATH_WORD = "pathword"
+    const val UUID = "uuid"
+    const val IMAGE_URL = "image_url"
 
 
     object URL {
@@ -28,11 +30,15 @@ object BaseStrings {
         const val ComicChapter = "/api/v3/comic/{pathword}/group/default/chapters?_update=true"
         const val ComicPage = "/api/v3/comic/{pathword}/chapter2/{uuid}?platform=3&_update=true"
         const val ComicBrowserHistory = "/api/v3/comic2/{pathword}/query?platform=1&_update=true"
+        const val ComicAddToBookshelf = "/api/v3/member/collect/comic"
+        const val ComicSearch = "/api/v3/search/comic"
 
         const val NovelInfo = "/api/v3/book/{pathword}?_update=true"
         const val NovelChapter = "/api/v3/book/{pathword}/volumes"
         const val NovelBrowserHistory = "/api/v3/book/{pathword}/query"
         const val NovelCatelogue = "/api/v3/book/{pathword}/volume/1847?_update=true"
+        const val NovelAddToBookshelf = "/api/v3/member/collect/book"
+        const val NovelSearch = "/api/v3/search/books"
 
         const val HomePage = "/api/v3/h5/homeIndex"
         const val RefreshRec = "/api/v3/recs"
@@ -54,6 +60,7 @@ object BaseStrings {
         const val EXIT_USER = "EXIT_USER"
         const val SET_HOME_ICON = "SET_HOME_ICON"
         const val CHECK_UPDATE = "CHECK_UPDATE"
+        const val UPDATE_CHAPTER = "UPDATE_CHAPTER"
     }
 
     object FragmentTag {

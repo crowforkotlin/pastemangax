@@ -60,7 +60,6 @@ app:indicatorColor="@color/base_light_blue_500" />
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
-        android:minHeight="@dimen/base_dp48"
         android:textSize="@dimen/base_sp12"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/home_comic_rv_author"

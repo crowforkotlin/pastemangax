@@ -4,7 +4,6 @@ import android.view.LayoutInflater.from
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.crow.base.app.appContext
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_home.databinding.HomeFragmentBannerRvItemBinding
 import com.crow.module_home.model.resp.homepage.Banner
@@ -26,10 +25,20 @@ class HomeBannerRvAdapter(
     }
 
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
+
+        // BannerData
         val banner = mBannerList[position]
-        Glide.with(appContext).load(banner.mImgUrl).into(vh.rvBinding.baneerImage)
-        vh.rvBinding.bannerText.text = banner.mBrief
+
+        // Set Pathword
         vh.mPathword = banner.mComic?.mPathWord ?: return
+
+        // loadImage
+        Glide.with(vh.itemView)
+            .load(banner.mImgUrl)
+            .into(vh.rvBinding.baneerImage)
+
+        // setImageText
+         vh.rvBinding.bannerText.text = banner.mBrief
     }
 
     suspend fun doBannerNotify(banners: MutableList<Banner>, delay: Long) {

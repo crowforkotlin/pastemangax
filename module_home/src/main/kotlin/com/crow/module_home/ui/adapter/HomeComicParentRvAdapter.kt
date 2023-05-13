@@ -66,7 +66,6 @@ class HomeComicParentRvAdapter(
     inner class ComicRecRefreshViewHolder(val rvBinding: HomeFragmentComicRvRecRefreshBinding) : RecyclerView.ViewHolder(rvBinding.root)
 
     private var mHomeRecComicRvAdapter: HomeComicChildRvAdapter<RecComicsResult>? = null
-    private var mIsRefresh = false
     private var mRvDelayMs: Long = 50L
 
     override fun getItemCount(): Int = mData?.size ?: 0
@@ -139,11 +138,10 @@ class HomeComicParentRvAdapter(
     }
 
     private fun HomeComicParentRvAdapter.BannerViewHolder.doBannerNotify(pos: Int) {
-        rvBinding.homeBannerRv.isAutoPlay = false
         val adapter = HomeBannerRvAdapter { pathword -> doOnTap(pathword) }
         viewLifecycleOwner.lifecycleScope.launch {
             rvBinding.homeBannerRv.adapter = adapter
-            adapter.doBannerNotify((mData!![pos] as MutableList<Banner>), 0L)
+            adapter.doBannerNotify((mData!![pos] as MutableList<Banner>), mRvDelayMs)
             rvBinding.root.animateFadeIn(BASE_ANIM_100L)
         }
     }
@@ -159,8 +157,7 @@ class HomeComicParentRvAdapter(
         notifyItemRangeRemoved(0, count)
     }
 
-    suspend fun doNotify(newDataResult: MutableList<Any?>, isRefresh: Boolean = false, delayMs: Long = 100L, rvDelayMs: Long = 50L) {
-        this.mIsRefresh = isRefresh
+    suspend fun doNotify(newDataResult: MutableList<Any?>, delayMs: Long = 100L, rvDelayMs: Long = mRvDelayMs) {
         this.mRvDelayMs = rvDelayMs
         val isCountSame = itemCount == newDataResult.size
         if (isCountSame) mData = newDataResult

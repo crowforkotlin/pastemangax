@@ -14,6 +14,8 @@ import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
@@ -90,7 +92,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
             settingsSiteDynamicReload.doOnClickInterval {
                 mContainerVM.input(ContainerIntent.GetDynamicSite())
                 settingsSiteLoadingLottie.animateFadeIn()
-                settingsSiteDynamicReload.animateFadeOut().withEndAction { settingsSiteDynamicReload.isInvisible = true }
+                settingsSiteDynamicReload.animateFadeOutWithEndInVisibility()
             }
 
             // 静态站点按钮组点击事件：根据CheckedID设置全局URL的后缀、保存APP配置、延时关闭DIALOG
@@ -224,7 +226,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                                 }
 
                                 // 加载动画淡出 动态站点Title、RadioGroup 淡入
-                                mSiteDialogBinding!!.settingsSiteLoadingLottie.animateFadeOut().withEndAction { mSiteDialogBinding?.settingsSiteLoadingLottie?.isInvisible = true }
+                                mSiteDialogBinding!!.settingsSiteLoadingLottie.animateFadeOutWithEndInVisible()
                                 mSiteDialogBinding!!.settingsSiteDynamicTitle.animateFadeIn()
                                 mSiteDialogBinding!!.settingsSiteDynamicRadioGroup.animateFadeIn()
                             }

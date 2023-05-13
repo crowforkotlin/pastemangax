@@ -9,16 +9,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.ui.adapter.BaseGlideViewHolder
-import com.crow.module_book.databinding.BookComicRvBinding
+import com.crow.base.tools.extensions.toast
+import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.module_book.R
+import com.crow.module_book.databinding.BookActivityComicButtonRvBinding
+import com.crow.module_book.databinding.BookActivityComicRvBinding
 import com.crow.module_book.model.resp.comic_page.Content
+import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.delay
 
 /*************************
@@ -29,69 +32,103 @@ import kotlinx.coroutines.delay
  * @Description: ComicInfoChapterRvAdapter
  * @formatter:on
  **************************/
-class ComicRvAdapter(private var mComicContent: MutableList<Content> = mutableListOf()) : RecyclerView.Adapter<ComicRvAdapter.ViewHolder>() {
+class ComicRvAdapter(
+    private var mComicContent: MutableList<Content?> = mutableListOf(),
+    val mHasNext: Boolean,
+    val mHasPrev: Boolean,
+    val doOnNext: Runnable
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mIsFirstInit: Boolean = true
 
-    inner class ViewHolder(binding: BookComicRvBinding) : BaseGlideViewHolder<BookComicRvBinding>(binding)
+    inner class LoadingViewHolder(binding: BookActivityComicRvBinding) : BaseGlideLoadingViewHolder<BookActivityComicRvBinding>(binding)
 
-    private fun ViewHolder.loadComicImage(position: Int) {
-
-        val item = mComicContent[position]
-
-        rvBinding.comicRvLoading.alpha = 1f
-        rvBinding.comicRvProgressText.alpha = 1f
-        mAppGlideProgressFactory?.doRemoveListener()?.doClean()
-        mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
-            rvBinding.comicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
-        }
-        
-
-        Glide.with(itemView.context)
-            .load(item.mImageUrl)
-            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)   // 指定图片尺寸
-            .addListener(mAppGlideProgressFactory?.getRequestListener({
-                rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
-                rvBinding.comicRvRetry.isVisible = true
-                rvBinding.comicRvRetry.doOnClickInterval(false) {
-                    rvBinding.comicRvRetry.animateFadeOut()
-                    loadComicImage(position)
-                }
-                false
-            },  { _, _ ->
-                rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
-                rvBinding.comicRvRetry.isVisible = false
-                false
-            }))
-            .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                val transition = if (dataSource == DataSource.REMOTE) {
-                    rvBinding.comicRvLoading.animateFadeOut(100)
-                    rvBinding.comicRvProgressText.animateFadeOut(100)
-                    DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                }
-                else if(mIsFirstInit) DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                else {
-                    rvBinding.comicRvLoading.alpha = 0f
-                    rvBinding.comicRvProgressText.alpha = 0f
-                    NoTransition()
-                }
-                mIsFirstInit = false
-                transition
-            })
-            .into(rvBinding.comicRvImageView)
+    inner class ButtonViewHolder(binding: BookActivityComicButtonRvBinding) : RecyclerView.ViewHolder(binding.root) {
+        val mNext: MaterialButton = binding.comicNext
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(BookComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    private fun RecyclerView.ViewHolder.loadComicImage(position: Int) {
+
+
+        if (this is LoadingViewHolder) {
+            val item = mComicContent[position] ?: return
+            mLoadingPropertyAnimator?.cancel()
+            mTextPropertyAnimator?.cancel()
+            mLoadingPropertyAnimator = null
+            mTextPropertyAnimator = null
+            rvBinding.comicRvLoading.alpha = 1f
+            rvBinding.comicRvProgressText.alpha = 1f
+            rvBinding.comicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
+            rvBinding.comicRvRetry.isVisible = false
+            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
+                rvBinding.comicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+            }
+
+
+            Glide.with(itemView.context)
+                .load(item.mImageUrl)
+                .addListener(mAppGlideProgressFactory?.getRequestListener({
+                    rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
+                    rvBinding.comicRvRetry.isVisible = true
+                    rvBinding.comicRvRetry.doOnClickInterval(false) {
+                        rvBinding.comicRvRetry.animateFadeOut()
+                        loadComicImage(position)
+                    }
+                    false
+                },  { _, _ ->
+                    rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
+                    false
+                }))
+                .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
+                    val transition = if (dataSource == DataSource.REMOTE) {
+                        mLoadingPropertyAnimator = rvBinding.comicRvLoading.animateFadeOut(100)
+                        mTextPropertyAnimator = rvBinding.comicRvProgressText.animateFadeOut(100)
+                        DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
+                    } else {
+                        rvBinding.comicRvLoading.alpha = 0f
+                        rvBinding.comicRvProgressText.alpha = 0f
+                        NoTransition()
+                    }
+                    mIsFirstInit = false
+                    transition
+                })
+                .into(rvBinding.comicRvImageView)
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == 0) {
+            LoadingViewHolder(BookActivityComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        } else {
+            ButtonViewHolder(BookActivityComicButtonRvBinding.inflate(LayoutInflater.from(parent.context), parent,false)).also {  vh ->
+                if (!mHasNext) vh.mNext.text = parent.context.getString(R.string.book_no_next)
+                vh.mNext.doOnClickInterval {
+                    if(!mHasNext) toast(parent.context.getString(R.string.book_no_next))
+                    else doOnNext.run()
+                }
+            }
+        }
     }
 
     override fun getItemCount(): Int = mComicContent.size
 
-    override fun onBindViewHolder(vh: ViewHolder, position: Int) {
+    override fun getItemViewType(position: Int): Int {
+        return if (position == mComicContent.size - 1) position else super.getItemViewType(position)
+    }
+
+    override fun onViewRecycled(vh: RecyclerView.ViewHolder) {
+        super.onViewRecycled(vh)
+        if (vh is LoadingViewHolder) {
+            vh.rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
+        }
+    }
+
+    override fun onBindViewHolder(vh: RecyclerView.ViewHolder, position: Int) {
         vh.loadComicImage(position)
     }
 
-    suspend fun doNotify(newDataResult: MutableList<Content>, delayMs: Long = 1L) {
+    suspend fun doNotify(newDataResult: MutableList<Content?>, delayMs: Long = 1L) {
         val isCountSame = itemCount == newDataResult.size
         if (isCountSame) mComicContent = newDataResult
         else if(itemCount != 0) {

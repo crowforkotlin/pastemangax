@@ -6,6 +6,7 @@ import com.crow.module_book.ui.fragment.BookComicFragment
 import com.crow.module_book.ui.fragment.BookNovelFragment
 import com.crow.module_main.ui.fragment.AboutAuthorFragment
 import com.crow.module_main.ui.fragment.ContainerFragment
+import com.crow.module_main.ui.fragment.ImageFragment
 import com.crow.module_main.ui.fragment.SettingsFragment
 import com.crow.module_user.ui.fragment.UserBottomSheetFragment
 import com.crow.module_user.ui.fragment.UserIconFragment
@@ -36,4 +37,5 @@ val fragmentModule = module {
     fragment<Fragment>(named(Fragments.Settings)) { SettingsFragment() }
     fragment<Fragment>(named(Fragments.BookComicInfo)) { BookComicFragment() }
     fragment<Fragment>(named(Fragments.BookNovelInfo)) { BookNovelFragment() }
+    fragment<Fragment>(named(Fragments.Image)) { ImageFragment() }
 }

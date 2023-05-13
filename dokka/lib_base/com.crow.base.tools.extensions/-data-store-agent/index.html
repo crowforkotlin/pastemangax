@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>DataStoreAgent</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../index.html">
+                    <span>lib_base</span>
+            </a>
+    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":lib_base:dokkaHtml/release">androidJvm</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="lib_base::com.crow.base.tools.extensions/DataStoreAgent///PointingToDeclaration//-1405610755">
+  <div class="breadcrumbs"><a href="../../../index.html">lib_base</a><span class="delimiter">/</span><a href="../index.html">com.crow.base.tools.extensions</a><span class="delimiter">/</span><span class="current">DataStoreAgent</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Data</span><wbr></wbr><span>Store</span><wbr></wbr><span><span>Agent</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":lib_base:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">DataStoreAgent</a></div><span class="kdoc-tag"><h4 class="">Author</h4><p class="paragraph">: CrowForKotlin</p></span></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-2115575503%2FProperties%2F-1405610755" anchor-label="APP_CONFIG" id="-2115575503%2FProperties%2F-1405610755" data-filterable-set=":lib_base:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":lib_base:dokkaHtml/release" data-filterable-set=":lib_base:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-a-p-p_-c-o-n-f-i-g.html"><span><span>APP_CONFIG</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2115575503%2FProperties%2F-1405610755"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":lib_base:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="-a-p-p_-c-o-n-f-i-g.html">APP_CONFIG</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/datastore/preferences/core/Preferences.Key.html">Preferences.Key</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1763017399%2FProperties%2F-1405610755" anchor-label="DATA_USER" id="-1763017399%2FProperties%2F-1405610755" data-filterable-set=":lib_base:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":lib_base:dokkaHtml/release" data-filterable-set=":lib_base:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-a-t-a_-u-s-e-r.html"><span><span>DATA_USER</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1763017399%2FProperties%2F-1405610755"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":lib_base:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="-d-a-t-a_-u-s-e-r.html">DATA_USER</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/datastore/preferences/core/Preferences.Key.html">Preferences.Key</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-505986029%2FProperties%2F-1405610755" anchor-label="USER_CONFIG" id="-505986029%2FProperties%2F-1405610755" data-filterable-set=":lib_base:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":lib_base:dokkaHtml/release" data-filterable-set=":lib_base:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-u-s-e-r_-c-o-n-f-i-g.html"><span><span>USER_CONFIG</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-505986029%2FProperties%2F-1405610755"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":lib_base:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="-u-s-e-r_-c-o-n-f-i-g.html">USER_CONFIG</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/datastore/preferences/core/Preferences.Key.html">Preferences.Key</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1148606671%2FProperties%2F-1405610755" anchor-label="USER_COOKIE" id="-1148606671%2FProperties%2F-1405610755" data-filterable-set=":lib_base:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":lib_base:dokkaHtml/release" data-filterable-set=":lib_base:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-u-s-e-r_-c-o-o-k-i-e.html"><span><span>USER_COOKIE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1148606671%2FProperties%2F-1405610755"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":lib_base:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="-u-s-e-r_-c-o-o-k-i-e.html">USER_COOKIE</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/datastore/preferences/core/Preferences.Key.html">Preferences.Key</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>

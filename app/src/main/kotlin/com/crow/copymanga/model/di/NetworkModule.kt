@@ -45,6 +45,8 @@ val networkModule = module {
                     .build()
                 )
             })
+            sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())
+            hostnameVerifier(SSLSocketClient.hostnameVerifier)
             pingInterval(10, TimeUnit.SECONDS)
             connectTimeout(5, TimeUnit.SECONDS)
             callTimeout(10, TimeUnit.SECONDS)
@@ -65,7 +67,8 @@ val networkModule = module {
                     response.newBuilder().body(response.body?.let { AppGlideProgressResponseBody(request.url.toString(), appGlideProgressFactory.mListener, it) }).build()
                 }
             }
-
+            sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())
+            hostnameVerifier(SSLSocketClient.hostnameVerifier)
             pingInterval(10, TimeUnit.SECONDS)
             connectTimeout(15, TimeUnit.SECONDS)
             callTimeout(20, TimeUnit.SECONDS)

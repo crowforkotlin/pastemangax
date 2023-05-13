@@ -3,7 +3,6 @@
 	<string name="home_homepage">主页</string>
 	<string name="home_recovery">发现</string>
 	<string name="home_bookshelf">书架</string>
-	<string name="home_comic">漫画</string>
 	<string name="home_mine">我的</string>
 	<string name="home_recommend_comic">推荐漫画</string>
 	<string name="home_commit_finish">已完结</string>
@@ -12,5 +11,15 @@
 	<string name="home_rank_comic">排行榜(日、周、月)</string>
 	<string name="home_topic_comic">专题系列</string>
 	<string name="home_refresh">换一批</string>
+	<string name="home_comic">漫画</string>
+	<string name="home_novel">轻小说</string>
+	<string name="home_all">全部</string>
+	<string name="home_name">名称</string>
+	<string name="home_author">作者</string>
+	<string name="home_local">汉化组</string>
+	<string name="home_keyword_not_null">关键词不能为空</string>
+	<string name="home_saerch_null_result">很抱歉，没有找到匹配的结果。</string>
+	<string name="home_saerch_tips">输入关键词查询预期的漫画或轻小说吧！</string>
+
 
 </resources>

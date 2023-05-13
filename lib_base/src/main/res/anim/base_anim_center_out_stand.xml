@@ -1,5 +1,5 @@
 <scale xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="300"
+    android:duration="@android:integer/config_mediumAnimTime"
     android:fromXScale="1.0"
     android:fromYScale="1.0"
     android:pivotX="100%"

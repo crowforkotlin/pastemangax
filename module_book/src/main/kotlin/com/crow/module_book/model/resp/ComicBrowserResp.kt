@@ -12,7 +12,7 @@ data class ComicBrowserResp(
     val mBrowse: Browse?,
 
     @Json(name = "collect")
-    val mCollect: Int?,
+    val mCollectId: Int?,
 
     @Json(name = "is_lock")
     val mIsLock: Boolean,

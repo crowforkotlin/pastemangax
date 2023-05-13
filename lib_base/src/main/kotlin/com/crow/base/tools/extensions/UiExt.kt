@@ -11,6 +11,8 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewPropertyAnimator
 import androidx.annotation.ColorInt
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.math.PI
@@ -60,6 +62,19 @@ fun View.animateFadeOut(duration: Long = BASE_ANIM_300L): ViewPropertyAnimator {
     visibility = View.VISIBLE
     return animate().alpha(0f).setDuration(duration)
 }
+
+fun View.animateFadeOutWithEndInVisibility(duration: Long = BASE_ANIM_300L): ViewPropertyAnimator {
+    alpha = 1f
+    visibility = View.VISIBLE
+    return animate().alpha(0f).setDuration(duration).withEndAction { isInvisible = true }
+}
+
+fun View.animateFadeOutWithEndInVisible(duration: Long = BASE_ANIM_300L): ViewPropertyAnimator {
+    alpha = 1f
+    visibility = View.VISIBLE
+    return animate().alpha(0f).setDuration(duration).withEndAction { isVisible = false }
+}
+
 
 suspend fun View.suspendAnimateFadeIn(duration: Long = BASE_ANIM_200L) = suspendCancellableCoroutine { continuation ->
     alpha = 0f

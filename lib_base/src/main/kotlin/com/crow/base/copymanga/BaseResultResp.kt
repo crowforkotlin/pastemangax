@@ -24,5 +24,4 @@ data class BaseResultResp<T>(
 
     @Json(name = "results")
     val mResults: T
-
 )

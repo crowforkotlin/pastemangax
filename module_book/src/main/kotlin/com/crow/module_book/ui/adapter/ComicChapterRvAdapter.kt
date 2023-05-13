@@ -3,13 +3,14 @@ package com.crow.module_book.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.appContext
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_book.R
-import com.crow.module_book.databinding.BookComicInfoRvChapterBinding
+import com.crow.module_book.databinding.BookFragmentChapterRvBinding
 import com.crow.module_book.model.resp.comic_chapter.ComicChapterResult
 import kotlinx.coroutines.delay
 
@@ -24,7 +25,7 @@ import kotlinx.coroutines.delay
 
 class ComicChapterRvAdapter(
     private var mComic: MutableList<ComicChapterResult> = mutableListOf(),
-    private var mDoOnTapChapter: (Int, ComicChapterResult) -> Unit
+    private var mDoOnTapChapter: (ComicChapterResult) -> Unit
 ) : RecyclerView.Adapter<ComicChapterRvAdapter.ViewHolder>() {
 
     var mChapterName: String? = null
@@ -32,12 +33,14 @@ class ComicChapterRvAdapter(
     private val mBtSurfaceColor = ContextCompat.getColor(appContext, R.color.book_button_bg_white)
     private val mBtTextColor = ContextCompat.getColor(appContext, R.color.book_button_text_purple)
 
-    inner class ViewHolder(rvBinding: BookComicInfoRvChapterBinding) : RecyclerView.ViewHolder(rvBinding.root) { val mButton = rvBinding.comicInfoRvChip }
+    inner class ViewHolder(rvBinding: BookFragmentChapterRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { val mButton = rvBinding.comicInfoRvChip }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(BookComicInfoRvChapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
-            vh.mButton.doOnClickInterval { mDoOnTapChapter(vh.absoluteAdapterPosition, mComic[vh.absoluteAdapterPosition]) }
-            ToolTipsView.showToolTipsByLongClick(vh.mButton)
+        return ViewHolder(BookFragmentChapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
+            vh.mButton.doOnClickInterval { mDoOnTapChapter(mComic[vh.absoluteAdapterPosition]) }
+            vh.mButton.doOnLayout {
+                ToolTipsView.showToolTipsByLongClick(vh.mButton, it.measuredWidth shr 2)
+            }
         }
     }
 

@@ -14,6 +14,7 @@ import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
@@ -60,8 +61,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         // Rv滑动监听
         mBinding.discoverComicRv.setOnScrollChangeListener { _, _, _, _, _ ->
             val layoutManager = mBinding.discoverComicRv.layoutManager
-            if(layoutManager is LinearLayoutManager) mBinding.discoverComicAppbar.discoverAppbarTextPos.text = getString(
-                com.crow.module_discover.R.string.discover_comic_count, layoutManager.findLastVisibleItemPosition() + 1)
+            if(layoutManager is LinearLayoutManager) mBinding.discoverComicAppbar.discoverAppbarTextPos.text = (layoutManager.findLastVisibleItemPosition()+1).toString()
         }
     }
 
@@ -121,10 +121,10 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                                     mBinding.discoverComicTipsError.animateFadeIn()
 
                                     // “标签”文本 淡出
-                                    mBinding.discoverComicAppbar.discoverAppbarTagText.animateFadeOut().withEndAction { mBinding.discoverComicAppbar.discoverAppbarTagText.isInvisible = true }
+                                    mBinding.discoverComicAppbar.discoverAppbarTagText.animateFadeOutWithEndInVisibility()
 
                                     // 发现页 “漫画” 淡出
-                                    mBinding.discoverComicRv.animateFadeOut().withEndAction { mBinding.discoverComicRv.isInvisible = true }
+                                    mBinding.discoverComicRv.animateFadeOutWithEndInVisibility()
 
                                     // “当前位置”文本 淡出
                                     mBinding.discoverComicAppbar.discoverAppbarTextPos.animateFadeOut().withEndAction { mBinding.discoverComicRv.isInvisible = true }
@@ -142,11 +142,12 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                         .doOnResult {
                             // 错误提示 可见
                             if (mBinding.discoverComicTipsError.isVisible) {
-                                mBinding.discoverComicAppbar.discoverAppbarTagText.text = "全部 — 全部 （${intent.comicHomeResp!!.mTotal}）"
+                                mBinding.discoverComicAppbar.discoverAppbarTagText.text = "全部 — 全部"
+                                mBinding.discoverComicAppbar.discoverAppbarPosTotal.text = intent.comicHomeResp!!.mTotal.toString()
 
                                 // 若 VP 显示的是当前页 则动画淡入 否则直接显示（减少动画带来的卡顿）
                                 if (mDiscoverVM.mCurrentItem == 1) {
-                                    mBinding.discoverComicTipsError.animateFadeOut().withEndAction { mBinding.discoverComicTipsError.isVisible = false }
+                                    mBinding.discoverComicTipsError.animateFadeOutWithEndInVisibility()
                                     mBinding.discoverComicAppbar.discoverAppbarTagText.animateFadeIn()
                                     mBinding.discoverComicAppbar.discoverAppbarTextPos.animateFadeIn()
                                     mBinding.discoverComicRv.animateFadeIn()

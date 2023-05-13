@@ -27,12 +27,12 @@ object DataStoreAgent {
     val APP_CONFIG = stringPreferencesKey("app.config")
     val USER_CONFIG = stringPreferencesKey("user.config")
     val DATA_USER = stringPreferencesKey("data.user")
-    val USER_COOKIE = stringPreferencesKey("user.cookie")
-
+    val DATA_BOOK = stringPreferencesKey("data.book")
 }
 
 val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(appContext.getString(R.string.BaseAppName))
 val Context.appConfigDataStore: DataStore<Preferences> by preferencesDataStore(appContext.getString(R.string.BaseAppName).plus(DataStoreAgent.APP_CONFIG.name))
+val Context.appBookDataStore: DataStore<Preferences> by preferencesDataStore(appContext.getString(R.string.BaseAppName).plus(DataStoreAgent.DATA_BOOK.name))
 
 suspend fun DataStore<Preferences>.getIntData(name: String) =
     data.map { preferences -> preferences[intPreferencesKey(name)] ?: 0 }.first()

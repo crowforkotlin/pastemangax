@@ -5,9 +5,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/base_dp5"
-    android:layout_marginTop="@dimen/base_dp20"
+    android:layout_marginTop="@dimen/base_dp12_5"
     android:layout_marginEnd="@dimen/base_dp5"
-    android:orientation="vertical">
+    android:layout_marginBottom="@dimen/base_dp12_5">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/discover_rv_book_card"
@@ -37,27 +37,27 @@
             android:id="@+id/discover_loading"
             style="@style/Widget.Material3.CircularProgressIndicator.Small"
             android:layout_width="wrap_content"
-            app:indicatorSize="@dimen/base_dp36"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="true"
-            app:trackCornerRadius="@dimen/base_dp99"
-app:indicatorColor="@color/base_light_blue_500" />
+            app:indicatorColor="@color/base_light_blue_500"
+            app:indicatorSize="@dimen/base_dp36"
+            app:trackCornerRadius="@dimen/base_dp99" />
 
         <TextView
             android:id="@+id/discover_progress_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="@dimen/base_sp10"
             android:text="@string/BaseZero"
-            android:textStyle="bold"/>
+            android:textSize="@dimen/base_sp10"
+            android:textStyle="bold" />
 
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/discover_rv_name"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/base_dp2_5"
         android:ellipsize="end"

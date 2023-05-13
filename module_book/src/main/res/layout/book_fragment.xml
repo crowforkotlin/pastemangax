@@ -58,12 +58,12 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/book_info_cardview"
-        android:visibility="invisible"
         style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
+        android:visibility="invisible"
         app:cardElevation="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/book_info_back"
@@ -75,19 +75,19 @@
             style="@style/Widget.Material3.CircularProgressIndicator.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:indicatorSize="@dimen/base_dp36"
             android:layout_gravity="center"
             android:indeterminate="true"
-            app:trackCornerRadius="@dimen/base_dp99"
-            app:indicatorColor="@color/base_light_blue_500" />
+            app:indicatorColor="@color/base_light_blue_500"
+            app:indicatorSize="@dimen/base_dp36"
+            app:trackCornerRadius="@dimen/base_dp99" />
 
         <TextView
             android:id="@+id/book_info_progress_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="@dimen/base_sp10"
             android:text="@string/BaseZero"
+            android:textSize="@dimen/base_sp10"
             android:textStyle="bold" />
 
         <ImageView
@@ -172,26 +172,26 @@
         tools:text="@string/BaseTodoTextView" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/comic_info_add_to_bookshelf"
+        android:id="@+id/book_info_add_to_bookshelf"
         style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
         android:layout_weight="0.25"
         android:minWidth="@dimen/base_dp48"
         android:minHeight="@dimen/base_dp48"
-        android:text="@string/BookComicAddToBookShelf"
+        android:text="@string/book_comic_add_to_bookshelf"
         android:textStyle="bold"
-        app:icon="@drawable/book_ic_addto_bookshelf_24dp"
+        android:visibility="invisible"
+        app:icon="@drawable/book_ic_add_to_bookshelf_24dp"
         app:iconGravity="top"
-        app:layout_constraintEnd_toStartOf="@+id/comic_info_download"
+        app:layout_constraintEnd_toStartOf="@+id/book_info_download"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/comic_info_download" />
+        app:layout_constraintTop_toTopOf="@+id/book_info_download"
+        tools:visibility="visible" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/comic_info_download"
+        android:id="@+id/book_info_download"
         style="@style/Widget.Material3.Button.IconButton"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/base_dp10"
@@ -199,15 +199,16 @@
         android:minHeight="@dimen/base_dp48"
         android:text="@string/BookComicDownLoad"
         android:textStyle="bold"
+        android:visibility="invisible"
         app:icon="@drawable/base_ic_download_24dp"
         app:iconGravity="top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_info_cardview" />
+        app:layout_constraintTop_toBottomOf="@+id/book_info_cardview"
+        tools:visibility="visible" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/comic_info_readnow"
-        android:visibility="invisible"
+        android:id="@+id/book_info_readnow"
         style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -215,11 +216,13 @@
         android:minHeight="@dimen/base_dp48"
         android:text="@string/BookComicReadNow"
         android:textStyle="bold"
+        android:visibility="invisible"
         app:icon="@drawable/book_ic_readnow_24dp"
         app:iconGravity="top"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/comic_info_download"
-        app:layout_constraintTop_toTopOf="@+id/comic_info_download" />
+        app:layout_constraintStart_toEndOf="@+id/book_info_download"
+        app:layout_constraintTop_toTopOf="@+id/book_info_download"
+        tools:visibility="visible" />
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/book_info_refresh"
@@ -228,7 +231,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comic_info_download">
+        app:layout_constraintTop_toBottomOf="@+id/book_info_download">
 
         <com.scwang.smart.refresh.header.MaterialHeader
             android:layout_width="wrap_content"
@@ -307,7 +310,7 @@
                     android:visibility="invisible"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:spanCount="4"
-                    tools:listitem="@layout/book_comic_info_rv_chapter"
+                    tools:listitem="@layout/book_fragment_chapter_rv"
                     tools:visibility="visible" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>

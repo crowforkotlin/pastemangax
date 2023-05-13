@@ -257,4 +257,9 @@ object Dependencies {
 
     const val reactivex_rxjava = "io.reactivex.rxjava3:rxjava:3.1.6"
     const val reactivex_rxjava_android = "io.reactivex.rxjava3:rxandroid:3.0.2"
+
+    /* Dokka
+    * How To use In Android ? [https://github.com/Kotlin/dokka/blob/master/examples/gradle/dokka-versioning-multimodule-example/build.gradle.kts]
+    * */
+    const val jetbrains_dokka = "org.jetbrains.dokka:android-documentation-plugin:1.8.10"
 }
