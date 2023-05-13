@@ -8,7 +8,7 @@
     android:orientation="vertical"> <!-- @formatter:on -->
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/loadingLottieAnimation"
+        android:id="@+id/settings_site_loading_lottie"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:background="@drawable/base_bg_original_loading_radius"

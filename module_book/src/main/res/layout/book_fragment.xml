@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/base_white"
+    tools:context="com.crow.module_book.ui.fragment.BookFragment"
+    tools:visibility="visible">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/book_info_back"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:contentDescription="@string/BaseAppName"
+        android:minWidth="@dimen/base_dp48"
+        android:minHeight="@dimen/base_dp48"
+        app:icon="@drawable/base_ic_back_24dp"
+        app:iconTint="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <TextView
+        android:id="@+id/book_info_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp5"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textSize="@dimen/base_sp20"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/book_info_back"
+        app:layout_constraintEnd_toStartOf="@+id/book_info_setting"
+        app:layout_constraintStart_toEndOf="@+id/book_info_back"
+        app:layout_constraintTop_toTopOf="@+id/book_info_back"
+        tools:text="@string/BaseTodoTextView" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/book_info_setting"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
+        android:contentDescription="@string/BaseAppName"
+        android:minWidth="@dimen/base_dp48"
+        android:minHeight="@dimen/base_dp48"
+        app:icon="@drawable/base_ic_settings_24dp"
+        app:iconTint="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/book_info_cardview"
+        style="@style/Widget.Material3.CardView.Filled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:visibility="invisible"
+        app:cardElevation="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/book_info_back"
+        app:strokeColor="@color/base_grey_400_40"
+        app:strokeWidth="1dp">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/book_info_loading"
+            style="@style/Widget.Material3.CircularProgressIndicator.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            app:indicatorColor="@color/base_light_blue_500"
+            app:indicatorSize="@dimen/base_dp36"
+            app:trackCornerRadius="@dimen/base_dp99" />
+
+        <TextView
+            android:id="@+id/book_info_progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/BaseZero"
+            android:textSize="@dimen/base_sp10"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/book_info_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/BaseTodoTextView"
+            android:scaleType="centerCrop"
+            tools:ignore="ImageContrastCheck"
+            tools:layout_height="@dimen/base_dp168"
+            tools:layout_width="@dimen/base_dp120" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/book_info_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
+        app:layout_constraintTop_toTopOf="@id/book_info_cardview"
+        tools:text="@string/BaseTodoTextView" />
+
+    <TextView
+        android:id="@+id/book_info_author"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
+        app:layout_constraintTop_toBottomOf="@+id/book_info_status"
+        tools:text="@string/BaseTodoTextView" />
+
+    <TextView
+        android:id="@+id/book_info_hot"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
+        app:layout_constraintTop_toBottomOf="@+id/book_info_author"
+        tools:text="@string/BaseTodoTextView" />
+
+    <TextView
+        android:id="@+id/book_info_update"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
+        app:layout_constraintTop_toBottomOf="@+id/book_info_hot"
+        tools:text="@string/BaseTodoTextView" />
+
+    <TextView
+        android:id="@+id/book_info_new_chapter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
+        app:layout_constraintTop_toBottomOf="@+id/book_info_update"
+        tools:text="@string/BaseTodoTextView" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/book_info_add_to_bookshelf"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.25"
+        android:minWidth="@dimen/base_dp48"
+        android:minHeight="@dimen/base_dp48"
+        android:text="@string/book_comic_add_to_bookshelf"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:icon="@drawable/book_ic_add_to_bookshelf_24dp"
+        app:iconGravity="top"
+        app:layout_constraintEnd_toStartOf="@+id/book_info_download"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/book_info_download"
+        tools:visibility="visible" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/book_info_download"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:minWidth="@dimen/base_dp48"
+        android:minHeight="@dimen/base_dp48"
+        android:text="@string/BookComicDownLoad"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:icon="@drawable/base_ic_download_24dp"
+        app:iconGravity="top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/book_info_cardview"
+        tools:visibility="visible" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/book_info_readnow"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="@dimen/base_dp48"
+        android:minHeight="@dimen/base_dp48"
+        android:text="@string/BookComicReadNow"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:icon="@drawable/book_ic_readnow_24dp"
+        app:iconGravity="top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/book_info_download"
+        app:layout_constraintTop_toTopOf="@+id/book_info_download"
+        tools:visibility="visible" />
+
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/book_info_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/book_info_download">
+
+        <com.scwang.smart.refresh.header.MaterialHeader
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/bookCoordinatorlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/book_info_appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/book_info_theme_chip"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/base_dp10"
+                        android:layout_marginTop="@dimen/base_dp10"
+                        android:layout_marginEnd="@dimen/base_dp10"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/book_info_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/base_dp10"
+                        android:layout_marginTop="@dimen/base_dp10"
+                        android:layout_marginEnd="@dimen/base_dp10"
+                        android:ellipsize="end"
+                        android:maxLines="10"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/book_info_theme_chip"
+                        tools:text="@string/BaseTodoTextView" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/book_info_linear_chapter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/base_dp10"
+                android:orientation="vertical"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/book_info_rv_chapter_selector"
+                    style="@style/ShapeAppearance.Material3.Corner.None"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/base_dp10"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/BaseAppName"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/book_info_rv_chapter"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/base_dp10"
+                    android:visibility="invisible"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="4"
+                    tools:listitem="@layout/book_fragment_chapter_rv"
+                    tools:visibility="visible" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <TextView
+                android:id="@+id/comic_info_error_tips"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/BaseLoadingErrorNeedRefresh"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

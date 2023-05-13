@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/base_white"
+    tools:context="com.crow.module_main.ui.fragment.SettingsFragment">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/settings_back"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:contentDescription="@string/BaseAppName"
+        android:minWidth="@dimen/base_dp48"
+        android:minHeight="@dimen/base_dp48"
+        app:icon="@drawable/base_ic_back_24dp"
+        app:iconTint="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/settings_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_settings_titile"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/base_sp20"
+        app:layout_constraintBottom_toBottomOf="@+id/settings_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/settings_back" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/settings_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:contentDescription="@string/BaseAppName"
+
+        android:layout_marginBottom="@dimen/base_dp20"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_title"
+        tools:listitem="@layout/main_fragment_settings_rv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,12 +6,32 @@
 	<string name="main_update_url_title">更新节点</string>
 	<string name="main_update_cancel">暂不更新</string>
 
+	<string name="main_settings_titile">设置</string>
+	<string name="main_settings_style">个性化</string>
+	<string name="main_settings_site">站点设置（节点）</string>
+	<string name="main_settings_proxy">代理设置（路线）</string>
+
+	<string name="main_proxy_title">路线设置</string>
+	<string name="main_proxy_tips">接口API访问均是海外，图片CDN可能会变化，请谨慎使用</string>
+	<string name="main_proxy_domestic_route">国内路线（请勿使用梯子、可能会导致无法访问）</string>
+	<string name="main_proxy_overseas_route">港台、海外路线</string>
+
+	<string name="main_site_current">当前站点：%s</string>
+	<string name="main_site_tips">静态站点：APP的默认的站点\n动态站点：当静态站点都无效时可选用此站点\n静态站点和动态站点可能会一致，动态站点可长期保持APP的站点</string>
+	<string name="main_site_static">静态站点</string>
+	<string name="main_site_one">（无需梯子-推荐）站点① </string>
+	<string name="main_site_two">（需要梯子-次选）站点② </string>
+	<string name="main_site_dynamic">动态站点</string>
+
 	<string name="main_about_crow">开发人员：CrowForKotlin</string>
 	<string name="main_about_crow_email">电子邮箱：CrowForKotlin@gmail.com</string>
+	<string name="main_about_crow_help">CopyMangaX漫画App目前只有我一人在开发。如果您对我们的项目感兴趣，也想参与开发，请联系我！欢迎您的加入！</string>
 	<string name="main_about_crow_github_url">Github主页：<u>https://github.com/CrowForKotlin</u></string>
 	<string name="main_about_crow_github_project_url">项目开源链接：<u>https://github.com/CrowForKotlin/CopyManga_Crow</u></string>
 	<string name="main_about_add_to_qq_group">加入QQ群</string>
 	<string name="main_about_app_version">当前版本：%s</string>
 	<string name="main_about_qq_gropu">https://jq.qq.com/?_wv=1027&amp;k=XIMjBxZW</string>
-
+	<string name="main_update_tips">版本已经是最新的了！</string>
+	<string name="main_update_error">检查版本更新错误！</string>
+    <string name="main_save_local">保存到本地</string>
 </resources>

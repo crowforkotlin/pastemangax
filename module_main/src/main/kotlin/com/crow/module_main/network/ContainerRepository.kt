@@ -13,4 +13,6 @@ class ContainerRepository(private val service: ContainerService) {
     fun getUpdateInfo() = service.getUpdateInfo()
 
     fun getQQGroup() = service.getQQGroup()
+
+    fun getSite() = service.getSite()
 }

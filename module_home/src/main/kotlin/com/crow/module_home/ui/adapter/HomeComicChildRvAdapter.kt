@@ -2,28 +2,33 @@
 
 package com.crow.module_home.ui.adapter
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater.from
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.LifecycleOwner
+import androidx.core.view.doOnLayout
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
-import com.crow.base.app.appContext
-import com.crow.base.current_project.*
-import com.crow.base.current_project.entity.BookTapEntity
-import com.crow.base.current_project.entity.BookType
-import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.clickGap
-import com.crow.base.tools.extensions.logMsg
-import com.crow.base.tools.extensions.px2dp
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
+import com.bumptech.glide.request.transition.NoTransition
+import com.crow.base.copymanga.*
+import com.crow.base.copymanga.entity.IBookAdapterColor
+import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.base.tools.extensions.BASE_ANIM_200L
+import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.ToolTipsView
-import com.crow.module_home.R
-import com.crow.module_home.databinding.HomeFragmentComicRvBinding
 import com.crow.module_home.databinding.HomeFragmentComicRvBodyBinding
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.AuthorResult
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
+import com.crow.module_home.ui.adapter.HomeComicParentRvAdapter.Type
 import kotlinx.coroutines.delay
 import java.util.*
 
@@ -37,46 +42,98 @@ import java.util.*
  **************************/
 class HomeComicChildRvAdapter<T>(
     private var mData: MutableList<T> = mutableListOf(),
-    private val viewLifecycleOwner: LifecycleOwner,
-    private val mBookType: BookType,
-) : RecyclerView.Adapter<HomeComicChildRvAdapter<T>.ViewHolder>() {
+    private val mType: Type,
+    val doOnTap: (String) -> Unit
+) : RecyclerView.Adapter<HomeComicChildRvAdapter<T>.LoadingViewHolder>() , IBookAdapterColor<HomeComicChildRvAdapter<T>.LoadingViewHolder>{
 
-    inner class ViewHolder(val rvBinding: HomeFragmentComicRvBodyBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
+    inner class LoadingViewHolder(binding: HomeFragmentComicRvBodyBinding) : BaseGlideLoadingViewHolder<HomeFragmentComicRvBodyBinding>(binding) {
+        var mPathWord: String = ""
+    }
 
     // 父布局高度
     private var mParentHeight: Int? = null
 
+    // 名称高度
+    private var mNameHeight: Int? = null
+
     // 初始化卡片内部视图
-    private fun ViewHolder.initView(pathword: String, name: String, imageUrl: String, author: List<AuthorResult>, hot: Int) {
-        Glide.with(itemView).load(imageUrl).into(rvBinding.homeComicRvImage)   // 加载封面
-        rvBinding.homeComicRvName.text = name                                  // 漫画名
-        rvBinding.homeComicRvAuthor.text = author.joinToString { it.name }     // 作者 ：Crow
-        rvBinding.homeComicRvHot.text = formatValue(hot)                       // 热度 ： 12.3456 W
-        mPathWord = pathword                                                   // 设置路径值 （用于后续请求）
+    private fun LoadingViewHolder.initView(pathword: String, name: String, imageUrl: String, author: List<AuthorResult>, hot: Int, lastestChapter: String?) {
+        mPathWord = pathword                                                                                             // 设置路径值 （用于后续请求）
+
+
+        mLoadingPropertyAnimator?.cancel()
+        mTextPropertyAnimator?.cancel()
+        mLoadingPropertyAnimator = null
+        mTextPropertyAnimator = null
+        rvBinding.homeComicRvLoading.alpha = 1f
+        rvBinding.homeComicRvProgressText.alpha = 1f
+        rvBinding.homeComicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
+        mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+        mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ ->
+            rvBinding.homeComicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+        }
+
+        // 加载封面
+        Glide.with(itemView)
+            .load(imageUrl)
+            .addListener(mAppGlideProgressFactory?.getRequestListener())
+            .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
+                if (dataSource == DataSource.REMOTE) {
+                    mLoadingPropertyAnimator = rvBinding.homeComicRvLoading.animateFadeOut()
+                    mTextPropertyAnimator = rvBinding.homeComicRvProgressText.animateFadeOut()
+                    DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
+                } else {
+                    rvBinding.homeComicRvLoading.alpha = 0f
+                    rvBinding.homeComicRvProgressText.alpha = 0f
+                    NoTransition()
+                }
+            })
+            .into(rvBinding.homeComicRvImage)
+        rvBinding.homeComicRvName.text = name                                                                // 漫画名
+        rvBinding.homeComicRvHot.text = formatValue(hot)                                                  // 热度 ： 12.3456 W
+
+        // 作者 ：Crow
+        if (rvBinding.homeComicRvAuthor.isVisible) {
+            rvBinding.homeComicRvAuthor.text = author.joinToString { it.name }
+        } else {
+            rvBinding.homeComicRvAuthor.text = null
+        }
+
+        // 最新章节
+        if (lastestChapter == null) rvBinding.homeComicRvLastestChapter.isVisible = false
+        else {
+            rvBinding.homeComicRvLastestChapter.isVisible = true
+            rvBinding.homeComicRvLastestChapter.text = lastestChapter
+        }
+
+        toSetColor(this, hot)
     }
 
     override fun getItemCount(): Int = mData.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(HomeFragmentComicRvBodyBinding.inflate(from(parent.context), parent, false)).also { vh ->
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LoadingViewHolder {
+        return LoadingViewHolder(HomeFragmentComicRvBodyBinding.inflate(from(parent.context), parent, false)).also { vh ->
 
-            // 推荐 设置底部间距0
-            if(mBookType == BookType.Rec) (vh.rvBinding.homeComicRvHot.layoutParams as ConstraintLayout.LayoutParams).bottomMargin = 0
+            val isTopic = mType == Type.TOPIC
 
             // 漫画卡片高度
-            vh.rvBinding.homeComicRvImage.layoutParams.apply {
-                width = (if (mBookType != BookType.Topic) getComicCardWidth() else getComicCardWidth() / 2 + getComicCardWidth()) - mSize10
-                height = getComicCardHeight()
+            val layoutParams = vh.rvBinding.homeComicRvImage.layoutParams
+            layoutParams.width = (if (!isTopic) getComicCardWidth() else getComicCardWidth() / 2 + getComicCardWidth()) - mSize10
+            layoutParams.height = getComicCardHeight()
+
+            vh.rvBinding.homeComicRvName.doOnLayout { view ->
+                if (mNameHeight == null) mNameHeight = if (vh.rvBinding.homeComicRvName.lineCount == 1) view.measuredHeight * 2 else view.measuredHeight
+                (vh.rvBinding.homeComicRvName.layoutParams as ConstraintLayout.LayoutParams).height = mNameHeight!!
             }
 
             // 点击 父布局卡片 以及漫画卡片 事件 回调给上级 HomeFragment --> ContainerFragment
-            vh.rvBinding.root.clickGap { _, _ ->
-                if (mBookType == BookType.Topic) { }
-                else FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(viewLifecycleOwner, BookTapEntity(BookType.Comic, vh.mPathWord))
+            vh.rvBinding.root.doOnClickInterval {
+                if (isTopic) { /* TOOD TOPIC*/  }
+                else doOnTap(vh.mPathWord)
             }
-            vh.rvBinding.homeBookCard.clickGap { _, _ ->
-                if (mBookType == BookType.Topic) { }
-                else FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(viewLifecycleOwner, BookTapEntity(BookType.Comic, vh.mPathWord))
+            vh.rvBinding.homeBookCardView.doOnClickInterval {
+                if (isTopic) { /* TOOD TOPIC*/  }
+                else doOnTap(vh.mPathWord)
             }
 
             // Tooltips漫画名称设置
@@ -84,29 +141,31 @@ class HomeComicChildRvAdapter<T>(
         }
     }
 
-    override fun onBindViewHolder(vh: ViewHolder, pos: Int) {
-        when (mBookType) {
-            BookType.Rec -> {
+    override fun onBindViewHolder(vh: LoadingViewHolder, pos: Int) {
+        when (mType) {
+            Type.REC -> {
+                // 推荐 设置底部间距0
+                (vh.rvBinding.root.layoutParams as GridLayoutManager.LayoutParams).bottomMargin = 0
                 val comic = (mData as MutableList<RecComicsResult>)[pos].mComic
-                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
+                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular, null)
             }
-            BookType.Hot -> {
+            Type.HOT -> {
                 val comic = (mData as MutableList<HotComic>)[pos].mComic
-                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
+                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular, comic.mLastChapterName)
             }
-            BookType.New -> {
+            Type.NEW -> {
                 val comic = (mData as MutableList<NewComic>)[pos].mComic
-                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
+                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular, comic.mLastChapterName)
             }
-            BookType.Finish -> {
+            Type.FINISH -> {
                 val comic = (mData as MutableList<FinishComic>)[pos]
-                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
+                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular, null)
             }
-            BookType.Rank -> {
+            Type.RANK -> {
                 val comic = (mData as MutableList<RankComics>)[pos].mComic
-                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular)
+                vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular, null)
             }
-            BookType.Topic -> {
+            Type.TOPIC -> {
                 val comic = (mData as MutableList<Topices>)[pos]
                 Glide.with(vh.itemView).load(comic.mImageUrl).into(vh.rvBinding.homeComicRvImage)
                 vh.mPathWord = comic.mPathWord
@@ -121,8 +180,14 @@ class HomeComicChildRvAdapter<T>(
                     homeComicRvHot.visibility = View.GONE
                 }
             }
-            else -> { }
         }
+    }
+
+    override fun setColor(vh: LoadingViewHolder, color: Int) {
+        vh.rvBinding.homeComicRvName.setTextColor(color)
+        vh.rvBinding.homeComicRvHot.setTextColor(color)
+        vh.rvBinding.homeComicRvAuthor.setTextColor(color)
+        vh.rvBinding.homeComicRvLastestChapter.setTextColor(color)
     }
 
     suspend fun doNotify(datas: MutableList<T>, delay: Long) {

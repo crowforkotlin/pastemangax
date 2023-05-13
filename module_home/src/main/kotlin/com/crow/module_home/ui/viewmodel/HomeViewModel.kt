@@ -1,14 +1,20 @@
 package com.crow.module_home.ui.viewmodel
 
-import android.graphics.drawable.Drawable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
-import com.crow.module_home.network.HomeRepository
 import com.crow.module_home.model.intent.HomeIntent
-import com.crow.module_home.model.resp.homepage.results.Results
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.crow.module_home.model.resp.search.comic_reuslt.SearchComicResult
+import com.crow.module_home.model.resp.search.novel_result.SearchNovelResult
+import com.crow.module_home.model.source.ComicSearchDataSource
+import com.crow.module_home.model.source.NovelSearchDataSource
+import com.crow.module_home.network.HomeRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -22,14 +28,13 @@ class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<H
 
     private var mRefreshStartIndex = 3
 
-    private var mResult: Results? = null
+    var mComicSearchFlowPage : Flow<PagingData<SearchComicResult>>? = null
+    var mNovelSearchFlowPage : Flow<PagingData<SearchNovelResult>>? = null
 
-    fun getResult() = mResult
 
     // 获取主页 （返回数据量很多）
     private fun getHomePage(intent: HomeIntent.GetHomePage) {
         flowResult(intent, repository.getHomePage()) { value ->
-            mResult = value.mResults
             intent.copy(homePageData = value)
         }
     }
@@ -42,10 +47,42 @@ class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<H
         }
     }
 
+    private fun doSearchComic(intent: HomeIntent.SearchComic) {
+        mComicSearchFlowPage = Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                initialLoadSize = 20,
+                enablePlaceholders = true,
+            ),
+            pagingSourceFactory = {
+                ComicSearchDataSource { position, pagesize ->
+                    flowResult(repository.doSearchComic(intent.keyword, intent.type, position, pagesize), intent) { value -> intent.copy(searchComicResp = value.mResults) }.mResults
+                }
+            }
+        ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
+    }
+
+    private fun doSearchNovel(intent: HomeIntent.SearchNovel) {
+        mNovelSearchFlowPage = Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                initialLoadSize = 20,
+                enablePlaceholders = true,
+            ),
+            pagingSourceFactory = {
+                NovelSearchDataSource { position, pagesize ->
+                    flowResult(repository.doSearchNovel(intent.keyword, intent.type, position, pagesize), intent) { value -> intent.copy(searchNovelResp = value.mResults) }.mResults
+                }
+            }
+        ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
+    }
+
     override fun dispatcher(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.GetHomePage -> getHomePage(intent)
             is HomeIntent.GetRecPageByRefresh -> getRecPageByRefresh(intent)
+            is HomeIntent.SearchComic -> doSearchComic(intent)
+            is HomeIntent.SearchNovel -> doSearchNovel(intent)
         }
     }
 }

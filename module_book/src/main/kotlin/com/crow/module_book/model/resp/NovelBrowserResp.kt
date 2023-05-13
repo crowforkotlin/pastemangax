@@ -19,8 +19,8 @@ data class NovelBrowserResp(
 
     @Json(name = "is_login")
     val mIsLogin: Boolean,
-    @Json(name = "is_mobile_bind")
 
+    @Json(name = "is_mobile_bind")
     val mIsMobileBind: Boolean,
 
     @Json(name = "is_vip")

@@ -5,9 +5,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.crow.base.current_project.BaseUser
-import com.crow.base.tools.extensions.DataStoreAgent
-import com.crow.base.tools.extensions.clear
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_bookshelf.model.intent.BookshelfIntent
 import com.crow.module_bookshelf.model.resp.bookshelf_comic.BookshelfComicResults
@@ -35,7 +32,7 @@ class BookshelfViewModel(val repository: BookShelfRepository) : BaseMviViewModel
     var mOrder = "-datetime_modifier"
 
     // 默认加载20页 第一次初始化加载的大小默认为 （PageSize * 3）这里也设置成20
-    fun getBookshelfComic(intent: BookshelfIntent.GetBookshelfComic): Flow<PagingData<BookshelfComicResults>>? {
+    fun getBookshelfComic(intent: BookshelfIntent.GetBookshelfComic) {
         mBookshelfComicFlowPager = Pager(
             config = PagingConfig(
                 pageSize = 20,
@@ -44,14 +41,13 @@ class BookshelfViewModel(val repository: BookShelfRepository) : BaseMviViewModel
             ),
             pagingSourceFactory = {
                 BookshelfComicDataSource { position, pagesize ->
-                    flowResult(repository.getBookshelfComic(position, pagesize, mOrder), intent) { value -> intent.copy(bookshelfComicResp = value.mResults) }?.mResults
+                    flowResult(repository.getBookshelfComic(position, pagesize, mOrder), intent) { value -> intent.copy(bookshelfComicResp = value.mResults) }.mResults
                 }
             }
         ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
-        return mBookshelfComicFlowPager
     }
 
-    fun getBookshelfNovel(intent: BookshelfIntent.GetBookshelfNovel): Flow<PagingData<BookshelfNovelResults>>? {
+    fun getBookshelfNovel(intent: BookshelfIntent.GetBookshelfNovel) {
         mBookshelfNovelFlowPager = Pager(
             config = PagingConfig(
                 pageSize = 20,
@@ -60,16 +56,10 @@ class BookshelfViewModel(val repository: BookShelfRepository) : BaseMviViewModel
             ),
             pagingSourceFactory = {
                 BookshelfNovelDataSource { position, pagesize ->
-                    flowResult(repository.getBookshelfNovel(position, pagesize, mOrder), intent) { value -> intent.copy(bookshelfNovelResp = value.mResults) }?.mResults
+                    flowResult(repository.getBookshelfNovel(position, pagesize, mOrder), intent) { value -> intent.copy(bookshelfNovelResp = value.mResults) }.mResults
                 }
             }
         ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
-        return mBookshelfNovelFlowPager
-    }
-
-    fun clearUserAllData() {
-        DataStoreAgent.DATA_USER.clear()
-        BaseUser.CURRENT_USER_TOKEN = ""
     }
 
     override fun dispatcher(intent: BookshelfIntent) {

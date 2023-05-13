@@ -11,9 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.R
 import com.crow.base.app.appContext
-import com.crow.base.current_project.getSpannableString
-import com.crow.base.tools.extensions.clickGap
-import com.crow.base.tools.extensions.startActivity
+import com.crow.base.copymanga.getSpannableString
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_main.databinding.MainUpdateUrlRvBinding
 import com.crow.module_main.model.resp.update.Url
 
@@ -33,7 +32,7 @@ class MainAppUpdateRv(val mUrl: List<Url>) : RecyclerView.Adapter<MainAppUpdateR
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(MainUpdateUrlRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also {  vh ->
-            vh.rvBinding.mainUpdateUrlContent.clickGap { _, _ ->
+            vh.rvBinding.mainUpdateUrlContent.doOnClickInterval {
                 val intent = Intent()
                 intent.data = Uri.parse(mUrl[vh.absoluteAdapterPosition].mLink)
                 intent.action = Intent.ACTION_VIEW

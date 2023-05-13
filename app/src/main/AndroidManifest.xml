@@ -12,7 +12,6 @@
 	<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 	<uses-permission android:name="android.permission.RECORD_AUDIO" />
-	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="android.permission.BLUETOOTH" />
 
@@ -24,7 +23,7 @@
 	<application
 		android:name=".MainApplication"
 		android:allowBackup="true"
-		android:icon="@mipmap/app_ic_launcher"
+		android:icon="@mipmap/app_ic_launcher_new"
 		android:label="@string/BaseAppName"
 		android:supportsRtl="true"
 		android:theme="@style/App.Theme.CopyManga.Splash">
@@ -35,7 +34,8 @@
 			android:exported="true" />
 
 		<activity
-			android:name=".MainActivity"
+			android:name=".ui.activity.MainActivity"
+			android:windowSoftInputMode="adjustNothing"
 			android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

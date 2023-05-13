@@ -24,7 +24,7 @@ abstract class BaseActivityImpl : AppCompatActivity(), IBaseActivity {
 
     open fun initData() {}
 
-    abstract fun initView()
+    abstract fun initView(savedInstanceState: Bundle?)
 
     abstract fun initListener()
 
@@ -44,6 +44,8 @@ abstract class BaseActivityImpl : AppCompatActivity(), IBaseActivity {
         LoadingAnimDialog.show(supportFragmentManager)
     }
 
+    override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) { LoadingAnimDialog.show(supportFragmentManager, loadingAnimConfig) }
+
     override fun dismissLoadingAnim() {
         LoadingAnimDialog.dismiss(supportFragmentManager)
     }
@@ -54,7 +56,7 @@ abstract class BaseActivityImpl : AppCompatActivity(), IBaseActivity {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView()
+        initView(savedInstanceState)
         initData()
         initListener()
     }

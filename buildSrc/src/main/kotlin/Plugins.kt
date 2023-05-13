@@ -22,8 +22,13 @@ object Plugins {
     // 使用Kotlin 语言开发Android 插件
     const val kotlin_android = "android"
 
+    const val kotlin_kapt = "kapt"
+
     const val androidx_navigation_safeargs = "androidx.navigation.safeargs"
 
     // Kotlin 序列化插件
     const val kotlin_serialization = "plugin.serialization"
+
+    // dokka 文档 需要在buildScript中添加classpath
+    const val jetbrains_dokka = "org.jetbrains.dokka"
 }

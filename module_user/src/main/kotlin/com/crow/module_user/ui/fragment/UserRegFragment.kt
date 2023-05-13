@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.app.appContext
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.BaseUser
-import com.crow.base.current_project.updateLifecycleObserver
+import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.entity.Fragments
+import com.crow.base.copymanga.updateLifecycleObserver
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.*
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -31,13 +32,14 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  **************************/
 class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
 
-    companion object { fun newInstance() = UserRegFragment() }
-
+    // 共享用户VM
     private val mUserVM by sharedViewModel<UserViewModel>()
 
-    private fun String?.getIsSame(target: String) : String? = if(this == target) this else null
-
+    // 是否注冊成功？
     private var mIsRegSuccess = false
+
+    // 值是否相同？ true 返回 this false 返回 null
+    private fun String?.getIsSame(target: String) : String? = if(this == target) this else null
 
     // 反转登录按钮
     private fun doRevertRegButton() {
@@ -50,14 +52,13 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
 
         // 判断标志是否成功 (true : 然后返回上一个界面)
         if (mIsRegSuccess) {
-            val msg = getString(R.string.user_reg_ok)
+            FlowBus.with<String>(BaseStrings.Key.LOGIN_SUCUESS).post(lifecycleScope, getString(R.string.user_reg_ok))
             navigateUp()
-            FlowBus.with<String>(BaseStrings.Key.LOGIN_SUCUESS).post(lifecycleScope, msg)
         }
     }
 
-
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear("UserRegFragment", "ContainerFragment")
+    // 返回
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Reg.toString())
 
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentRegBinding.inflate(inflater)
 
@@ -77,13 +78,13 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
 
     override fun initListener() {
 
-        mBinding.userReg.clickGap { _, _ ->
+        mBinding.userReg.doOnClickInterval {
             // 执行登录
             mUserVM.input(UserIntent.Reg(
-                mUserVM.getUsername(mBinding.userRegEditTextUsr.text.toString()) ?: return@clickGap toast(getString(
+                mUserVM.getUsername(mBinding.userRegEditTextUsr.text.toString()) ?: return@doOnClickInterval toast(getString(
                     R.string.user_usr_invalid)),
-                (mUserVM.getPassword(mBinding.userRegEditTextPwd.text.toString()) ?: return@clickGap toast(getString(R.string.user_pwd_invalid)))
-                    .getIsSame(mBinding.userRegEditTextRePwd.text.toString()) ?: return@clickGap toast(getString(R.string.user_repwd_notmatch)
+                (mUserVM.getPassword(mBinding.userRegEditTextPwd.text.toString()) ?: return@doOnClickInterval toast(getString(R.string.user_pwd_invalid)))
+                    .getIsSame(mBinding.userRegEditTextRePwd.text.toString()) ?: return@doOnClickInterval toast(getString(R.string.user_repwd_notmatch)
             )))
 
             // 开启按钮动画
@@ -100,7 +101,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
                         .doOnError { _, msg ->
                             dismissLoadingAnim { doRevertRegButton() }
                             toast(msg ?: appContext.getString(
-                                com.crow.base.R.string.BaseUnknow))
+                                com.crow.base.R.string.BaseUnknowError))
                         }
                         .doOnResult {
                             /* 两个结果 OK 和 Error
@@ -129,7 +130,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
                     intent.mViewState
                         .doOnSuccess { dismissLoadingAnim { doRevertRegButton() } }
                         .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: appContext.getString(
-                            com.crow.base.R.string.BaseUnknow)) }
+                            com.crow.base.R.string.BaseUnknowError)) }
                         .doOnResult {
                             /* 两个结果 OK 和 Error
                             * OK：设置 mIsRegSuccess = true 用于标记

@@ -27,4 +27,8 @@ class BookRepository(private val service: ComicService) {
     fun getNovelCatelogue(pathword: String) = service.getNovelCatelogue(pathword)
 
     fun getNovelBrowserHistory(pathword: String) = service.getNovelBrowserHistory(pathword)
+
+    fun addComicToBookshelf(comicId: String, isCollect: Int) = service.addComicToBookshelf(comicId, isCollect)
+
+    fun addNovelToBookshelf(novelId: String, isCollect: Int) = service.addNovelToBookshelf(novelId, isCollect)
 }

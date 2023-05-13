@@ -1,23 +1,22 @@
 package com.crow.copymanga
 
-import android.app.Activity
-import android.app.Application
 import android.content.Context
 import android.os.Build
-import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crow.base.app.BaseApp
 import com.crow.base.tools.extensions.getCurrentVersionName
-import com.crow.base.tools.extensions.logMsg
-import com.crow.copymanga.di.factoryModule
-import com.crow.copymanga.di.netWorkModule
-import com.crow.copymanga.di.servicesModule
-import com.crow.copymanga.di.viewModelModule
+import com.crow.copymanga.model.di.factoryModule
+import com.crow.copymanga.model.di.fragmentModule
+import com.crow.copymanga.model.di.networkModule
+import com.crow.copymanga.model.di.servicesModule
+import com.crow.copymanga.model.di.singleModule
+import com.crow.copymanga.model.di.viewModelModule
 import com.tencent.bugly.crashreport.CrashReport
 import com.tencent.bugly.crashreport.CrashReport.UserStrategy
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.core.context.startKoin
 
 
@@ -46,8 +45,9 @@ class MainApplication : BaseApp() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         startKoin {
+            fragmentFactory()
             androidContext(this@MainApplication)
-            modules(listOf(netWorkModule, servicesModule, viewModelModule, factoryModule))
+            modules(listOf(singleModule, networkModule, servicesModule, viewModelModule, factoryModule, fragmentModule))
         }
     }
 

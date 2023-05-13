@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="BaseTokenError">身份信息过期!\n您接下来的浏览将是访客模式！\n是否重新登录？</string>
+	<string name="BaseZero">0%</string>
 </resources>

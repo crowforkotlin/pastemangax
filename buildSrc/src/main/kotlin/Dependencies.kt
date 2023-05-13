@@ -59,7 +59,7 @@ object Dependencies {
     /* Material Design 界面组件
     * - MvnRepository : [https://mvnrepository.com/artifact/com.google.android.material/material]
     * */
-    const val android_material = "com.google.android.material:material:1.9.0-alpha02"
+    const val android_material = "com.google.android.material:material:1.9.0"
 
     /* Kotlin Android 注入库
     * - Home : [https://insert-koin.io/]
@@ -162,6 +162,9 @@ object Dependencies {
     * */
     const val glide = "com.github.bumptech.glide:glide:${Versions.glide_version}"
     const val glide_compiler = "com.github.bumptech.glide:compiler:${Versions.glide_version}"
+    const val glide_annotations  = "com.github.bumptech.glide:annotations:${Versions.glide_version}"
+    const val glide_ksp = "com.github.bumptech.glide:ksp:${Versions.glide_version}"
+    const val glide_integration = "com.github.bumptech.glide:okhttp3-integration:${Versions.glide_version}"
 
     /* PhotoView
     * - Github : [https://github.com/Baseflow/PhotoView]
@@ -251,4 +254,12 @@ object Dependencies {
     const val luksiege_compress = "io.github.lucksiege:compress:v3.10.8"
     const val luksiege_ucrop = "io.github.lucksiege:ucrop:v3.10.8"
     const val luksiege_camerax = "io.github.lucksiege:camerax:v3.10.8"
+
+    const val reactivex_rxjava = "io.reactivex.rxjava3:rxjava:3.1.6"
+    const val reactivex_rxjava_android = "io.reactivex.rxjava3:rxandroid:3.0.2"
+
+    /* Dokka
+    * How To use In Android ? [https://github.com/Kotlin/dokka/blob/master/examples/gradle/dokka-versioning-multimodule-example/build.gradle.kts]
+    * */
+    const val jetbrains_dokka = "org.jetbrains.dokka:android-documentation-plugin:1.8.10"
 }

@@ -3,13 +3,18 @@ package com.crow.module_user.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.app.appContext
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.updateLifecycleObserver
+import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.entity.Fragments
+import com.crow.base.copymanga.updateLifecycleObserver
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.getNavigationBarHeight
+import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.popSyncWithClear
+import com.crow.base.tools.extensions.showSnackBar
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
@@ -35,8 +40,6 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
 
     constructor(iUserLoginSuccessCallback: IUserLoginSuccessCallback) : this() { mLoginSuccessCallback = iUserLoginSuccessCallback }
 
-    companion object { fun newInstance() = UserLoginFragment() }
-
     fun interface IUserLoginSuccessCallback {
         fun onLoginSuccess()
     }
@@ -50,7 +53,8 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
     // 登录成功回调
     private var mLoginSuccessCallback: IUserLoginSuccessCallback? = null
 
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear("UserLoginFragment", "ContainerFragment")
+    // 返回
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Login.toString())
 
     // 反转登录按钮
     private fun doRevertLoginButton() {
@@ -63,9 +67,9 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
 
         // 判断标志是否成功 (true : 然后返回上一个界面)
         if (mIsLoginSuccess) {
-            val msg = getString(R.string.user_login_ok)
+            toast(getString(R.string.user_login_ok))
             navigateUp()
-            FlowBus.with<String>(BaseStrings.Key.LOGIN_SUCUESS).post(lifecycleScope, msg)
+            FlowBus.with<Unit>(BaseStrings.Key.LOGIN_SUCUESS).post(lifecycleScope, Unit)
         }
     }
 
@@ -85,7 +89,7 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
                     intent.mViewState
                         .doOnLoading { showLoadingAnim() }
                         .doOnSuccess { dismissLoadingAnim { doRevertLoginButton() } }
-                        .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: appContext.getString(baseR.string.BaseUnknow)) }
+                        .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: appContext.getString(baseR.string.BaseUnknowError)) }
                         .doOnResult {
                             /* 两个结果 OK 和 Error
                             * OK：设置 mIsLoginSuccess = true 用于标记
@@ -117,19 +121,15 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
 
     override fun initListener() {
 
-        mBinding.userLogin.clickGap { _, _ ->
+        mBinding.userLogin.doOnClickInterval {
             // 执行登录
             mUserVM.input(UserIntent.Login(
-                mUserVM.getUsername(mBinding.userLoginEditTextUsr.text.toString()) ?: return@clickGap toast(getString(R.string.user_usr_invalid)),
-                mUserVM.getPassword(mBinding.userLoginEditTextPwd.text.toString()) ?: return@clickGap toast(getString(R.string.user_pwd_invalid))
+                mUserVM.getUsername(mBinding.userLoginEditTextUsr.text.toString()) ?: return@doOnClickInterval toast(getString(R.string.user_usr_invalid)),
+                mUserVM.getPassword(mBinding.userLoginEditTextPwd.text.toString()) ?: return@doOnClickInterval toast(getString(R.string.user_pwd_invalid))
             ))
 
             // 开启按钮动画
             mBinding.userLogin.startAnimation()
-        }
-
-        mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback {
-            parentFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
     }
 }

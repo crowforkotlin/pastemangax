@@ -24,7 +24,7 @@
 		android:contentDescription="@string/BaseTodoTextView"
 		android:foreground="?android:attr/selectableItemBackground"
 		android:scaleType="centerCrop"
-		android:src="@drawable/user_icon_app"
+		android:src="@drawable/base_icon_app"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:roundPercent="1" />

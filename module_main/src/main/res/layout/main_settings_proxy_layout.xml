@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/base_dp10">
+
+    <TextView
+        android:id="@+id/settings_proxy_tips"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_dp20"
+        android:drawablePadding="@dimen/base_dp10"
+        android:text="@string/main_proxy_tips"
+        android:textSize="@dimen/base_sp12"
+        android:textStyle="bold"
+        app:drawableStartCompat="@drawable/user_ic_login_tips"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/settings_proxy_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/base_dp20"
+        android:layout_marginEnd="@dimen/base_dp20"
+        android:drawablePadding="@dimen/base_dp10"
+        android:text="@string/main_proxy_title"
+        android:textColor="@color/base_black"
+        android:textSize="@dimen/base_sp18"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/settings_proxy_tips"
+        app:layout_constraintTop_toBottomOf="@+id/settings_proxy_tips" />
+
+    <RadioGroup
+        android:id="@+id/settings_proxy_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_dp20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_proxy_title">
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/settings_proxy_domestic_route"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/main_proxy_domestic_route"
+            android:textSize="@dimen/base_sp12"
+            android:textStyle="bold" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/settings_proxy_overseas_route"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/main_proxy_overseas_route"
+            android:textSize="@dimen/base_sp12"
+            android:textStyle="bold" />
+
+    </RadioGroup>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

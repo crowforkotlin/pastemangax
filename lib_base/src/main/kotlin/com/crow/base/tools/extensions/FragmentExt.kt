@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import com.crow.base.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -67,44 +68,95 @@ fun Fragment.navigate(
 
 fun Fragment.navigateUp() = findNavController().navigateUp()
 
-fun FragmentTransaction.withFadeAnimation() =
+fun FragmentTransaction.setFadeAnimation() =
     setCustomAnimations(anim.fade_in, anim.fade_out, anim.fade_in, anim.fade_out)
 
-fun FragmentTransaction.withSlideAnimation() = setCustomAnimations(
+fun FragmentTransaction.setSlideAnimation() = setCustomAnimations(
     anim.slide_in_left,
     anim.slide_out_right,
     anim.slide_in_left,
     anim.slide_out_right
 )
 
+fun FragmentTransaction.setCenterAnimWithFadeOut() =
+    setCustomAnimations(R.anim.base_anim_center_in, anim.fade_out, 0, R.anim.base_anim_center_out)
+
+fun FragmentTransaction.setFadeInAnimOutWithCenter() =
+    setCustomAnimations(anim.fade_in, anim.fade_out, R.anim.base_anim_center_in, R.anim.base_anim_center_out)
+
+
 inline fun FragmentManager.hide(
     fragment: Fragment,
     backStackName: String?,
-    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.withFadeAnimation() }
+    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.setFadeAnimation() }
 ) = transaction(beginTransaction()).addToBackStack(backStackName).hide(fragment).commit()
 
 inline fun FragmentManager.remove(
     fragment: Fragment,
-    crossinline  transaction: (FragmentTransaction) -> FragmentTransaction = { it.withFadeAnimation() }
+    crossinline  transaction: (FragmentTransaction) -> FragmentTransaction = { it.setFadeAnimation() }
 ) = transaction(beginTransaction()).remove(fragment).commit()
 
 inline fun FragmentManager.show(
     fragment: Fragment,
-    crossinline  transaction: (FragmentTransaction) -> FragmentTransaction = { it.withFadeAnimation() }
+    crossinline  transaction: (FragmentTransaction) -> FragmentTransaction = { it.setFadeAnimation() }
 ) = transaction(beginTransaction()).show(fragment).commit()
 
 
-inline fun FragmentManager.navigateByAddWithBackStack(
+inline fun<reified T: Fragment> FragmentManager.navigateByAddWithBackStack(
     @IdRes id: Int,
-    fragment: Fragment,
+    bundle: Bundle? = null,
     backStackName: String? = null,
-    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.withFadeAnimation() },
+    tag: String? = null,
+    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.setFadeAnimation() },
 ) {
     transaction(beginTransaction())
         .addToBackStack(backStackName)
-        .add(id, fragment)
+        .add(id, T::class.java, bundle, tag)
         .commit()
 }
+
+inline fun<reified T: Fragment> FragmentManager.navigateToWithBackStack(
+    @IdRes id: Int,
+    hideTarget: Fragment,
+    bundle: Bundle? = null,
+    tag: String? = null,
+    backStackName: String? = null,
+    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.setCenterAnimWithFadeOut() },
+) {
+    transaction(beginTransaction())
+        .addToBackStack(backStackName)
+        .add(id, T::class.java, bundle, tag)
+        .hide(hideTarget)
+        .commit()
+}
+
+inline fun FragmentManager.navigateToWithBackStack(
+    @IdRes id: Int,
+    hideTarget: Fragment,
+    addedTarget: Fragment,
+    tag: String? = null,
+    backStackName: String? = null,
+    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.setCenterAnimWithFadeOut() },
+) {
+    transaction(beginTransaction())
+        .addToBackStack(backStackName)
+        .add(id, addedTarget, tag)
+        .hide(hideTarget)
+        .commit()
+}
+
+inline fun<reified T: Fragment> FragmentManager.navigateByAdd(
+    @IdRes id: Int,
+    bundle: Bundle? = null,
+    tag: String? = null,
+    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.setFadeAnimation() },
+) {
+    transaction(beginTransaction())
+        .add(id, T::class.java, bundle, tag)
+        .commit()
+}
+
+
 
 fun FragmentManager.popSyncWithClear(vararg backStackName: String?, flags: Int = FragmentManager.POP_BACK_STACK_INCLUSIVE) {
     backStackName.forEach {

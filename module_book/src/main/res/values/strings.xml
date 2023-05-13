@@ -4,9 +4,15 @@
 	<string name="BookComicStatus">状态：%s</string>
 	<string name="BookComicUpdate">更新时间：%s</string>
 	<string name="BookComicNewChapter">最新一章：%s</string>
-	<string name="BookComicAddToBookShelf">加入书架</string>
+	<string name="book_comic_add_to_bookshelf">加入书架</string>
+	<string name="book_comic_remove_from_bookshelf">取消收藏</string>
 	<string name="BookComicDownLoad">下载章节</string>
 	<string name="BookComicReadNow">开始阅读</string>
-	<string name="BookComicReadedPage">已经阅读至：%s</string>
+	<string name="BookComicReadedPage">已阅读至：%s</string>
 	<string name="BookComicRequestThrottled">请求过于频繁！请等待 %s 秒后尝试！</string>
+    <string name="book_next">下一章</string>
+    <string name="book_no_next">已经是最后一章啦≧ ﹏ ≦</string>
+    <string name="book_add_success">添加成功！</string>
+    <string name="book_remove_success">已从书架中移除！</string>
+    <string name="book_add_invalid">登录后才可添加至书架喔！</string>
 </resources>

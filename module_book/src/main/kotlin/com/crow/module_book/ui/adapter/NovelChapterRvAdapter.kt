@@ -7,10 +7,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.appContext
 import com.crow.base.tools.extensions.BASE_ANIM_200L
-import com.crow.base.tools.extensions.clickGap
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_book.R
-import com.crow.module_book.databinding.BookComicInfoRvChapterBinding
+import com.crow.module_book.databinding.BookFragmentChapterRvBinding
 import com.crow.module_book.model.resp.novel_chapter.NovelChapterResult
 import kotlinx.coroutines.delay
 
@@ -30,25 +30,19 @@ class NovelChapterRvAdapter(
 
     var mChapterName: String? = null
 
-    private var mClickFlag = false
     private val mBtSurfaceColor = ContextCompat.getColor(appContext, R.color.book_button_bg_white)
     private val mBtTextColor = ContextCompat.getColor(appContext, R.color.book_button_text_purple)
 
-    inner class ViewHolder(rvBinding: BookComicInfoRvChapterBinding) : RecyclerView.ViewHolder(rvBinding.root) { val mButton = rvBinding.comicInfoRvChip }
+    inner class ViewHolder(rvBinding: BookFragmentChapterRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { val mButton = rvBinding.comicInfoRvChip }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(BookComicInfoRvChapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
-            vh.mButton.clickGap { _, _ ->
-                if (mClickFlag) return@clickGap
-                mClickFlag = true
-                mDoOnTapChapter(mComic[vh.absoluteAdapterPosition])
-            }
+        return ViewHolder(BookFragmentChapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
+            vh.mButton.doOnClickInterval { mDoOnTapChapter(mComic[vh.absoluteAdapterPosition]) }
         }
     }
 
     override fun getItemCount(): Int = mComic.size
 
-    override fun getItemViewType(position: Int): Int = position
 
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
 

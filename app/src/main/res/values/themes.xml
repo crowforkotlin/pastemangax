@@ -12,6 +12,6 @@
 		<item name="postSplashScreenTheme">@style/App.Theme.CopyManga</item>
 
 		<!-- SplashIcon -->
-		<item name="windowSplashScreenAnimatedIcon">@mipmap/app_ic_launcher</item>
+		<item name="windowSplashScreenAnimatedIcon">@mipmap/app_ic_launcher_new</item>
 	</style>
 </resources>

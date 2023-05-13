@@ -1,12 +1,19 @@
 package com.crow.base.ui.dialog
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.R
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.doAfterDelay
+import com.crow.base.tools.extensions.setBackgroundTransparent
+import com.crow.base.tools.extensions.setMaskAmount
 
 /*************************
  * @Machine: RedmiBook Pro 15
@@ -34,6 +41,7 @@ class LoadingAnimDialog : DialogFragment() {
 
         private val TAG: String = this::class.java.simpleName
         private var mShowTime = 0L
+        private var mIsLoading = false
         private const val mDismissFlagTime = 1000L
         private const val mAnimateDuration = 200L
 
@@ -41,11 +49,12 @@ class LoadingAnimDialog : DialogFragment() {
         @Synchronized
         fun show(fragmentManager: FragmentManager,loadingAnimConfig: LoadingAnimConfig? = null) {
             val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: LoadingAnimDialog()
-            if (dialog.isAdded) { return }
+            if (dialog.isAdded) return
             if (!dialog.isVisible) {
                 mShowTime = System.currentTimeMillis()
                 if (!fragmentManager.isStateSaved) {
                     dialog.show(fragmentManager, TAG)
+                    mIsLoading = true
                     if (loadingAnimConfig != null) {
                         if (!loadingAnimConfig.isNoInitStyle()) dialog.lifecycleScope.launchWhenCreated {
                             dialog.setStyle(STYLE_NO_TITLE,  R.style.Base_LoadingAnim_Dark)
@@ -61,6 +70,7 @@ class LoadingAnimDialog : DialogFragment() {
         @JvmStatic
         @Synchronized
         fun dismiss(fragmentManager: FragmentManager, animCallBack: LoadingAnimCallBack? = null) {
+            if (!mIsLoading) return
             val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: return
             val consumeTime = System.currentTimeMillis() - mShowTime
             // 判断 取消时间是否大于 显示超1S 时间
@@ -71,6 +81,7 @@ class LoadingAnimDialog : DialogFragment() {
             dialog.requireView().animateFadeOut(mAnimateDuration).withEndAction {
                 dialog.dismissAllowingStateLoss()
                 animCallBack?.onAnimEnd()
+                mIsLoading = false
             }
         }
     }

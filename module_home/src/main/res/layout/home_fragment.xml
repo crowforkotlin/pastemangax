@@ -21,12 +21,12 @@
 		android:background="@color/base_home_bar_bg">
 
 		<com.google.android.material.appbar.MaterialToolbar
+			style="@style/Widget.Material3.Toolbar"
 			android:id="@+id/home_toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:collapseIcon="@drawable/home_ic_bookmark_24dp"
-			app:menu="@menu/home_appbar_menu"
 			app:navigationIcon="@drawable/home_ic_user_24dp"
+			app:menu="@menu/home_appbar_menu"
 			app:subtitle="@string/BaseAppName_CH"
 			app:subtitleCentered="true"
 			app:title="@string/BaseAppName"

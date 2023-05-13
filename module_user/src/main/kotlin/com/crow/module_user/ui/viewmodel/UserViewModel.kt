@@ -7,23 +7,23 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.BaseUser
+import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.BaseUser
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncClear
 import com.crow.base.tools.extensions.asyncDecode
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
-import com.crow.module_user.R
 import com.crow.module_user.model.UserIntent
-import com.crow.module_user.model.resp.UserResultErrorResp
 import com.crow.module_user.model.resp.LoginResultsOkResp
 import com.crow.module_user.model.resp.RegResultsOkResp
+import com.crow.module_user.model.resp.UserResultErrorResp
 import com.crow.module_user.network.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
+import com.crow.base.R as baseR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -103,8 +103,8 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
     inline fun doLoadIcon(context: Context, needApply: Boolean = true, crossinline doOnReady: (resource: Drawable) -> Unit) {
         if (needApply) {
             Glide.with(context)
-                .load(if (mIconUrl == null) R.drawable.user_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl))
-                .placeholder(R.drawable.user_icon_app)
+                .load(if (mIconUrl == null) baseR.drawable.base_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl))
+                .placeholder(baseR.drawable.base_icon_app)
                 .apply(RequestOptions().circleCrop().override(context.resources.getDimensionPixelSize(com.crow.base.R.dimen.base_dp36)))
                 .into(object : CustomTarget<Drawable>() {
                     override fun onLoadCleared(placeholder: Drawable?) {}
@@ -113,8 +113,8 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
             return
         }
         Glide.with(context)
-            .load(if (mIconUrl == null) R.drawable.user_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl))
-            .placeholder(R.drawable.user_icon_app)
+            .load(if (mIconUrl == null) baseR.drawable.base_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl))
+            .placeholder(baseR.drawable.base_icon_app)
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { doOnReady(resource) }

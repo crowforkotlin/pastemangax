@@ -13,7 +13,7 @@ import com.crow.base.app.appContext
  * @formatter:on
  **************************/
 
-fun isLatestVersion(current: Long = getCurrentVersionCode(), latest: Long): Boolean = current < latest
+fun isLatestVersion(current: Long = getCurrentVersionCode(), latest: Long): Boolean = current >= latest
 
 fun getCurrentVersionCode(): Long {
     val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

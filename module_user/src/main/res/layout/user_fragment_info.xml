@@ -3,6 +3,7 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
+	android:background="@color/base_white"
 	android:layout_height="match_parent"
 	tools:context="com.crow.module_user.ui.fragment.UserUpdateInfoFragment">
 
@@ -18,7 +19,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:roundPercent="1"
-		tools:srcCompat="@drawable/user_icon_app" />
+		tools:srcCompat="@drawable/base_icon_app" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/user_update_info_rv"

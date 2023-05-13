@@ -1,7 +1,7 @@
 package com.crow.module_user.network
 
-import com.crow.base.current_project.BaseResultResp
-import com.crow.base.current_project.BaseStrings
+import com.crow.base.copymanga.BaseResultResp
+import com.crow.base.copymanga.BaseStrings
 import com.crow.module_user.model.resp.LoginResultsOkResp
 import com.crow.module_user.model.resp.UserUpdateInfoResp
 import kotlinx.coroutines.flow.Flow

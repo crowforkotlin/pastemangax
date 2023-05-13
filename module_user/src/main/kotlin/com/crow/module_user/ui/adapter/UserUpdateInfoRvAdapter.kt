@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.crow.base.tools.extensions.clickGap
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_user.R
 import com.crow.module_user.databinding.UserFragmentInfoRvBinding
 import com.crow.module_user.model.resp.LoginResultsOkResp
@@ -24,7 +24,7 @@ class UserUpdateInfoRvAdapter(
     override fun getItemCount(): Int = mDatas.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(UserFragmentInfoRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
-            vh.itemView.clickGap { _, _ -> itemTap(vh.absoluteAdapterPosition, mDatas[vh.absoluteAdapterPosition].second) }
+            vh.itemView.doOnClickInterval { itemTap(vh.absoluteAdapterPosition, mDatas[vh.absoluteAdapterPosition].second) }
         }
     }
 

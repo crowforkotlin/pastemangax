@@ -13,7 +13,7 @@ data class Chapter(
     val mComicPathWord: String,
 
     @Json(name = "contents")
-    val mContents: List<Content>,
+    val mContents: List<Content?>,
 
     @Json(name = "count")
     val mCount: Int,

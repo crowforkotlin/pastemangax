@@ -24,7 +24,7 @@ class UserInfoViewModel : BaseMviViewModel<UserIntent>() {
 
     val mUserUpdateInfoData = arrayListOf<Pair<Res,String>>()
 
-    private fun String.getDate() = runCatching { toInstant().toLocalDateTime(TimeZone.UTC).date.toString() }.getOrElse { appContext.getString(baseR.string.BaseUnknow) }
+    private fun String.getDate() = runCatching { toInstant().toLocalDateTime(TimeZone.UTC).date.toString() }.getOrElse { appContext.getString(baseR.string.BaseUnknowError) }
 
     fun setData(userInfo: LoginResultsOkResp) {
         mUserUpdateInfoData.add(R.drawable.user_ic_time_24dp to appContext.getString(R.string.user_datetime_created, userInfo.mDatetimeCreated.getDate()))

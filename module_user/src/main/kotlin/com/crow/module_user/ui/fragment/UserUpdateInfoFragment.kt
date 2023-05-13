@@ -2,16 +2,20 @@ package com.crow.module_user.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.processTokenError
+import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.entity.Fragments
+import com.crow.base.copymanga.processTokenError
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.*
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.getNavigationBarHeight
+import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.navigateToWithBackStack
+import com.crow.base.tools.extensions.onCollect
+import com.crow.base.tools.extensions.popSyncWithClear
+import com.crow.base.tools.extensions.showSnackBar
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
@@ -38,8 +42,6 @@ import com.crow.base.R as baseR
  **************************/
 class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
 
-    companion object { fun newInstance() = UserUpdateInfoFragment() }
-
     // 共享用户VM
     private val mUserVM by sharedViewModel<UserViewModel>()
 
@@ -53,7 +55,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
     private var mExitFragment = false
 
     private fun navigateUp() {
-        parentFragmentManager.popSyncWithClear("UserUpdateInfoFragment", "ContainerFragment")
+        parentFragmentManager.popSyncWithClear(Fragments.UserInfo.toString())
         mUserUpdateInfoVM.doClearUserUpdateInfoData()
     }
 
@@ -74,12 +76,12 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
     override fun initListener() {
 
         // 头像 点击事件
-        mBinding.userUpdateInfoIcon.clickGap { _, _ ->
-            parentFragmentManager.navigateByAddWithBackStack(baseR.id.app_main_fcv, UserIconFragment.newInstance(), "UserIconFragment") { it.withFadeAnimation() }
+        mBinding.userUpdateInfoIcon.doOnClickInterval {
+            parentFragmentManager.navigateToWithBackStack<UserIconFragment>(baseR.id.app_main_fcv, this, null, Fragments.Icon.toString(), Fragments.Icon.toString())
         }
 
         // 退出账号 点击事件
-        mBinding.userUpdateInfoExitButton.clickGap { _, _ -> doExitFragment() }
+        mBinding.userUpdateInfoExitButton.doOnClickInterval { doExitFragment() }
     }
 
     override fun initObserver() {
@@ -127,11 +129,10 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
                     .doOnResult {
                         dismissLoadingAnim {
                             if (intent.userUpdateInfoResp == null) {
-                                toast(getString(baseR.string.BaseUnknow))
+                                toast(getString(baseR.string.BaseUnknowError))
                                 return@dismissLoadingAnim
                             }
 
-                            "SetData".logMsg()
                             // 设置 InfoVM的数据
                             mUserUpdateInfoVM.setData(intent.userUpdateInfoResp.mInfo)
 
@@ -165,12 +166,6 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
 
             // 返回上一个界面
             navigateUp()
-
-            // 为true则 深链跳转至登录界面
-            if (isNeedNavigateLogin) {
-                parentFragmentManager.remove(this@UserUpdateInfoFragment)
-                parentFragmentManager.navigateByAddWithBackStack(baseR.id.app_main_fcv, UserLoginFragment.newInstance(), "UserLoginFragment")
-            }
         }
     }
 }

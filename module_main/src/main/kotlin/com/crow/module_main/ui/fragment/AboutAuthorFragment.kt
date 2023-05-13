@@ -12,8 +12,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.crow.base.current_project.getSpannableString
-import com.crow.base.tools.extensions.*
+import com.crow.base.copymanga.entity.Fragments
+import com.crow.base.copymanga.getSpannableString
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.getCurrentVersionName
+import com.crow.base.tools.extensions.getNavigationBarHeight
+import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
@@ -34,11 +39,10 @@ import com.crow.base.R as baseR
  **************************/
 class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
 
+    // ContainerVM
     private val mContainerVm by viewModel<ContainerViewModel>()
 
-    companion object { fun newInstance(): AboutAuthorFragment = AboutAuthorFragment() }
-
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear("AboutAuthorFragment", "ContainerFragment")
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.About.toString())
 
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentAboutBinding.inflate(inflater)
 
@@ -52,7 +56,7 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())
 
         Glide.with(mContext)
-            .load(R.drawable.main_icon_crow)
+            .load(baseR.drawable.base_icon_crow)
             .apply(RequestOptions().circleCrop().override(mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp36)))
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}
@@ -65,6 +69,8 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
         builder.appendLine(mContext.getString(R.string.main_about_crow).getSpannableString(purple, 5))
         builder.appendLine()
         builder.appendLine(mContext.getString(R.string.main_about_crow_email).getSpannableString(purple, 5))
+        builder.appendLine()
+        builder.appendLine(mContext.getString(R.string.main_about_crow_help))
         mBinding.mainAboutContent.text = builder
         mBinding.mainAboutAppVersion.text = getString(R.string.main_about_app_version, getCurrentVersionName().split("_")[0])
     }
@@ -90,8 +96,8 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
     }
 
     override fun initListener() {
-        mBinding.mainAboutBack.clickGap { _, _ -> navigateUp() }
-        mBinding.userAboutAddQqGroup.clickGap { _, _ ->
+        mBinding.mainAboutBack.doOnClickInterval { navigateUp() }
+        mBinding.userAboutAddQqGroup.doOnClickInterval {
             mContainerVm.input(ContainerIntent.GetQQGroup())
         }
     }

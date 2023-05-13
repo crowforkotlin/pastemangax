@@ -1,11 +1,17 @@
 package com.crow.base.tools.extensions
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import com.crow.base.BuildConfig
 import com.crow.base.ui.viewmodel.ViewStateException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.channels.*
+import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.channels.onClosed
+import kotlinx.coroutines.channels.onFailure
+import kotlinx.coroutines.channels.onSuccess
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,7 +35,7 @@ internal fun <R> ProducerScope<R>.callEnqueueFlow(call: Call<R>) {
         }
 
         override fun onFailure(call: Call<R>, t: Throwable) {
-            t.stackTraceToString().logError()
+            if (BuildConfig.DEBUG) t.stackTraceToString().logError()
             if (t is UnknownHostException) { close(ViewStateException("解析地址错误！请检查您的网络！", t)) }
             close(t)
         }
@@ -46,7 +52,6 @@ internal fun <R> ProducerScope<R>.callFlow(call: Call<R>) {
 }
 
 internal fun <R> ProducerScope<R>.processing(response: Response<R>) {
-
     //HttpCode 为 200
     if (response.isSuccessful) {
         val body = response.body()
@@ -81,6 +86,10 @@ fun interface IBaseFlowCollectLifecycle<T> {
 }
 fun<T> Flow<T>.onCollect(fragment: Fragment, lifecycleState: Lifecycle.State = Lifecycle.State.STARTED, iBaseFlowCollectLifecycle: IBaseFlowCollectLifecycle<T>) {
     fragment.repeatOnLifecycle(lifecycleState) { collect { iBaseFlowCollectLifecycle.onCollect(it) } }
+}
+
+fun<T> Flow<T>.onCollect(activity: AppCompatActivity, lifecycleState: Lifecycle.State = Lifecycle.State.STARTED, iBaseFlowCollectLifecycle: IBaseFlowCollectLifecycle<T>) {
+    activity.repeatOnLifecycle(lifecycleState) { collect { iBaseFlowCollectLifecycle.onCollect(it) } }
 }
 
 

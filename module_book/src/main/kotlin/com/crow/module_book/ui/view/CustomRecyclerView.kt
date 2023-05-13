@@ -10,7 +10,6 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.crow.base.tools.extensions.logMsg
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -46,28 +45,16 @@ class CustomRecyclerView : RecyclerView {
 
     private val mGestureListener = object : GestureDetector.SimpleOnGestureListener() {
         override fun onDoubleTap(e: MotionEvent): Boolean {
-            "onDobuleTab".logMsg(tag = TAG)
             scaleAnimation(1f, 2f).start()
             requestLayout()
             return true
         }
 
-        override fun onDown(e: MotionEvent): Boolean {
-            "onDown".logMsg(tag = TAG)
-            return true
-        }
-
-        override fun onShowPress(e: MotionEvent) {
-            "onShowPress".logMsg(tag = TAG)
-        }
-
-        override fun onSingleTapUp(e: MotionEvent): Boolean {
-            "onSingleTapUp".logMsg(tag = TAG)
-            return true
-        }
+        override fun onDown(e: MotionEvent): Boolean { return true }
+        override fun onShowPress(e: MotionEvent) {}
+        override fun onSingleTapUp(e: MotionEvent): Boolean { return true }
 
         override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-            "onScroll".logMsg(tag = TAG)
             // 单指滑动时，更新RecyclerView的位置
             if (e2.pointerCount == 1) {
                 val dx = (-distanceX).toInt()
@@ -97,14 +84,9 @@ class CustomRecyclerView : RecyclerView {
             return true
         }
 
-        override fun onLongPress(e: MotionEvent) {
-            "onLongPress".logMsg(tag = TAG)
-        }
+        override fun onLongPress(e: MotionEvent) {}
 
-        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-            "onFling".logMsg(tag = TAG)
-            return true
-        }
+        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean { return true }
 
         // 缩放动画
         fun scaleAnimation(start: Float, end: Float): AnimatorSet {

@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST", "FunctionName", "NonAsciiCharacters", "CAST_NEVER_SUCCEEDS")
+@file:Suppress("UNCHECKED_CAST", "FunctionName", "NonAsciiCharacters")
 
 package com.crow.module_home.ui.adapter
 
@@ -14,26 +14,27 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.appContext
-import com.crow.base.current_project.BaseStrings
-import com.crow.base.current_project.entity.BookTapEntity
-import com.crow.base.current_project.entity.BookType
-import com.crow.base.current_project.entity.BookType.Comic
-import com.crow.base.tools.coroutine.FlowBus
+import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.clickGap
-import com.crow.base.tools.extensions.logMsg
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_home.R
-import com.crow.module_home.databinding.*
-import com.crow.module_home.model.resp.homepage.*
+import com.crow.module_home.databinding.HomeFragmentBannerRvBinding
+import com.crow.module_home.databinding.HomeFragmentComicRvBinding
+import com.crow.module_home.databinding.HomeFragmentComicRvHeaderBinding
+import com.crow.module_home.databinding.HomeFragmentComicRvRecRefreshBinding
+import com.crow.module_home.model.resp.homepage.Banner
+import com.crow.module_home.model.resp.homepage.FinishComic
+import com.crow.module_home.model.resp.homepage.HotComic
+import com.crow.module_home.model.resp.homepage.NewComic
+import com.crow.module_home.model.resp.homepage.RankComics
+import com.crow.module_home.model.resp.homepage.Topices
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.google.android.material.button.MaterialButton
-import com.tencent.bugly.proguard.t
 import com.to.aboomy.pager2banner.IndicatorView
 import com.to.aboomy.pager2banner.ScaleInTransformer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.internal.notify
 import com.crow.base.R as baseR
 
 /*************************
@@ -48,8 +49,13 @@ import com.crow.base.R as baseR
 class HomeComicParentRvAdapter(
     private var mData: MutableList<Any?>? = null,
     private val viewLifecycleOwner: LifecycleOwner,
-    private val doOnRecRefresh: (MaterialButton) -> Unit
+    private val doOnRecRefresh: (MaterialButton) -> Unit,
+    val doOnTap: (String) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    
+    enum class Type {
+        REC,HOT,NEW,FINISH,RANK,TOPIC
+    }
 
     inner class ComicHeaderViewHolder(val rvBinding: HomeFragmentComicRvHeaderBinding) : RecyclerView.ViewHolder(rvBinding.root) { var mPathWord: String = "" }
 
@@ -60,7 +66,6 @@ class HomeComicParentRvAdapter(
     inner class ComicRecRefreshViewHolder(val rvBinding: HomeFragmentComicRvRecRefreshBinding) : RecyclerView.ViewHolder(rvBinding.root)
 
     private var mHomeRecComicRvAdapter: HomeComicChildRvAdapter<RecComicsResult>? = null
-    private var mIsRefresh = false
     private var mRvDelayMs: Long = 50L
 
     override fun getItemCount(): Int = mData?.size ?: 0
@@ -73,18 +78,18 @@ class HomeComicParentRvAdapter(
         return when (viewType) {
             0 -> 创建轮播图持有者(parent)
             1 -> 创建漫画头部持有者(parent, R.drawable.home_ic_recommed_24dp, R.string.home_recommend_comic)
-            2 -> 创建漫画内容持有者<RecComicsResult>(parent, BookType.Rec, viewType)
-            3 -> 创建推荐换一批按钮(parent).also { it.rvBinding.homeComicRvRecRefresh.clickGap { _, _ -> doOnRecRefresh(it.rvBinding.homeComicRvRecRefresh) } }
+            2 -> 创建漫画内容持有者<RecComicsResult>(parent, Type.REC, viewType)
+            3 -> 创建推荐换一批按钮(parent).also { it.rvBinding.homeComicRvRecRefresh.doOnClickInterval { _ -> doOnRecRefresh(it.rvBinding.homeComicRvRecRefresh) } }
             4 -> 创建漫画头部持有者(parent, R.drawable.home_ic_hot_24dp, R.string.home_hot_comic)
-            5 -> 创建漫画内容持有者<HotComic>(parent, BookType.Hot, viewType)
+            5 -> 创建漫画内容持有者<HotComic>(parent, Type.HOT, viewType)
             6 -> 创建漫画头部持有者(parent, R.drawable.home_ic_new_24dp, R.string.home_new_comic)
-            7 -> 创建漫画内容持有者<NewComic>(parent, BookType.New, viewType)
+            7 -> 创建漫画内容持有者<NewComic>(parent, Type.NEW, viewType)
             8 -> 创建漫画头部持有者(parent, R.drawable.home_ic_finish_24dp, R.string.home_commit_finish)
-            9 -> 创建漫画内容持有者<FinishComic>(parent, BookType.Finish, viewType)
+            9 -> 创建漫画内容持有者<FinishComic>(parent, Type.FINISH, viewType)
             10 -> 创建漫画头部持有者(parent, R.drawable.home_ic_rank_24dp, R.string.home_rank_comic)
-            11 -> 创建漫画内容持有者<RankComics>(parent, BookType.Rank, viewType)
+            11 -> 创建漫画内容持有者<RankComics>(parent, Type.RANK, viewType)
             12 -> 创建漫画头部持有者(parent, R.drawable.home_ic_topic_24dp, R.string.home_topic_comic)
-            else -> 创建漫画内容持有者<Topices>(parent, BookType.Topic, viewType).also { it.rvBinding.homeComicRv.layoutManager = GridLayoutManager(parent.context, 2) }
+            else -> 创建漫画内容持有者<Topices>(parent, Type.TOPIC, viewType).also { it.rvBinding.homeComicRv.layoutManager = GridLayoutManager(parent.context, 2) }
         }
     }
 
@@ -110,35 +115,34 @@ class HomeComicParentRvAdapter(
         return vh
     }
 
-    private fun<T> 创建漫画内容持有者(parent: ViewGroup, bookType: BookType, viewType: Int): ComicBodyViewHolder {
+    private fun<T> 创建漫画内容持有者(parent: ViewGroup, type: Type, viewType: Int): ComicBodyViewHolder {
         val vh = ComicBodyViewHolder(HomeFragmentComicRvBinding.inflate(from(parent.context), parent, false))
-        vh.doComicNotify<T>(bookType, viewType)
+        vh.doComicNotify<T>(type, viewType)
         return vh
     }
 
     private fun 创建推荐换一批按钮(parent: ViewGroup) : ComicRecRefreshViewHolder {
         return ComicRecRefreshViewHolder(HomeFragmentComicRvRecRefreshBinding.inflate(from(parent.context), parent, false)).also { vh ->
-            vh.rvBinding.root.animateFadeIn()
+            vh.rvBinding.root.animateFadeIn(BASE_ANIM_100L)
         }
     }
 
-    private fun<T> HomeComicParentRvAdapter.ComicBodyViewHolder.doComicNotify(bookType: BookType, pos: Int, delay: Long = mRvDelayMs) {
-        val adapter = HomeComicChildRvAdapter<T>(viewLifecycleOwner = viewLifecycleOwner, mBookType = bookType)
-        if (bookType == BookType.Rec) mHomeRecComicRvAdapter = adapter as HomeComicChildRvAdapter<RecComicsResult>
+    private fun<T> HomeComicParentRvAdapter.ComicBodyViewHolder.doComicNotify(type: Type, pos: Int, delay: Long = mRvDelayMs) {
+        val adapter = HomeComicChildRvAdapter<T>(mType = type) { doOnTap(it) }
+        if (type == Type.REC) mHomeRecComicRvAdapter = adapter as HomeComicChildRvAdapter<RecComicsResult>
         viewLifecycleOwner.lifecycleScope.launch {
             rvBinding.homeComicRv.adapter = adapter
             adapter.doNotify((mData!![pos] as MutableList<T>), delay)
-            rvBinding.root.animateFadeIn()
+            rvBinding.root.animateFadeIn(BASE_ANIM_100L)
         }
     }
 
-    private fun HomeComicParentRvAdapter.BannerViewHolder.doBannerNotify(pos: Int, delay: Long = mRvDelayMs) {
-        rvBinding.homeBannerRv.isAutoPlay = false
-        val adapter = HomeBannerRvAdapter { _, pathword -> FlowBus.with<BookTapEntity>(BaseStrings.Key.OPEN_BOOK_INFO).post(viewLifecycleOwner, BookTapEntity(Comic, pathword)) }
+    private fun HomeComicParentRvAdapter.BannerViewHolder.doBannerNotify(pos: Int) {
+        val adapter = HomeBannerRvAdapter { pathword -> doOnTap(pathword) }
         viewLifecycleOwner.lifecycleScope.launch {
             rvBinding.homeBannerRv.adapter = adapter
-            adapter.doBannerNotify((mData!![pos] as MutableList<Banner>), 0L)
-            rvBinding.root.animateFadeIn()
+            adapter.doBannerNotify((mData!![pos] as MutableList<Banner>), mRvDelayMs)
+            rvBinding.root.animateFadeIn(BASE_ANIM_100L)
         }
     }
 
@@ -153,8 +157,7 @@ class HomeComicParentRvAdapter(
         notifyItemRangeRemoved(0, count)
     }
 
-    suspend fun doNotify(newDataResult: MutableList<Any?>, isRefresh: Boolean = false, delayMs: Long = 100L, rvDelayMs: Long = 50L) {
-        this.mIsRefresh = isRefresh
+    suspend fun doNotify(newDataResult: MutableList<Any?>, delayMs: Long = 100L, rvDelayMs: Long = mRvDelayMs) {
         this.mRvDelayMs = rvDelayMs
         val isCountSame = itemCount == newDataResult.size
         if (isCountSame) mData = newDataResult
@@ -172,8 +175,7 @@ class HomeComicParentRvAdapter(
         }
     }
 
-    suspend fun doRecNotify(datas: MutableList<RecComicsResult>, notifyMs: Long = 25L) {
-        "notify $mHomeRecComicRvAdapter".logMsg()
+    suspend fun doRecNotify(datas: MutableList<RecComicsResult>, notifyMs: Long = 20L) {
         mHomeRecComicRvAdapter?.doNotify(datas, notifyMs)
     }
 

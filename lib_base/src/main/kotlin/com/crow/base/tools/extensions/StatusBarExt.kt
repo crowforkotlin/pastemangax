@@ -79,8 +79,6 @@ fun Window.hideBars(@InsetsType type: Int) {
     }
 }
 
-
-
 /**
 * 全屏沉浸式效果，仅提供主要的参数，主要沉浸效果实现还需自己
 * 手动给View设置Padding或者Margin，
@@ -102,4 +100,8 @@ fun Window.immersionSystemBar(iBaseImmersionBarAPI: IBaseImmersionBarAPI) {
             windowInsets.consumeSystemWindowInsets().consumeStableInsets()
         }
     }
+}
+
+fun View.immersionPadding(hideStatusBar: Boolean = true, hideNaviateBar: Boolean = true) {
+    setPadding(0, if (hideStatusBar) context.getStatusBarHeight() else 0, 0, if(hideNaviateBar) context.getNavigationBarHeight() else 0)
 }

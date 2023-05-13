@@ -1,7 +1,7 @@
 package com.crow.module_user.network
 
 import android.util.Base64
-import com.crow.base.current_project.BaseResultResp
+import com.crow.base.copymanga.BaseResultResp
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncEncode
 import com.crow.base.tools.extensions.toJson
@@ -36,4 +36,11 @@ class UserRepository(val service: UserService) {
     fun reg(username: String, password: String): Flow<BaseResultResp<Any>> {
         return service.reg(username, password)
     }
+}
+
+fun main() {
+    val content = "api.copymanga.tv"
+    val encodeContent = java.util.Base64.getEncoder().encode(content.toByteArray()).decodeToString()
+    println(encodeContent)
+    println(java.util.Base64.getDecoder().decode("YXBpLmNvcHltYW5nYS50dg==").decodeToString())
 }
