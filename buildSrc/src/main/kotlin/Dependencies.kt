@@ -262,4 +262,26 @@ object Dependencies {
     * How To use In Android ? [https://github.com/Kotlin/dokka/blob/master/examples/gradle/dokka-versioning-multimodule-example/build.gradle.kts]
     * */
     const val jetbrains_dokka = "org.jetbrains.dokka:android-documentation-plugin:1.8.10"
+
+    const val media3_exoplayer = "androidx.media3:media3-exoplayer:${Versions.media3_version}"
+    const val media3_exoplayer_dash = "androidx.media3:media3-exoplayer-dash:${Versions.media3_version}"
+    const val media3_exoplayer_hls = "androidx.media3:media3-exoplayer-hls:${Versions.media3_version}"
+    const val media3_exoplayer_rtsp = "androidx.media3:media3-exoplayer-rtsp:${Versions.media3_version}"
+    const val media3_exoplayer_ima = "androidx.media3:media3-exoplayer-ima:${Versions.media3_version}"
+    const val media3_datasource_cronet = "androidx.media3:media3-datasource-cronet:${Versions.media3_version}"
+    const val media3_datasource_okhttp = "androidx.media3:media3-datasource-okhttp:${Versions.media3_version}"
+    const val media3_datasource_rtmp = "androidx.media3:media3-datasource-rtmp:${Versions.media3_version}"
+    const val media3_ui = "androidx.media3:media3-ui:${Versions.media3_version}"
+    const val media3_ui_leanback = "androidx.media3:media3-ui-leanback:${Versions.media3_version}"
+    const val media3_session = "androidx.media3:media3-session:${Versions.media3_version}"
+    const val media3_extractor = "androidx.media3:media3-extractor:${Versions.media3_version}"
+    const val media3_cast = "androidx.media3:media3-cast:${Versions.media3_version}"
+    const val media3_exoplayer_workmanager = "androidx.media3:media3-exoplayer-workmanager:${Versions.media3_version}"
+    const val media3_transformer = "androidx.media3:media3-transformer:${Versions.media3_version}"
+    const val media3_test_utils = "androidx.media3:media3-test-utils:${Versions.media3_version}"
+    const val media3_test_utils_robolectric = "androidx.media3:media3-test-utils-robolectric:${Versions.media3_version}"
+    const val media3_database = "androidx.media3:media3-database:${Versions.media3_version}"
+    const val media3_decoder = "androidx.media3:media3-decoder:${Versions.media3_version}"
+    const val media3_datasource = "androidx.media3:media3-datasource:${Versions.media3_version}"
+    const val media3_common = "androidx.media3:media3-common:${Versions.media3_version}"
 }

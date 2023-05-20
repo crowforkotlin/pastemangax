@@ -10,6 +10,7 @@ import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.crow.base.tools.extensions.logMsg
 import com.crow.module_book.R
 import kotlin.math.max
 import kotlin.math.min
@@ -35,7 +36,7 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     private var mMainPointerId = INVALID_POINTER_ID
 
     // 缩放因子
-    var scaleFactor = 0f
+    var mScaleFactor = 0f
 
     // 上次触摸点坐标
     private var mLastDownX = 0f
@@ -50,9 +51,9 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     private var centerY = 0f
 
     // 缩放因子
-    var initScaleFactor = 1.0f
-    var midScaleFactor = initScaleFactor * 2
-    var maxScaleFactor = initScaleFactor * 4
+    var minScaleFactor = 1.0f
+    var midScaleFactor = minScaleFactor * 2
+    var maxScaleFactor = minScaleFactor * 4
 
     // 双击自动缩放
     private var isAutoScale = false
@@ -86,11 +87,11 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         private val x = 0f
         private val y = 0f
         override fun run() {
-            if (mGrad > 1.0f && scaleFactor < mTargetScale || mGrad < 1.0f && scaleFactor > mTargetScale) {
-                scaleFactor *= mGrad
+            if (mGrad > 1.0f && mScaleFactor < mTargetScale || mGrad < 1.0f && mScaleFactor > mTargetScale) {
+                mScaleFactor *= mGrad
                 postDelayed(this, autoTime.toLong())
             } else {
-                scaleFactor = mTargetScale
+                mScaleFactor = mTargetScale
             }
             /** 检查边界  */
             checkBorder()
@@ -105,16 +106,16 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     ) : LinearLayoutManager(context, orientation, reverseLayout) {
         override fun scrollVerticallyBy(dy: Int, recycler: Recycler, state: State): Int {
             /** 控制缩放后上下滑动的速度  */
-            val result = super.scrollVerticallyBy((dy / scaleFactor + 0.5).toInt(), recycler, state)
-            return if (result == (dy / scaleFactor + 0.5).toInt()) {
+            val result = super.scrollVerticallyBy((dy / mScaleFactor + 0.5).toInt(), recycler, state)
+            return if (result == (dy / mScaleFactor + 0.5).toInt()) {
                 dy
             } else result
         }
     }
 
     init {
-        layoutManager = SupportLinearLayoutManager(context, VERTICAL, false)
         mContext = context
+        layoutManager = SupportLinearLayoutManager(context, VERTICAL, false)
         obtainStyledAttributes(attrs)
         initView()
         initDetector()
@@ -122,24 +123,21 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
     /** 从XML文件获取属性  */
     private fun obtainStyledAttributes(attrs: AttributeSet?) {
-        val ta = mContext.obtainStyledAttributes(attrs, R.styleable.GalleryView)
-        for (i in 0 until ta.indexCount) {
-            val attr = ta.getIndex(i)
-            if (attr == R.styleable.GalleryView_minScaleFactor) {
-                initScaleFactor = ta.getFloat(attr, 1.0f)
-            } else if (attr == R.styleable.GalleryView_maxScaleFactor) {
-                maxScaleFactor = ta.getFloat(attr, initScaleFactor * 4)
-            } else if (attr == R.styleable.GalleryView_autoScaleTime) {
-                autoTime = ta.getInt(attr, 5)
-            }
-        }
-        ta.recycle()
+        val attr = mContext.obtainStyledAttributes(attrs, R.styleable.GalleryView)
+        minScaleFactor = attr.getDimension(R.styleable.GalleryView_minScaleFactor, 1.0f)
+        maxScaleFactor = attr.getFloat(R.styleable.GalleryView_maxScaleFactor, minScaleFactor * 4)
+        autoTime = attr.getInt(R.styleable.GalleryView_autoScaleTime, 5)
+        attr.recycle()
     }
 
     /** 初始化View  */
     private fun initView() {
-        midScaleFactor = (initScaleFactor + maxScaleFactor) / 2
-        scaleFactor = initScaleFactor
+
+        // 中比例缩放银子
+        midScaleFactor = (minScaleFactor + maxScaleFactor) / 2
+
+        mScaleFactor = minScaleFactor
+
         isAutoScale = false
     }
 
@@ -147,17 +145,19 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     private fun initDetector() {
         mScaleGestureDetector = ScaleGestureDetector(mContext, object : SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
-                /** 获取缩放中心  */
+                // 获取缩放中心
                 centerX = detector.focusX
                 centerY = detector.focusY
-                /** 缩放  */
-                scaleFactor *= detector.scaleFactor
-                scaleFactor = max(initScaleFactor, min(scaleFactor, maxScaleFactor))
+
+                // 缩放
+                mScaleFactor *= detector.scaleFactor
+                mScaleFactor = max(minScaleFactor, min(mScaleFactor, maxScaleFactor))
+
                 /** 缩放导致偏移  */
-//                mDeltaX += centerX * (mScaleFactor - lastScaleFactor);
-//                mDeltaY += centerY * (mScaleFactor - lastScaleFactor);
+                //mDeltaX += centerX * (mScaleFactor - lastScaleFactor);
+               // mDeltaY += centerY * (mScaleFactor - lastScaleFactor);
 //                checkBorder();//检查边界
-                this@GalleryView.invalidate()
+                invalidate()
                 if (onGestureListener != null) {
                     onGestureListener!!.onScale(detector)
                 }
@@ -177,19 +177,19 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
 //                centerY = e.getY();
                 centerX = 0f
                 centerY = 0f
-                if (scaleFactor < midScaleFactor) {
+                if (mScaleFactor < midScaleFactor) {
                     postDelayed(
                         AutoScaleRunnable(midScaleFactor, centerX, centerY, autoBigger),
                         autoTime.toLong()
                     )
-                } else if (scaleFactor < maxScaleFactor) {
+                } else if (mScaleFactor < maxScaleFactor) {
                     postDelayed(
                         AutoScaleRunnable(maxScaleFactor, centerX, centerY, autoBigger),
                         autoTime.toLong()
                     )
                 } else {
                     postDelayed(
-                        AutoScaleRunnable(initScaleFactor, centerX, centerY, autoSmall),
+                        AutoScaleRunnable(minScaleFactor, centerX, centerY, autoSmall),
                         autoTime.toLong()
                     )
                 }
@@ -203,27 +203,30 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
     override fun dispatchDraw(canvas: Canvas) {
         canvas.save()
-        if (scaleFactor == 1.0f) {
+        if (mScaleFactor == 1.0f) {
             mDeltaX = 0.0f
             mDeltaY = 0.0f
         }
-        // "scaleFactor : $scaleFactor \t mDeltaX : $mDeltaX \t mDeltaY : $mDeltaY".logMsg(tag = "CustomRv")
+        "scaleFactor : $mScaleFactor \t mDeltaX : $mDeltaX \t mDeltaY : $mDeltaY".logMsg(tag = "CustomRv")
         canvas.translate(mDeltaX, mDeltaY)
-        //        canvas.scale(mScaleFactor, mScaleFactor, centerX, centerY);
-        canvas.scale(scaleFactor, scaleFactor)
+        canvas.scale(mScaleFactor, mScaleFactor, centerX, centerY);
+        // canvas.scale(scaleFactor, scaleFactor)
         super.dispatchDraw(canvas)
         canvas.restore()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         super.onTouchEvent(event)
+
         /** 单击、双击事件的处理  */
         if (mGestureDetector!!.onTouchEvent(event)) {
             mMainPointerId = event.getPointerId(0) //防止发生手势事件后,mActivePointerId=-1的情况
             return true
         }
+
         /** 缩放事件的处理  */
         mScaleGestureDetector!!.onTouchEvent(event)
+
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 mLastDownX = event.x
@@ -259,6 +262,7 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
                 }
             }
         }
+
         return true
     }
 
@@ -268,12 +272,12 @@ class GalleryView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         if (mDeltaX > 0.0f) mDeltaX = 0.0f
 
         // 右边界
-        if (-mDeltaX > width * (scaleFactor - 1.0f)) mDeltaX = -width * (scaleFactor - 1.0f)
+        if (-mDeltaX > width * (mScaleFactor - 1.0f)) mDeltaX = -width * (mScaleFactor - 1.0f)
 
         // 上边界
         if (mDeltaY > 0.0f) mDeltaY = 0.0f
 
         // 下边界
-        if (-mDeltaY > height * (scaleFactor - 1.0f)) mDeltaY = -height * (scaleFactor - 1.0f)
+        if (-mDeltaY > height * (mScaleFactor - 1.0f)) mDeltaY = -height * (mScaleFactor - 1.0f)
     }
 }

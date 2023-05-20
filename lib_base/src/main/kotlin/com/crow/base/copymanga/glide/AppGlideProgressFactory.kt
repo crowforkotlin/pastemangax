@@ -22,7 +22,6 @@ class AppGlideProgressFactory private constructor (private val mUrl: String) {
             return mProgressManagerMap[url]
         }
 
-
         // 创建实例
         fun createGlideProgressListener(url: String, appOnGlideProgressListener: AppOnGlideProgressListener): AppGlideProgressFactory {
 

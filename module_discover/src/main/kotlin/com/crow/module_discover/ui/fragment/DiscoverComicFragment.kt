@@ -15,12 +15,12 @@ import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
-import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.ui.fragment.BaseMviFragment
-import com.crow.base.ui.viewmodel.ViewState
+import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
@@ -61,7 +61,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         // Rv滑动监听
         mBinding.discoverComicRv.setOnScrollChangeListener { _, _, _, _, _ ->
             val layoutManager = mBinding.discoverComicRv.layoutManager
-            if(layoutManager is LinearLayoutManager) mBinding.discoverComicAppbar.discoverAppbarTextPos.text = (layoutManager.findLastVisibleItemPosition()+1).toString()
+            if(layoutManager is LinearLayoutManager) mBinding.discoverComicAppbar.discoverAppbarTextPos.text = (layoutManager.findLastVisibleItemPosition().plus(1)).toString()
         }
     }
 
@@ -76,7 +76,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
     override fun initView(bundle: Bundle?) {
 
-        mBinding.discoverComicAppbar.root.setPadding(0, mContext.getStatusBarHeight(), 0,0)
+        mBinding.discoverComicAppbar.root.immersionPadding(hideNaviateBar = false)
 
         // 初始化 发现页 漫画适配器
         mDiscoverComicAdapter = DiscoverComicAdapter { navigateBookComicInfo(it.mPathWord) }
@@ -107,12 +107,12 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         mDiscoverVM.onOutput { intent ->
             when(intent) {
                 is DiscoverIntent.GetComicHome -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnSuccess { if (mBinding.discoverComicRefresh.isRefreshing) mBinding.discoverComicRefresh.finishRefresh() }
                         .doOnError { code, msg ->
 
                             // 解析地址失败 且 选中的时当前页面的状态才提示
-                            if (code == ViewState.Error.UNKNOW_HOST && mDiscoverVM.mCurrentItem == 1) mBinding.root.showSnackBar(msg ?: getString(com.crow.base.R.string.BaseLoadingError))
+                            if (code == BaseViewState.Error.UNKNOW_HOST && mDiscoverVM.mCurrentItem == 1) mBinding.root.showSnackBar(msg ?: getString(com.crow.base.R.string.BaseLoadingError))
 
                             if (mDiscoverComicAdapter.itemCount == 0) {
                                 if (mDiscoverVM.mCurrentItem == 1) {

@@ -4,12 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.crow.base.R
 import com.crow.base.app.appContext
-import com.crow.base.ui.viewmodel.ViewState
-import com.crow.base.ui.viewmodel.ViewState.*
+import com.crow.base.ui.viewmodel.BaseViewState
+import com.crow.base.ui.viewmodel.BaseViewState.Error
+import com.crow.base.ui.viewmodel.BaseViewState.Loading
+import com.crow.base.ui.viewmodel.BaseViewState.Result
+import com.crow.base.ui.viewmodel.BaseViewState.Success
 import com.crow.base.ui.viewmodel.ViewStateException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.CoroutineContext
@@ -46,12 +54,13 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
     fun <T> flowResult(intent: I, flow: Flow<T>, context: CoroutineContext = Dispatchers.Main, result: BaseMviFlowResult<I, T>) {
         viewModelScope.launch(context) {
             flow
-                .onStart { _sharedFlow.emit(intent.also { it.mViewState = Loading }) }
-                .onCompletion { _sharedFlow.emit(intent.also { it.mViewState = Success }) }
-                .catch { catch -> _sharedFlow.emit(intent.also { it.mViewState = Error(if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, msg = catch.message ?: appContext.getString(R.string.BaseUnknowError)) }) }
-                .collect { _sharedFlow.emit(result.onResult(it).also { event -> event.mViewState = Result }) }
+                .onStart { _sharedFlow.emit(intent.also { it.mBaseViewState = Loading }) }
+                .onCompletion { _sharedFlow.emit(intent.also { it.mBaseViewState = Success }) }
+                .catch { catch -> _sharedFlow.emit(intent.also { it.mBaseViewState = Error(if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, msg = catch.message ?: appContext.getString(R.string.BaseUnknowError)) }) }
+                .collect { _sharedFlow.emit(result.onResult(it).also { event -> event.mBaseViewState = Result }) }
         }
     }
+
 
     // 将 Flow<T> 转换成适合于 MVI 架构的结果，并根据 意图判断是否需要通过 _sharedFlow.emit() 发送结果到 UI 否则 直接获取结果。
     suspend fun <T> flowResult(flow: Flow<T>, intent: I? = null, context: CoroutineContext = Dispatchers.Main, result: BaseMviFlowResult<I, T>) = suspendCancellableCoroutine { continuation ->
@@ -65,15 +74,15 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
                     }
                 }
                 .collect {
-                    if (intent != null) _sharedFlow.emit(result.onResult(it).also { event -> event.mViewState = Result })
+                    if (intent != null) _sharedFlow.emit(result.onResult(it).also { event -> event.mBaseViewState = Result })
                     if (!continuation.isCompleted) continuation.resume(it)
                 }
         }
     }
 
-    private suspend inline fun<T> T.trySendIntent(intent: I?, state: ViewState, endLogic: () -> Unit = {}): I? {
+    private suspend inline fun<T> T.trySendIntent(intent: I?, state: BaseViewState, endLogic: () -> Unit = {}): I? {
         if (intent != null) {
-            intent.mViewState = state
+            intent.mBaseViewState = state
             _sharedFlow.emit(intent)
         }
         endLogic()
@@ -81,6 +90,6 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
     }
 
     inline fun toEmitValue(context: CoroutineContext = Dispatchers.Main, crossinline result: suspend () -> I) {
-        viewModelScope.launch(context) { _sharedFlow.emit(result().also { it.mViewState = ViewState.Result }) }
+        viewModelScope.launch(context) { _sharedFlow.emit(result().also { it.mBaseViewState = BaseViewState.Result }) }
     }
 }

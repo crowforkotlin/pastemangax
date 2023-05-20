@@ -7,7 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.crow.base.tools.extensions.logError
 import com.crow.base.tools.extensions.setState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 /*************************
@@ -20,23 +24,23 @@ import kotlinx.coroutines.launch
  **************************/
 open class BaseViewModel : ViewModel(), IBaseViewModel {
 
-    private var _viewState = MutableLiveData<ViewState>()
-    val viewState: LiveData<ViewState> get() = _viewState
+    private var _Base_viewState = MutableLiveData<BaseViewState>()
+    val baseViewState: LiveData<BaseViewState> get() = _Base_viewState
 
     /* 带有失败结果的流启动方式 */
     fun <T> flowLaunch(flow: Flow<T>, successEvent: IBaseVMEvent.OnSuccess<T>, failureEvent: IBaseVMEvent.OnFailure<Throwable>) = viewModelScope.launch {
         try {
             flow
-                .onStart { _viewState.setState(ViewState.Loading) }
-                .onCompletion { cause -> if (cause == null) _viewState.setState(ViewState.Success) }
+                .onStart { _Base_viewState.setState(BaseViewState.Loading) }
+                .onCompletion { cause -> if (cause == null) _Base_viewState.setState(BaseViewState.Success) }
                 .catch {
-                    _viewState.setState(ViewState.Error(msg = it.localizedMessage))
+                    _Base_viewState.setState(BaseViewState.Error(msg = it.localizedMessage))
                     failureEvent.onFailure(it)
                 }
                 .flowOn(Dispatchers.IO)
                 .collect { successEvent.onSuccess(it) }
         } catch (e: Exception) {
-            _viewState.setState(ViewState.Error(msg = e.localizedMessage))
+            _Base_viewState.setState(BaseViewState.Error(msg = e.localizedMessage))
             failureEvent.onFailure(e)
             "[flowLaunch] : $e".logError()
         }
@@ -46,13 +50,13 @@ open class BaseViewModel : ViewModel(), IBaseViewModel {
     fun <T> flowLaunch(flow: Flow<T>, successEvent: IBaseVMEvent.OnSuccess<T>) = viewModelScope.launch {
         try {
             flow
-                .onStart { _viewState.setState(ViewState.Loading) }
-                .onCompletion { cause -> if (cause == null) _viewState.setState(ViewState.Success) }
-                .catch { _viewState.setState(ViewState.Error(msg = it.localizedMessage)) }
+                .onStart { _Base_viewState.setState(BaseViewState.Loading) }
+                .onCompletion { cause -> if (cause == null) _Base_viewState.setState(BaseViewState.Success) }
+                .catch { _Base_viewState.setState(BaseViewState.Error(msg = it.localizedMessage)) }
                 .flowOn(Dispatchers.IO)
                 .collect { successEvent.onSuccess(it) }
         } catch (e: Exception) {
-            _viewState.setState(ViewState.Error(msg = e.localizedMessage))
+            _Base_viewState.setState(BaseViewState.Error(msg = e.localizedMessage))
             "[flowLaunch] : $e".logError()
         }
     }

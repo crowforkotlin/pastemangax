@@ -118,7 +118,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
      * @param onResult 交给子类处理View
      * */
     protected fun doOnBookPageIntent(intent: BookIntent, onResult: Runnable) {
-        intent.mViewState
+        intent.mBaseViewState
             // 执行加载动画
             .doOnLoading { showLoadingAnim() }
 
@@ -146,7 +146,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
      * @param onResult 交给子类处理View
      * */
     protected inline fun<T> doOnBookPageChapterIntent(intent: BookIntent, crossinline onResult: (T) -> Unit) {
-        intent.mViewState
+        intent.mBaseViewState
             .doOnError { _, _ ->
                 if (mBinding.bookInfoRefresh.isRefreshing) processChapterErrorResult()
                 dismissLoadingAnim { processChapterErrorResult() }

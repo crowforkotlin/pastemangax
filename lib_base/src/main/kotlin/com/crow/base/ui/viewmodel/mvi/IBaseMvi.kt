@@ -1,7 +1,6 @@
 package com.crow.base.ui.viewmodel.mvi
 
 import androidx.lifecycle.Lifecycle
-import com.crow.base.tools.extensions.repeatOnLifecycle
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -11,6 +10,6 @@ import com.crow.base.tools.extensions.repeatOnLifecycle
  * @Description: IBaseMviExt
  * @formatter:on
  **************************/
-interface IBaseMviExt {
+interface IBaseMvi {
     fun <I : BaseMviIntent> BaseMviViewModel<I>.onOutput(state: Lifecycle.State = Lifecycle.State.CREATED, baseMviSuspendResult: BaseMviViewModel.BaseMviSuspendResult<I>)
 }

@@ -1,5 +1,6 @@
 package com.crow.copymanga.model.di
 
+import com.crow.module_anime.network.AnimeRepository
 import com.crow.module_book.network.BookRepository
 import com.crow.module_bookshelf.network.BookShelfRepository
 import com.crow.module_discover.network.DiscoverRepository
@@ -24,4 +25,5 @@ val factoryModule = module {
     factory { UserRepository(get()) }
     factory { BookShelfRepository(get()) }
     factory { DiscoverRepository(get()) }
+    factory { AnimeRepository(get()) }
 }

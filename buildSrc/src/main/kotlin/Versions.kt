@@ -22,4 +22,5 @@ object Versions {
     const val ktor_version = "2.1.3"
     const val paging_version = "3.1.1"
     const val moshi_version = "1.14.0"
+    const val media3_version = "1.0.1"
 }

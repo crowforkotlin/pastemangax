@@ -1,6 +1,6 @@
 package com.crow.copymanga.model.di
 
-import com.crow.base.BuildConfig
+import androidx.multidex.BuildConfig
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
@@ -19,24 +19,28 @@ import java.util.concurrent.TimeUnit
 
 val networkModule = module {
     single {
-        OkHttpClient.Builder().apply {
-            addInterceptor(HttpLoggingInterceptor().also { interceptor ->
+        OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().also { interceptor ->
                 interceptor.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
                 else HttpLoggingInterceptor.Level.NONE
             })
 
             // 动态修改URL
-            addInterceptor(Interceptor { chain: Interceptor.Chain ->
+            .addInterceptor(Interceptor { chain: Interceptor.Chain ->
                 val request = chain.request()
-                if (!request.url.host.contains("copymanga")) chain.proceed(request)
+                if(request.url.host.startsWith(BaseStrings.URL.CopyManga)) {
+                    chain.proceed(request.newBuilder().url(BaseStrings.URL.CopyManga.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()).build())
+                }
+                else if (request.url.toString().startsWith(BaseStrings.URL.HotManga)) {
+                    chain.proceed(request.newBuilder().url(BaseStrings.URL.HotManga.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()).build())
+                }
                 else {
-                    val newRequset = request.newBuilder().url(BaseStrings.URL.CopyManga.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()).build()
-                    chain.proceed(newRequset)
+                    chain.proceed(request)
                 }
             })
 
             // 动态添加请求头
-            addInterceptor(Interceptor { chain: Interceptor.Chain ->
+            .addInterceptor(Interceptor { chain: Interceptor.Chain ->
                 chain.proceed(chain.request().newBuilder()
                     .addHeader("User-Agent", "Dart/2.16 (dart:io)")
                     .addHeader("Platform", "1")
@@ -45,15 +49,15 @@ val networkModule = module {
                     .build()
                 )
             })
-            sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())
-            hostnameVerifier(SSLSocketClient.hostnameVerifier)
-            pingInterval(10, TimeUnit.SECONDS)
-            connectTimeout(5, TimeUnit.SECONDS)
-            callTimeout(10, TimeUnit.SECONDS)
-            readTimeout(15, TimeUnit.SECONDS)
-            writeTimeout(15, TimeUnit.SECONDS)
-            retryOnConnectionFailure(false)
-        }.build()
+            .sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())
+            .hostnameVerifier(SSLSocketClient.hostnameVerifier)
+            .pingInterval(10, TimeUnit.SECONDS)
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .callTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(false)
+        .build()
     }
 
     single(named("ProgressGlide")) {

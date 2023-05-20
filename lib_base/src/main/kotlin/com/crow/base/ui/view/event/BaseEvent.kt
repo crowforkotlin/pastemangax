@@ -24,7 +24,7 @@ open class BaseEvent private constructor(flagTime: Long) {
         fun newInstance(flagTime: Long = BASE_FLAG_TIME) = BaseEvent(flagTime)
 
         fun getSIngleInstance(flagTime: Long = BASE_FLAG_TIME): BaseEvent {
-            if (mBaseEvent == null) mBaseEvent = BaseEvent(flagTime)
+            if (mBaseEvent == null) synchronized(this) { if (mBaseEvent == null) mBaseEvent = BaseEvent(flagTime) }
             return mBaseEvent!!
         }
     }

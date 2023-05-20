@@ -73,7 +73,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mContainerVM.onOutput { intent ->
             when(intent) {
                 is ContainerIntent.GetDynamicSite -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnErrorInCoroutine { _, _ -> mContainerVM.saveAppConfig() }
                         .doOnResultInCoroutine {
                             BaseStrings.URL.CopyManga = Base64.decode(intent.siteResp!!.mSiteList!!.first()!!.mEncodeSite, Base64.DEFAULT).decodeToString()

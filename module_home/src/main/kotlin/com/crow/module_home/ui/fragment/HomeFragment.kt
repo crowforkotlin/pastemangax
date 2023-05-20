@@ -30,7 +30,7 @@ import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.ui.dialog.LoadingAnimDialog
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
-import com.crow.base.ui.viewmodel.ViewState
+import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
@@ -265,7 +265,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
                 // （获取主页）（根据 刷新事件 来决定是否启用加载动画） 正常加载数据、反馈View
                 is HomeIntent.GetHomePage -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnLoading {
                             if(!mBinding.homeRefresh.isRefreshing && !isHidden) {
                                 showLoadingAnim(object : LoadingAnimDialog.LoadingAnimConfig {
@@ -282,14 +282,14 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                             else doLoadHomePage(intent.homePageData!!.mResults)
                         }
                         .doOnError { code, msg ->
-                            if (code == ViewState.Error.UNKNOW_HOST) mBinding.root.showSnackBar(msg ?: getString(baseR.string.BaseLoadingError))
+                            if (code == BaseViewState.Error.UNKNOW_HOST) mBinding.root.showSnackBar(msg ?: getString(baseR.string.BaseLoadingError))
                             if (!mBinding.homeRefresh.isRefreshing) dismissLoadingAnim() else mBinding.homeRefresh.finishRefresh()
                         }
                 }
 
                 // （刷新获取）不启用 加载动画 正常加载数据 -> 反馈View
                 is HomeIntent.GetRecPageByRefresh -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnSuccess { mRecRefresh?.isEnabled = true }
                         .doOnError { _, _ -> mBinding.root.showSnackBar(getString(baseR.string.BaseLoadingError)) }
                         .doOnResult {

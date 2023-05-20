@@ -36,7 +36,7 @@ abstract class BaseVBDialogFragment<VB : ViewBinding, out VM : BaseViewModel> : 
     override fun initListener() {}
 
     override fun initObserver() {
-        mViewModel.viewState.observe(viewLifecycleOwner) { viewState ->
+        mViewModel.baseViewState.observe(viewLifecycleOwner) { viewState ->
             viewState
                 .doOnLoading { showLoadingAnim() }
                 .doOnSuccess { dismissLoadingAnim() }

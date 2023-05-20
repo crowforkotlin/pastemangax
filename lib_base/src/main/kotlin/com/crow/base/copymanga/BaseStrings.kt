@@ -9,9 +9,7 @@ object BaseStrings {
 
     object URL {
 
-        fun setCopyMangaUrl(tld: String) {
-            CopyManga = "https://api.copymanga$tld"
-        }
+        fun setCopyMangaUrl(tld: String) { CopyManga = "https://api.copymanga$tld" }
 
         // (Top-Level Domain，TLD)
         const val CopyManga_TLD_TV = ".tv"
@@ -51,6 +49,10 @@ object BaseStrings {
         const val DiscoverComicHome = "/api/v3/comics?free_type=1&_update=true"
         const val DiscoverNovelTag = "/api/v3/h5/filter/book/tags"
         const val DiscoverNovelHome = "/api/v3/books?free_type=1&_update=true"
+
+
+        const val HotManga = "https://mapi.hotmangasf.com"
+
     }
 
     object Key {

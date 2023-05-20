@@ -172,7 +172,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
         mContainerVM.onOutput { intent ->
             when(intent) {
                 is ContainerIntent.GetDynamicSite -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnError { _, _ ->
                             if (mSiteDialogBinding != null) {
                                 // 加载失败 等待一段间隔后 利用Hanlder 延时处理行为 重新加载Button淡入 加载动画淡出

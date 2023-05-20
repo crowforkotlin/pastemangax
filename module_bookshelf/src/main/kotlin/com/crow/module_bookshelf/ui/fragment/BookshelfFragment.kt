@@ -27,7 +27,7 @@ import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
-import com.crow.base.ui.viewmodel.ViewState
+import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResultSuspend
 import com.crow.base.ui.viewmodel.doOnSuccess
@@ -86,7 +86,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     private fun processError(code: Int, msg: String?) {
 
         // 解析地址失败 且 Resumed的状态才提示
-        if (code == ViewState.Error.UNKNOW_HOST && isResumed) {
+        if (code == BaseViewState.Error.UNKNOW_HOST && isResumed) {
             mBinding.bookshelfFrameRv.showSnackBar(msg ?: getString(baseR.string.BaseLoadingError))
             if (mBinding.bookshelfButtonGropu.checkedButtonId == R.id.bookshelf_comic) mBookshelfNovelRvAdapter.refresh()
             else mBookshelfComicRvAdapter.refresh()
@@ -302,7 +302,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBsVM.onOutput { intent ->
             when(intent) {
                 is BookshelfIntent.GetBookshelfComic -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnSuccess { if (mBinding.bookshelfRefresh.isRefreshing) mBinding.bookshelfRefresh.finishRefresh() }
                         .doOnResultSuspend {
 
@@ -328,7 +328,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                         }
                 }
                 is BookshelfIntent.GetBookshelfNovel -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnSuccess { if (mBinding.bookshelfRefresh.isRefreshing) mBinding.bookshelfRefresh.finishRefresh() }
                         .doOnError { code, msg ->
 

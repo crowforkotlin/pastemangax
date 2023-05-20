@@ -29,7 +29,7 @@ abstract class BaseFragment<VB : ViewBinding, out VM : BaseViewModel> : BaseFrag
     abstract fun getViewModel(): Lazy<VM>
 
     override fun initObserver() {
-        mViewModel.viewState.observe(viewLifecycleOwner) { viewState ->
+        mViewModel.baseViewState.observe(viewLifecycleOwner) { viewState ->
             viewState
                 .doOnLoading{ showLoadingAnim() }
                 .doOnSuccess { dismissLoadingAnim() }

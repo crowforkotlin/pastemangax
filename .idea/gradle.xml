@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/lib_base" />
+            <option value="$PROJECT_DIR$/module_anime" />
             <option value="$PROJECT_DIR$/module_book" />
             <option value="$PROJECT_DIR$/module_bookshelf" />
             <option value="$PROJECT_DIR$/module_discover" />
