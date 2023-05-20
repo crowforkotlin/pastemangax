@@ -15,7 +15,7 @@
 - ### **🔶关于项目**
     - **🔷[预览最新的功能](https://www.mubucm.com/doc/7dmuZK6gvPP)**
     - **🔷[Dev分支可预览最新的开发进度](https://github.com/CrowForKotlin/CopyManga_Crow/tree/dev)**
-    - **🔷Dev分支预览最新的开发进度、Main今后只会当发布新版本是才推送更新**
+    - **🔷[Main分支今后只会当发布新版本时才推送更新](https://github.com/CrowForKotlin/CopyManga_Crow/tree/main)**
     - **🔷App的Icon几乎都是作者二改、V1.1.0开始重新二次设计了APP的Icon（基于官方ICON二改）**
     - **🔷目前仅一人开发，有意向的开发者可联系我参与该项目的贡献**
     - **🔷在今后或许会新增一些新技术、扩展接口及功能模块**
