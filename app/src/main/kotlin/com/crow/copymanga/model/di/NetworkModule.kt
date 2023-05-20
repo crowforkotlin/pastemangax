@@ -1,6 +1,6 @@
 package com.crow.copymanga.model.di
 
-import com.crow.base.BuildConfig
+import androidx.multidex.BuildConfig
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
