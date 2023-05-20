@@ -7,7 +7,7 @@ import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
-import com.crow.base.ui.viewmodel.mvi.IBaseMviExt
+import com.crow.base.ui.viewmodel.mvi.IBaseMvi
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -17,7 +17,7 @@ import com.crow.base.ui.viewmodel.mvi.IBaseMviExt
  * @Description: BaseMviActivity
  * @formatter:on
  **************************/
-abstract class BaseMviActivity<out VB: ViewBinding> : BaseActivityImpl(), IBaseMviExt {
+abstract class BaseMviActivity<out VB: ViewBinding> : BaseActivityImpl(), IBaseMvi {
 
     protected val mBinding by lazy { getViewBinding() }
 

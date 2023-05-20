@@ -13,9 +13,9 @@ import androidx.viewbinding.ViewBinding
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
-import com.crow.base.ui.viewmodel.mvi.IBaseMviExt
+import com.crow.base.ui.viewmodel.mvi.IBaseMvi
 
-abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBaseMviExt {
+abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBaseMvi {
 
     private var _mBinding: VB? = null
     protected val mBinding get() = _mBinding!!
