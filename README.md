@@ -4,7 +4,6 @@
   </a>
 
 <h3 align="center">⭐⭐⭐CopyMangaX⭐⭐⭐</h3>
-
 </div>
 
 [![Join Our QQ Group](https://img.shields.io/badge/QQ%20Group-749015160-blue?style=for-the-badge&logo=tencent-qq&logoColor=white)](https://jq.qq.com/?_wv=1027&k=XIMjBxZW)
