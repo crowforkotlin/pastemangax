@@ -21,7 +21,7 @@ import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
-import com.crow.base.ui.viewmodel.ViewState
+import com.crow.base.ui.viewmodel.BaseViewState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.DecimalFormat
 import java.util.Locale
@@ -105,7 +105,7 @@ inline fun View.processTokenError(
             }
         }
         .onFailure {
-            if (code == ViewState.Error.UNKNOW_HOST) this.showSnackBar(msg ?: appContext.getString(R.string.BaseLoadingError))
+            if (code == BaseViewState.Error.UNKNOW_HOST) this.showSnackBar(msg ?: appContext.getString(R.string.BaseLoadingError))
             else toast(appContext.getString(R.string.BaseUnknowError))
         }
 }

@@ -102,6 +102,12 @@ fun Window.immersionSystemBar(iBaseImmersionBarAPI: IBaseImmersionBarAPI) {
     }
 }
 
+/**
+ * 设置 内边距属性 实现沉浸式效果
+ *
+ * @param hideStatusBar (Defualt) true
+ * @param hideNaviateBar (Default) true
+ */
 fun View.immersionPadding(hideStatusBar: Boolean = true, hideNaviateBar: Boolean = true) {
     setPadding(0, if (hideStatusBar) context.getStatusBarHeight() else 0, 0, if(hideNaviateBar) context.getNavigationBarHeight() else 0)
 }

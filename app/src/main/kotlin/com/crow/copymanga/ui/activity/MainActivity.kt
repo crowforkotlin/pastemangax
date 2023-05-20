@@ -113,7 +113,7 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
         mContainerVM.onOutput { intent ->
             when (intent) {
                 is ContainerIntent.GetUpdateInfo -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnError { _, _ -> toast(getString(com.crow.module_main.R.string.main_update_error)) }
                         .doOnResult { doUpdateChecker(intent.appUpdateResp!!) }
                 }

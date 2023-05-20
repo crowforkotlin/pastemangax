@@ -67,6 +67,6 @@ interface ComicService {
 
     @POST(URL.NovelAddToBookshelf)
     @FormUrlEncoded
-    fun addNovelToBookshelf(@Field("book_id") comicId: String, @Field("is_collect") isCollect: Int) : Flow<BaseNullableResultResp<Any?>>
+    fun addNovelToBookshelf(@Field("book_id") novelId: String, @Field("is_collect") isCollect: Int) : Flow<BaseNullableResultResp<Any?>>
 
 }

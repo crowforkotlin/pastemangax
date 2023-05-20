@@ -109,7 +109,7 @@ class SearchComicFragment(val mSearchView: SearchView, val mOnTap: (pathword: St
         mHomeVM.onOutput { intent ->
             if (intent is HomeIntent.SearchComic) {
                 val mTag = mBaseEvent.getBoolean(HomeFragment.SEARCH_TAG) ?: false
-                intent.mViewState
+                intent.mBaseViewState
                     .doOnLoading { if(mTag) showLoadingAnim() }
                     .doOnError { _, _ ->
                         dismissLoadingAnim()

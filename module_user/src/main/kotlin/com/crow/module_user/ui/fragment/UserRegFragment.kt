@@ -96,7 +96,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
         mUserVM.onOutput { intent ->
             when(intent) {
                 is UserIntent.Reg -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnLoading { showLoadingAnim() }
                         .doOnError { _, msg ->
                             dismissLoadingAnim { doRevertRegButton() }
@@ -127,7 +127,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
                 }
 
                 is UserIntent.Login -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnSuccess { dismissLoadingAnim { doRevertRegButton() } }
                         .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: appContext.getString(
                             com.crow.base.R.string.BaseUnknowError)) }

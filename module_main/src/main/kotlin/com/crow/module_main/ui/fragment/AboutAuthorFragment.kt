@@ -81,7 +81,7 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
             intent.action = Intent.ACTION_VIEW
             when(it) {
                 is ContainerIntent.GetQQGroup -> {
-                    it.mViewState
+                    it.mBaseViewState
                         .doOnResult {
                             intent.data = Uri.parse(it.link!!)
                             startActivity(intent)

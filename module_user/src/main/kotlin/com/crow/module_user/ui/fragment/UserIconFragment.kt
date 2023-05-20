@@ -17,8 +17,7 @@ import androidx.core.view.setPadding
 import com.bumptech.glide.Glide
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.getNavigationBarHeight
-import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.popAsyncWithClear
@@ -88,7 +87,7 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
     override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
-        mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())
+        mBinding.root.immersionPadding()
 
         // 初始化 设置状态栏暗色
         mWindowInsets = WindowCompat.getInsetsController(requireActivity().window, requireActivity().window.decorView)

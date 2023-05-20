@@ -19,7 +19,7 @@ import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.ui.fragment.BaseMviFragment
-import com.crow.base.ui.viewmodel.ViewState
+import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
@@ -98,11 +98,11 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
         mDiscoverVM.onOutput { intent ->
             when(intent) {
                 is DiscoverIntent.GetNovelHome -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnError { code, msg ->
 
                             // 解析地址失败 且 Resumed的状态才提示
-                            if (code == ViewState.Error.UNKNOW_HOST && isResumed) mBinding.root.showSnackBar(msg ?: getString(com.crow.base.R.string.BaseLoadingError))
+                            if (code == BaseViewState.Error.UNKNOW_HOST && isResumed) mBinding.root.showSnackBar(msg ?: getString(com.crow.base.R.string.BaseLoadingError))
                             if (mDiscoverNovelAdapter.itemCount == 0) {
                                 if (mDiscoverVM.mCurrentItem == 1) {
                                     mBinding.discoverNovelTipsError.animateFadeIn()

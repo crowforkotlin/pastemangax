@@ -136,7 +136,7 @@ class BookComicFragment : BookFragment() {
     }
 
     private fun processAddComicIntent(intent: BookIntent.AddComicToBookshelf) {
-        intent.mViewState
+        intent.mBaseViewState
             .doOnLoading { showLoadingAnim() }
             .doOnError { _, _ -> dismissLoadingAnim { toast(getString(baseR.string.BaseUnknowError)) } }
             .doOnResult {
@@ -189,7 +189,7 @@ class BookComicFragment : BookFragment() {
                 is BookIntent.GetComicChapter -> doOnBookPageChapterIntent<ComicChapterResp>(intent) { showChapterPage(it) }
                 is BookIntent.GetComicInfoPage -> doOnBookPageIntent(intent) { showComicInfoPage() }
                 is BookIntent.GetComicBrowserHistory -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnResult {
                             intent.comicBrowser!!.apply {
                                 if (mCollectId == null) setButtonAddToBookshelf() else setButtonRemoveFromBookshelf()

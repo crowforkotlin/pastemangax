@@ -24,6 +24,8 @@ object AppConfigs {
 
     const val module_user_namespace = "com.crow.module_user"
 
+    const val module_anime_namespace = "com.crow.module_anime"
+
     // Base库的命名空间
     const val base_namespace = "com.crow.base"
 
@@ -50,6 +52,9 @@ object AppConfigs {
 
     // module_user资源前缀
     const val user_resource_prefix = "user"
+
+    // Anime资源前缀
+    const val anime_resource_prefix = "anime"
 
     // 应用ID
     const val application_id = "com.crow.copymanga"

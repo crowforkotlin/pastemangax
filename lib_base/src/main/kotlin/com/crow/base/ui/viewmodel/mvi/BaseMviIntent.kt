@@ -1,6 +1,6 @@
 package com.crow.base.ui.viewmodel.mvi
 
-import com.crow.base.ui.viewmodel.ViewState
+import com.crow.base.ui.viewmodel.BaseViewState
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -10,4 +10,4 @@ import com.crow.base.ui.viewmodel.ViewState
  * @Description: BaseMviEvent
  * @formatter:on
  **************************/
-open class BaseMviIntent(var mViewState: ViewState = ViewState.Default)
+open class BaseMviIntent(var mBaseViewState: BaseViewState = BaseViewState.Default)

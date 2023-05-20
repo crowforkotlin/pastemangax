@@ -134,7 +134,7 @@ class BookNovelFragment : BookFragment() {
     }
 
     private fun processAddNovelIntent(intent: BookIntent.AddNovelToBookshelf) {
-        intent.mViewState
+        intent.mBaseViewState
             .doOnLoading { showLoadingAnim() }
             .doOnError { _, _ -> dismissLoadingAnim { toast(getString(com.crow.base.R.string.BaseUnknowError)) } }
             .doOnResult {
@@ -201,7 +201,7 @@ class BookNovelFragment : BookFragment() {
                 is BookIntent.GetNovelChapter -> doOnBookPageChapterIntent<NovelChapterResp>(intent) { showChapterPage(it)}
                 is BookIntent.GetNovelInfoPage -> doOnBookPageIntent(intent) { showNovelInfoPage() }
                 is BookIntent.GetNovelBrowserHistory -> {
-                    intent.mViewState
+                    intent.mBaseViewState
                         .doOnResult {
                             intent.novelBrowser!!.apply {
                                 if (mCollect == null) setButtonAddToBookshelf() else setButtonRemoveFromBookshelf()
