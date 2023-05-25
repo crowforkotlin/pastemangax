@@ -1,4 +1,4 @@
-rootProject.name = "CopyManga"
+rootProject.name = "CopyMangaX"
 include(":app")
 include(":lib_base")
 include(":module_home")
