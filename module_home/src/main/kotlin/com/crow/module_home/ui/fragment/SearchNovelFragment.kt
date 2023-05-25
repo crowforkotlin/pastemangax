@@ -28,17 +28,29 @@ import com.crow.module_home.ui.viewmodel.HomeViewModel
 import com.google.android.material.search.SearchView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchNovelFragment(val mSearchView: SearchView, val mOnTap: (pathword: String) ->Unit) : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
+class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
+
+    companion object {
+        fun newInstance( mSearchView: SearchView,  mOnTap: (pathword: String) ->Unit): SearchNovelFragment {
+            val searchNovelFragment = SearchNovelFragment()
+            searchNovelFragment.mSearchView = mSearchView
+            searchNovelFragment.mOnTap = mOnTap
+            return searchNovelFragment
+        }
+    }
+
+    private var mSearchView: SearchView? = null
+    private var mOnTap: ((pathword: String) -> Unit)? = null
 
     private val mHomeVM by viewModel<HomeViewModel>()
 
     private val mBaseEvent = BaseEvent.getSIngleInstance()
 
-    private var mNovelRvAdapter = SearchNovelRvAdapter { mOnTap(it.mPathWord) }
+    private var mNovelRvAdapter = SearchNovelRvAdapter { mOnTap?.invoke(it.mPathWord) }
 
     fun doInputSearchNovelIntent() {
 
-        val keyword = mSearchView.text.toString().removeWhiteSpace().ifEmpty {
+        val keyword = mSearchView?.text.toString().removeWhiteSpace().ifEmpty {
             toast(getString(R.string.home_keyword_not_null))
             return
         }
@@ -87,7 +99,7 @@ class SearchNovelFragment(val mSearchView: SearchView, val mOnTap: (pathword: St
                 }
 
                 // 搜索内容不为空
-                if(!mSearchView.text?.toString().isNullOrEmpty()) doInputSearchNovelIntent()
+                if(!mSearchView?.text?.toString().isNullOrEmpty()) doInputSearchNovelIntent()
             }
         }
     }

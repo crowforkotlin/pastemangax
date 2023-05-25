@@ -19,7 +19,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/main_about_back"
-			tools:src="@drawable/main_icon_crow" />
+			tools:src="@drawable/base_icon_crow" />
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/main_about_back"

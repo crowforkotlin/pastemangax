@@ -54,18 +54,4 @@ object BaseStrings {
         const val HotManga = "https://mapi.hotmangasf.com"
 
     }
-
-    object Key {
-        const val POST_CURRENT_ITEM = "POST_CURRENT_ITEM"
-        const val LOGIN_SUCUESS = "LOGIN_SUCUESS"
-        const val CLEAR_USER_INFO = "CLEAR_USER_INFO"
-        const val EXIT_USER = "EXIT_USER"
-        const val SET_HOME_ICON = "SET_HOME_ICON"
-        const val CHECK_UPDATE = "CHECK_UPDATE"
-        const val UPDATE_CHAPTER = "UPDATE_CHAPTER"
-    }
-
-    object FragmentTag {
-        
-    }
 }

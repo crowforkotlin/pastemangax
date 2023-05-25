@@ -8,17 +8,11 @@ import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.view.event.BaseEvent.Companion.BASE_FLAG_TIME
 import com.crow.base.ui.view.event.click.BaseIEventInterval
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.google.android.material.appbar.MaterialToolbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -86,6 +80,8 @@ fun BaseEvent.doOnInterval(mHandler: Handler?, runnable: Runnable): BaseEvent {
     return this
 }
 
+
+/*
 // BaseEvent扩展 onFailure 使用内联
 inline fun SwipeRefreshLayout.setAutoCancelRefreshing(lifecycleOwner: LifecycleOwner, cancelTime: Long = 5_000L, crossinline block: () -> Unit) {
     setOnRefreshListener {
@@ -117,6 +113,7 @@ inline fun SwipeRefreshLayout.doOnCoroutineAutoRefresh(delayMs: Long = 0, lifecy
         isRefreshing = false
     }
 }
+*/
 
 // 用于简化对 EditText 组件设置 afterTextChanged 操作的扩展函数。
 inline fun EditText.afterTextChanged(crossinline afterTextChanged: (String) -> Unit) {

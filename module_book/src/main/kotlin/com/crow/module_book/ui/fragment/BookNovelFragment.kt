@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
+import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
@@ -41,7 +42,7 @@ import org.koin.core.qualifier.named
 class BookNovelFragment : BookFragment() {
 
     init {
-        FlowBus.with<String>(BaseStrings.Key.UPDATE_CHAPTER).register(this) {
+        FlowBus.with<String>(BaseEventEnum.UpdateChapter.name).register(this) {
             mBookVM.updateBookChapter(mBookVM.mComicInfoPage!!.mComic!!.mName, it, BookType.COMIC )
             mNovelChapterRvAdapter?.mChapterName = it
         }
@@ -165,13 +166,10 @@ class BookNovelFragment : BookFragment() {
         super.initView(bundle)
 
         // 初始化适配器
-        mNovelChapterRvAdapter = NovelChapterRvAdapter {
-            toast("很抱歉暂未开发完成...")
-        }
+        mNovelChapterRvAdapter = NovelChapterRvAdapter { toast("很抱歉暂未开发完成...") }
 
         // 设置适配器
         mBinding.bookInfoRvChapter.adapter = mNovelChapterRvAdapter!!
-
     }
 
     override fun initListener() {

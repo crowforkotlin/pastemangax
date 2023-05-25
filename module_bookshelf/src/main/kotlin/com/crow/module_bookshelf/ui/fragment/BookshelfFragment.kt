@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
+import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
@@ -56,7 +57,9 @@ import com.crow.base.R as baseR
  *************************/
 class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
-    companion object { fun newInstance() = BookshelfFragment() }
+    companion object {
+        fun newInstance() = BookshelfFragment()
+    }
 
     // 书架VM
     private val mBsVM by viewModel<BookshelfViewModel>()
@@ -76,9 +79,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     // 处理错误时 隐藏控件
     private fun processErrorHideView() {
         mBinding.bookshelfTipsEmpty.animateFadeIn()  // “空文本” 可见
-        if(mBinding.bookshelfCount.isVisible) mBinding.bookshelfCount.animateFadeOutWithEndInVisibility()          // 隐藏 计数
-        if(mBinding.bookshelfRvComic.isVisible) mBinding.bookshelfRvComic.animateFadeOutWithEndInVisibility()  // 隐藏 漫画 Rv
-        if(mBinding.bookshelfRvNovel.isVisible) mBinding.bookshelfRvNovel.animateFadeOutWithEndInVisibility()    // 隐藏 轻小说 Rv
+        if (mBinding.bookshelfCount.isVisible) mBinding.bookshelfCount.animateFadeOutWithEndInVisibility()          // 隐藏 计数
+        if (mBinding.bookshelfRvComic.isVisible) mBinding.bookshelfRvComic.animateFadeOutWithEndInVisibility()  // 隐藏 漫画 Rv
+        if (mBinding.bookshelfRvNovel.isVisible) mBinding.bookshelfRvNovel.animateFadeOutWithEndInVisibility()    // 隐藏 轻小说 Rv
         mBinding.bookshelfRefresh.finishRefresh()   // 完成刷新
     }
 
@@ -103,28 +106,39 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             doOnCancel = {
                 mBookshelfComicRvAdapter.retry()
                 mBookshelfNovelRvAdapter.retry()
-                FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).post(lifecycleScope, Unit)
+                FlowBus.with<Unit>(BaseEventEnum.ClearUserInfo.name).post(lifecycleScope, Unit)
             },
             doOnConfirm = {
-                requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv, this, get(named(Fragments.Login)), Fragments.Login.toString(), Fragments.Login.toString())
-                FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).post(lifecycleScope, Unit)
+                requireParentFragment().parentFragmentManager.navigateToWithBackStack(
+                    baseR.id.app_main_fcv,
+                    requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
+                    get(named(Fragments.Login)),
+                    Fragments.Login.toString(),
+                    Fragments.Login.toString()
+                )
+                FlowBus.with<Unit>(BaseEventEnum.ClearUserInfo.name).post(lifecycleScope, Unit)
             }
         )
     }
 
     // 处理结果
-    private fun processResult(bookshelfComicResp: BookshelfComicResp?, bookshelfNovelResp: BookshelfNovelResp?) {
+    private fun processResult(
+        bookshelfComicResp: BookshelfComicResp?,
+        bookshelfNovelResp: BookshelfNovelResp?
+    ) {
 
         // “空提示” 文本不可见
         if (mBinding.bookshelfTipsEmpty.isVisible) {
 
-            if (bookshelfComicResp == null) mBinding.bookshelfRvComic.visibility = View.INVISIBLE                  // 漫画 Rv 隐藏
+            if (bookshelfComicResp == null) mBinding.bookshelfRvComic.visibility =
+                View.INVISIBLE                  // 漫画 Rv 隐藏
             else {
                 if (mBinding.bookshelfTipsEmpty.isVisible) mBinding.bookshelfTipsEmpty.animateFadeOutWithEndInVisible()           // 让 “空提示”文本 消失
                 mBinding.bookshelfRvComic.animateFadeIn()                                                                            // 漫画 Rv 淡入
             }
 
-            if (bookshelfNovelResp == null) mBinding.bookshelfRvNovel.visibility = View.INVISIBLE                  // 轻小说 Rv 隐藏
+            if (bookshelfNovelResp == null) mBinding.bookshelfRvNovel.visibility =
+                View.INVISIBLE                  // 轻小说 Rv 隐藏
             else {
                 if (mBinding.bookshelfTipsEmpty.isVisible) mBinding.bookshelfTipsEmpty.animateFadeOutWithEndInVisible()  // 让 “空提示”文本 消失
                 mBinding.bookshelfRvNovel.animateFadeIn()                                                                             // 轻小说 Rv 淡入
@@ -134,30 +148,39 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             mBinding.bookshelfCount.animateFadeIn()
 
             // 设置漫画总数
-            mBinding.bookshelfCount.text = if (bookshelfComicResp != null) getString(R.string.bookshelf_comic_count, mComicCount ?: -1) else getString(R.string.bookshelf_novel_count, mNovelCount ?: -1)
+            mBinding.bookshelfCount.text = if (bookshelfComicResp != null) getString(
+                R.string.bookshelf_comic_count,
+                mComicCount ?: -1
+            ) else getString(R.string.bookshelf_novel_count, mNovelCount ?: -1)
         }
 
         // 正在刷新？
-        if(mBinding.bookshelfRefresh.isRefreshing) {
+        if (mBinding.bookshelfRefresh.isRefreshing) {
 
 
             mHandler.postDelayed({
                 mBinding.bookshelfRefresh.finishRefresh() // 取消刷新
                 if (bookshelfComicResp != null) {
                     mBinding.bookshelfRvComic.smoothScrollToPosition(0)
-                    mBinding.bookshelfCount.text = getString(R.string.bookshelf_comic_count, bookshelfComicResp.mTotal)
+                    mBinding.bookshelfCount.text =
+                        getString(R.string.bookshelf_comic_count, bookshelfComicResp.mTotal)
                     mBinding.bookshelfCount.animateFadeIn()
                 } else {
                     mBinding.bookshelfRvNovel.smoothScrollToPosition(0)
-                    mBinding.bookshelfCount.text = getString(R.string.bookshelf_novel_count, bookshelfNovelResp!!.mTotal)
+                    mBinding.bookshelfCount.text =
+                        getString(R.string.bookshelf_novel_count, bookshelfNovelResp!!.mTotal)
                     mBinding.bookshelfCount.animateFadeIn()
                 }
             }, BASE_ANIM_300L)
         }
     }
 
-    private fun navigateBookComicInfo(pathword: String) = navigate(Fragments.BookComicInfo, pathword)
-    private fun navigateBookNovelInfo(pathword: String) = navigate(Fragments.BookNovelInfo, pathword)
+    private fun navigateBookComicInfo(pathword: String) =
+        navigate(Fragments.BookComicInfo, pathword)
+
+    private fun navigateBookNovelInfo(pathword: String) =
+        navigate(Fragments.BookNovelInfo, pathword)
+
     private fun navigate(tag: Enum<Fragments>, pathword: String) {
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
@@ -184,13 +207,26 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             mBookshelfNovelRvAdapter.submitData(PagingData.empty())
 
             // 每个FlowPager观察者需要一个单独的生命周期块，在同一个会导致第二个观察者失效 收集书架 漫画Pager状态
-            repeatOnLifecycle { mBsVM.mBookshelfComicFlowPager?.collect { data -> mBookshelfComicRvAdapter.submitData(data) } }
-            repeatOnLifecycle { mBsVM.mBookshelfNovelFlowPager?.collect { data -> mBookshelfNovelRvAdapter.submitData(data) } }
+            repeatOnLifecycle {
+                mBsVM.mBookshelfComicFlowPager?.collect { data ->
+                    mBookshelfComicRvAdapter.submitData(
+                        data
+                    )
+                }
+            }
+            repeatOnLifecycle {
+                mBsVM.mBookshelfNovelFlowPager?.collect { data ->
+                    mBookshelfNovelRvAdapter.submitData(
+                        data
+                    )
+                }
+            }
         }
         mBinding.bookshelfTipsEmpty.animateFadeIn()
     }
 
-    override fun getViewBinding(inflater: LayoutInflater) = BookshelfFragmentBinding.inflate(inflater)
+    override fun getViewBinding(inflater: LayoutInflater) =
+        BookshelfFragmentBinding.inflate(inflater)
 
     override fun initView(bundle: Bundle?) {
 
@@ -201,16 +237,28 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBinding.bookshelfRefresh.setDisableContentWhenRefresh(true)
 
         // 初始化适配器
-        mBookshelfComicRvAdapter = BookshelfComicRvAdapter { navigateBookComicInfo(it.mComic.mPathWord) }
-        mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter { navigateBookNovelInfo(it.mNovel.mPathWord) }
+        mBookshelfComicRvAdapter =
+            BookshelfComicRvAdapter { navigateBookComicInfo(it.mComic.mPathWord) }
+        mBookshelfNovelRvAdapter =
+            BookshelfNovelRvAdapter { navigateBookNovelInfo(it.mNovel.mPathWord) }
 
         // 设置加载动画独占1行，卡片3行
-        (mBinding.bookshelfRvComic.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() { override fun getSpanSize(position: Int)= if (position == mBookshelfComicRvAdapter.itemCount  && mBookshelfComicRvAdapter.itemCount > 0) 3 else 1 }
-        (mBinding.bookshelfRvNovel.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() { override fun getSpanSize(position: Int) = if (position == mBookshelfNovelRvAdapter.itemCount  && mBookshelfNovelRvAdapter.itemCount > 0) 3 else 1 }
+        (mBinding.bookshelfRvComic.layoutManager as GridLayoutManager).spanSizeLookup =
+            object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int) =
+                    if (position == mBookshelfComicRvAdapter.itemCount && mBookshelfComicRvAdapter.itemCount > 0) 3 else 1
+            }
+        (mBinding.bookshelfRvNovel.layoutManager as GridLayoutManager).spanSizeLookup =
+            object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int) =
+                    if (position == mBookshelfNovelRvAdapter.itemCount && mBookshelfNovelRvAdapter.itemCount > 0) 3 else 1
+            }
 
         // 设置适配器
-        mBinding.bookshelfRvComic.adapter = mBookshelfComicRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
-        mBinding.bookshelfRvNovel.adapter = mBookshelfNovelRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
+        mBinding.bookshelfRvComic.adapter =
+            mBookshelfComicRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
+        mBinding.bookshelfRvNovel.adapter =
+            mBookshelfNovelRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
     }
 
     override fun initListener() {
@@ -233,25 +281,33 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBinding.bookshelfMoveTop.doOnClickInterval {
 
             // 点击书架的当前类型为“漫画” 并且漫画适配器个数不为0 则滑动至顶部
-            if (mBinding.bookshelfButtonGropu.checkedButtonId == R.id.bookshelf_comic) if (mBookshelfComicRvAdapter.itemCount != 0) mBinding.bookshelfRvComic.smoothScrollToPosition(0)
+            if (mBinding.bookshelfButtonGropu.checkedButtonId == R.id.bookshelf_comic) if (mBookshelfComicRvAdapter.itemCount != 0) mBinding.bookshelfRvComic.smoothScrollToPosition(
+                0
+            )
 
             // 否则就是轻小说 并且 轻小说适配器个数不为0 则滑动至顶部
-            else if(mBookshelfNovelRvAdapter.itemCount != 0) mBinding.bookshelfRvNovel.smoothScrollToPosition(0)
+            else if (mBookshelfNovelRvAdapter.itemCount != 0) mBinding.bookshelfRvNovel.smoothScrollToPosition(
+                0
+            )
         }
 
         // 移至底部 点击事件
         mBinding.bookshelfMoveBottom.doOnClickInterval {
 
             // 点击漫画 并且漫画适配器个数不为0 则滑动至 适配器总数 - 1
-            if (mBinding.bookshelfButtonGropu.checkedButtonId == R.id.bookshelf_comic) if (mBookshelfComicRvAdapter.itemCount != 0) mBinding.bookshelfRvComic.smoothScrollToPosition(mBookshelfComicRvAdapter.itemCount - 1)
+            if (mBinding.bookshelfButtonGropu.checkedButtonId == R.id.bookshelf_comic) if (mBookshelfComicRvAdapter.itemCount != 0) mBinding.bookshelfRvComic.smoothScrollToPosition(
+                mBookshelfComicRvAdapter.itemCount - 1
+            )
 
             // 否则就是轻小说，轻小说适配器个数不为0 则滑动至 适配器总数 - 1
-            else if(mBookshelfNovelRvAdapter.itemCount != 0) mBinding.bookshelfRvNovel.smoothScrollToPosition(mBookshelfNovelRvAdapter.itemCount - 1)
+            else if (mBookshelfNovelRvAdapter.itemCount != 0) mBinding.bookshelfRvNovel.smoothScrollToPosition(
+                mBookshelfNovelRvAdapter.itemCount - 1
+            )
         }
 
         // 按钮组 点击事件 （漫画、轻小说）
         mBinding.bookshelfButtonGropu.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            when(checkedId) {
+            when (checkedId) {
                 R.id.bookshelf_comic -> {                                                              // 点击漫画
                     if (isChecked) {                                                                        // 选中
                         if (mBookshelfComicRvAdapter.itemCount == 0) {               // 漫画适配器个数为空
@@ -262,15 +318,17 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                         }
 
                         // 漫画 适配器不为空 判断 “空书架文本” 是否可见 ，可见的话则 淡出并在动画结束时 设置消失
-                        else if(mBinding.bookshelfTipsEmpty.isVisible) mBinding.bookshelfTipsEmpty.animateFadeOutWithEndInVisible()
+                        else if (mBinding.bookshelfTipsEmpty.isVisible) mBinding.bookshelfTipsEmpty.animateFadeOutWithEndInVisible()
                         mBinding.bookshelfRvNovel.animateFadeOutWithEndInVisibility()                                                                       // 轻小说适配器淡出 动画结束时隐藏
                         mBinding.bookshelfRvComic.animateFadeIn()                                                                                                    // 漫画适配器淡入 动画结束时显示
 
                         if (mBinding.bookshelfCount.isVisible) mBinding.bookshelfCount.animateFadeOut()                                           // 漫画总数 可见则淡出
-                        mBinding.bookshelfCount.text = getString(R.string.bookshelf_comic_count, mComicCount ?: 0)  // 设置漫画总数文本
+                        mBinding.bookshelfCount.text =
+                            getString(R.string.bookshelf_comic_count, mComicCount ?: 0)  // 设置漫画总数文本
                         mBinding.bookshelfCount.animateFadeIn()                                                                                                       // 漫画总数 淡入， 这里淡出淡入数位了一个过渡效果
                     }
                 }
+
                 R.id.bookshelf_novel -> {  // 逻辑如上 反着来
                     if (isChecked) {
                         if (mBookshelfNovelRvAdapter.itemCount == 0) {
@@ -278,11 +336,12 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                             mBinding.bookshelfRvComic.visibility = View.INVISIBLE
                             mBinding.bookshelfRvNovel.visibility = View.INVISIBLE
                             return@addOnButtonCheckedListener
-                        } else if(mBinding.bookshelfTipsEmpty.isVisible) mBinding.bookshelfTipsEmpty.animateFadeOutWithEndInVisible()
+                        } else if (mBinding.bookshelfTipsEmpty.isVisible) mBinding.bookshelfTipsEmpty.animateFadeOutWithEndInVisible()
                         mBinding.bookshelfRvComic.animateFadeOutWithEndInVisibility()
                         mBinding.bookshelfRvNovel.animateFadeIn()
                         if (mBinding.bookshelfCount.isVisible) mBinding.bookshelfCount.animateFadeOut()
-                        mBinding.bookshelfCount.text = getString(R.string.bookshelf_novel_count, mNovelCount ?: 0)
+                        mBinding.bookshelfCount.text =
+                            getString(R.string.bookshelf_novel_count, mNovelCount ?: 0)
                         mBinding.bookshelfCount.animateFadeIn()
                     }
                 }
@@ -293,14 +352,26 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     override fun initObserver() {
 
         // 每隔观察者需要一个单独的生命周期块，在同一个会导致第二个观察者失效 收集书架 漫画Pager状态
-        repeatOnLifecycle { mBsVM.mBookshelfComicFlowPager?.collect { data -> mBookshelfComicRvAdapter.submitData(data) } }
+        repeatOnLifecycle {
+            mBsVM.mBookshelfComicFlowPager?.collect { data ->
+                mBookshelfComicRvAdapter.submitData(
+                    data
+                )
+            }
+        }
 
         // 收集书架 轻小说Pager状态
-        repeatOnLifecycle { mBsVM.mBookshelfNovelFlowPager?.collect { data -> mBookshelfNovelRvAdapter.submitData(data) } }
+        repeatOnLifecycle {
+            mBsVM.mBookshelfNovelFlowPager?.collect { data ->
+                mBookshelfNovelRvAdapter.submitData(
+                    data
+                )
+            }
+        }
 
         // 接收意图
         mBsVM.onOutput { intent ->
-            when(intent) {
+            when (intent) {
                 is BookshelfIntent.GetBookshelfComic -> {
                     intent.mBaseViewState
                         .doOnSuccess { if (mBinding.bookshelfRefresh.isRefreshing) mBinding.bookshelfRefresh.finishRefresh() }
@@ -327,6 +398,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                             processError(code, msg)
                         }
                 }
+
                 is BookshelfIntent.GetBookshelfNovel -> {
                     intent.mBaseViewState
                         .doOnSuccess { if (mBinding.bookshelfRefresh.isRefreshing) mBinding.bookshelfRefresh.finishRefresh() }

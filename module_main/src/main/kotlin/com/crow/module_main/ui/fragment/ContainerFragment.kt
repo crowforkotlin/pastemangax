@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.tools.coroutine.FlowBus
@@ -38,9 +38,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     // FlowBus Init
     init {
-        FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).register(this) { mUserVM.doClearUserInfo() }                                       // 清除用户数据
-        FlowBus.with<Unit>(BaseStrings.Key.LOGIN_SUCUESS).register(this) { doLoginSuccessRefresh() }                                          // 登录成功后响应回来进行刷新
-        FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).register(this) { doExitUser() }                                                                           // 退出账号
+        FlowBus.with<Unit>(BaseEventEnum.ClearUserInfo.name).register(this) { mUserVM.doClearUserInfo() }                                       // 清除用户数据
+        FlowBus.with<Unit>(BaseEventEnum.LoginScuess.name).register(this) { doLoginSuccessRefresh() }                                          // 登录成功后响应回来进行刷新
+        FlowBus.with<Unit>(BaseEventEnum.LogOut.name).register(this) { doExitUser() }                                                                           // 退出账号
     }
 
     // 碎片容器适配器
@@ -63,7 +63,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mUserVM.userInfo.onCollect(this) {
 
             // 加载 Icon  无链接或加载失败 则默认Drawable
-            mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseStrings.Key.SET_HOME_ICON).post(this, resource) }
+            mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
 
             // 初始化 用户Tokne
             BaseUser.CURRENT_USER_TOKEN = it?.mToken ?: return@onCollect
@@ -100,7 +100,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         super.onHiddenChanged(hidden)
 
         // 不为隐藏 当返回ContainerFragment时回调此方法 则通知设置Icon
-        if (!hidden) mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseStrings.Key.SET_HOME_ICON).post(this, resource) }
+        if (!hidden) mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
     }
 
     override fun initListener() {
@@ -132,6 +132,5 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     // 执行选择Fragment
     private fun doSwitchFragment(position: Int) {
         if (mBinding.mainViewPager.currentItem != position) mBinding.mainViewPager.setCurrentItem(position, true)
-        FlowBus.with<Int>(BaseStrings.Key.POST_CURRENT_ITEM).post(lifecycleScope, position)
     }
 }
