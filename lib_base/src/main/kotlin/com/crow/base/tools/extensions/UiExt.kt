@@ -13,6 +13,7 @@ import android.view.ViewPropertyAnimator
 import androidx.annotation.ColorInt
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import com.crow.base.app.appContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.math.PI
@@ -23,6 +24,8 @@ import kotlin.math.sin
 const val BASE_ANIM_300L = 300L
 const val BASE_ANIM_200L = 200L
 const val BASE_ANIM_100L = 100L
+
+val appScreenRatio: Float by lazy { appContext.resources.displayMetrics.widthPixels.toFloat() / appContext.resources.displayMetrics.heightPixels.toFloat()  }
 
 fun interface IBaseUiCanvasEvent { fun doOnCanvas(canvas: Canvas) }
 

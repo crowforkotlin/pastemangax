@@ -28,7 +28,6 @@ import com.crow.module_book.ui.adapter.ComicRvAdapter
 import com.crow.module_book.ui.view.PageBadgeView
 import com.crow.module_book.ui.viewmodel.BookInfoViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import soko.ekibun.bangumi.plugins.ui.view.BookLayoutManager
 import com.crow.base.R as baseR
 
 class ComicActivity : BaseMviActivity<BookActivityComicBinding>() {
@@ -48,14 +47,8 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>() {
         mComicRvAdapter = ComicRvAdapter(comicContents, comicPageResp.mChapter.mNext != null, comicPageResp. mChapter.mPrev != null) {
             mComicVM.input(BookIntent.GetComicPage(comicPageResp.mChapter.mComicPathWord, comicPageResp.mChapter.mNext ?: return@ComicRvAdapter))
         }
-        mBinding.comicRv.layoutManager = BookLayoutManager(this) { view, manager ->
-
-        }.also {
-            it.setupWithRecyclerView(mBinding.comicRv, { _, _ -> }, { _, _ -> }, { _ -> })
-        }
-        //mBinding.comicRv.layoutManager = GalleryLayoutManager(0)
+        mBinding.comicRv.layoutManager = LinearLayoutManager(this)
         mBinding.comicRv.adapter = mComicRvAdapter
-
         mBadgeView?.apply {
             updateTotalCount(mComicRvAdapter.itemCount)
             mBadgeBinding.root.animateFadeIn()

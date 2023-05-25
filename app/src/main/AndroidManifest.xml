@@ -22,7 +22,7 @@
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/app_ic_launcher_new"
+        android:icon="@mipmap/app_ic_launcher"
         android:label="@string/BaseAppName"
         android:supportsRtl="true"
         android:theme="@style/App.Theme.CopyManga.Splash">
@@ -32,7 +32,7 @@
             android:exported="true"
             android:theme="@style/Book.Theme.CopyManga" />
 
-        <!--<activity
+        <activity
             android:name="com.crow.module_anime.ui.activity.AnimeActivity"
             android:exported="true"
             android:theme="@style/Anime.Theme.CopyManga" />
@@ -45,9 +45,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>-->
+        </activity>
 
-        <activity
+<!--        <activity
             android:name=".ui.activity.MainActivity"
             android:exported="true"
             android:theme="@style/Anime.Theme.CopyManga" />
@@ -61,7 +61,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity>-->
 
     </application>
 
