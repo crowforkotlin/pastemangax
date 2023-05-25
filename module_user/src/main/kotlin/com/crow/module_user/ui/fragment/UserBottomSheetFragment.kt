@@ -8,7 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.R.id.app_main_fcv
 import com.crow.base.app.appContext
-import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
@@ -84,7 +84,7 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
                 2 -> toast(getString(baseR.string.BaseStillInDevelopment))
                 3 -> toast(getString(baseR.string.BaseStillInDevelopment))
                 4 -> parentFragmentManager.navigateToWithBackStack(app_main_fcv, parentFragment, get(named(Fragments.About)), Fragments.About.toString(), Fragments.About.toString())
-                5 -> FlowBus.with<Unit>(BaseStrings.Key.CHECK_UPDATE).post(lifecycleScope, Unit)
+                5 -> FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).post(lifecycleScope, Unit)
             }
         }
 
@@ -137,7 +137,7 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
         mBinding.userExit.doOnClickInterval {
 
             // 发送事件清除用户数据
-            FlowBus.with<Unit>(BaseStrings.Key.EXIT_USER).post(lifecycleScope, Unit)
+            FlowBus.with<Unit>(BaseEventEnum.LogOut.name).post(lifecycleScope, Unit)
 
             // SnackBar提示
             mBinding.root.showSnackBar(getString(R.string.user_exit_sucess))

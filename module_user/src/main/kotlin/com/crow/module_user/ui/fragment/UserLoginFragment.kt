@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.app.appContext
-import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.updateLifecycleObserver
 import com.crow.base.tools.coroutine.FlowBus
@@ -69,7 +69,7 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
         if (mIsLoginSuccess) {
             toast(getString(R.string.user_login_ok))
             navigateUp()
-            FlowBus.with<Unit>(BaseStrings.Key.LOGIN_SUCUESS).post(lifecycleScope, Unit)
+            FlowBus.with<Unit>(BaseEventEnum.LoginScuess.name).post(lifecycleScope, Unit)
         }
     }
 

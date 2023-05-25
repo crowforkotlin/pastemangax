@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.isInvisible
+import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
@@ -30,17 +31,6 @@ import com.crow.module_main.model.resp.MainAppUpdateResp
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
 import com.crow.module_main.ui.fragment.ContainerFragment
 import com.crow.module_main.ui.viewmodel.ContainerViewModel
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.disposables.DisposableContainer
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -56,7 +46,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
 
     init {
-        FlowBus.with<Unit>(BaseStrings.Key.CHECK_UPDATE).register(this) { mContainerVM.input(ContainerIntent.GetUpdateInfo()) }  // 查询更新
+        FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).register(this) { mContainerVM.input(ContainerIntent.GetUpdateInfo()) }  // 查询更新
     }
 
     // 初始化更新是否完成
@@ -156,6 +146,7 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
     }
 }
 
+/*
 fun main() = runBlocking<Unit> {
 
     launch {
@@ -288,3 +279,4 @@ fun main() = runBlocking<Unit> {
             }
         })
 }
+*/

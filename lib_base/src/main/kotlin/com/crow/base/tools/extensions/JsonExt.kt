@@ -2,10 +2,6 @@ package com.crow.base.tools.extensions
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -21,6 +17,7 @@ import kotlinx.serialization.json.Json
  * @author lei
  * @date 2021/11/4 3:58 下午
  */
+/*
 val baseJson = Json {
 
 //    classDiscriminator = "code"           // 多态序列化的类描述符属性的名称
@@ -34,15 +31,19 @@ val baseJson = Json {
     coerceInputValues = false               // 非空类型为空或找不到对应枚举时使用默认值
     useArrayPolymorphism = false            // 将多态序列化为默认数组格式
     allowSpecialFloatingPointValues = false // 是否取消对特殊浮点值的规范
-    /*serializersModule = SerializersModule {
+    */
+/*serializersModule = SerializersModule {
         contextual(Cookie::class, CookieSerializer)
-    }*/
+    }*//*
+
 }
 
+*/
 /**
  * 使用 [json] 以及 [deserializer] 将 [String] 解析为 [T] 数据实体
  * 转换失败返回 `null`
- */
+ *//*
+
 @OptIn(ExperimentalSerializationApi::class)
 inline fun <reified T> String?.toTypeEntity(json: Json = baseJson, deserializer: DeserializationStrategy<T>? = null): T? {
     return when {
@@ -51,6 +52,7 @@ inline fun <reified T> String?.toTypeEntity(json: Json = baseJson, deserializer:
         else -> json.decodeFromString(this)
     }
 }
+*/
 
 /*
 * @Description: Json扩展

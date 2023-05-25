@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
+import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
@@ -103,11 +104,11 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             doOnCancel = {
                 mBookshelfComicRvAdapter.retry()
                 mBookshelfNovelRvAdapter.retry()
-                FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).post(lifecycleScope, Unit)
+                FlowBus.with<Unit>(BaseEventEnum.ClearUserInfo.name).post(lifecycleScope, Unit)
             },
             doOnConfirm = {
                 requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv, this, get(named(Fragments.Login)), Fragments.Login.toString(), Fragments.Login.toString())
-                FlowBus.with<Unit>(BaseStrings.Key.CLEAR_USER_INFO).post(lifecycleScope, Unit)
+                FlowBus.with<Unit>(BaseEventEnum.ClearUserInfo.name).post(lifecycleScope, Unit)
             }
         )
     }

@@ -99,12 +99,9 @@ dependencies {
     api(Dependencies.android_material)
     api(Dependencies.androidx_constraintlayout)
     api(Dependencies.androidx_lifecycle_ktx)
-    api(Dependencies.androidx_lifecycle_service)
     api(Dependencies.androidx_lifecycle_livedata_ktx)
+    api(Dependencies.androidx_lifecycle_service)
     api(Dependencies.androidx_lifecycle_viewmodel_ktx)
-    api(Dependencies.androidx_swiperefreshlayout)
-    api(Dependencies.androidx_navigation_ui_ktx)
-    api(Dependencies.androidx_navigation_fragment_ktx)
     api(Dependencies.androidx_datastore)
     api(Dependencies.androidx_paging_runtime)
     api(Dependencies.androidx_paging_runtime_ktx)
@@ -129,12 +126,10 @@ dependencies {
 
     /* Github */
     api(Dependencies.retrofit)
-    api(Dependencies.retrofit_gson)
     api(Dependencies.retrofit_scalars)
     api(Dependencies.retrofit_moshi)
 
     api(Dependencies.moshi)
-    api(Dependencies.kotlin_serialization)
 
     api(Dependencies.okhttp)
     api(Dependencies.okhttp_loggin)
@@ -143,18 +138,11 @@ dependencies {
     api(Dependencies.lottie)
     api(Dependencies.photoview)
 
-    api(Dependencies.reactivex_rxjava)
-    api(Dependencies.reactivex_rxjava_android)
-
     api(Dependencies.glide)
     api(Dependencies.glide_integration) { exclude(group = "glide-parent") }
     kapt(Dependencies.glide_compiler)
 
-    // api(Dependencies.autosize)
-
     api(Dependencies.zguop_banner)
-    api(Dependencies.circular_imageview)
-    // api(Dependencies.bigImageViewPager)
     api(Dependencies.tencent_bugly)
     api(Dependencies.loading_button)
     api(Dependencies.luksiege_picture_selector)

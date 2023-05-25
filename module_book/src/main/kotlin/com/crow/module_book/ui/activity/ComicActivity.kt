@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.animateFadeIn
@@ -41,7 +42,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>() {
     private var mBadgeView: PageBadgeView? = null
 
     private fun onShowComicPage(comicPageResp: ComicPageResp) {
-        FlowBus.with<String>(BaseStrings.Key.UPDATE_CHAPTER).post(lifecycleScope, comicPageResp.mChapter.mName)
+        FlowBus.with<String>(BaseEventEnum.UpdateChapter.name).post(lifecycleScope, comicPageResp.mChapter.mName)
         val comicContents = comicPageResp.mChapter.mWords.zip(comicPageResp.mChapter.mContents).sortedBy { it.first }.map { it.second }.toMutableList()
         comicContents.add(null)
         mComicRvAdapter = ComicRvAdapter(comicContents, comicPageResp.mChapter.mNext != null, comicPageResp. mChapter.mPrev != null) {

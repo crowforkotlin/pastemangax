@@ -23,6 +23,15 @@ object FlowBus {
         return eventBus as EventBus<T>
     }
 
+    fun <T> withUnSafety(key: String): EventBus<T> {
+        var eventBus = busMap[key]
+        if (eventBus == null) {
+            eventBus = EventBus<T>(key)
+            busMap[key] = eventBus
+        }
+        return eventBus as EventBus<T>
+    }
+
     @Synchronized
     fun <T> withStick(key: String): StickEventBus<T> {
         var eventBus = busStickMap[key]

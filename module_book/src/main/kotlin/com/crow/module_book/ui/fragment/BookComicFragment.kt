@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
+import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
@@ -44,7 +45,7 @@ import com.crow.base.R as baseR
 class BookComicFragment : BookFragment() {
 
     init {
-        FlowBus.with<String>(BaseStrings.Key.UPDATE_CHAPTER).register(this) {
+        FlowBus.with<String>(BaseEventEnum.UpdateChapter.name).register(this) {
             mBookVM.updateBookChapter(mBookVM.mComicInfoPage!!.mComic!!.mName, it, BookType.COMIC )
             mComicChapterRvAdapter?.mChapterName = it
         }

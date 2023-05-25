@@ -29,17 +29,29 @@ import com.crow.module_home.ui.viewmodel.HomeViewModel
 import com.google.android.material.search.SearchView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchComicFragment(val mSearchView: SearchView, val mOnTap: (pathword: String) ->Unit) : BaseMviFragment<HomeFragmentSearchComicBinding>() {
+class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
+
+    companion object {
+        fun newInstance( mSearchView: SearchView,  mOnTap: (pathword: String) ->Unit): SearchComicFragment {
+            val comicFragment = SearchComicFragment()
+            comicFragment.mSearchView = mSearchView
+            comicFragment.mOnTap = mOnTap
+            return comicFragment
+        }
+    }
+
+    private var mSearchView: SearchView? = null
+    private var mOnTap: ((pathword: String) -> Unit)? = null
 
     private val mHomeVM by viewModel<HomeViewModel>()
 
     private val mBaseEvent = BaseEvent.getSIngleInstance()
 
-    private var mComicRvAdapter = SearchComicRvAdapter { mOnTap(it.mPathWord) }
+    private var mComicRvAdapter = SearchComicRvAdapter { mOnTap?.invoke(it.mPathWord) }
 
     fun doInputSearchComicIntent() {
 
-        val keyword = mSearchView.text.toString().removeWhiteSpace().ifEmpty {
+        val keyword = mSearchView?.text.toString().removeWhiteSpace().ifEmpty {
             mBinding.homeSearchComicTips.text = getString(R.string.home_saerch_tips)
             mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
             mBinding.homeSearchComicTips.animateFadeIn()
@@ -98,7 +110,7 @@ class SearchComicFragment(val mSearchView: SearchView, val mOnTap: (pathword: St
                 }
 
                 // 搜索内容不为空
-                if(!mSearchView.text?.toString().isNullOrEmpty()) doInputSearchComicIntent()
+                if(!mSearchView?.text?.toString().isNullOrEmpty()) doInputSearchComicIntent()
             }
         }
     }

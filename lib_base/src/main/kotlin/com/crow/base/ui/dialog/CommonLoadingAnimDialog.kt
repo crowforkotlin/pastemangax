@@ -2,13 +2,12 @@ package com.crow.base.ui.dialog
 
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
 import com.crow.base.R
 import com.crow.base.databinding.BaseDialogOriginalLoadingBinding
 import com.crow.base.tools.extensions.setBackgroundTransparent
 import com.crow.base.tools.extensions.setMaskAmount
 import com.crow.base.ui.viewmodel.BaseViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -51,7 +50,7 @@ class CommonLoadingAnimDialog: BaseVBDialogFragment<BaseDialogOriginalLoadingBin
         }
     }
     override fun getViewBinding(layoutInflater: LayoutInflater) = BaseDialogOriginalLoadingBinding.inflate(layoutInflater)
-    override fun getViewModel(): Lazy<BaseViewModel> = viewModels()
+    override fun getViewModel(): Lazy<BaseViewModel> = stateViewModel()
 
 
 }

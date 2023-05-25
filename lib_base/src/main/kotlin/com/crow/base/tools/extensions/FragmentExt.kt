@@ -9,8 +9,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
 import com.crow.base.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -53,7 +51,7 @@ suspend inline fun <T> T.doAfterDelay(delayMs: Long, crossinline block: suspend 
     delay(delayMs)
     block()
 }
-
+/*
 fun Fragment.navigate(
     @IdRes idRes: Int, bundle: Bundle? = null,
     navOptions: NavOptions = NavOptions.Builder()
@@ -65,8 +63,10 @@ fun Fragment.navigate(
 ) {
     findNavController().navigate(idRes, bundle, navOptions)
 }
-
+*/
+/*
 fun Fragment.navigateUp() = findNavController().navigateUp()
+*/
 
 fun FragmentTransaction.setFadeAnimation() =
     setCustomAnimations(anim.fade_in, anim.fade_out, anim.fade_in, anim.fade_out)
