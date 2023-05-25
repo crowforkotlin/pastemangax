@@ -1,6 +1,5 @@
 package com.crow.copymanga.model.di
 
-import com.crow.module_anime.network.AnimeService
 import com.crow.module_book.network.ComicService
 import com.crow.module_bookshelf.network.BookShelfService
 import com.crow.module_discover.network.DiscoverService
@@ -26,5 +25,5 @@ val servicesModule = module {
     single { get<Retrofit>().create(UserService::class.java) }
     single { get<Retrofit>().create(BookShelfService::class.java) }
     single { get<Retrofit>().create(DiscoverService::class.java) }
-    single { get<Retrofit>().create(AnimeService::class.java) }
+    // single { get<Retrofit>().create(AnimeService::class.java) }
 }
