@@ -17,7 +17,7 @@ import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toast
-import com.crow.base.ui.fragment.BaseMviBottomSheetDF
+import com.crow.base.ui.fragment.BaseMviBottomSheetDialogFragment
 import com.crow.module_user.R
 import com.crow.module_user.databinding.UserFragmentBinding
 import com.crow.module_user.ui.adapter.UserRvAdapter
@@ -37,7 +37,7 @@ import com.crow.base.R as baseR
  * @formatter:on
  **************************/
 
-class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
+class UserBottomSheetFragment : BaseMviBottomSheetDialogFragment<UserFragmentBinding>() {
 
     // 用戶 VM
     private val mUserVM by sharedViewModel<UserViewModel>()

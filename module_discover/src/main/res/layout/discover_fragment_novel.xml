@@ -9,7 +9,7 @@
 
 	<include
 		android:id="@+id/discover_novel_appbar"
-		layout="@layout/discover_fragment_appbar" />
+		layout="@layout/discover_fragment_appbar_new" />
 
 	<com.scwang.smart.refresh.layout.SmartRefreshLayout
 		android:id="@+id/discover_novel_refresh"

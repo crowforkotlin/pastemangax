@@ -4,5 +4,6 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/app_main_fcv"
 	android:layout_width="match_parent"
+	android:fitsSystemWindows="true"
 	android:layout_height="match_parent"
 	tools:context=".ui.activity.MainActivity" />

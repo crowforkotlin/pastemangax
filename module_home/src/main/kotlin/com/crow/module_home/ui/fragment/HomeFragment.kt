@@ -65,12 +65,8 @@ import com.crow.base.R as baseR
 
 class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
-    companion object {
-
-        const val SEARCH_TAG = "INPUT"
-
-        fun newInstance() = HomeFragment()
-    }
+    /** 静态区 */
+    companion object { const val SEARCH_TAG = "INPUT" }
 
     /** 主页 VM */
     private val mHomeVM by viewModel<HomeViewModel>()
@@ -94,10 +90,8 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     /** 新的Evnet事件*/
     private val mBaseEvent = BaseEvent.newInstance()
 
-
     /** 注册FlowBus 设置主页头像 */
-    init {
-        FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).register(this) { drawable ->
+    init { FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).register(this) { drawable ->
             if (!isHidden) {
                 lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
                     withStarted {
@@ -105,9 +99,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                     }
                 }
             }
-        }
-    }
-
+        } }
 
     /** 导航至BookInfo */
     private fun navigateBookComicInfo(pathword: String) {
@@ -204,13 +196,24 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     /** 暴露的函数 提供给 ContainerFragment 用于通知主页刷新 */
     fun doRefresh() { mHomeVM.input(HomeIntent.GetHomePage()) }
 
+    /** 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentBinding.inflate(inflater)
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mRecRefresh = null  // 置空“换一批”控件 防止内存泄漏
+    /** Lifecycle Create */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // 内存重启后隐藏SearchView
+        if (savedInstanceState != null) {
+            lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
+                withStarted {
+                    mBinding.homeSearchView.hide()
+                }
+            }
+        }
     }
 
+    /** Lifecycle Start */
     override fun onStart() {
         super.onStart()
         mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -219,17 +222,26 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
     }
 
+    /** Lifecycle Stop */
     override fun onStop() {
         super.onStop()
         mBaseEvent.remove(SEARCH_TAG)
     }
 
+    /** Lifecycle Destroy */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mRecRefresh = null  // 置空“换一批”控件 防止内存泄漏
+    }
+
+    /** 初始化数据 */
     override fun initData() {
 
         // 获取主页数据
         mHomeVM.input(HomeIntent.GetHomePage())
     }
 
+    /** 初始化视图  */
     override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
@@ -245,6 +257,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeRv.adapter = mHomeComicParentRvAdapter
     }
 
+    /** 初始化监听器 */
     override fun initListener() {
 
         // 搜索
@@ -263,19 +276,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeRefresh.setOnRefreshListener { mHomeVM.input(HomeIntent.GetHomePage()) }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // 内存重启后隐藏SearchView
-        if (savedInstanceState != null) {
-            lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
-                withStarted {
-                    mBinding.homeSearchView.hide()
-                }
-            }
-        }
-    }
-
+    /** 初始化监听器 */
     override fun initObserver() {
 
         mHomeVM.onOutput { intent ->

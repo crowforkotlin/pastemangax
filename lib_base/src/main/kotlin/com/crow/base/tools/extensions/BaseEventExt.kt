@@ -71,8 +71,8 @@ fun BaseEvent.doOnInterval(msg: String? = null, iEvent: BaseIEventInterval<BaseE
 }
 
 // BaseEvent扩展 onFailure
-fun BaseEvent.doOnInterval(iEvent: BaseIEventIntervalExt<BaseEvent>) {
-    doOnIntervalResult(this, this, iEvent)
+fun BaseEvent.doOnInterval(iEvent: BaseIEventIntervalExt<BaseEvent>) : Boolean {
+    return doOnIntervalResult(this, this, iEvent)
 }
 
 fun BaseEvent.doOnInterval(mHandler: Handler?, runnable: Runnable): BaseEvent {

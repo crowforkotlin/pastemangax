@@ -21,8 +21,7 @@ import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
-import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.showSnackBar
@@ -231,7 +230,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
-        mBinding.bookshelfBar.setPadding(0, mContext.getStatusBarHeight(), 0, 0)
+        mBinding.bookshelfToolbar.immersionPadding(hideNaviateBar = false)
 
         // 设置刷新时不允许列表滚动
         mBinding.bookshelfRefresh.setDisableContentWhenRefresh(true)
@@ -278,7 +277,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         }
 
         // 移至顶部 点击事件
-        mBinding.bookshelfMoveTop.doOnClickInterval {
+        /*mBinding.bookshelfMoveTop.doOnClickInterval {
 
             // 点击书架的当前类型为“漫画” 并且漫画适配器个数不为0 则滑动至顶部
             if (mBinding.bookshelfButtonGropu.checkedButtonId == R.id.bookshelf_comic) if (mBookshelfComicRvAdapter.itemCount != 0) mBinding.bookshelfRvComic.smoothScrollToPosition(
@@ -289,10 +288,10 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             else if (mBookshelfNovelRvAdapter.itemCount != 0) mBinding.bookshelfRvNovel.smoothScrollToPosition(
                 0
             )
-        }
+        }*/
 
         // 移至底部 点击事件
-        mBinding.bookshelfMoveBottom.doOnClickInterval {
+        /*mBinding.bookshelfMoveBottom.doOnClickInterval {
 
             // 点击漫画 并且漫画适配器个数不为0 则滑动至 适配器总数 - 1
             if (mBinding.bookshelfButtonGropu.checkedButtonId == R.id.bookshelf_comic) if (mBookshelfComicRvAdapter.itemCount != 0) mBinding.bookshelfRvComic.smoothScrollToPosition(
@@ -303,7 +302,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             else if (mBookshelfNovelRvAdapter.itemCount != 0) mBinding.bookshelfRvNovel.smoothScrollToPosition(
                 mBookshelfNovelRvAdapter.itemCount - 1
             )
-        }
+        }*/
 
         // 按钮组 点击事件 （漫画、轻小说）
         mBinding.bookshelfButtonGropu.addOnButtonCheckedListener { _, checkedId, isChecked ->

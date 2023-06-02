@@ -31,7 +31,7 @@
 		android:layout_marginTop="0dp"
 		android:clickable="false"
 		android:gravity="center"
-		app:icon="@drawable/home_ic_more_24dp"
-		app:iconTint="@null" />
+		app:icon="@drawable/base_ic_more_24dp"
+		app:iconTint="@color/home_light_blue_500" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -8,13 +8,12 @@
 
 	<include
 		android:id="@+id/discover_comic_appbar"
-		layout="@layout/discover_fragment_appbar" />
+		layout="@layout/discover_fragment_appbar_new" />
 
 	<com.scwang.smart.refresh.layout.SmartRefreshLayout
 		android:id="@+id/discover_comic_refresh"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_weight="1"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
 		<com.scwang.smart.refresh.header.MaterialHeader

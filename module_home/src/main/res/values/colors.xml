@@ -4,5 +4,6 @@
 	<color name="home_grey_400">#bdbdbd</color>
 	<color name="home_indigo">#e8eaf6</color>
     <color name="home_blue_grey_50">#eceff1</color>
+    <color name="home_light_blue_500">#03a9f4</color>
 
 </resources>

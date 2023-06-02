@@ -36,27 +36,29 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  **************************/
 class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
-    // FlowBus Init
+    /** 注册FlowBus */
     init {
         FlowBus.with<Unit>(BaseEventEnum.ClearUserInfo.name).register(this) { mUserVM.doClearUserInfo() }                                       // 清除用户数据
         FlowBus.with<Unit>(BaseEventEnum.LoginScuess.name).register(this) { doLoginSuccessRefresh() }                                          // 登录成功后响应回来进行刷新
         FlowBus.with<Unit>(BaseEventEnum.LogOut.name).register(this) { doExitUser() }                                                                           // 退出账号
     }
 
-    // 碎片容器适配器
+    /** 碎片容器适配器 */
     private var mContainerAdapter: ContainerAdapter? = null
 
-    // 容器VM
+    /** （Activity级别）容器VM */
     private val mContainerVM by sharedViewModel<ContainerViewModel>()
 
-    // 用户VM
+    /** （Activity级别）用户VM */
     private val mUserVM by sharedViewModel<UserViewModel>()
 
-    // 碎片集
-    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment.newInstance(), DiscoverComicFragment.newInstance(), DiscoverNovelFragment(),BookshelfFragment.newInstance()) }
+    /** 碎片集 */
+    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment(), DiscoverComicFragment(), DiscoverNovelFragment(),BookshelfFragment()) }
 
+    /** 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
+    /** 初始化观察者 */
     override fun initObserver() {
 
         // 用户信息 收集
@@ -84,6 +86,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
     }
 
+    /** 初始化视图 */
     override fun initView(bundle: Bundle?) {
 
         // 适配器 初始化 （设置Adapter、预加载页数）
@@ -93,21 +96,23 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mBinding.mainViewPager.isUserInputEnabled = false
     }
 
-    // 检查更新
+    /** 初始化数据 */
     override fun initData() { mContainerVM.input(ContainerIntent.GetUpdateInfo()) }
 
+    /** 当视图隐藏状态发生改变 并触发 */
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
-        // 不为隐藏 当返回ContainerFragment时回调此方法 则通知设置Icon
+        // 可见： 当返回ContainerFragment时回调此方法 则通知设置Icon
         if (!hidden) mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
     }
 
+    /** 初始化监听器 */
     override fun initListener() {
 
         // 设置底部导航视图点击Item可见
-        mBinding.mainBottomNavigation.setOnItemSelectedListener {
-            when(it.itemId) {
+        mBinding.mainBottomNavigation.setOnItemSelectedListener { item ->
+            when(item.itemId) {
                 R.id.main_menu_homepage -> doSwitchFragment(0)
                 R.id.main_menu_discovery_comic -> doSwitchFragment(1)
                 R.id.main_menu_discovery_novel -> doSwitchFragment(2)
@@ -117,19 +122,19 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
     }
 
-    // 执行退出用户
+    /** 执行退出用户 */
     private fun doExitUser() {
         mUserVM.doClearUserInfo()
         (mFragmentList[3] as BookshelfFragment).doExitFromUser()
     }
 
-    // 执行登陆成功刷新
+    /** 执行登陆成功刷新 */
     private fun doLoginSuccessRefresh() {
         (mFragmentList[0] as HomeFragment).doRefresh()
         (mFragmentList[3] as BookshelfFragment).doRefresh()
     }
 
-    // 执行选择Fragment
+    /** 执行选择Fragment */
     private fun doSwitchFragment(position: Int) {
         if (mBinding.mainViewPager.currentItem != position) mBinding.mainViewPager.setCurrentItem(position, true)
     }

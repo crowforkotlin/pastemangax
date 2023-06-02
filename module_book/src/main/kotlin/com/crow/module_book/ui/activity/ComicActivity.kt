@@ -5,9 +5,6 @@ import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
 import androidx.activity.addCallback
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -65,16 +62,9 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
 
-
         // 以便在刘海屏上使用刘海区域并适应窗口布局。
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-        }
-
-        // 配置WindowFullScreen
-        WindowCompat.getInsetsController(window, window.decorView).apply {
-            hide(WindowInsetsCompat.Type.systemBars())
-            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
         // 初始化BadgeView

@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import androidx.core.view.isInvisible
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
@@ -78,12 +77,8 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
         // 设置屏幕方向
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        // 全屏布局
-        WindowCompat.setDecorFitsSystemWindows(window, true)
-
         // 设置布局
         setContentView(mBinding.root)
-
 
 
         // 内存重启后 避免再次添加布局

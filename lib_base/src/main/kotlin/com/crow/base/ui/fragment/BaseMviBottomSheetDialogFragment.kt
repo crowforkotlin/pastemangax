@@ -19,7 +19,7 @@ import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
  * @Description: BaseMviBottomSheetDF
  * @formatter:on
  **************************/
-abstract class BaseMviBottomSheetDF<out VB : ViewBinding> : BaseBottomSheetDFImpl(), IBaseFragment {
+abstract class BaseMviBottomSheetDialogFragment<out VB : ViewBinding> : BaseBottomSheetDFImpl(), IBaseFragment {
 
     private var _mBinding: VB? = null
     protected val mBinding get() = _mBinding!!
