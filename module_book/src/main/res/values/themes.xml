@@ -4,4 +4,7 @@
 		<item name="android:windowFullscreen">true</item>
 	</style>
 
+	<style name="Book.Theme.Chapter" parent="Widget.Material3.Button.ElevatedButton">
+	</style>
+
 </resources>

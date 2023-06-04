@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/base_dp5"
+    android:layout_marginEnd="@dimen/base_dp5"
+    android:layout_marginBottom="@dimen/base_dp25"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/home_book_card_view"
+        style="@style/Widget.Material3.CardView.Filled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardElevation="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/base_grey_400_40"
+        app:strokeWidth="1dp">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/home_comic_rv_loading"
+            style="@style/Widget.Material3.CircularProgressIndicator.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            app:indicatorColor="@color/base_light_blue_500"
+            app:indicatorSize="@dimen/base_dp36"
+            app:trackCornerRadius="@dimen/base_dp99" />
+
+        <TextView
+            android:id="@+id/home_comic_rv_progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/BaseZero"
+            android:textSize="@dimen/base_sp10"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/home_comic_rv_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/home_comic"
+            android:foreground="@drawable/base_bg_item_ripper"
+            android:scaleType="centerCrop"
+            tools:layout_height="@dimen/base_dp168"
+            tools:layout_width="@dimen/base_dp120" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/home_comic_rv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/base_dp2_5"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textSize="@dimen/base_sp12"
+        android:textStyle="bold"
+        tools:text="书名" />
+
+    <TextView
+        android:id="@+id/home_comic_rv_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/base_dp2_5"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingStart="@dimen/base_dp10"
+        android:paddingEnd="@dimen/base_dp10"
+        android:textSize="@dimen/base_sp10"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:text="作者"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/home_comic_rv_lastest_chapter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/base_dp2_5"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingStart="@dimen/base_dp10"
+        android:paddingEnd="@dimen/base_dp10"
+        android:textSize="@dimen/base_sp10"
+        android:textStyle="bold"
+        tools:text="最新章节" />
+
+    <TextView
+        android:id="@+id/home_comic_rv_hot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textSize="@dimen/base_sp10"
+        android:textStyle="bold"
+        tools:text="热度" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

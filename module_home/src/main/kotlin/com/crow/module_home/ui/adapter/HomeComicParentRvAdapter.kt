@@ -132,13 +132,14 @@ class HomeComicParentRvAdapter(
         if (type == Type.REC) mHomeRecComicRvAdapter = adapter as HomeComicChildRvAdapter<RecComicsResult>
         viewLifecycleOwner.lifecycleScope.launch {
             rvBinding.homeComicRv.adapter = adapter
-            adapter.doNotify((mData!![pos] as MutableList<T>), delay)
+            adapter.doNotify(((mData ?: return@launch)[pos] as MutableList<T>), delay)
             rvBinding.root.animateFadeIn(BASE_ANIM_100L)
         }
     }
 
     private fun HomeComicParentRvAdapter.BannerViewHolder.doBannerNotify(pos: Int) {
         val adapter = HomeBannerRvAdapter { pathword -> doOnTap(pathword) }
+        if (mData == null) return
         viewLifecycleOwner.lifecycleScope.launch {
             rvBinding.homeBannerRv.adapter = adapter
             adapter.doBannerNotify((mData!![pos] as MutableList<Banner>), mRvDelayMs)

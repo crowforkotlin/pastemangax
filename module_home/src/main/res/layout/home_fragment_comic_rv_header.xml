@@ -8,7 +8,7 @@
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/home_comic_button_title"
-		style="@style/Widget.Material3.Button.IconButton"
+		style="@style/Base.Theme.Button.Icon.Text"
 		tools:icon="@drawable/home_ic_new_24dp"
 		tools:text="@string/BaseAppName_CH"
 		android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/home_comic_more"
-		style="@style/Widget.Material3.Button.IconButton"
+		style="@style/Base.Theme.Button.Icon.Text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="end|center_vertical"

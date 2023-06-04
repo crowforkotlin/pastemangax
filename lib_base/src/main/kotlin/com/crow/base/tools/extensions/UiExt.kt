@@ -19,7 +19,9 @@ import kotlin.coroutines.resume
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.properties.Delegates
 
+var appDarkMode: Int by Delegates.notNull()
 
 const val BASE_ANIM_300L = 300L
 const val BASE_ANIM_200L = 200L

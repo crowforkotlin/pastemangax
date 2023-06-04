@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/base_white"
+    style="@style/Base.Theme.BG"
     tools:context="com.crow.module_book.ui.fragment.BookFragment"
     tools:visibility="visible">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_back"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="@style/Base.Theme.Button.Icon.Back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
@@ -19,7 +19,6 @@
         android:minWidth="@dimen/base_dp48"
         android:minHeight="@dimen/base_dp48"
         app:icon="@drawable/base_ic_back_24dp"
-        app:iconTint="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="DuplicateSpeakableTextCheck" />
@@ -173,7 +172,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_add_to_bookshelf"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="@style/Base.Theme.Button.Icon.Tint.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0.25"
@@ -191,9 +190,9 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_download"
-        style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/Base.Theme.Button.Icon.Tint.Text"
         android:layout_marginTop="@dimen/base_dp10"
         android:minWidth="@dimen/base_dp48"
         android:minHeight="@dimen/base_dp48"
@@ -209,9 +208,9 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_readnow"
-        style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/Base.Theme.Button.Icon.Tint.Text"
         android:minWidth="@dimen/base_dp48"
         android:minHeight="@dimen/base_dp48"
         android:text="@string/BookComicReadNow"

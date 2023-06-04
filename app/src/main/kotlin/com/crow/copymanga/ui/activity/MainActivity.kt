@@ -3,8 +3,10 @@ package com.crow.copymanga.ui.activity
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import androidx.core.view.isInvisible
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
@@ -12,6 +14,7 @@ import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.appDarkMode
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.isLatestVersion
 import com.crow.base.tools.extensions.navigateByAdd
@@ -74,12 +77,20 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
     @SuppressLint("SourceLockedOrientationActivity")
     override fun initView(savedInstanceState: Bundle?) {
 
+        appDarkMode = AppCompatDelegate.getDefaultNightMode()
+
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = (appDarkMode == AppCompatDelegate.MODE_NIGHT_NO)
+        }
+
         // 设置屏幕方向
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
+        // 沉浸式Edge To Edge
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         // 设置布局
         setContentView(mBinding.root)
-
 
         // 内存重启后 避免再次添加布局
         if (savedInstanceState == null) supportFragmentManager.navigateByAdd<ContainerFragment>(R.id.app_main_fcv, null, Fragments.Container.toString())

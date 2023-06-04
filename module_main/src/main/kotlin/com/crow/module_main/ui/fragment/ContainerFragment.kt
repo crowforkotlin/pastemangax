@@ -43,6 +43,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         FlowBus.with<Unit>(BaseEventEnum.LogOut.name).register(this) { doExitUser() }                                                                           // 退出账号
     }
 
+
+
+
     /** 碎片容器适配器 */
     private var mContainerAdapter: ContainerAdapter? = null
 
@@ -85,7 +88,6 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             }
         }
     }
-
     /** 初始化视图 */
     override fun initView(bundle: Bundle?) {
 

@@ -11,6 +11,7 @@ import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnInterval
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.removeWhiteSpace
 import com.crow.base.tools.extensions.repeatOnLifecycle
@@ -70,7 +71,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
         mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, true)
         repeatOnLifecycle {
             mHomeVM.mComicSearchFlowPage?.onCollect(this) {
-                mComicRvAdapter.submitData(it)
+                mComicRvAdapter.submitData(lifecycle, it)
             }
         }
     }
@@ -97,6 +98,8 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
 
         // 选中标签事件
         mBinding.homeSearchComicChipGroup.setOnCheckedStateChangeListener { _, _ ->
+
+            mBaseEvent.setBoolean("ChipChecked", true)
 
             // 1秒间隔处理
             mBaseEvent.doOnInterval {
@@ -130,6 +133,12 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
                     .doOnSuccess { mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, false) }
                     .doOnResult {
                         if (!mTag) return@doOnResult
+                        val listener: () -> Unit = {
+                            "Run".logMsg()
+                            mBinding.homeSearchComicRv.smoothScrollToPosition(0)
+                        }
+                        mComicRvAdapter.addOnPagesUpdatedListener(listener)
+                        dismissLoadingAnim { mComicRvAdapter.removeOnPagesUpdatedListener(listener) }
                         if (intent.searchComicResp!!.mTotal == 0) {
                             if (!mBinding.homeSearchComicTips.isVisible) {
                                 mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
@@ -146,12 +155,10 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
                                 }
                             }
                         }
-                        mHandler.postDelayed({
-                            dismissLoadingAnim()
-                            mBinding.homeSearchComicRv.smoothScrollToPosition(0)
-                        },  BASE_ANIM_300L)
                     }
             }
         }
+
+
     }
 }

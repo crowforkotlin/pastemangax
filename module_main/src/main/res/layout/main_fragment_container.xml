@@ -18,10 +18,12 @@
 	<com.google.android.material.bottomnavigation.BottomNavigationView
 		android:id="@+id/main_bottom_navigation"
 		android:layout_width="match_parent"
+		app:itemBackground="@android:color/transparent"
+        app:backgroundTint="@android:color/transparent"
+		app:elevation="10dp"
+		style="@style/Widget.Material3.BottomNavigationView"
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
-		app:elevation="@dimen/base_dp10"
-		app:itemBackground="@color/base_home_bar_bg"
 		app:labelVisibilityMode="selected"
 		app:menu="@menu/main_container_bottom_menu" />
 

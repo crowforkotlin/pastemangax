@@ -5,9 +5,16 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.crow.base.R
 import com.crow.base.app.appContext
+import com.crow.base.tools.extensions.appDarkMode
+import com.crow.base.tools.extensions.logMsg
 
 interface IBookAdapterColor<T: ViewHolder> {
-    private val mRed: Int get() = ContextCompat.getColor(appContext, R.color.base_book_red)
+
+    private val mRed: Int get() {
+        "run $appDarkMode".logMsg()
+        return ContextCompat.getColor(appContext, R.color.base_book_red)
+    }
+
     private val mPurple: Int get() = ContextCompat.getColor(appContext, R.color.base_book_purple)
     private val mIndigo: Int get() = ContextCompat.getColor(appContext, R.color.base_book_indigo)
     private val mGreen: Int get() = ContextCompat.getColor(appContext, R.color.base_book_green)

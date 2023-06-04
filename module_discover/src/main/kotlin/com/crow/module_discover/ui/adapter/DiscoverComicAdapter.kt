@@ -3,7 +3,7 @@ package com.crow.module_discover.ui.adapter
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.doOnLayout
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -23,7 +23,7 @@ import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.ToolTipsView
-import com.crow.module_discover.databinding.DiscoverFragmentRvBinding
+import com.crow.module_discover.databinding.DiscoverFragmentRvNewBinding
 import com.crow.module_discover.model.resp.comic_home.DiscoverComicHomeResult
 
 class DiscoverComicAdapter(
@@ -40,12 +40,12 @@ class DiscoverComicAdapter(
         }
     }
 
-    class LoadingViewHolder(binding: DiscoverFragmentRvBinding) : BaseGlideLoadingViewHolder<DiscoverFragmentRvBinding>(binding)
+    class LoadingViewHolder(binding: DiscoverFragmentRvNewBinding) : BaseGlideLoadingViewHolder<DiscoverFragmentRvNewBinding>(binding)
 
     private var mNameHeight: Int? =null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : LoadingViewHolder {
-        return LoadingViewHolder(DiscoverFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
+        return LoadingViewHolder(DiscoverFragmentRvNewBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
 
             val layoutParams = vh.rvBinding.discoverRvImage.layoutParams
             layoutParams.width = getComicCardWidth() - mSize10
@@ -53,8 +53,9 @@ class DiscoverComicAdapter(
 
             vh.rvBinding.discoverRvName.doOnLayout { view ->
                 if (mNameHeight == null) mNameHeight = if (vh.rvBinding.discoverRvName.lineCount == 1) view.measuredHeight * 2 else view.measuredHeight
-                (vh.rvBinding.discoverRvName.layoutParams as ConstraintLayout.LayoutParams).height = mNameHeight!!
+                (vh.rvBinding.discoverRvName.layoutParams as LinearLayoutCompat.LayoutParams).height = mNameHeight!!
             }
+
 
             vh.rvBinding.discoverRvBookCard.doOnClickInterval {
                 mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)

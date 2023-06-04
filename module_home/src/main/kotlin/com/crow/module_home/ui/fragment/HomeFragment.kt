@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.FrameLayout
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
@@ -21,9 +22,11 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.globalCoroutineException
+import com.crow.base.tools.extensions.appDarkMode
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.setMaskAmount
@@ -161,14 +164,26 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                 val binding = HomeFragmentSearchViewBinding.inflate(layoutInflater)                                                                 // 获取SearchViewBinding
                 val searchComicFragment = SearchComicFragment.newInstance(mBinding.homeSearchView) { navigateBookComicInfo(it) }   // 实例化SearchComicFragment
                 val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.homeSearchView) { navigateBookComicInfo(it) }     // 实例化SearchNovelFragment
+
+                val bgColor: Int; val tintColor: Int; val statusBarDrawable: Drawable?
+                if (appDarkMode == AppCompatDelegate.MODE_NIGHT_YES) {
+                    bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
+                    tintColor = ContextCompat.getColor(mContext, android.R.color.white)
+                    statusBarDrawable = AppCompatResources.getDrawable(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
+                } else {
+                    bgColor = ContextCompat.getColor(mContext, android.R.color.white)
+                    tintColor = ContextCompat.getColor(mContext, android.R.color.black)
+                    statusBarDrawable = AppCompatResources.getDrawable(mContext, baseR.color.base_white)
+                }
                 toolbar.setNavigationIcon(baseR.drawable.base_ic_back_24dp)                                                                             // 设置SearchView toolbar导航图标
-                toolbar.setBackgroundColor(ContextCompat.getColor(mContext, baseR.color.base_white))                                  // 设置SearchView toolbar背景色白，沉浸式
+                toolbar.navigationIcon?.setTint(tintColor)
+                toolbar.setBackgroundColor(bgColor)                                                                                                                    // 设置SearchView toolbar背景色白，沉浸式
                 setStatusBarSpacerEnabled(false)                                                                                                                          // 关闭状态栏空格间距
 
                 // 添加一个自定义 View设置其高度为StatubarHeight实现沉浸式效果
                 addHeaderView(View(mContext).also { view->
                     view.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mContext.getStatusBarHeight())
-                    view.foreground = AppCompatResources.getDrawable(mContext, baseR.color.base_white)
+                    view.foreground = statusBarDrawable
                 })
 
                 addView(binding.root)                                                                                                         // 添加SearcViewBinding 视图内容
@@ -243,6 +258,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     /** 初始化视图  */
     override fun initView(bundle: Bundle?) {
+        "Run".logMsg()
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.homeAppbar.immersionPadding(hideStatusBar = true, hideNaviateBar = false)
@@ -262,8 +278,13 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
         // 搜索
         mBinding.homeToolbar.menu[0].doOnClickInterval {
-            initSearchView()
-            mBinding.homeSearchView.show()
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            // 3initSearchView()
+            // mBinding.homeSearchView.show()
         }
 
         // 设置

@@ -6,7 +6,7 @@
 	android:layout_width="match_parent"
 	tools:theme="@style/Discover.Theme.CopyManga"
 	android:layout_height="wrap_content"
-	android:background="@color/base_home_bar_bg">
+	android:background="@color/base_bg_grey_100_light">
 
 	<androidx.appcompat.widget.LinearLayoutCompat
 		android:layout_width="match_parent"
