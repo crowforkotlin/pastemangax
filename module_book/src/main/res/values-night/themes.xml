@@ -1,0 +1,12 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+	<style name="Book.Theme.CopyManga" parent="Theme.Material3.DayNight.NoActionBar">
+		<item name="android:windowFullscreen">true</item>
+	</style>
+
+	<style name="Book.Theme.Chapter" parent="Widget.Material3.Button.ElevatedButton">
+		<item name="android:textColor">@color/base_white</item>
+	</style>
+
+
+</resources>
