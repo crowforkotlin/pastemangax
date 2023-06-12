@@ -42,7 +42,7 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
     // ContainerVM
     private val mContainerVm by viewModel<ContainerViewModel>()
 
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.About.toString())
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.About.name)
 
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentAboutBinding.inflate(inflater)
 

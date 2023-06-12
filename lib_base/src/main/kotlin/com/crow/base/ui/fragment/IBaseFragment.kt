@@ -36,7 +36,7 @@ interface IBaseFragment {
     fun initListener()
 
     // 初始化数据
-    fun initData()
+    fun initData(savedInstanceState: Bundle?)
 
     // 初始化观察者
     fun initObserver()

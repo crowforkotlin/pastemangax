@@ -6,12 +6,18 @@ import androidx.core.view.get
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenCreated
+import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.base.tools.coroutine.FlowBus
+import com.crow.base.tools.coroutine.globalCoroutineException
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -29,6 +35,8 @@ import com.crow.module_discover.databinding.DiscoverFragmentComicBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.ui.adapter.DiscoverComicAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.qualifier.named
@@ -43,6 +51,18 @@ import com.crow.base.R as baseR
  * @formatter:on
  **************************/
 class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
+
+    init {
+        FlowBus.with<Int>(BaseEventEnum.SelectPage.name).register(this) {
+            if (it == 1 && !isHidden) {
+                lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
+                    withStarted {
+                        repeatOnLifecycle { mDiscoverVM.mDiscoverComicHomeFlowPager?.collect { mDiscoverComicAdapter.submitData(it) } }
+                    }
+                }
+            }
+        }
+    }
 
     companion object { fun newInstance() = DiscoverComicFragment() }
 
@@ -77,13 +97,23 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
-            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
-            get<Fragment>(named(Fragments.BookComicInfo)).also { it.arguments = bundle }, Fragments.BookComicInfo.toString(), Fragments.BookComicInfo.toString()
+            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            get<Fragment>(named(Fragments.BookComicInfo.name)).also { it.arguments = bundle }, Fragments.BookComicInfo.name, Fragments.BookComicInfo.name
         )
     }
 
+    /** ● 收集状态 */
+    fun onCollectState() {
+        lifecycleScope.launch {
+            whenCreated {
+                // 收集状态 通知适配器
+                repeatOnLifecycle { mDiscoverVM.mDiscoverComicHomeFlowPager?.collect { mDiscoverComicAdapter.submitData(it) } }
+            }
+        }
+    }
+
     /** ● 初始化视图 */
-    override fun initView(bundle: Bundle?) {
+    override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.discoverComicAppbar.root.immersionPadding(hideNaviateBar = false)
@@ -171,19 +201,18 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                 else -> {}
             }
         }
-
-        // 收集状态 通知适配器
-        repeatOnLifecycle { mDiscoverVM.mDiscoverComicHomeFlowPager?.collect { mDiscoverComicAdapter.submitData(it) } }
     }
 
     /** ● Lifecycle onCreate */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (mDiscoverVM.mComicHomeData != null) return
         mDiscoverVM.input(DiscoverIntent.GetComicTag())     // 获取标签
         mDiscoverVM.input(DiscoverIntent.GetComicHome())    // 获取发现主页
     }
 
-    /** ● 销毁视图 */
+
+    /** ● Lifecycle onDestroyView */
     override fun onDestroyView() {
         super.onDestroyView()
         AppGlideProgressFactory.doReset()

@@ -20,8 +20,11 @@ import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.navigateIconClickGap
+import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.popSyncWithClear
+import com.crow.base.tools.extensions.setCenterAnimWithFadeOut
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
@@ -34,25 +37,27 @@ import com.crow.module_main.databinding.MainSettingsSiteLayoutBinding
 import com.crow.module_main.model.intent.ContainerIntent
 import com.crow.module_main.ui.adapter.SettingsAdapter
 import com.crow.module_main.ui.viewmodel.ContainerViewModel
-import com.crow.module_user.ui.adapter.Res
 import com.google.android.material.radiobutton.MaterialRadioButton
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
 import com.crow.base.R as baseR
 
 class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
-    private val mSettingsList = mutableListOf<Pair<Res?, String>>(
-        R.drawable.main_ic_personalise_24dp to appContext.getString(R.string.main_settings_style),
-        R.drawable.main_ic_site_24dp to appContext.getString(R.string.main_settings_site),
-        R.drawable.main_ic_proxy_24dp to appContext.getString(R.string.main_settings_proxy),
-    )
     private val screenHeight by lazy { mContext.resources.displayMetrics.heightPixels / 6 }
     private val mContainerVM by viewModel<ContainerViewModel>()
     private var mSiteAlertDialog: AlertDialog? = null
     private var mSiteDialogBinding: MainSettingsSiteLayoutBinding? = null
 
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Settings.toString())
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Settings.name)
+
+    private fun navigateToStyleableFragment() {
+        with(Fragments.Styleable.name) {
+            parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv, this@SettingsFragment, get(named((this))), this, this, transaction = { it.setCenterAnimWithFadeOut() })
+        }
+    }
 
     private suspend fun initSiteView() {
 
@@ -151,19 +156,23 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
         // 设置 内边距属性 实现沉浸式效果
         mBinding.root.immersionPadding()
 
-        mBinding.settingsRv.adapter = SettingsAdapter(mSettingsList) { pos ->
+        mBinding.settingsRv.adapter = SettingsAdapter(mutableListOf(
+            R.drawable.main_ic_personalise_24dp to appContext.getString(R.string.main_settings_style),
+            R.drawable.main_ic_site_24dp to appContext.getString(R.string.main_settings_site),
+            R.drawable.main_ic_proxy_24dp to appContext.getString(R.string.main_settings_proxy),
+        )) { pos ->
             when(pos) {
-                0 -> { toast(getString(baseR.string.BaseStillInDevelopment)) }
+                0 -> navigateToStyleableFragment()
                 1 -> viewLifecycleOwner.lifecycleScope.launch { initSiteView() }
                 2 -> initProxyView()
             }
         }
     }
 
-    override fun initData() { mContainerVM.input(ContainerIntent.GetDynamicSite()) }
+    override fun initData(savedInstanceState: Bundle?) { mContainerVM.input(ContainerIntent.GetDynamicSite()) }
 
     override fun initListener() {
-        mBinding.settingsBack.doOnClickInterval { navigateUp() }
+        mBinding.settingsToolbar.navigateIconClickGap { navigateUp() }
     }
 
     override fun initObserver() {

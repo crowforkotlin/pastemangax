@@ -32,7 +32,7 @@ abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment, IBase
     override fun initListener() {}
 
     // 初始化数据
-    override fun initData() {}
+    override fun initData(savedInstanceState: Bundle?) {}
 
     // 初始化观察者
     override fun initObserver() {}
@@ -63,7 +63,7 @@ abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment, IBase
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(savedInstanceState)
-        initData()
+        initData(savedInstanceState)
         initListener()
     }
 }

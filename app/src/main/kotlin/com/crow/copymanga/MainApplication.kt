@@ -3,7 +3,6 @@ package com.crow.copymanga
 import android.content.Context
 import android.os.Build
 import android.provider.Settings
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crow.base.app.BaseApp
 import com.crow.base.tools.extensions.getCurrentVersionName
@@ -41,8 +40,6 @@ class MainApplication : BaseApp() {
         strategy.appReportDelay = 10000
 
         CrashReport.initCrashReport(applicationContext, "b848968d52", false, strategy);
-
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         startKoin {
             fragmentFactory()

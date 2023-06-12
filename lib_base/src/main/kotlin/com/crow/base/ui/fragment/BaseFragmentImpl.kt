@@ -32,13 +32,13 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
     }
 
     // 初始化View
-    override fun initView(bundle: Bundle?) {}
+    override fun initView(savedInstanceState: Bundle?) {}
 
     // 初始化监听事件
     override fun initListener() {}
 
     // 初始化数据
-    override fun initData() { }
+    override fun initData(savedInstanceState: Bundle?) { }
 
     override var iBasePerEvent: IBasePerEvent? = null
 
@@ -62,7 +62,7 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?){
         super.onViewCreated(view, savedInstanceState)
         initView(savedInstanceState)
-        initData()
+        initData(savedInstanceState)
         initListener()
     }
 

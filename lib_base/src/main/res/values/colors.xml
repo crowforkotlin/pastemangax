@@ -19,14 +19,4 @@
 
     <color name="base_light_blue_500">#03a9f4</color>
 
-    <!-- Project -->
-    <color name="base_bg_grey_100_light">#F5F5F5</color>
-    <color name="base_bg_grey_900_dark">#201f1e</color>
-
-    <color name="base_book_red">#EF5350</color>
-    <color name="base_book_grey">#616161</color>
-    <color name="base_book_purple">#9C27B0</color>
-    <color name="base_book_green">#4CAF50</color>
-    <color name="base_book_indigo">#3F51B5</color>
-
 </resources>

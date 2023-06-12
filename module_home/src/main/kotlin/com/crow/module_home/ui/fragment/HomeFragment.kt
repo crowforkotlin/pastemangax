@@ -22,11 +22,13 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.globalCoroutineException
+import com.crow.base.tools.extensions.BASE_ANIM_100L
+import com.crow.base.tools.extensions.BASE_ANIM_300L
+import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.appDarkMode
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.setMaskAmount
@@ -51,7 +53,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -68,33 +69,34 @@ import com.crow.base.R as baseR
 
 class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
-    /** 静态区 */
+    /** ● 静态区 */
     companion object { const val SEARCH_TAG = "INPUT" }
 
-    /** 主页 VM */
+    /** ● 主页 VM */
     private val mHomeVM by viewModel<HomeViewModel>()
 
-    /** 主页布局刷新的时间 第一次进入布局默认10Ms 之后刷新 为 50Ms */
+    /** ● 主页布局刷新的时间 第一次进入布局默认10Ms 之后刷新 为 50Ms */
     private var mHomePageLayoutRefreshTime = 10L
 
-    /** 推荐 “换一批” 刷新按钮 */
+    /** ● 推荐 “换一批” 刷新按钮 */
     private var mRecRefresh: MaterialButton? = null
 
-    /** 主页数据量较多， 采用Rv方式 */
+    /** ● 主页数据量较多， 采用Rv方式 */
     private var mHomeComicParentRvAdapter: HomeComicParentRvAdapter? = null
 
-    /** 刷新回調 */
+    /** ● 刷新回調 */
     private val mRecRefreshCallback: (MaterialButton) -> Unit = {
         mRecRefresh = it
         mRecRefresh!!.isEnabled = false
         mHomeVM.input(HomeIntent.GetRecPageByRefresh())
     }
 
-    /** 新的Evnet事件*/
+    /** ● 新的Evnet事件*/
     private val mBaseEvent = BaseEvent.newInstance()
 
-    /** 注册FlowBus 设置主页头像 */
-    init { FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).register(this) { drawable ->
+    /** ● 注册FlowBus 设置主页头像 */
+    init {
+        FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).register(this) { drawable ->
             if (!isHidden) {
                 lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
                     withStarted {
@@ -102,62 +104,65 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                     }
                 }
             }
-        } }
+        }
 
-    /** 导航至BookInfo */
+        FlowBus.with<Int>(BaseEventEnum.SelectPage.name).register(this) {
+            if (it == 0 && !isHidden) {
+                lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
+                    withStarted {
+
+                        // 获取主页数据
+                        mHomeVM.input(HomeIntent.GetHomePage())
+                    }
+                }
+            }
+        }
+    }
+
+    /** ● 导航至BookInfo */
     private fun navigateBookComicInfo(pathword: String) {
-        val tag = Fragments.BookComicInfo.toString()
+        val tag = Fragments.BookComicInfo.name
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
-            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
-            get<Fragment>(named(Fragments.BookComicInfo)).also { it.arguments = bundle }, tag, tag)
+            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            get<Fragment>(named(Fragments.BookComicInfo.name)).also { it.arguments = bundle }, tag, tag)
     }
 
-    /** 加载主页数据 */
+    /** ● 加载主页数据 */
     private fun doLoadHomePage(results: Results) {
-
-        val datas = mutableListOf(
-            results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList(),
-            null, results.mRecComicsResult.mResult.toMutableList(), null,
-            null, results.mHotComics.toMutableList(),
-            null, results.mNewComics.toMutableList(),
-            null, results.mFinishComicDatas.mResult.toMutableList(),
-            null, results.mRankDayComics.mResult.toMutableList(),
-            null, results.mTopics.mResult.toMutableList()
-        )
 
         val isRefreshing = mBinding.homeRefresh.isRefreshing
 
+        if (mHomeVM.mHomeDatas == null) return
+
         viewLifecycleOwner.lifecycleScope.launch {
 
-            // 刷新控件动画消失
             if (isRefreshing) {
                 mBinding.homeRefresh.finishRefresh()
-                mHomeComicParentRvAdapter?.tryClearAndNotify()
-                mHomeComicParentRvAdapter = null
-                delay(200L)
-                mHomeComicParentRvAdapter = HomeComicParentRvAdapter(datas.toMutableList(), viewLifecycleOwner, mRecRefreshCallback) { navigateBookComicInfo(it) }
-
+                mHomeComicParentRvAdapter = HomeComicParentRvAdapter(mHomeVM.mHomeDatas!!.toMutableList(), viewLifecycleOwner, mRecRefreshCallback) { navigateBookComicInfo(it) }
                 mBinding.homeRv.adapter = mHomeComicParentRvAdapter
+                mBinding.homeRv.animateFadeIn(BASE_ANIM_300L)
             }
             
-            else mHomeComicParentRvAdapter?.doNotify(datas.toMutableList(), 100L, 100L)
+            else {
+                mHomeComicParentRvAdapter?.doNotify(mHomeVM.mHomeDatas!!.toMutableList(), BASE_ANIM_100L)
+            }
 
             // 取消加载动画
             dismissLoadingAnim()
         }
     }
 
-    /** 导航至设置Fragment */
+    /** ● 导航至设置Fragment */
     private fun navigateSettings() {
             requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
-                requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
-                get(named(Fragments.Settings)), Fragments.Settings.toString(), Fragments.Settings.toString()
+                requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+                get(named(Fragments.Settings.name)), Fragments.Settings.name, Fragments.Settings.name
             )
     }
 
-    /** 初始化SearchView */
+    /** ● 初始化SearchView */
     private fun initSearchView() {
         mBaseEvent.eventInitLimitOnce {
             mBinding.homeSearchView.apply {
@@ -208,13 +213,14 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
     }
 
-    /** 暴露的函数 提供给 ContainerFragment 用于通知主页刷新 */
+    /** ● 暴露的函数 提供给 ContainerFragment 用于通知主页刷新 */
     fun doRefresh() { mHomeVM.input(HomeIntent.GetHomePage()) }
 
-    /** 获取ViewBinding */
+
+    /** ● 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentBinding.inflate(inflater)
 
-    /** Lifecycle Create */
+    /** ● Lifecycle Create */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -228,7 +234,14 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
     }
 
-    /** Lifecycle Start */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState != null) {
+
+        }
+    }
+
+    /** ● Lifecycle Start */
     override fun onStart() {
         super.onStart()
         mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -237,28 +250,29 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
     }
 
-    /** Lifecycle Stop */
+    /** ● Lifecycle Stop */
     override fun onStop() {
         super.onStop()
         mBaseEvent.remove(SEARCH_TAG)
     }
 
-    /** Lifecycle Destroy */
+    /** ● Lifecycle Destroy */
     override fun onDestroyView() {
         super.onDestroyView()
         mRecRefresh = null  // 置空“换一批”控件 防止内存泄漏
     }
 
-    /** 初始化数据 */
-    override fun initData() {
+    /** ● 初始化数据 */
+    override fun initData(savedInstanceState: Bundle?) {
+
+        if (savedInstanceState != null) return
 
         // 获取主页数据
         mHomeVM.input(HomeIntent.GetHomePage())
     }
 
-    /** 初始化视图  */
-    override fun initView(bundle: Bundle?) {
-        "Run".logMsg()
+    /** ● 初始化视图  */
+    override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.homeAppbar.immersionPadding(hideStatusBar = true, hideNaviateBar = false)
@@ -273,31 +287,26 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeRv.adapter = mHomeComicParentRvAdapter
     }
 
-    /** 初始化监听器 */
+    /** ● 初始化监听器 */
     override fun initListener() {
 
         // 搜索
         mBinding.homeToolbar.menu[0].doOnClickInterval {
-            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-            // 3initSearchView()
-            // mBinding.homeSearchView.show()
+            initSearchView()
+            mBinding.homeSearchView.show()
         }
 
         // 设置
         mBinding.homeToolbar.menu[1].doOnClickInterval { navigateSettings() }
 
         // MaterialToolBar NavigateIcon 点击事件
-        mBinding.homeToolbar.navigateIconClickGap(flagTime = 1000L) { get<BottomSheetDialogFragment>(named(Fragments.User)).show(requireActivity().supportFragmentManager, null) }
+        mBinding.homeToolbar.navigateIconClickGap(flagTime = 1000L) { get<BottomSheetDialogFragment>(named(Fragments.User.name)).show(requireActivity().supportFragmentManager, null) }
 
         // 刷新
         mBinding.homeRefresh.setOnRefreshListener { mHomeVM.input(HomeIntent.GetHomePage()) }
     }
 
-    /** 初始化监听器 */
+    /** ● 初始化监听器 */
     override fun initObserver() {
 
         mHomeVM.onOutput { intent ->

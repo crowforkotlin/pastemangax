@@ -47,7 +47,7 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
     private var mLoginSuccessCallback: IUserLoginSuccessCallback? = null
 
     /** 返回 */
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Login.toString())
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Login.name)
 
     /** 反转登录按钮 */
     private fun doRevertLoginButton() {

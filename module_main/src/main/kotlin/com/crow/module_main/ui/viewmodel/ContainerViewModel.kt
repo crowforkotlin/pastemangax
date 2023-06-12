@@ -1,15 +1,8 @@
 package com.crow.module_main.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.crow.base.app.appContext
-import com.crow.base.tools.extensions.DataStoreAgent
-import com.crow.base.tools.extensions.appConfigDataStore
-import com.crow.base.tools.extensions.asyncDecode
-import com.crow.base.tools.extensions.asyncEncode
-import com.crow.base.tools.extensions.toJson
-import com.crow.base.tools.extensions.toTypeEntity
+import com.crow.base.copymanga.entity.AppConfigEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
-import com.crow.module_main.model.entity.MainAppConfigEntity
 import com.crow.module_main.model.intent.ContainerIntent
 import com.crow.module_main.network.ContainerRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,26 +22,26 @@ import kotlin.coroutines.resume
 class ContainerViewModel(val repository: ContainerRepository) : BaseMviViewModel<ContainerIntent>() {
 
     // app配置 设置粘性状态
-    private var _appConfig = MutableStateFlow<MainAppConfigEntity?>(null)
-    val appConfig: StateFlow<MainAppConfigEntity?> get() = _appConfig
+    private var _appConfig = MutableStateFlow<AppConfigEntity?>(null)
+    val appConfig: StateFlow<AppConfigEntity?> get() = _appConfig
 
     init {
         viewModelScope.launch {
-            _appConfig.value = appContext.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG).toTypeEntity<MainAppConfigEntity>() ?: MainAppConfigEntity(true)
+            _appConfig.value = AppConfigEntity.readAppConfig() ?: AppConfigEntity(true)
         }
     }
 
-    fun saveAppConfig() { viewModelScope.launch { appContext.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(MainAppConfigEntity())) } }
+    fun saveAppConfig(appConfigEntity: AppConfigEntity = AppConfigEntity()) {
+        viewModelScope.launch { AppConfigEntity.saveAppConfig(appConfigEntity) }
+    }
 
-    suspend fun getReadedAppConfig(): MainAppConfigEntity? {
-        return suspendCancellableCoroutine<MainAppConfigEntity?> { continuation ->
+    suspend fun getReadedAppConfig(): AppConfigEntity? {
+        return suspendCancellableCoroutine { continuation ->
             viewModelScope.launch {
-                runCatching { continuation.resume(appContext.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG).toTypeEntity<MainAppConfigEntity>()) }.onFailure { continuation.resume(null) }
+                runCatching { continuation.resume(AppConfigEntity.readAppConfig()) }.onFailure { continuation.resume(null) }
             }
         }
     }
-
-
 
     private fun getUpdateInfo(intent: ContainerIntent.GetUpdateInfo) {
         flowResult(intent, repository.getUpdateInfo()) { value -> intent.copy(appUpdateResp = value) }

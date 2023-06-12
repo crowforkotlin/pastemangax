@@ -38,7 +38,7 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
 
     override fun initListener() {}
 
-    override fun initView(bundle: Bundle?) {}
+    override fun initView(savedInstanceState: Bundle?) {}
 
     override fun <I : BaseMviIntent> BaseMviViewModel<I>.onOutput(state: Lifecycle.State, baseMviSuspendResult: BaseMviViewModel.BaseMviSuspendResult<I>) {
         repeatOnLifecycle(state) { output { intent -> baseMviSuspendResult.onResult(intent) } }

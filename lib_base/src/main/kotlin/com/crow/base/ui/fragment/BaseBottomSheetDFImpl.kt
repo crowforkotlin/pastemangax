@@ -17,7 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
  **************************/
 abstract class BaseBottomSheetDFImpl : BottomSheetDialogFragment(), IBaseFragment {
 
-    override fun initData() {}
+    override fun initData(savedInstanceState: Bundle?) {}
 
     override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) {
         LoadingAnimDialog.show(parentFragmentManager, loadingAnimConfig)
@@ -38,7 +38,7 @@ abstract class BaseBottomSheetDFImpl : BottomSheetDialogFragment(), IBaseFragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(savedInstanceState)
-        initData()
+        initData(savedInstanceState)
         initListener()
     }
 }

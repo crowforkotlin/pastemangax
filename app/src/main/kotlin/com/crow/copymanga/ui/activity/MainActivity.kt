@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.isInvisible
+import androidx.lifecycle.whenCreated
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
@@ -36,28 +37,25 @@ import com.crow.module_main.ui.viewmodel.ContainerViewModel
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-/**
- *
- * 类名描述信息,测试文档生成类
- * @param T 泛型类型
- * @property value 属性value
- * @constructor 创建DokkaDocTest的构造器.
- * @Author haiyang
- *
- */
 class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
 
+    /** ● 查询更新 */
     init {
-        FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).register(this) { mContainerVM.input(ContainerIntent.GetUpdateInfo()) }  // 查询更新
+        FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).register(this) { mContainerVM.input(ContainerIntent.GetUpdateInfo()) }
     }
 
-    // 初始化更新是否完成
+    /** ● 初始化更新是否完成 */
     private var mInitUpdate: Boolean = false
 
+    private var mIsAdded: Boolean = false
+
+    /** ● 容器VM */
     private val mContainerVM by viewModel<ContainerViewModel>()
 
+    /** ● 获取ViewBinding */
     override fun getViewBinding() = AppActivityMainBinding.inflate(layoutInflater)
 
+    /** ● Lifecycle onCreate */
     override fun onCreate(savedInstanceState: Bundle?) {
 
         // 启动动画
@@ -74,14 +72,9 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
         super.onCreate(savedInstanceState)
     }
 
+    /** ● 初始化视图 */
     @SuppressLint("SourceLockedOrientationActivity")
     override fun initView(savedInstanceState: Bundle?) {
-
-        appDarkMode = AppCompatDelegate.getDefaultNightMode()
-
-        WindowCompat.getInsetsController(window, window.decorView).apply {
-            isAppearanceLightStatusBars = (appDarkMode == AppCompatDelegate.MODE_NIGHT_NO)
-        }
 
         // 设置屏幕方向
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -91,18 +84,33 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
 
         // 设置布局
         setContentView(mBinding.root)
-
-        // 内存重启后 避免再次添加布局
-        if (savedInstanceState == null) supportFragmentManager.navigateByAdd<ContainerFragment>(R.id.app_main_fcv, null, Fragments.Container.toString())
     }
 
+    /** ● 初始化观察者 */
     override fun initObserver(savedInstanceState: Bundle?) {
 
         mContainerVM.appConfig.onCollect(this) { appConfig ->
-            if (appConfig != null) {
-                BaseStrings.URL.CopyManga = appConfig.mSite
-                BaseUser.CURRENT_ROUTE = appConfig.mRoute
-                if (appConfig.mAppFirstInit) { mContainerVM.input(ContainerIntent.GetDynamicSite()) }
+
+            if (appConfig == null) return@onCollect
+
+
+            BaseStrings.URL.CopyManga = appConfig.mSite
+            BaseUser.CURRENT_ROUTE = appConfig.mRoute
+            appDarkMode = AppCompatDelegate.getDefaultNightMode()
+
+            if (appConfig.mAppFirstInit) { mContainerVM.input(ContainerIntent.GetDynamicSite()) }
+
+            if (savedInstanceState == null) {
+
+                AppCompatDelegate.setDefaultNightMode(appConfig.mDarkMode)
+                if(!mIsAdded)
+                whenCreated {
+                    mIsAdded = true
+                    supportFragmentManager.navigateByAdd<ContainerFragment>(R.id.app_main_fcv, null, Fragments.Container.name)
+                }
+            }
+            WindowCompat.getInsetsController(window, window.decorView).apply {
+                isAppearanceLightStatusBars = (appDarkMode == AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
 
@@ -117,7 +125,7 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
         }
     }
 
-    // 检查更新
+    /** ● 检查更新 */
     private fun doUpdateChecker(appUpdateResp: MainAppUpdateResp) {
         val update = appUpdateResp.mUpdates.first()
         if (isLatestVersion(latest = update.mVersionCode.toLong())) return run {

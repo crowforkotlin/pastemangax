@@ -176,7 +176,7 @@ class BookNovelFragment : BookFragment() {
         super.initListener()
 
         mBinding.bookInfoCardview.doOnClickInterval {
-            val fragment = get<Fragment>(named(Fragments.Image))
+            val fragment = get<Fragment>(named(Fragments.Image.name))
             fragment.arguments =Bundle().also { bundle -> bundle.putString(BaseStrings.IMAGE_URL, mBookVM.mNovelInfoPage?.mNovel?.mCover) }
             navigateImage(fragment)
         }

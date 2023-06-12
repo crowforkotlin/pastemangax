@@ -53,8 +53,8 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
-            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
-            get<Fragment>(named(Fragments.BookNovelInfo)).also { it.arguments = bundle }, Fragments.BookNovelInfo.toString(), Fragments.BookNovelInfo.toString()
+            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            get<Fragment>(named(Fragments.BookNovelInfo.name)).also { it.arguments = bundle }, Fragments.BookNovelInfo.name, Fragments.BookNovelInfo.name
         )
     }
 
@@ -62,6 +62,11 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        return
+
+        if (mDiscoverVM.mNovelHomeData != null) return
+
         mDiscoverVM.input(DiscoverIntent.GetNovelHome())    // 获取发现主页
     }
 
@@ -78,6 +83,8 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
     }
 
     override fun initView(bundle: Bundle?) {
+
+        return
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.discoverNovelAppbar.root.immersionPadding(hideNaviateBar = false)

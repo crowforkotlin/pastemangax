@@ -6,5 +6,5 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/base_dp10"
     android:nestedScrollingEnabled="false"
-    android:visibility="gone"
+    android:visibility="visible"
     tools:visibility="visible" />

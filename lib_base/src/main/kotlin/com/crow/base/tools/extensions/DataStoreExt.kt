@@ -63,11 +63,17 @@ suspend fun <T> DataStore<Preferences>.asyncDecode(preferencesKey: Preferences.K
     return data.map { it[preferencesKey] }.first()
 }
 
+fun <T> DataStore<Preferences>.decode(key: Preferences.Key<T>): T? {
+    return runBlocking {
+        data.map { it[key] }.first()
+    }
+}
+
 /*
 * @Description: DataStore 扩展
 * @author: lei
 */
-suspend fun <T> DataStore<Preferences>.encode(key: Preferences.Key<T>, value: T) {
+fun <T> DataStore<Preferences>.encode(key: Preferences.Key<T>, value: T) {
     runBlocking { edit { it[key] = value } }
 }
 

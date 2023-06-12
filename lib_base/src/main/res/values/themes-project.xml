@@ -2,10 +2,12 @@
 <resources>
 
     <style name="Base.Theme.Material3_Project" parent="Theme.Material3.DayNight.NoActionBar" >
+        <item name="baseIconButtonStyle">@style/Base.Theme.Button.Icon.Text</item>
+        <item name="baseIconButtonElevatedStyle">@style/Base.Theme.Button.Elevated.Icon</item>
     </style>
 
 
-    <style name="Base.Theme.ElevatedButton.Icon" parent="Widget.Material3.Button.ElevatedButton.Icon" >
+    <style name="Base.Theme.Button.Elevated.Icon" parent="Widget.Material3.Button.ElevatedButton.Icon" >
     </style>
 
     <style name="Base.Theme.Button.Icon.Text" parent="Widget.Material3.Button.IconButton" >
@@ -22,7 +24,7 @@
     </style>
 
     <style name="Base.Theme.BG" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:background">@color/base_bg_grey_100_light</item>
+        <item name="android:background">@color/base_bg</item>
     </style>
 
 </resources>

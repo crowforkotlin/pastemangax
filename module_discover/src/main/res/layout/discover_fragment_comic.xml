@@ -1,43 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	tools:context="com.crow.module_discover.ui.fragment.DiscoverComicFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.crow.module_discover.ui.fragment.DiscoverComicFragment">
 
-	<include
-		android:id="@+id/discover_comic_appbar"
-		layout="@layout/discover_fragment_appbar_new" />
+    <include
+        android:id="@+id/discover_comic_appbar"
+        layout="@layout/discover_fragment_appbar_new" />
 
-	<com.scwang.smart.refresh.layout.SmartRefreshLayout
-		android:id="@+id/discover_comic_refresh"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/discover_comic_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-		<com.scwang.smart.refresh.header.MaterialHeader
-			android:layout_width="match_parent"
-			android:layout_height="match_parent" />
+        <com.scwang.smart.refresh.header.MaterialHeader
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-		<androidx.recyclerview.widget.RecyclerView
-			android:id="@+id/discover_comic_rv"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-			app:spanCount="3"
-			tools:itemCount="6"
-			tools:listitem="@layout/discover_fragment_rv" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/discover_comic_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="3"
+            tools:itemCount="6"
+            tools:listitem="@layout/discover_fragment_rv" />
 
-	</com.scwang.smart.refresh.layout.SmartRefreshLayout>
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
-	<TextView
-		android:id="@+id/discover_comic_tips_error"
-		tools:visibility="visible"
-		android:layout_width="match_parent"
-		android:textSize="@dimen/base_sp16"
-		android:text="@string/BaseLoadingErrorNeedRefresh"
-		android:gravity="center"
-		android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/discover_comic_tips_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/BaseLoadingErrorNeedRefresh"
+        android:textSize="@dimen/base_sp16"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

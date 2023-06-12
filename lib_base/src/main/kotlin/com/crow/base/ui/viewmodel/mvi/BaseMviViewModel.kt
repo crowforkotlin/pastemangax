@@ -44,7 +44,11 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
 
     open fun dispatcher(intent: I) { }
 
+    open fun dispatcher(intent: I, onEndAction: Runnable) { }
+
     fun input(intent: I) = dispatcher(intent)
+
+    fun input(intent: I, onEndAction: Runnable) = dispatcher(intent, onEndAction)
 
     suspend fun output(baseMviSuspendResult: BaseMviSuspendResult<I>) {
         _sharedFlow.collect { baseMviSuspendResult.onResult(it) }

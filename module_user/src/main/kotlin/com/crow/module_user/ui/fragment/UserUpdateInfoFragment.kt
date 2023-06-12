@@ -54,7 +54,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
     private var mExitFragment = false
 
     private fun navigateUp() {
-        parentFragmentManager.popSyncWithClear(Fragments.UserInfo.toString())
+        parentFragmentManager.popSyncWithClear(Fragments.UserInfo.name)
         mUserUpdateInfoVM.doClearUserUpdateInfoData()
     }
 
@@ -76,7 +76,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
 
         // 头像 点击事件
         mBinding.userUpdateInfoIcon.doOnClickInterval {
-            parentFragmentManager.navigateToWithBackStack<UserIconFragment>(baseR.id.app_main_fcv, this, null, Fragments.Icon.toString(), Fragments.Icon.toString())
+            parentFragmentManager.navigateToWithBackStack<UserIconFragment>(baseR.id.app_main_fcv, this, null, Fragments.Icon.name, Fragments.Icon.name)
         }
 
         // 退出账号 点击事件

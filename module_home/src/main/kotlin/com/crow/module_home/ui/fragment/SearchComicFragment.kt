@@ -11,7 +11,6 @@ import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnInterval
-import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.removeWhiteSpace
 import com.crow.base.tools.extensions.repeatOnLifecycle
@@ -52,7 +51,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
 
     fun doInputSearchComicIntent() {
 
-        val keyword = mSearchView?.text.toString().removeWhiteSpace().ifEmpty {
+        val keyword = mSearchView?.text.toString().ifEmpty {
             mBinding.homeSearchComicTips.text = getString(R.string.home_saerch_tips)
             mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
             mBinding.homeSearchComicTips.animateFadeIn()
@@ -134,7 +133,6 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
                     .doOnResult {
                         if (!mTag) return@doOnResult
                         val listener: () -> Unit = {
-                            "Run".logMsg()
                             mBinding.homeSearchComicRv.smoothScrollToPosition(0)
                         }
                         mComicRvAdapter.addOnPagesUpdatedListener(listener)

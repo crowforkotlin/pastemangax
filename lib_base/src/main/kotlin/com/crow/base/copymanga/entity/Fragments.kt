@@ -9,5 +9,16 @@ package com.crow.base.copymanga.entity
  * @formatter:on
  **************************/
 enum class Fragments {
-    Container, Icon, Login, Reg, About, BookComicInfo, BookNovelInfo, UserInfo, User, Settings, Image
+    Container,
+    Icon,
+    Login,
+    Reg,
+    About,
+    BookComicInfo,
+    BookNovelInfo,
+    UserInfo,
+    User,
+    Settings,
+    Image,
+    Styleable
 }

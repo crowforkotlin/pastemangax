@@ -7,4 +7,5 @@ enum class BaseEventEnum {
     LogOut,
     UpdateApp,
     UpdateChapter,
+    SelectPage
 }

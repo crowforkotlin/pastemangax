@@ -22,6 +22,7 @@ import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.removeWhiteSpace
 import com.crow.base.tools.extensions.startActivity
@@ -155,9 +156,10 @@ class BookComicFragment : BookFragment() {
 
     override fun onInitData() {
 
+
         if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mBookVM.input(BookIntent.GetComicBrowserHistory(mPathword))
 
-        mBookVM.input(BookIntent.GetComicInfoPage(mPathword))
+        if (mBookVM.mComicInfoPage == null) mBookVM.input(BookIntent.GetComicInfoPage(mPathword))
     }
 
     override fun onRefresh() { mBookVM.input(BookIntent.GetComicChapter(mPathword)) }
@@ -166,6 +168,8 @@ class BookComicFragment : BookFragment() {
 
         // 初始化父View
         super.initView(bundle)
+
+        if (mBookVM.mComicInfoPage != null) { showComicInfoPage() }
 
         // 漫画
         mComicChapterRvAdapter = ComicChapterRvAdapter { comic  ->
@@ -212,7 +216,7 @@ class BookComicFragment : BookFragment() {
         super.initListener()
 
         mBinding.bookInfoCardview.doOnClickInterval {
-            val fragment = get<Fragment>(named(Fragments.Image))
+            val fragment = get<Fragment>(named(Fragments.Image.name))
             fragment.arguments =Bundle().also { bundle -> bundle.putString(BaseStrings.IMAGE_URL, mBookVM.mComicInfoPage?.mComic?.mCover) }
             navigateImage(fragment)
         }

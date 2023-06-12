@@ -4,18 +4,20 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
+import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnErrorInCoroutine
 import com.crow.base.ui.viewmodel.doOnResultInCoroutine
 import com.crow.module_bookshelf.ui.fragment.BookshelfFragment
 import com.crow.module_discover.ui.fragment.DiscoverComicFragment
-import com.crow.module_discover.ui.fragment.DiscoverNovelFragment
 import com.crow.module_home.ui.fragment.HomeFragment
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentContainerBinding
@@ -43,9 +45,6 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         FlowBus.with<Unit>(BaseEventEnum.LogOut.name).register(this) { doExitUser() }                                                                           // 退出账号
     }
 
-
-
-
     /** 碎片容器适配器 */
     private var mContainerAdapter: ContainerAdapter? = null
 
@@ -56,7 +55,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private val mUserVM by sharedViewModel<UserViewModel>()
 
     /** 碎片集 */
-    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment(), DiscoverComicFragment(), DiscoverNovelFragment(),BookshelfFragment()) }
+    private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment(), DiscoverComicFragment(), BookshelfFragment()) }
 
     /** 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
@@ -89,17 +88,33 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
     }
     /** 初始化视图 */
-    override fun initView(bundle: Bundle?) {
+    override fun initView(savedInstanceState: Bundle?) {
 
         // 适配器 初始化 （设置Adapter、预加载页数）
-        mContainerAdapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
-        mBinding.mainViewPager.adapter = mContainerAdapter
         mBinding.mainViewPager.offscreenPageLimit = 4
         mBinding.mainViewPager.isUserInputEnabled = false
+        mBinding.mainViewPager.adapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
     }
 
-    /** 初始化数据 */
-    override fun initData() { mContainerVM.input(ContainerIntent.GetUpdateInfo()) }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState != null) {
+            FlowBus.with<Int>(BaseEventEnum.SelectPage.name).post(viewLifecycleOwner, arguments?.getInt("id", 0) ?: 0)
+        } else {
+            saveItemPage(0)
+            BaseEvent.getSIngleInstance().setBoolean(mFragmentList[0].hashCode().toString(), true)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mContainerVM.input(ContainerIntent.GetUpdateInfo())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mFragmentList.forEach { BaseEvent.getSIngleInstance().remove(it.hashCode().toString()) }
+    }
 
     /** 当视图隐藏状态发生改变 并触发 */
     override fun onHiddenChanged(hidden: Boolean) {
@@ -117,27 +132,48 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             when(item.itemId) {
                 R.id.main_menu_homepage -> doSwitchFragment(0)
                 R.id.main_menu_discovery_comic -> doSwitchFragment(1)
-                R.id.main_menu_discovery_novel -> doSwitchFragment(2)
-                R.id.main_menu_bookshelf -> doSwitchFragment(3)
+                // R.id.main_menu_discovery_novel -> doSwitchFragment(2)
+                R.id.main_menu_bookshelf -> doSwitchFragment(2)
             }
             true
         }
-    }
 
+        mBinding.mainViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrollStateChanged(state: Int) {
+                super.onPageScrollStateChanged(state)
+                if (state == ViewPager2.SCROLL_STATE_IDLE) {
+                    if (BaseEvent.getSIngleInstance().getBoolean(mFragmentList[mBinding.mainViewPager.currentItem].hashCode().toString()) == true) return
+                    else BaseEvent.getSIngleInstance().setBoolean(mFragmentList[mBinding.mainViewPager.currentItem].hashCode().toString(), true)
+                    FlowBus.with<Int>(BaseEventEnum.SelectPage.name).post(viewLifecycleOwner, mBinding.mainViewPager.currentItem)
+                }
+            }
+        })
+    }
     /** 执行退出用户 */
     private fun doExitUser() {
         mUserVM.doClearUserInfo()
-        (mFragmentList[3] as BookshelfFragment).doExitFromUser()
+        (mFragmentList[2] as BookshelfFragment).doExitFromUser()
     }
 
     /** 执行登陆成功刷新 */
     private fun doLoginSuccessRefresh() {
         (mFragmentList[0] as HomeFragment).doRefresh()
-        (mFragmentList[3] as BookshelfFragment).doRefresh()
+        (mFragmentList[2] as BookshelfFragment).doRefresh()
     }
 
     /** 执行选择Fragment */
     private fun doSwitchFragment(position: Int) {
         if (mBinding.mainViewPager.currentItem != position) mBinding.mainViewPager.setCurrentItem(position, true)
+        saveItemPage(position)
+    }
+
+    private fun saveItemPage(position: Int) {
+        if (arguments == null) {
+            val bundle = Bundle()
+            bundle.putInt("id", position)
+            arguments = bundle
+        } else {
+            arguments!!.putInt("id", position)
+        }
     }
 }

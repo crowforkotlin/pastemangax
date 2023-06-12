@@ -196,7 +196,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     /**
      * 返回上一个界面
      * */
-    protected fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.BookComicInfo.toString(), Fragments.BookNovelInfo.toString())
+    protected fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.BookComicInfo.name, Fragments.BookNovelInfo.name)
 
     /**
      * 处理章节错误响应
@@ -227,7 +227,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
      * @param fragment
      * */
     protected fun navigateImage(fragment: Fragment) {
-        val tag = Fragments.Image.toString()
+        val tag = Fragments.Image.name
         parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv, this, fragment, tag, tag )
     }
 
@@ -281,7 +281,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
 
     abstract fun onInitData()
 
-    override fun initData() {
+    override fun initData(savedInstanceState: Bundle?) {
         // 数据不为空 则退出
         if (mBookVM.isNovelDatasIsNotNull() || mBookVM.isComicDatasIsNotNull()) return
         onInitData()
