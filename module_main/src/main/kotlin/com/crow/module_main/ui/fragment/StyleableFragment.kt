@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
-import com.crow.base.copymanga.entity.AppConfigEntity
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.BASE_ANIM_300L
-import com.crow.base.tools.extensions.appDarkMode
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.popSyncWithClear
@@ -62,7 +61,7 @@ class StyleableFragment : BaseMviFragment<MainFragmentStyleableBinding>() {
         mStyableAdapter = null
     }
 
-    override fun initView(bundle: Bundle?) {
+    override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.root.immersionPadding()
@@ -73,17 +72,17 @@ class StyleableFragment : BaseMviFragment<MainFragmentStyleableBinding>() {
 
         mBinding.styleableToolbar.navigateIconClickGap { navigateUp() }
 
-        mContainerVM.appConfig.onCollect(this) {
+        mContainerVM.mAppConfig.onCollect(this) {
 
             if (it == null) return@onCollect
 
             if (mStyableAdapter == null) {
-                mStyableAdapter = StyleableAdapter(getStyleableEntitys(appDarkMode == AppCompatDelegate.MODE_NIGHT_YES)) { pos, isSwitch ->
+                mStyableAdapter = StyleableAdapter(getStyleableEntitys(isDarkMode())) { pos, isSwitch ->
                     if (pos == 0) {
                         showLoadingAnim()
-                        appDarkMode =  if (isSwitch) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-                        mContainerVM.saveAppConfig(AppConfigEntity(mDarkMode = appDarkMode))
-                        mHandler.postDelayed({ dismissLoadingAnim { AppCompatDelegate.setDefaultNightMode(appDarkMode) } }, BASE_ANIM_300L)
+                        val darkMode = if (isSwitch) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                        mContainerVM.saveCatalogDarkModeEnable(darkMode)
+                        mHandler.postDelayed({ dismissLoadingAnim { AppCompatDelegate.setDefaultNightMode(darkMode) } }, BASE_ANIM_300L)
                     }
                 }
                 mBinding.styleableRv.adapter = mStyableAdapter

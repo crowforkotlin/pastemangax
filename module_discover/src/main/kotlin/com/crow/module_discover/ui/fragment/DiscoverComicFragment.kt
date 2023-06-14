@@ -8,20 +8,17 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenCreated
-import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
-import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
-import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.coroutine.globalCoroutineException
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.showSnackBar
@@ -35,7 +32,6 @@ import com.crow.module_discover.databinding.DiscoverFragmentComicBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.ui.adapter.DiscoverComicAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
-import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -52,18 +48,6 @@ import com.crow.base.R as baseR
  **************************/
 class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
-    init {
-        FlowBus.with<Int>(BaseEventEnum.SelectPage.name).register(this) {
-            if (it == 1 && !isHidden) {
-                lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
-                    withStarted {
-                        repeatOnLifecycle { mDiscoverVM.mDiscoverComicHomeFlowPager?.collect { mDiscoverComicAdapter.submitData(it) } }
-                    }
-                }
-            }
-        }
-    }
-
     companion object { fun newInstance() = DiscoverComicFragment() }
 
     /** ● (Activity级别) 发现VM */
@@ -78,9 +62,16 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     /** ● 初始化监听事件 */
     override fun initListener() {
 
+        // 设置容器Fragment的回调监听
+        parentFragmentManager.setFragmentResultListener("Discover_Comic", this) { _, bundle ->
+            "runnnnnn${bundle.getInt("id")}".logMsg()
+            if (bundle.getInt("id") == 1) repeatOnLifecycle { mDiscoverVM.mDiscoverComicHomeFlowPager?.collect { mDiscoverComicAdapter.submitData(it) } }
+        }
+
         // 刷新监听
         mBinding.discoverComicRefresh.setOnRefreshListener { mDiscoverComicAdapter.refresh() }
 
+        // 更多选项 点击监听
         mBinding.discoverComicAppbar.discoverAppbarToolbar.menu[0].doOnClickInterval {
 
         }

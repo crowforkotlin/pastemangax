@@ -7,7 +7,6 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.withStarted
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.copymanga.BaseEventEnum
@@ -17,7 +16,6 @@ import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.processTokenError
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.coroutine.globalCoroutineException
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
@@ -41,7 +39,6 @@ import com.crow.module_bookshelf.model.resp.BookshelfComicResp
 import com.crow.module_bookshelf.ui.adapter.BookshelfComicRvAdapter
 import com.crow.module_bookshelf.ui.adapter.BookshelfNovelRvAdapter
 import com.crow.module_bookshelf.ui.viewmodel.BookshelfViewModel
-import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -58,22 +55,6 @@ import com.crow.base.R as baseR
  * @formatter:on
  *************************/
 class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
-
-    init {
-        FlowBus.with<Int>(BaseEventEnum.SelectPage.name).register(this) {
-            if (it == 2 && !isHidden) {
-                lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
-                    withStarted {
-                        // 每个观察者需要一个单独的生命周期块，在同一个会导致第二个观察者失效 收集书架 漫画Pager状态
-                        repeatOnLifecycle { mBsVM.mBookshelfComicFlowPager?.collect { data -> mBookshelfComicRvAdapter.submitData(data) } }
-
-                        // 收集书架 轻小说Pager状态
-                        repeatOnLifecycle { mBsVM.mBookshelfNovelFlowPager?.collect { data -> mBookshelfNovelRvAdapter.submitData(data) } }
-                    }
-                }
-            }
-        }
-    }
 
     companion object {
         fun newInstance() = BookshelfFragment()
@@ -255,6 +236,17 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
     override fun initListener() {
 
+        // 设置容器Fragment的共享结果回调
+        parentFragmentManager.setFragmentResultListener("Bookshelf", this) { _, bundle ->
+            if (bundle.getInt("id") == 2) {
+                // 每个观察者需要一个单独的生命周期块，在同一个会导致第二个观察者失效 收集书架 漫画Pager状态
+                repeatOnLifecycle { mBsVM.mBookshelfComicFlowPager?.collect { data -> mBookshelfComicRvAdapter.submitData(data) } }
+
+                // 收集书架 轻小说Pager状态
+                repeatOnLifecycle { mBsVM.mBookshelfNovelFlowPager?.collect { data -> mBookshelfNovelRvAdapter.submitData(data) } }
+            }
+        }
+
         // 刷新监听
         mBinding.bookshelfRefresh.setOnRefreshListener {
 
@@ -279,6 +271,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                             mBinding.bookshelfRvComic.visibility = View.INVISIBLE   // 漫画适配器隐藏
                             mBinding.bookshelfRvNovel.visibility = View.INVISIBLE    // 轻小说适配器隐藏
                             return@addOnButtonCheckedListener                            // 退出事件
+
                         }
 
                         // 漫画 适配器不为空 判断 “空书架文本” 是否可见 ，可见的话则 淡出并在动画结束时 设置消失

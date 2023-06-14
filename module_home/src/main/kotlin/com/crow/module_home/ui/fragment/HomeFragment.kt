@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.FrameLayout
 import androidx.activity.addCallback
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
@@ -25,10 +24,10 @@ import com.crow.base.tools.coroutine.globalCoroutineException
 import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.appDarkMode
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.setMaskAmount
@@ -105,18 +104,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                 }
             }
         }
-
-        FlowBus.with<Int>(BaseEventEnum.SelectPage.name).register(this) {
-            if (it == 0 && !isHidden) {
-                lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
-                    withStarted {
-
-                        // 获取主页数据
-                        mHomeVM.input(HomeIntent.GetHomePage())
-                    }
-                }
-            }
-        }
     }
 
     /** ● 导航至BookInfo */
@@ -171,7 +158,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                 val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.homeSearchView) { navigateBookComicInfo(it) }     // 实例化SearchNovelFragment
 
                 val bgColor: Int; val tintColor: Int; val statusBarDrawable: Drawable?
-                if (appDarkMode == AppCompatDelegate.MODE_NIGHT_YES) {
+                if (isDarkMode()) {
                     bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
                     tintColor = ContextCompat.getColor(mContext, android.R.color.white)
                     statusBarDrawable = AppCompatResources.getDrawable(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
@@ -234,13 +221,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState != null) {
-
-        }
-    }
-
     /** ● Lifecycle Start */
     override fun onStart() {
         super.onStart()
@@ -289,6 +269,11 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     /** ● 初始化监听器 */
     override fun initListener() {
+
+        // 设置容器Fragment的回调监听
+        parentFragmentManager.setFragmentResultListener("Home", this) { _, bundle ->
+            if (bundle.getInt("id") == 0) mHomeVM.input(HomeIntent.GetHomePage())
+        }
 
         // 搜索
         mBinding.homeToolbar.menu[0].doOnClickInterval {

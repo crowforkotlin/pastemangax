@@ -1,7 +1,11 @@
 package com.crow.module_main.ui.viewmodel
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.edit
 import androidx.lifecycle.viewModelScope
 import com.crow.base.copymanga.entity.AppConfigEntity
+import com.crow.base.tools.extensions.SpNameSpace
+import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_main.model.intent.ContainerIntent
 import com.crow.module_main.network.ContainerRepository
@@ -21,18 +25,25 @@ import kotlin.coroutines.resume
  **************************/
 class ContainerViewModel(val repository: ContainerRepository) : BaseMviViewModel<ContainerIntent>() {
 
-    // app配置 设置粘性状态
-    private var _appConfig = MutableStateFlow<AppConfigEntity?>(null)
-    val appConfig: StateFlow<AppConfigEntity?> get() = _appConfig
+    /** ● app配置 设置粘性状态 （内部访问）*/
+    private var _mAppConfig = MutableStateFlow<AppConfigEntity?>(null)
+
+    /** ● app配置 设置粘性状态 （ 公开）*/
+    val mAppConfig: StateFlow<AppConfigEntity?> get() = _mAppConfig
+
 
     init {
         viewModelScope.launch {
-            _appConfig.value = AppConfigEntity.readAppConfig() ?: AppConfigEntity(true)
+            _mAppConfig.value = AppConfigEntity.readAppConfig() ?: AppConfigEntity(true)
         }
     }
 
     fun saveAppConfig(appConfigEntity: AppConfigEntity = AppConfigEntity()) {
         viewModelScope.launch { AppConfigEntity.saveAppConfig(appConfigEntity) }
+    }
+
+    fun saveCatalogDarkModeEnable(darkMode: Int) {
+        SpNameSpace.CATALOG_NIGHT_MODE.getSharedPreferences().edit { putBoolean(SpNameSpace.Key.ENABLE_DARK, darkMode == AppCompatDelegate.MODE_NIGHT_YES) }
     }
 
     suspend fun getReadedAppConfig(): AppConfigEntity? {

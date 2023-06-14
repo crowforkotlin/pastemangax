@@ -57,10 +57,12 @@ class HomeComicParentRvAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     enum class Type {
-        REC,HOT,NEW,FINISH,RANK,TOPIC
+        REC, HOT, NEW, FINISH, RANK, TOPIC
     }
 
-    inner class HomeComicParentViewHolder<T: ViewGroup>(view: T) : RecyclerView.ViewHolder(view) { var mPathWord: String = "" }
+    inner class HomeComicParentViewHolder<T : ViewGroup>(view: T) : RecyclerView.ViewHolder(view) {
+        var mPathWord: String = ""
+    }
 
     private var mHomeRecComicRvAdapter: HomeComicChildRvAdapter<RecComicsResult>? = null
     private var mRvDelayMs: Long = 20L
@@ -77,7 +79,12 @@ class HomeComicParentRvAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             0 -> createBannerVH(parent)
-            1 -> createHeaderVH(parent, R.drawable.home_ic_recommed_24dp, R.string.home_recommend_comic)
+            1 -> createHeaderVH(
+                parent,
+                R.drawable.home_ic_recommed_24dp,
+                R.string.home_recommend_comic
+            )
+
             2 -> createComicVH<RecComicsResult>(parent, Type.REC, viewType)
             3 -> createRefreshButtonVH(parent)
             4 -> createHeaderVH(parent, R.drawable.home_ic_hot_24dp, R.string.home_hot_comic)
@@ -111,7 +118,11 @@ class HomeComicParentRvAdapter(
         return HomeComicParentViewHolder(banner)
     }
 
-    private fun createHeaderVH(parent: ViewGroup, @DrawableRes icon: Int, @StringRes title: Int): RecyclerView.ViewHolder {
+    private fun createHeaderVH(
+        parent: ViewGroup,
+        @DrawableRes icon: Int,
+        @StringRes title: Int
+    ): RecyclerView.ViewHolder {
         val titleLinear = LinearLayoutCompat(parent.context)
         val titleButton = MaterialButton(parent.context, null, baseR.attr.baseIconButtonStyle)
         val titleMore = MaterialButton(parent.context, null, baseR.attr.baseIconButtonStyle)
@@ -136,20 +147,25 @@ class HomeComicParentRvAdapter(
         return HomeComicParentViewHolder(titleLinear)
     }
 
-    private fun<T> createComicVH(parent: ViewGroup, type: Type, viewType: Int): HomeComicParentViewHolder<RecyclerView> {
+    private fun <T> createComicVH(
+        parent: ViewGroup,
+        type: Type,
+        viewType: Int
+    ): HomeComicParentViewHolder<RecyclerView> {
         val recyclerView = RecyclerView(parent.context)
         recyclerView.layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         (recyclerView.layoutParams as RecyclerView.LayoutParams).setMargins(mDp5, mDp5, mDp5, mDp5)
         recyclerView.isNestedScrollingEnabled = false
-        recyclerView.layoutManager = GridLayoutManager(parent.context, if (type!= Type.TOPIC) 3 else 2)
-        recyclerView.adapter = HomeComicChildRvAdapter(mType = type, doOnTap = { doOnTap(it) }, mData = (mData!!)[viewType] as MutableList<T>)
-        if (type == Type.REC) mHomeRecComicRvAdapter = recyclerView.adapter  as HomeComicChildRvAdapter<RecComicsResult>
+        recyclerView.layoutManager = GridLayoutManager(parent.context, if (type != Type.TOPIC) 3 else 2)
+        recyclerView.adapter = HomeComicChildRvAdapter(mType = type, doOnTap = { doOnTap(it) }, mData = ((mData!![viewType] as MutableList<T>)))
+        if (type == Type.REC) mHomeRecComicRvAdapter = recyclerView.adapter as HomeComicChildRvAdapter<RecComicsResult>
         return HomeComicParentViewHolder(recyclerView)
     }
 
-    private fun createRefreshButtonVH(parent: ViewGroup) : HomeComicParentViewHolder<FrameLayout> {
+    private fun createRefreshButtonVH(parent: ViewGroup): HomeComicParentViewHolder<FrameLayout> {
         val frameLayout = FrameLayout(parent.context)
-        val refreshButton = MaterialButton(parent.context, null, baseR.attr.baseIconButtonElevatedStyle)
+        val refreshButton =
+            MaterialButton(parent.context, null, baseR.attr.baseIconButtonElevatedStyle)
         frameLayout.layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         refreshButton.layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
         (refreshButton.layoutParams as FrameLayout.LayoutParams).apply {
@@ -160,7 +176,8 @@ class HomeComicParentRvAdapter(
         refreshButton.setTypeface(refreshButton.typeface, Typeface.BOLD)
         refreshButton.textAlignment = View.TEXT_ALIGNMENT_CENTER
         refreshButton.elevation = 20f
-        refreshButton.icon = ContextCompat.getDrawable(parent.context, R.drawable.home_ic_refresh_24dp)
+        refreshButton.icon =
+            ContextCompat.getDrawable(parent.context, R.drawable.home_ic_refresh_24dp)
         refreshButton.iconPadding = mDp5
         refreshButton.iconTint = null
         refreshButton.doOnClickInterval { _ -> doOnRecRefresh(refreshButton) }
@@ -171,7 +188,7 @@ class HomeComicParentRvAdapter(
     suspend fun doNotify(newDataResult: MutableList<Any?>, delayMs: Long = BASE_ANIM_100L) {
         val isCountSame = itemCount == newDataResult.size
         if (isCountSame) mData = newDataResult
-        else {
+        else if (itemCount == 0) {
             notifyItemRangeRemoved(0, itemCount)
             mData?.clear()
             delay(BASE_ANIM_200L)

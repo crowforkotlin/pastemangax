@@ -3,20 +3,18 @@ package com.crow.copymanga.ui.activity
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.isInvisible
-import androidx.lifecycle.whenCreated
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.appDarkMode
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.isLatestVersion
 import com.crow.base.tools.extensions.navigateByAdd
 import com.crow.base.tools.extensions.newMaterialDialog
@@ -46,8 +44,6 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
 
     /** ● 初始化更新是否完成 */
     private var mInitUpdate: Boolean = false
-
-    private var mIsAdded: Boolean = false
 
     /** ● 容器VM */
     private val mContainerVM by viewModel<ContainerViewModel>()
@@ -84,34 +80,25 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
 
         // 设置布局
         setContentView(mBinding.root)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.navigateByAdd<ContainerFragment>(R.id.app_main_fcv, null, Fragments.Container.name)
+        }
     }
 
     /** ● 初始化观察者 */
     override fun initObserver(savedInstanceState: Bundle?) {
 
-        mContainerVM.appConfig.onCollect(this) { appConfig ->
+        mContainerVM.mAppConfig.onCollect(this) { appConfig ->
 
             if (appConfig == null) return@onCollect
 
-
             BaseStrings.URL.CopyManga = appConfig.mSite
             BaseUser.CURRENT_ROUTE = appConfig.mRoute
-            appDarkMode = AppCompatDelegate.getDefaultNightMode()
 
-            if (appConfig.mAppFirstInit) { mContainerVM.input(ContainerIntent.GetDynamicSite()) }
+            if (appConfig.mAppFirstInit) mContainerVM.input(ContainerIntent.GetDynamicSite())
 
-            if (savedInstanceState == null) {
-
-                AppCompatDelegate.setDefaultNightMode(appConfig.mDarkMode)
-                if(!mIsAdded)
-                whenCreated {
-                    mIsAdded = true
-                    supportFragmentManager.navigateByAdd<ContainerFragment>(R.id.app_main_fcv, null, Fragments.Container.name)
-                }
-            }
-            WindowCompat.getInsetsController(window, window.decorView).apply {
-                isAppearanceLightStatusBars = (appDarkMode == AppCompatDelegate.MODE_NIGHT_NO)
-            }
+            WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = (!isDarkMode())
         }
 
         mContainerVM.onOutput { intent ->

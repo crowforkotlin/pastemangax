@@ -3,6 +3,7 @@
 package com.crow.base.tools.extensions
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
@@ -28,6 +29,14 @@ object DataStoreAgent {
     val USER_CONFIG = stringPreferencesKey("user.config")
     val DATA_USER = stringPreferencesKey("data.user")
     val DATA_BOOK = stringPreferencesKey("data.book")
+}
+
+object SpNameSpace {
+
+    const val CATALOG_NIGHT_MODE = "Catalog.NightMode"
+    object Key {
+        const val ENABLE_DARK = "enable_dark"
+    }
 }
 
 val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(appContext.getString(R.string.BaseAppName))
@@ -97,4 +106,8 @@ fun <T> Preferences.Key<T>.decode(): T? {
 
 fun <T> Preferences.Key<T>.clear() {
     runBlocking { appContext.appDataStore.edit { it.clear() } }
+}
+
+fun String.getSharedPreferences(): SharedPreferences {
+    return appContext.getSharedPreferences(this, Context.MODE_PRIVATE)
 }
