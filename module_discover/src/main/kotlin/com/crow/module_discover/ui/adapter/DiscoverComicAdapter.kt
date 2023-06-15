@@ -106,8 +106,6 @@ class DiscoverComicAdapter(
         vh.rvBinding.discoverRvAuthor.text = item.mAuthor.joinToString { it.mName }
         vh.rvBinding.discoverRvHot.text = formatValue(item.mPopular)
         vh.rvBinding.discoverRvTime.text = item.mDatetimeUpdated
-
-        toSetColor(vh, item.mPopular)
     }
 
     override fun setColor(vh: LoadingViewHolder, color: Int) {

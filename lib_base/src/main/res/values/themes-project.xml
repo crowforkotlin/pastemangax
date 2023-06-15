@@ -6,18 +6,10 @@
         <item name="baseIconButtonElevatedStyle">@style/Base.Theme.Button.Elevated.Icon</item>
     </style>
 
-
-    <style name="Base.Theme.Button.Elevated.Icon" parent="Widget.Material3.Button.ElevatedButton.Icon" >
-    </style>
-
-    <style name="Base.Theme.Button.Icon.Text" parent="Widget.Material3.Button.IconButton" >
-    </style>
-
-    <style name="Base.Theme.Button.Icon.Tint" parent="Widget.Material3.Button.IconButton" >
-    </style>
-
-    <style name="Base.Theme.Button.Icon.Tint.Text" parent="Widget.Material3.Button.IconButton" >
-    </style>
+    <style name="Base.Theme.Button.Elevated.Icon" parent="Widget.Material3.Button.ElevatedButton.Icon" />
+    <style name="Base.Theme.Button.Icon.Text" parent="Widget.Material3.Button.IconButton" />
+    <style name="Base.Theme.Button.Icon.Tint" parent="Widget.Material3.Button.IconButton" />
+    <style name="Base.Theme.Button.Icon.Tint.Text" parent="Widget.Material3.Button.IconButton" />
 
     <style name="Base.Theme.Button.Icon.Back" parent="Widget.Material3.Button.IconButton" >
         <item name="iconTint">@color/base_black</item>

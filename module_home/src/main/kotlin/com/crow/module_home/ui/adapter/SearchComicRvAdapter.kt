@@ -96,8 +96,6 @@ class SearchComicRvAdapter(
         vh.rvBinding.homeSearchRvName.text = item.mName
         vh.rvBinding.homeSearchRvAuthor.text = item.mAuthor.joinToString { it.mName }
         vh.rvBinding.homeSearchRvHot.text = formatValue(item.mPopular)
-
-        toSetColor(vh, item.mPopular)
     }
 
     override fun setColor(vh: LoadingViewHolder, color: Int) {

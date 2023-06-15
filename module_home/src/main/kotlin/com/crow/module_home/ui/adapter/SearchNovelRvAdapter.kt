@@ -93,7 +93,6 @@ class SearchNovelRvAdapter(
             if (mNameHeight == null) mNameHeight = if (vh.rvBinding.homeSearchRvName.lineCount == 1) view.measuredHeight shl 1 else view.measuredHeight
             (vh.rvBinding.homeSearchRvName.layoutParams as LinearLayoutCompat.LayoutParams).height = mNameHeight!!
         }
-        toSetColor(vh, item.mPopular)
     }
 
     override fun setColor(vh: LoadingViewHolder, color: Int) {

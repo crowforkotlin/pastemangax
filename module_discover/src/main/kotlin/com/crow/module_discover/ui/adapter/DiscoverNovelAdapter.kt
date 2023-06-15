@@ -99,7 +99,6 @@ class DiscoverNovelAdapter(
         vh.rvBinding.discoverRvAuthor.text = item.mAuthor.joinToString { it.mName }
         vh.rvBinding.discoverRvHot.text = formatValue(item.mPopular)
         vh.rvBinding.discoverRvTime.text = item.mDatetimeUpdated
-        toSetColor(vh, item.mPopular)
     }
 
     override fun setColor(vh: ViewHolder, color: Int) {

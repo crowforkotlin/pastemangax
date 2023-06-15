@@ -104,8 +104,6 @@ class HomeComicChildRvAdapter<T>(
             rvBinding.homeComicRvLastestChapter.isVisible = true
             rvBinding.homeComicRvLastestChapter.text = lastestChapter
         }
-
-        toSetColor(this, hot)
     }
 
     override fun getItemCount(): Int = mData.size
