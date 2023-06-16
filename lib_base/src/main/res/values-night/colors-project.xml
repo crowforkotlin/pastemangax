@@ -2,7 +2,7 @@
 <resources>
 
     <color name="base_bg">#201f1e</color>
-    <color name="base_icon_asc">#FFFFFF</color>
+    <color name="base_color_asc">#FFFFFF</color>
     <color name="base_icon_desc">#000000</color>
 
     <color name="base_book_red">#EF5350</color>

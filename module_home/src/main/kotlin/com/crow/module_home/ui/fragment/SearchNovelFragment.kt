@@ -42,6 +42,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
     }
 
     private var mSearchView: SearchView? = null
+
     private var mOnTap: ((pathword: String) -> Unit)? = null
 
     private val mHomeVM by viewModel<HomeViewModel>()
@@ -94,15 +95,9 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
 
                 // 淡入
                 when(mBinding.homeSearchNovelChipGroup.checkedChipId) {
-                    mBinding.homeSearchNovelChipAll.id -> mBinding.homeSearchNovelChipAll.animateFadeIn(
-                        BASE_ANIM_300L
-                    )
-                    mBinding.homeSearchNovelChipName.id -> mBinding.homeSearchNovelChipName.animateFadeIn(
-                        BASE_ANIM_300L
-                    )
-                    mBinding.homeSearchNovelChipAuthor.id -> mBinding.homeSearchNovelChipAuthor.animateFadeIn(
-                        BASE_ANIM_300L
-                    )
+                    mBinding.homeSearchNovelChipAll.id -> mBinding.homeSearchNovelChipAll.animateFadeIn(BASE_ANIM_300L)
+                    mBinding.homeSearchNovelChipName.id -> mBinding.homeSearchNovelChipName.animateFadeIn(BASE_ANIM_300L)
+                    mBinding.homeSearchNovelChipAuthor.id -> mBinding.homeSearchNovelChipAuthor.animateFadeIn(BASE_ANIM_300L)
                 }
 
                 // 搜索内容不为空

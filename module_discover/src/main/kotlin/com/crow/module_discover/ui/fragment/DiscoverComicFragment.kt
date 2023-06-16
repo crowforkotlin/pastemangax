@@ -76,11 +76,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
         }
 
-        // Rv滑动监听
-        /*mBinding.discoverComicRv.setOnScrollChangeListener { _, _, _, _, _ ->
-            val layoutManager = mBinding.discoverComicRv.layoutManager
-            if(layoutManager is LinearLayoutManager) mBinding.discoverComicAppbar.discoverAppbarTextPos.text = (layoutManager.findLastVisibleItemPosition().plus(1)).toString()
-        }*/
     }
 
     /** ● 导航至漫画页 */
@@ -201,7 +196,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         mDiscoverVM.input(DiscoverIntent.GetComicTag())     // 获取标签
         mDiscoverVM.input(DiscoverIntent.GetComicHome())    // 获取发现主页
     }
-
 
     /** ● Lifecycle onDestroyView */
     override fun onDestroyView() {

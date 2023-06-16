@@ -53,32 +53,32 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         const val LOGIN_CHAPTER_HAS_BEEN_SETED = "LOGIN_CHAPTER_HAS_BEEN_SETED"
     }
 
-    // AppGlideFactory GLide 进度加载
+    /** ● AppGlideFactory GLide 进度加载 */
     protected var mAppGlideProgressFactory: AppGlideProgressFactory? = null
 
-    // 书架VM
+    /** ● 书架VM */
     protected val mBookVM by viewModel<BookInfoViewModel>()
 
-    // 漫画点击实体
+    /** ● 漫画点击实体 */
     protected val mPathword: String by lazy {
         arguments?.getString("pathword") ?: run {
             toast(getString(baseR.string.BaseUnknowError))
             navigateUp()
             ""
-        } 
+        }
     }
 
-    // 是否添加选项卡
+    /** ● 是否添加选项卡 */
     protected var mIsTabAlreadyAdded = false
 
-    // BaseEvent 单例
+    /** ● BaseEvent 单例 */
     protected val mBaseEvent = BaseEvent.getSIngleInstance()
 
     init {
         mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, true)
     }
 
-    // 添加章节选择器
+    /** ● 添加章节选择器 */
     protected fun addBookChapterSlector(comicChapterResp: ComicChapterResp?, novelChapterResp: NovelChapterResp?) {
 
         // 计算选项卡个数，使用向上取整的方式
@@ -113,10 +113,10 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     }
 
     /**
-     * 书页内容意图处理
+     * ● 书页内容意图处理
      * @param intent 意图
      * @param onResult 交给子类处理View
-     * */
+     */
     protected fun doOnBookPageIntent(intent: BookIntent, onResult: Runnable) {
         intent.mBaseViewState
             // 执行加载动画
@@ -140,14 +140,16 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     }
 
     /**
-     * 书页章节意图处理
+     * ● 书页章节意图处理
      * @param T 类型
      * @param intent 意图
-     * @param onResult 交给子类处理View
-     * */
-    protected inline fun<T> doOnBookPageChapterIntent(intent: BookIntent, crossinline onResult: (T) -> Unit) {
+     */
+    protected fun<T> doOnBookPageChapterIntent(intent: BookIntent) {
         intent.mBaseViewState
             .doOnError { _, _ ->
+                if (mBinding.bookInfoRvChapter.adapter?.itemCount == 0) {
+                    if (mBinding.bookInfoLinearChapter.isVisible) mBinding.bookInfoLinearChapter.animateFadeOutWithEndInVisibility()
+                }
                 if (mBinding.bookInfoRefresh.isRefreshing) processChapterErrorResult()
                 dismissLoadingAnim { processChapterErrorResult() }
             }
@@ -157,50 +159,21 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
             }
             .doOnResult {
                 when(intent) {
-                    is BookIntent.GetComicChapter -> {
-                        if (intent.comicChapter != null) {
-
-                            if (mBinding.comicInfoErrorTips.isVisible) {
-                                mBinding.comicInfoErrorTips.animateFadeOutWithEndInVisibility()
-                                mBinding.bookInfoLinearChapter.animateFadeIn()
-                            }
-                            if (mBinding.bookInfoRefresh.isRefreshing) { onResult(intent.comicChapter as T) }
-                            else dismissLoadingAnim { onResult(intent.comicChapter as T) }
-
-                            if (!mBinding.bookInfoRvChapter.isVisible) mBinding.bookInfoRvChapter.animateFadeIn()
-                            return@doOnResult
-                        }
-                        processChapterFailureResult(intent.invalidResp)
-                    }
-                    is BookIntent.GetNovelChapter -> {
-                        if (intent.novelChapter != null) {
-                            if (mBinding.comicInfoErrorTips.isVisible) {
-                                mBinding.comicInfoErrorTips.animateFadeOutWithEndInVisibility()
-                                mBinding.bookInfoLinearChapter.animateFadeIn()
-                            }
-
-                            if (mBinding.bookInfoRefresh.isRefreshing) onResult(intent.novelChapter as T)
-                            else dismissLoadingAnim { onResult(intent.novelChapter as T) }
-
-                            if (!mBinding.bookInfoRvChapter.isVisible) mBinding.bookInfoRvChapter.animateFadeIn()
-
-                            return@doOnResult
-                        }
-                        processChapterFailureResult(intent.invalidResp)
-                    }
+                    is BookIntent.GetComicChapter -> showChapterPage(intent.comicChapter, intent.invalidResp)
+                    is BookIntent.GetNovelChapter ->showChapterPage(intent.novelChapter, intent.invalidResp)
                     else -> {}
                 }
             }
     }
 
     /**
-     * 返回上一个界面
-     * */
+     * ● 返回上一个界面
+     */
     protected fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.BookComicInfo.name, Fragments.BookNovelInfo.name)
 
     /**
-     * 处理章节错误响应
-     * */
+     * ● 处理章节错误响应
+     */
     protected fun processChapterErrorResult() {
         if (!mBinding.comicInfoErrorTips.isVisible) {
             mBinding.comicInfoErrorTips.animateFadeIn()
@@ -208,11 +181,10 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         } else mBinding.comicInfoErrorTips.animateFadeIn()
     }
 
-
     /**
-     * 处理章节失败的结果
+     * ● 处理章节失败的结果
      * @param invalidResp 失败的结果
-     * */
+     */
     protected fun processChapterFailureResult(invalidResp: String?) {
         if (mBinding.bookInfoRefresh.isRefreshing) mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknowError))
         else dismissLoadingAnim {
@@ -221,50 +193,51 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         }
     }
 
-
     /**
-     * 导航至图片Fragment
+     * ● 导航至图片Fragment
      * @param fragment
-     * */
+     */
     protected fun navigateImage(fragment: Fragment) {
         val tag = Fragments.Image.name
         parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv, this, fragment, tag, tag )
     }
 
     /**
-     * 设置AddToBookshelf按钮
-     * */
+     * ● 设置AddToBookshelf按钮
+     */
     protected fun setButtonAddToBookshelf() {
         mBinding.bookInfoAddToBookshelf.text = getString(R.string.book_comic_add_to_bookshelf)
         mBinding.bookInfoAddToBookshelf.setIconResource(R.drawable.book_ic_add_to_bookshelf_24dp)
     }
 
     /**
-     * 设置RemoveFromBookshelf按钮
-     * */
+     * ● 设置RemoveFromBookshelf按钮
+     */
     protected fun setButtonRemoveFromBookshelf() {
         mBinding.bookInfoAddToBookshelf.setIconResource(R.drawable.book_ic_remove_from_bookshelf_24dp)
         mBinding.bookInfoAddToBookshelf.text = getString(R.string.book_comic_remove_from_bookshelf)
     }
 
     /**
-     * 按钮组整体淡入
-     * */
+     * ● 按钮组整体淡入
+     */
     protected fun buttonGroupFadeIn() {
         mBinding.bookInfoAddToBookshelf.animateFadeIn()
         mBinding.bookInfoDownload.animateFadeIn()
         mBinding.bookInfoReadnow.animateFadeIn()
     }
 
-
+    /** ● 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = BookFragmentBinding.inflate(inflater)
 
+    /** ● Lifecycle onStart */
     override fun onStart() {
         super.onStart()
         mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) { navigateUp() }
     }
 
-    override fun initView(bundle: Bundle?) {
+    /** ● 初始化视图 */
+    override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.root.immersionPadding()
@@ -277,16 +250,28 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         mBinding.bookInfoRefresh.setDisableContentWhenRefresh(true)
     }
 
+    /** ● 处理章节结果
+     *
+     * @param T 章节类型？ 漫画 轻小说
+     * @param chapterResp 成功返回章节的数据
+     * @param invalidResp 失败的结果
+     **/
+    abstract fun<T> showChapterPage(chapterResp: T?, invalidResp: String?)
+
+    /** ● 下拉刷新 */
     abstract fun onRefresh()
 
+    /** ● 初始化数据 */
     abstract fun onInitData()
 
+    /** ● 父类初始化数据 */
     override fun initData(savedInstanceState: Bundle?) {
         // 数据不为空 则退出
         if (mBookVM.isNovelDatasIsNotNull() || mBookVM.isComicDatasIsNotNull()) return
         onInitData()
     }
 
+    /** ● 初始化监听器 */
     override fun initListener() {
 
         // 返回事件
@@ -307,11 +292,12 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
                 }
             }
         })
-        
+
         // 刷新
         mBinding.bookInfoRefresh.setOnRefreshListener { mBaseEvent.doOnInterval { onRefresh() } ?: mBinding.bookInfoRefresh.finishRefresh() }
     }
 
+    /** ● Lifecycle onDestoryView */
     override fun onDestroyView() {
         super.onDestroyView()
 

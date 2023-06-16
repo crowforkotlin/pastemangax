@@ -106,7 +106,11 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
     }
 
-    /** ● 导航至BookInfo */
+    /**
+     * ● 导航至BookComicInfo
+     *
+     * ● 2023-06-16 22:18:11 周五 下午
+     */
     private fun navigateBookComicInfo(pathword: String) {
         val tag = Fragments.BookComicInfo.name
         val bundle = Bundle()
@@ -115,6 +119,22 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
             get<Fragment>(named(Fragments.BookComicInfo.name)).also { it.arguments = bundle }, tag, tag)
     }
+
+    /**
+     * ● 导航至BookNovelInfo
+     *
+     * ● 2023-06-16 22:17:57 周五 下午
+     */
+    private fun navigateBookNovelInfo(pathword: String) {
+        val bundle = Bundle()
+        bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(
+            com.crow.base.R.id.app_main_fcv,
+            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            get<Fragment>(named(Fragments.BookNovelInfo.name)).also { it.arguments = bundle }, tag, tag
+        )
+    }
+
 
     /** ● 加载主页数据 */
     private fun doLoadHomePage(results: Results) {
@@ -155,7 +175,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             mBinding.homeSearchView.apply {
                 val binding = HomeFragmentSearchViewBinding.inflate(layoutInflater)                                                                 // 获取SearchViewBinding
                 val searchComicFragment = SearchComicFragment.newInstance(mBinding.homeSearchView) { navigateBookComicInfo(it) }   // 实例化SearchComicFragment
-                val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.homeSearchView) { navigateBookComicInfo(it) }     // 实例化SearchNovelFragment
+                val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.homeSearchView) { navigateBookNovelInfo(it) }     // 实例化SearchNovelFragment
 
                 val bgColor: Int; val tintColor: Int; val statusBarDrawable: Drawable?
                 if (isDarkMode()) {

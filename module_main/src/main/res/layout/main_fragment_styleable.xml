@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:navigationIcon="@drawable/base_ic_back_24dp"
-            app:navigationIconTint="@color/base_icon_asc"
+            app:navigationIconTint="@color/base_color_asc"
             app:title="@string/main_settings_style"
             app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold" />
 

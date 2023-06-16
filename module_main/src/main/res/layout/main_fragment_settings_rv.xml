@@ -17,7 +17,7 @@
         android:layout_width="@dimen/base_dp24"
         android:layout_height="@dimen/base_dp24"
         android:layout_gravity="center"
-        app:tint="@color/base_icon_asc" />
+        app:tint="@color/base_color_asc" />
 
     <TextView
         android:id="@+id/settings_rv_text"

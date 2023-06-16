@@ -7,9 +7,8 @@ import androidx.core.view.setMargins
 import com.crow.module_book.databinding.BookActivityComicBinding
 import com.crow.module_book.databinding.BookPageBadgeViewBinding
 import com.crow.module_book.ui.activity.ComicActivity
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import java.text.SimpleDateFormat
+import java.util.Date
 import com.crow.base.R as baseR
 
 class PageBadgeView(val mActivity: ComicActivity, val mBinding: BookActivityComicBinding) {
@@ -27,8 +26,9 @@ class PageBadgeView(val mActivity: ComicActivity, val mBinding: BookActivityComi
     }
 
     fun getTime(): String {
-        val time = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
-        return "  ${time.hour}:${time.minute}"
+        return " ${SimpleDateFormat("HH:mm:ss").format(Date())}"
+//        val time = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
+//        return "  ${time.hour}:${time.minute}"
     }
 
     fun updateTotalCount(count: Int) { mBadgeBinding.badgeTotal.text = "$count" }

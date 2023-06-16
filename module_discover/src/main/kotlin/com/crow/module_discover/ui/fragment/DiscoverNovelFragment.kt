@@ -63,8 +63,6 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        return
-
         if (mDiscoverVM.mNovelHomeData != null) return
 
         mDiscoverVM.input(DiscoverIntent.GetNovelHome())    // 获取发现主页
@@ -75,14 +73,9 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
         // 刷新 发送获取轻小说主页意图
         mBinding.discoverNovelRefresh.setOnRefreshListener { mDiscoverNovelAdapter.refresh() }
 
-        // 滑动 同时更新text
-        /*mBinding.discoverNovelRv.setOnScrollChangeListener { _, _, _, _, _ ->
-            val layoutManager = mBinding.discoverNovelRv.layoutManager
-            if(layoutManager is LinearLayoutManager) mBinding.discoverNovelAppbar.discoverAppbarTextPos.text = (layoutManager.findLastVisibleItemPosition() + 1).toString()
-        }*/
     }
 
-    override fun initView(bundle: Bundle?) {
+    override fun initView(savedInstanceState: Bundle?) {
 
         return
 

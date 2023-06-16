@@ -51,7 +51,7 @@
         android:minWidth="@dimen/base_dp48"
         android:minHeight="@dimen/base_dp48"
         app:icon="@drawable/base_ic_settings_24dp"
-        app:iconTint="@color/black"
+        app:iconTint="@color/base_color_asc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -286,6 +286,7 @@
                 android:id="@+id/book_info_linear_chapter"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="invisible"
                 android:layout_marginTop="@dimen/base_dp10"
                 android:orientation="vertical"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">

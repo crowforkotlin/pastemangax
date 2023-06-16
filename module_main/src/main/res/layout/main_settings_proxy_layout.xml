@@ -27,7 +27,7 @@
         android:layout_marginEnd="@dimen/base_dp20"
         android:drawablePadding="@dimen/base_dp10"
         android:text="@string/main_proxy_title"
-        android:textColor="@color/base_black"
+        android:textColor="@color/base_color_asc"
         android:textSize="@dimen/base_sp18"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

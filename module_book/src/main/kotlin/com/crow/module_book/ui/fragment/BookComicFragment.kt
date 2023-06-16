@@ -3,6 +3,7 @@ package com.crow.module_book.ui.fragment
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.GenericTransitionOptions
@@ -21,8 +22,8 @@ import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.removeWhiteSpace
 import com.crow.base.tools.extensions.startActivity
@@ -52,9 +53,18 @@ class BookComicFragment : BookFragment() {
         }
     }
 
-    // 漫画章节Rv
+    /**
+     * ● 漫画章节Rv
+     *
+     * ● 2023-06-15 23:00:16 周四 下午
+     */
     private var mComicChapterRvAdapter: ComicChapterRvAdapter? = null
 
+    /**
+     * ● 显示漫画信息页面
+     *
+     * ● 2023-06-15 23:00:25 周四 下午
+     */
     private fun showComicInfoPage() {
         val comicInfoPage = mBookVM.mComicInfoPage?.mComic ?: return
 
@@ -98,7 +108,34 @@ class BookComicFragment : BookFragment() {
         buttonGroupFadeIn()
     }
 
-    private fun showChapterPage(comicChapterResp: ComicChapterResp) {
+    /**
+     * ● 处理添加漫画至书架 意图
+     *
+     * ● 2023-06-15 23:01:04 周四 下午
+     */
+    private fun processAddComicIntent(intent: BookIntent.AddComicToBookshelf) {
+        intent.mBaseViewState
+            .doOnLoading { showLoadingAnim() }
+            .doOnError { _, _ -> dismissLoadingAnim { toast(getString(baseR.string.BaseUnknowError)) } }
+            .doOnResult {
+                dismissLoadingAnim {
+                    if (intent.isCollect == 1) {
+                        toast(getString(R.string.book_add_success))
+                        setButtonRemoveFromBookshelf()
+                    } else {
+                        toast(getString(R.string.book_remove_success))
+                        setButtonAddToBookshelf()
+                    }
+                }
+            }
+    }
+
+    /**
+     * ● 通知章节页面 显示出来
+     *
+     * ● 2023-06-15 23:00:49 周四 下午
+     */
+    private fun notifyChapterPageShowNow(comicChapterResp: ComicChapterResp) {
 
         // 添加章节选择器
         addBookChapterSlector(comicChapterResp, null)
@@ -137,39 +174,71 @@ class BookComicFragment : BookFragment() {
         }
     }
 
-    private fun processAddComicIntent(intent: BookIntent.AddComicToBookshelf) {
-        intent.mBaseViewState
-            .doOnLoading { showLoadingAnim() }
-            .doOnError { _, _ -> dismissLoadingAnim { toast(getString(baseR.string.BaseUnknowError)) } }
-            .doOnResult {
-                dismissLoadingAnim {
-                    if (intent.isCollect == 1) {
-                        toast(getString(R.string.book_add_success))
-                        setButtonRemoveFromBookshelf()
-                    } else {
-                        toast(getString(R.string.book_remove_success))
-                        setButtonAddToBookshelf()
-                    }
-                }
+    /**
+     * ● 处理章节
+     *
+     * ● 2023-06-15 23:01:51 周四 下午
+     */
+    override fun <T> showChapterPage(chapterResp: T?, invalidResp: String?) {
+        if (chapterResp == null) {
+            processChapterFailureResult(invalidResp)
+            return
+        }
+
+        if (chapterResp is ComicChapterResp) {
+
+            if (mBinding.comicInfoErrorTips.isVisible) {
+                mBinding.comicInfoErrorTips.animateFadeOutWithEndInVisibility()
+                mBinding.bookInfoLinearChapter.animateFadeIn()
             }
+            else if (!mBinding.bookInfoLinearChapter.isVisible) {
+                mBinding.bookInfoLinearChapter.animateFadeIn()
+            }
+
+            if (mBinding.bookInfoRefresh.isRefreshing) notifyChapterPageShowNow(chapterResp)
+            else dismissLoadingAnim { notifyChapterPageShowNow(chapterResp) }
+
+            if (!mBinding.bookInfoRvChapter.isVisible) { mBinding.bookInfoRvChapter.animateFadeIn() }
+        }
     }
 
-    override fun onInitData() {
+    /**
+     * ● 下拉刷新
+     *
+     * ● 2023-06-15 23:02:55 周四 下午
+     */
+    override fun onRefresh() { mBookVM.input(BookIntent.GetComicChapter(mPathword)) }
 
+    /**
+     * ● 初始化数据
+     *
+     * ● 2023-06-15 23:01:37 周四 下午
+     */
+    override fun onInitData() {
 
         if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mBookVM.input(BookIntent.GetComicBrowserHistory(mPathword))
 
         if (mBookVM.mComicInfoPage == null) mBookVM.input(BookIntent.GetComicInfoPage(mPathword))
     }
 
-    override fun onRefresh() { mBookVM.input(BookIntent.GetComicChapter(mPathword)) }
-
-    override fun initView(bundle: Bundle?) {
+    /**
+     * ● 初始化视图
+     *
+     * ● 2023-06-15 23:03:06 周四 下午
+     */
+    override fun initView(savedInstanceState: Bundle?) {
 
         // 初始化父View
-        super.initView(bundle)
+        super.initView(savedInstanceState)
 
-        if (mBookVM.mComicInfoPage != null) { showComicInfoPage() }
+        // 漫画信息页面内容不为空 则显示漫画页
+        if (mBookVM.mComicInfoPage != null) showComicInfoPage()
+
+        // 漫画章节页面内容不为空 则显示漫画章节页面
+        if (mBookVM.mComicChapterPage != null) {
+            mBinding.bookInfoRefresh.autoRefresh()
+            mBookVM.input(BookIntent.GetComicBrowserHistory(mPathword))
+        }
 
         // 漫画
         mComicChapterRvAdapter = ComicChapterRvAdapter { comic  ->
@@ -186,13 +255,19 @@ class BookComicFragment : BookFragment() {
         mBinding.bookInfoRvChapter.adapter = mComicChapterRvAdapter!!
     }
 
+    /**
+     * ● 初始化观察者
+     *
+     * ● 2023-06-15 23:07:45 周四 下午
+     */
     override fun initObserver() {
         super.initObserver()
 
         mBookVM.onOutput { intent ->
             when(intent) {
-                is BookIntent.GetComicChapter -> doOnBookPageChapterIntent<ComicChapterResp>(intent) { showChapterPage(it) }
+                is BookIntent.GetComicChapter -> doOnBookPageChapterIntent<ComicChapterResp>(intent)
                 is BookIntent.GetComicInfoPage -> doOnBookPageIntent(intent) { showComicInfoPage() }
+                is BookIntent.AddComicToBookshelf -> processAddComicIntent(intent)
                 is BookIntent.GetComicBrowserHistory -> {
                     intent.mBaseViewState
                         .doOnResult {
@@ -207,11 +282,15 @@ class BookComicFragment : BookFragment() {
                             }
                          }
                 }
-                is BookIntent.AddComicToBookshelf -> { processAddComicIntent(intent) }
             }
         }
     }
 
+    /**
+     * ● 初始化监听器
+     *
+     * ● 2023-06-15 23:08:01 周四 下午
+     */
     override fun initListener() {
         super.initListener()
 
@@ -230,6 +309,11 @@ class BookComicFragment : BookFragment() {
         }
     }
 
+    /**
+     * ● Lifecycle onDestoryView
+     *
+     * ● 2023-06-15 23:08:14 周四 下午
+     */
     override fun onDestroyView() {
         super.onDestroyView()
 

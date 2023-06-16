@@ -3,6 +3,7 @@ package com.crow.module_book.ui.fragment
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.GenericTransitionOptions
@@ -21,6 +22,7 @@ import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.removeWhiteSpace
@@ -48,9 +50,18 @@ class BookNovelFragment : BookFragment() {
         }
     }
 
-    // 轻小说章节Rv
+    /**
+     * ● 轻小说章节Rv
+     *
+     * ● 2023-06-15 22:57:42 周四 下午
+     */
     private var mNovelChapterRvAdapter: NovelChapterRvAdapter? = null
 
+    /**
+     * ● 显示轻小说信息页面
+     *
+     * ● 2023-06-15 22:57:28 周四 下午
+     */
     private fun showNovelInfoPage() {
         val novelInfoPage = mBookVM.mNovelInfoPage?.mNovel ?: return
 
@@ -96,7 +107,34 @@ class BookNovelFragment : BookFragment() {
         buttonGroupFadeIn()
     }
 
-    private fun showChapterPage(novelChapterResp: NovelChapterResp) {
+    /**
+     * ● 处理添加轻小说至 书架意图
+     *
+     * ● 2023-06-15 22:57:55 周四 下午
+     */
+    private fun processAddNovelIntent(intent: BookIntent.AddNovelToBookshelf) {
+        intent.mBaseViewState
+            .doOnLoading { showLoadingAnim() }
+            .doOnError { _, _ -> dismissLoadingAnim { toast(getString(com.crow.base.R.string.BaseUnknowError)) } }
+            .doOnResult {
+                dismissLoadingAnim {
+                    if (intent.isCollect == 1) {
+                        toast(getString(R.string.book_add_success))
+                        setButtonRemoveFromBookshelf()
+                    } else {
+                        toast(getString(R.string.book_remove_success))
+                        setButtonAddToBookshelf()
+                    }
+                }
+            }
+    }
+
+    /**
+     * ● 显示章节页面
+     *
+     * ● 2023-06-15 22:57:13 周四 下午
+     */
+    private fun notifyChapterPageShowNow(novelChapterResp: NovelChapterResp) {
         // 添加章节选择器
         addBookChapterSlector(null, novelChapterResp)
 
@@ -134,36 +172,62 @@ class BookNovelFragment : BookFragment() {
         }
     }
 
-    private fun processAddNovelIntent(intent: BookIntent.AddNovelToBookshelf) {
-        intent.mBaseViewState
-            .doOnLoading { showLoadingAnim() }
-            .doOnError { _, _ -> dismissLoadingAnim { toast(getString(com.crow.base.R.string.BaseUnknowError)) } }
-            .doOnResult {
-                dismissLoadingAnim {
-                    if (intent.isCollect == 1) {
-                        toast(getString(R.string.book_add_success))
-                        setButtonRemoveFromBookshelf()
-                    } else {
-                        toast(getString(R.string.book_remove_success))
-                        setButtonAddToBookshelf()
-                    }
-                }
-            }
-    }
-
+    /**
+     * ● 初始化数据
+     *
+     * ● 2023-06-15 22:58:06 周四 下午
+     */
     override fun onInitData() {
 
         if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mBookVM.input(BookIntent.GetNovelBrowserHistory(mPathword))
 
-        mBookVM.input(BookIntent.GetNovelInfoPage(mPathword))
+        if (mBookVM.mNovelInfoPage == null) mBookVM.input(BookIntent.GetNovelInfoPage(mPathword))
+    }
+
+    /**
+     * ● 处理章节
+     *
+     * ● 2023-06-15 22:58:25 周四 下午
+     */
+    override fun <T> showChapterPage(chapterResp: T?, invalidResp: String?) {
+        if (chapterResp == null) {
+            processChapterFailureResult(invalidResp)
+            return
+        }
+
+        if (chapterResp is NovelChapterResp) {
+
+            if (mBinding.comicInfoErrorTips.isVisible) {
+                mBinding.comicInfoErrorTips.animateFadeOutWithEndInVisibility()
+                mBinding.bookInfoLinearChapter.animateFadeIn()
+            }
+
+            else if (!mBinding.bookInfoLinearChapter.isVisible) {
+                mBinding.bookInfoLinearChapter.animateFadeIn()
+            }
+
+            if (mBinding.bookInfoRefresh.isRefreshing) notifyChapterPageShowNow(chapterResp)
+            else dismissLoadingAnim { notifyChapterPageShowNow(chapterResp) }
+
+            if (!mBinding.bookInfoRvChapter.isVisible) mBinding.bookInfoRvChapter.animateFadeIn()
+        }
     }
 
     override fun onRefresh() { mBookVM.input(BookIntent.GetNovelChapter(mPathword)) }
 
-    override fun initView(bundle: Bundle?) {
+    override fun initView(savedInstanceState: Bundle?) {
 
         // 初始化父View
-        super.initView(bundle)
+        super.initView(savedInstanceState)
+
+        // 漫画信息页面内容不为空 则显示漫画页
+        if (mBookVM.mNovelInfoPage != null) showNovelInfoPage()
+
+        // 漫画章节页面内容不为空 则显示漫画章节页面
+        if (mBookVM.mNovelChapterPage != null) {
+            mBinding.bookInfoRefresh.autoRefresh()
+            mBookVM.input(BookIntent.GetNovelBrowserHistory(mPathword))
+        }
 
         // 初始化适配器
         mNovelChapterRvAdapter = NovelChapterRvAdapter { toast("很抱歉暂未开发完成...") }
@@ -172,32 +236,14 @@ class BookNovelFragment : BookFragment() {
         mBinding.bookInfoRvChapter.adapter = mNovelChapterRvAdapter!!
     }
 
-    override fun initListener() {
-        super.initListener()
-
-        mBinding.bookInfoCardview.doOnClickInterval {
-            val fragment = get<Fragment>(named(Fragments.Image.name))
-            fragment.arguments =Bundle().also { bundle -> bundle.putString(BaseStrings.IMAGE_URL, mBookVM.mNovelInfoPage?.mNovel?.mCover) }
-            navigateImage(fragment)
-        }
-
-        mBinding.bookInfoAddToBookshelf.doOnClickInterval{
-            if (BaseUser.CURRENT_USER_TOKEN.isNullOrEmpty()) {
-                toast(getString(R.string.book_add_invalid))
-                return@doOnClickInterval
-            }
-            mBookVM.input(BookIntent.AddNovelToBookshelf(mBookVM.mUuid ?: return@doOnClickInterval, if (mBinding.bookInfoAddToBookshelf.text == getString(R.string.book_comic_add_to_bookshelf)) 1 else 0))
-        }
-
-    }
-
     override fun initObserver() {
         super.initObserver()
 
         mBookVM.onOutput { intent ->
             when(intent) {
-                is BookIntent.GetNovelChapter -> doOnBookPageChapterIntent<NovelChapterResp>(intent) { showChapterPage(it)}
+                is BookIntent.GetNovelChapter -> doOnBookPageChapterIntent<NovelChapterResp>(intent)
                 is BookIntent.GetNovelInfoPage -> doOnBookPageIntent(intent) { showNovelInfoPage() }
+                is BookIntent.AddNovelToBookshelf -> { processAddNovelIntent(intent) }
                 is BookIntent.GetNovelBrowserHistory -> {
                     intent.mBaseViewState
                         .doOnResult {
@@ -212,9 +258,28 @@ class BookNovelFragment : BookFragment() {
                             }
                         }
                 }
-                is BookIntent.AddNovelToBookshelf -> { processAddNovelIntent(intent) }
+
             }
         }
+    }
+
+    override fun initListener() {
+        super.initListener()
+
+        mBinding.bookInfoCardview.doOnClickInterval {
+            val fragment = get<Fragment>(named(Fragments.Image.name))
+            fragment.arguments =Bundle().also { bundle -> bundle.putString(BaseStrings.IMAGE_URL, mBookVM.mNovelInfoPage?.mNovel?.mCover) }
+            navigateImage(fragment)
+        }
+
+        mBinding.bookInfoAddToBookshelf.doOnClickInterval{
+            if (BaseUser.CURRENT_USER_TOKEN.isEmpty()) {
+                toast(getString(R.string.book_add_invalid))
+                return@doOnClickInterval
+            }
+            mBookVM.input(BookIntent.AddNovelToBookshelf(mBookVM.mUuid ?: return@doOnClickInterval, if (mBinding.bookInfoAddToBookshelf.text == getString(R.string.book_comic_add_to_bookshelf)) 1 else 0))
+        }
+
     }
 
     override fun onDestroyView() {
