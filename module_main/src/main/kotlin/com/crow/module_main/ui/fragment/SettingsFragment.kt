@@ -36,7 +36,7 @@ import com.crow.module_main.databinding.MainSettingsProxyLayoutBinding
 import com.crow.module_main.databinding.MainSettingsSiteLayoutBinding
 import com.crow.module_main.model.intent.ContainerIntent
 import com.crow.module_main.ui.adapter.SettingsAdapter
-import com.crow.module_main.ui.viewmodel.ContainerViewModel
+import com.crow.module_main.ui.viewmodel.MainViewModel
 import com.google.android.material.radiobutton.MaterialRadioButton
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
@@ -47,7 +47,7 @@ import com.crow.base.R as baseR
 class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
     private val screenHeight by lazy { mContext.resources.displayMetrics.heightPixels / 6 }
-    private val mContainerVM by viewModel<ContainerViewModel>()
+    private val mContainerVM by viewModel<MainViewModel>()
     private var mSiteAlertDialog: AlertDialog? = null
     private var mSiteDialogBinding: MainSettingsSiteLayoutBinding? = null
 

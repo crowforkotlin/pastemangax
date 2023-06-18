@@ -16,12 +16,12 @@ import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentStyleableBinding
 import com.crow.module_main.model.entity.StyleableEntity
 import com.crow.module_main.ui.adapter.StyleableAdapter
-import com.crow.module_main.ui.viewmodel.ContainerViewModel
+import com.crow.module_main.ui.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class StyleableFragment : BaseMviFragment<MainFragmentStyleableBinding>() {
 
-    private val mContainerVM by viewModel<ContainerViewModel>()
+    private val mContainerVM by viewModel<MainViewModel>()
 
     private var mStyableAdapter: StyleableAdapter? = null
 

@@ -5,7 +5,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_home.model.intent.HomeIntent
 import com.crow.module_home.model.resp.search.comic_reuslt.SearchComicResult
@@ -30,19 +29,10 @@ class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<H
     var mHomeDatas: MutableList<MutableList<out Any>?>?= null
     private var mRefreshStartIndex = 3
 
-    /** ● 是否是黑夜模式 */
-    var mIsDarkMode = isDarkMode()
+
 
     var mComicSearchFlowPage : Flow<PagingData<SearchComicResult>>? = null
     var mNovelSearchFlowPage : Flow<PagingData<SearchNovelResult>>? = null
-
-    fun doOnDarkChaned(onChaned:  Runnable) {
-        val isDarkMode = isDarkMode()
-        if (isDarkMode != mIsDarkMode) {
-            mIsDarkMode = isDarkMode
-            onChaned.run()
-        }
-    }
 
     /** ● 获取主页 （返回数据量很多）*/
     private fun getHomePage(intent: HomeIntent.GetHomePage) {

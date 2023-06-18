@@ -24,7 +24,7 @@ import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentContainerBinding
 import com.crow.module_main.model.intent.ContainerIntent
 import com.crow.module_main.ui.adapter.ContainerAdapter
-import com.crow.module_main.ui.viewmodel.ContainerViewModel
+import com.crow.module_main.ui.viewmodel.MainViewModel
 import com.crow.module_user.ui.viewmodel.UserViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -50,7 +50,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private var mContainerAdapter: ContainerAdapter? = null
 
     /** ● （Activity级别）容器VM */
-    private val mContainerVM by sharedViewModel<ContainerViewModel>()
+    private val mContainerVM by sharedViewModel<MainViewModel>()
 
     /** ● （Activity级别）用户VM */
     private val mUserVM by sharedViewModel<UserViewModel>()
@@ -100,13 +100,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
-            val bundle = bundleOf("id" to (arguments?.getInt("id") ?: 0).also {
-                saveItemPage(it)
-                BaseEvent.getSIngleInstance().setBoolean(mFragmentList[it].hashCode().toString(), true)
-            })
-            childFragmentManager.setFragmentResult("Home", bundle)
-            childFragmentManager.setFragmentResult("Discover_Comic", bundle)
-            childFragmentManager.setFragmentResult("Bookshelf", bundle)
+            mContainerVM.mIsRestarted = true
         } else {
             saveItemPage(0)
             BaseEvent.getSIngleInstance().setBoolean(mFragmentList[0].hashCode().toString(), true)
@@ -127,12 +121,29 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
+        if (hidden) return
+
         // 可见： 当返回ContainerFragment时回调此方法 则通知设置Icon
-        if (!hidden) mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
+        mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
+
+        if (mContainerVM.mIsRestarted) {
+            mContainerVM.mIsRestarted = false
+            val bundle = bundleOf("id" to (arguments?.getInt("id") ?: 0).also {
+                saveItemPage(it)
+                BaseEvent.getSIngleInstance().setBoolean(mFragmentList[it].hashCode().toString(), true)
+            }, "delay" to true)
+            childFragmentManager.setFragmentResult("Home", bundle)
+            childFragmentManager.setFragmentResult("Discover_Comic", bundle)
+            childFragmentManager.setFragmentResult("Bookshelf", bundle)
+        }
     }
 
     /** ● 初始化监听器 */
     override fun initListener() {
+
+        childFragmentManager.setFragmentResultListener("Container", viewLifecycleOwner) { _, bundle ->
+            mContainerVM.mIsDarkMode = bundle.getBoolean("isDarkMode")
+        }
 
         // 设置底部导航视图点击Item可见
         mBinding.mainBottomNavigation.setOnItemSelectedListener { item ->
@@ -151,7 +162,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
                     if (BaseEvent.getSIngleInstance().getBoolean(mFragmentList[mBinding.mainViewPager.currentItem].hashCode().toString()) == true) return
                     else BaseEvent.getSIngleInstance().setBoolean(mFragmentList[mBinding.mainViewPager.currentItem].hashCode().toString(), true)
-                    val bundle = bundleOf("id" to mBinding.mainViewPager.currentItem)
+                    val bundle = bundleOf("id" to mBinding.mainViewPager.currentItem, "delay" to false)
                     childFragmentManager.setFragmentResult("Home", bundle)
                     childFragmentManager.setFragmentResult("Discover_Comic", bundle)
                     childFragmentManager.setFragmentResult("Bookshelf", bundle)
@@ -159,6 +170,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             }
         })
     }
+
     /** ● 执行退出用户 */
     private fun doExitUser() {
         mUserVM.doClearUserInfo()

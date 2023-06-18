@@ -31,7 +31,7 @@ import com.crow.module_main.model.intent.ContainerIntent
 import com.crow.module_main.model.resp.MainAppUpdateResp
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
 import com.crow.module_main.ui.fragment.ContainerFragment
-import com.crow.module_main.ui.viewmodel.ContainerViewModel
+import com.crow.module_main.ui.viewmodel.MainViewModel
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -46,7 +46,7 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
     private var mInitUpdate: Boolean = false
 
     /** ● 容器VM */
-    private val mContainerVM by viewModel<ContainerViewModel>()
+    private val mContainerVM by viewModel<MainViewModel>()
 
     /** ● 获取ViewBinding */
     override fun getViewBinding() = AppActivityMainBinding.inflate(layoutInflater)

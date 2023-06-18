@@ -14,11 +14,12 @@ import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.base.tools.coroutine.launchDelay
+import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.showSnackBar
@@ -64,8 +65,23 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
         // 设置容器Fragment的回调监听
         parentFragmentManager.setFragmentResultListener("Discover_Comic", this) { _, bundle ->
-            "runnnnnn${bundle.getInt("id")}".logMsg()
-            if (bundle.getInt("id") == 1) repeatOnLifecycle { mDiscoverVM.mDiscoverComicHomeFlowPager?.collect { mDiscoverComicAdapter.submitData(it) } }
+            if (bundle.getInt("id") == 1) {
+                if (bundle.getBoolean("delay")) {
+                    viewLifecycleOwner.launchDelay(BASE_ANIM_200L) {
+                        repeatOnLifecycle {
+                            mDiscoverVM.mDiscoverComicHomeFlowPager?.collect {
+                                mDiscoverComicAdapter.submitData(it)
+                            }
+                        }
+                    }
+                } else {
+                    repeatOnLifecycle {
+                        mDiscoverVM.mDiscoverComicHomeFlowPager?.collect {
+                            mDiscoverComicAdapter.submitData(it)
+                        }
+                    }
+                }
+            }
         }
 
         // 刷新监听
@@ -75,7 +91,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         mBinding.discoverComicAppbar.discoverAppbarToolbar.menu[0].doOnClickInterval {
 
         }
-
     }
 
     /** ● 导航至漫画页 */
@@ -201,5 +216,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         AppGlideProgressFactory.doReset()
+        parentFragmentManager.clearFragmentResultListener("Discover_Comic")
     }
 }

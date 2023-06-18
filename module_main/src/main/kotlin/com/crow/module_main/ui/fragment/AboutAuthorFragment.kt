@@ -25,7 +25,7 @@ import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentAboutBinding
 import com.crow.module_main.model.intent.ContainerIntent
-import com.crow.module_main.ui.viewmodel.ContainerViewModel
+import com.crow.module_main.ui.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.crow.base.R as baseR
 
@@ -40,7 +40,7 @@ import com.crow.base.R as baseR
 class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
 
     // ContainerVM
-    private val mContainerVm by viewModel<ContainerViewModel>()
+    private val mContainerVm by viewModel<MainViewModel>()
 
     private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.About.name)
 

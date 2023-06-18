@@ -21,7 +21,9 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.globalCoroutineException
+import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_100L
+import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -52,7 +54,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -135,7 +136,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             get<Fragment>(named(Fragments.BookNovelInfo.name)).also { it.arguments = bundle }, tag, tag
         )
     }
-
 
     /** ● 加载主页数据 */
     private fun doLoadHomePage(results: Results) {
@@ -225,7 +225,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     /** ● 暴露的函数 提供给 ContainerFragment 用于通知主页刷新 */
     fun doRefresh() { mHomeVM.input(HomeIntent.GetHomePage()) }
 
-
     /** ● 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentBinding.inflate(inflater)
 
@@ -262,6 +261,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         mRecRefresh = null  // 置空“换一批”控件 防止内存泄漏
+        parentFragmentManager.clearFragmentResultListener("Home")
     }
 
     /** ● 初始化数据 */
@@ -295,7 +295,8 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         // 设置容器Fragment的回调监听
         parentFragmentManager.setFragmentResultListener("Home", this) { _, bundle ->
             if (bundle.getInt("id") == 0) {
-                if (isDarkMode() == mHomeVM.mIsDarkMode) mHomeVM.input(HomeIntent.GetHomePage())
+                if (bundle.getBoolean("delay")) launchDelay(BASE_ANIM_200L) { mHomeVM.input(HomeIntent.GetHomePage()) }
+                else mHomeVM.input(HomeIntent.GetHomePage())
             }
         }
 
@@ -356,17 +357,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                             }
                         }
                 }
-            }
-        }
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (hidden) return
-        mHomeVM.doOnDarkChaned {
-            viewLifecycleOwner.lifecycleScope.launch {
-                delay(BASE_ANIM_300L)
-                mHomeVM.input(HomeIntent.GetHomePage())
             }
         }
     }

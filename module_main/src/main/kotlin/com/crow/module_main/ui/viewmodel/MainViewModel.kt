@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.crow.base.copymanga.entity.AppConfigEntity
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.getSharedPreferences
+import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_main.model.intent.ContainerIntent
 import com.crow.module_main.network.ContainerRepository
@@ -23,13 +24,19 @@ import kotlin.coroutines.resume
  * @Description: ContainerViewModel
  * @formatter:on
  **************************/
-class ContainerViewModel(val repository: ContainerRepository) : BaseMviViewModel<ContainerIntent>() {
+class MainViewModel(val repository: ContainerRepository) : BaseMviViewModel<ContainerIntent>() {
 
     /** ● app配置 设置粘性状态 （内部访问）*/
     private var _mAppConfig = MutableStateFlow<AppConfigEntity?>(null)
 
     /** ● app配置 设置粘性状态 （ 公开）*/
     val mAppConfig: StateFlow<AppConfigEntity?> get() = _mAppConfig
+
+    /** ● 是否是黑夜模式 */
+    var mIsDarkMode = isDarkMode()
+
+    /** ● 是否重启（内存重启、旋转、夜间模式切换） */
+    var mIsRestarted: Boolean = false
 
 
     init {

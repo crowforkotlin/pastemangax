@@ -118,7 +118,7 @@ class HomeComicParentRvAdapter(
                     .also { it.setPadding(0, 0, 0, mDp20) })
         val adapter =HomeBannerRvAdapter { pathword -> doOnTap(pathword) }
         banner.adapter = adapter
-        viewLifecycleOwner.lifecycleScope.launch { adapter.doBannerNotify(mData!![0] as MutableList<Banner>, mRvDelayMs) }
+        viewLifecycleOwner.lifecycleScope.launch { adapter.doBannerNotify(mData!![0] as MutableList<Banner>, mRvDelayMs / 2) }
         return HomeComicParentViewHolder(banner)
     }
 
@@ -164,7 +164,7 @@ class HomeComicParentRvAdapter(
         val adapter = HomeComicChildRvAdapter<T>(mType = type, doOnTap = { doOnTap(it) })
         recyclerView.adapter = adapter
         if (type == Type.REC) mHomeRecComicRvAdapter = recyclerView.adapter as HomeComicChildRvAdapter<RecComicsResult>
-        viewLifecycleOwner.lifecycleScope.launch { adapter.doNotify((mData!![viewType] as MutableList<T>), mRvDelayMs) }
+        viewLifecycleOwner.lifecycleScope.launch { adapter.doNotify((mData!![viewType] as MutableList<T>), mRvDelayMs * 2) }
         return HomeComicParentViewHolder(recyclerView)
     }
 
