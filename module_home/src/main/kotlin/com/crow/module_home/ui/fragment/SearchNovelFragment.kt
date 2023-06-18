@@ -106,7 +106,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
         }
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         mHomeVM.onOutput { intent ->
             if (intent is HomeIntent.SearchNovel) {

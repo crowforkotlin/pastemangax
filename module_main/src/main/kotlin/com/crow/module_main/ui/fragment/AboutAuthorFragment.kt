@@ -75,7 +75,7 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
         mBinding.mainAboutAppVersion.text = getString(R.string.main_about_app_version, getCurrentVersionName().split("_")[0])
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
         mContainerVm.onOutput {
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW

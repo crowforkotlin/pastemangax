@@ -30,7 +30,7 @@ abstract class BaseBottomSheetDF<out VB : ViewBinding, out VM : BaseViewModel> :
 
     override fun initListener() {}
 
-    override fun initObserver() {
+    override fun initObserver(saveInstanceState: Bundle?) {
         mViewModel.baseViewState.observe(viewLifecycleOwner) { viewState ->
             viewState
                 .doOnLoading{ showLoadingAnim() }
@@ -59,6 +59,6 @@ abstract class BaseBottomSheetDF<out VB : ViewBinding, out VM : BaseViewModel> :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initObserver()
+        initObserver(savedInstanceState)
     }
 }

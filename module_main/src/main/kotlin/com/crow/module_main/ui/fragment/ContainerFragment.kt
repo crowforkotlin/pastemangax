@@ -62,7 +62,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
     /** ● 初始化观察者 */
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {

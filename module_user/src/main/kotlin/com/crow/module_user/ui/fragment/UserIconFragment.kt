@@ -71,7 +71,7 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
         mWindowInsets = null
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {

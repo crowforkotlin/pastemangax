@@ -40,7 +40,7 @@ abstract class BaseMviBottomSheetDialogFragment<out VB : ViewBinding> : BaseBott
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mContext = requireContext()
-        initObserver()
+        initObserver(savedInstanceState)
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -53,6 +53,6 @@ abstract class BaseMviBottomSheetDialogFragment<out VB : ViewBinding> : BaseBott
 
     override fun initListener() { }
 
-    override fun initObserver() { }
+    override fun initObserver(saveInstanceState: Bundle?) { }
 
 }

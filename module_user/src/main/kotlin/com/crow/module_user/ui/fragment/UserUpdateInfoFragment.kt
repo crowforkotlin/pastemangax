@@ -83,7 +83,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
         mBinding.userUpdateInfoExitButton.doOnClickInterval { doExitFragment() }
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         // 恢复 标志位
         mExitFragment = false

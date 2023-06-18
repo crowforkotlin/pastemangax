@@ -175,7 +175,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
         mBinding.settingsToolbar.navigateIconClickGap { navigateUp() }
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         val baseEvent = BaseEvent.newInstance()
 

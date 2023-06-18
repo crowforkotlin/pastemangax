@@ -76,7 +76,7 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
     }
 
     /** 初始化观察者 */
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
         mUserVM.onOutput { intent ->
             when (intent) {
 

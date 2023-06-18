@@ -306,7 +306,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         }
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         // 接收意图
         mBsVM.onOutput { intent ->

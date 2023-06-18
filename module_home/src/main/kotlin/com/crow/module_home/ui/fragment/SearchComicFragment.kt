@@ -12,7 +12,6 @@ import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.onCollect
-import com.crow.base.tools.extensions.removeWhiteSpace
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -117,7 +116,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
         }
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
 
 
         mHomeVM.onOutput { intent ->

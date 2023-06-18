@@ -17,6 +17,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.appContext
@@ -36,6 +37,7 @@ import com.google.android.material.button.MaterialButton
 import com.to.aboomy.pager2banner.IndicatorView
 import com.to.aboomy.pager2banner.ScaleInTransformer
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import com.crow.base.R as baseR
 import com.to.aboomy.pager2banner.Banner as BannerView
 
@@ -114,7 +116,9 @@ class HomeComicParentRvAdapter(
                     .setIndicatorSelectorColor(Color.WHITE)
                     .setIndicatorStyle(IndicatorView.IndicatorStyle.INDICATOR_BEZIER)
                     .also { it.setPadding(0, 0, 0, mDp20) })
-        banner.adapter = HomeBannerRvAdapter(mData!![0] as MutableList<Banner>) { pathword -> doOnTap(pathword) }
+        val adapter =HomeBannerRvAdapter { pathword -> doOnTap(pathword) }
+        banner.adapter = adapter
+        viewLifecycleOwner.lifecycleScope.launch { adapter.doBannerNotify(mData!![0] as MutableList<Banner>, mRvDelayMs) }
         return HomeComicParentViewHolder(banner)
     }
 
@@ -157,8 +161,10 @@ class HomeComicParentRvAdapter(
         (recyclerView.layoutParams as RecyclerView.LayoutParams).setMargins(mDp5, mDp5, mDp5, mDp5)
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.layoutManager = GridLayoutManager(parent.context, if (type != Type.TOPIC) 3 else 2)
-        recyclerView.adapter = HomeComicChildRvAdapter(mType = type, doOnTap = { doOnTap(it) }, mData = ((mData!![viewType] as MutableList<T>)))
+        val adapter = HomeComicChildRvAdapter<T>(mType = type, doOnTap = { doOnTap(it) })
+        recyclerView.adapter = adapter
         if (type == Type.REC) mHomeRecComicRvAdapter = recyclerView.adapter as HomeComicChildRvAdapter<RecComicsResult>
+        viewLifecycleOwner.lifecycleScope.launch { adapter.doNotify((mData!![viewType] as MutableList<T>), mRvDelayMs) }
         return HomeComicParentViewHolder(recyclerView)
     }
 
@@ -176,8 +182,7 @@ class HomeComicParentRvAdapter(
         refreshButton.setTypeface(refreshButton.typeface, Typeface.BOLD)
         refreshButton.textAlignment = View.TEXT_ALIGNMENT_CENTER
         refreshButton.elevation = 20f
-        refreshButton.icon =
-            ContextCompat.getDrawable(parent.context, R.drawable.home_ic_refresh_24dp)
+        refreshButton.icon = ContextCompat.getDrawable(parent.context, R.drawable.home_ic_refresh_24dp)
         refreshButton.iconPadding = mDp5
         refreshButton.iconTint = null
         refreshButton.doOnClickInterval { _ -> doOnRecRefresh(refreshButton) }

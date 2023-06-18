@@ -236,8 +236,8 @@ class BookNovelFragment : BookFragment() {
         mBinding.bookInfoRvChapter.adapter = mNovelChapterRvAdapter!!
     }
 
-    override fun initObserver() {
-        super.initObserver()
+    override fun initObserver(savedInstanceState: Bundle?) {
+        super.initObserver(savedInstanceState)
 
         mBookVM.onOutput { intent ->
             when(intent) {

@@ -97,7 +97,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
         }
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
         mUserVM.onOutput { intent ->
             when(intent) {
                 is UserIntent.Reg -> {

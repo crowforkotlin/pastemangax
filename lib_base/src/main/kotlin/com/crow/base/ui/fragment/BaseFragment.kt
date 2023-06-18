@@ -28,7 +28,7 @@ abstract class BaseFragment<VB : ViewBinding, out VM : BaseViewModel> : BaseFrag
     abstract fun getViewBinding(inflater: LayoutInflater): VB
     abstract fun getViewModel(): Lazy<VM>
 
-    override fun initObserver() {
+    override fun initObserver(saveInstanceState: Bundle?) {
         mViewModel.baseViewState.observe(viewLifecycleOwner) { viewState ->
             viewState
                 .doOnLoading{ showLoadingAnim() }
@@ -51,6 +51,6 @@ abstract class BaseFragment<VB : ViewBinding, out VM : BaseViewModel> : BaseFrag
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initObserver()
+        initObserver(savedInstanceState)
     }
 }

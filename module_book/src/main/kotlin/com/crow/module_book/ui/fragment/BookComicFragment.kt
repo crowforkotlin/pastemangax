@@ -260,8 +260,8 @@ class BookComicFragment : BookFragment() {
      *
      * ● 2023-06-15 23:07:45 周四 下午
      */
-    override fun initObserver() {
-        super.initObserver()
+    override fun initObserver(savedInstanceState: Bundle?) {
+        super.initObserver(savedInstanceState)
 
         mBookVM.onOutput { intent ->
             when(intent) {

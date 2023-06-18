@@ -34,7 +34,7 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
      * */
     abstract fun getViewBinding(inflater: LayoutInflater): VB
 
-    override fun initObserver() {}
+    override fun initObserver(savedInstanceState: Bundle?) {}
 
     override fun initListener() {}
 
@@ -56,7 +56,7 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initObserver()
+        initObserver(savedInstanceState)
         super.onViewCreated(view, savedInstanceState)
     }
 

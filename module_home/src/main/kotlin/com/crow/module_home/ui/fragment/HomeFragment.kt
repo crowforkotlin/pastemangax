@@ -52,6 +52,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -145,13 +146,14 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
         viewLifecycleOwner.lifecycleScope.launch {
 
+
             if (isRefreshing) {
                 mBinding.homeRefresh.finishRefresh()
                 mHomeComicParentRvAdapter = HomeComicParentRvAdapter(mHomeVM.mHomeDatas!!.toMutableList(), viewLifecycleOwner, mRecRefreshCallback) { navigateBookComicInfo(it) }
                 mBinding.homeRv.adapter = mHomeComicParentRvAdapter
                 mBinding.homeRv.animateFadeIn(BASE_ANIM_300L)
             }
-            
+
             else {
                 mHomeComicParentRvAdapter?.doNotify(mHomeVM.mHomeDatas!!.toMutableList(), BASE_ANIM_100L)
             }
@@ -292,7 +294,9 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
         // 设置容器Fragment的回调监听
         parentFragmentManager.setFragmentResultListener("Home", this) { _, bundle ->
-            if (bundle.getInt("id") == 0) mHomeVM.input(HomeIntent.GetHomePage())
+            if (bundle.getInt("id") == 0) {
+                if (isDarkMode() == mHomeVM.mIsDarkMode) mHomeVM.input(HomeIntent.GetHomePage())
+            }
         }
 
         // 搜索
@@ -312,7 +316,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     }
 
     /** ● 初始化监听器 */
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         mHomeVM.onOutput { intent ->
             when (intent) {
@@ -352,6 +356,17 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                             }
                         }
                 }
+            }
+        }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) return
+        mHomeVM.doOnDarkChaned {
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(BASE_ANIM_300L)
+                mHomeVM.input(HomeIntent.GetHomePage())
             }
         }
     }

@@ -35,7 +35,7 @@ abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment, IBase
     override fun initData(savedInstanceState: Bundle?) {}
 
     // 初始化观察者
-    override fun initObserver() {}
+    override fun initObserver(saveInstanceState: Bundle?) {}
 
     override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) {
         LoadingAnimDialog.show(parentFragmentManager, loadingAnimConfig)

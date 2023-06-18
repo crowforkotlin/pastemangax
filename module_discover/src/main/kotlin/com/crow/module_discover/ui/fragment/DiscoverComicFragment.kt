@@ -125,7 +125,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     }
 
     /** ● 初始化观察者 */
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         // 意图观察者
         mDiscoverVM.onOutput { intent ->

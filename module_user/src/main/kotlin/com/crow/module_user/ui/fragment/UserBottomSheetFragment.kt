@@ -92,7 +92,7 @@ class UserBottomSheetFragment : BaseMviBottomSheetDialogFragment<UserFragmentBin
         mBinding.userRv.adapter = mUserRvAdapter
     }
 
-    override fun initObserver() {
+    override fun initObserver(saveInstanceState: Bundle?) {
 
         // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {
