@@ -22,6 +22,7 @@ import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.copymanga.mSize10
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_discover.databinding.DiscoverFragmentRvNewBinding
@@ -79,6 +80,7 @@ class DiscoverComicAdapter(
         vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
 
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
+            percentage.logMsg()
             vh.rvBinding.discoverProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
         }
 
