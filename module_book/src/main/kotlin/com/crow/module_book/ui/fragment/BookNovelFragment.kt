@@ -3,6 +3,7 @@ package com.crow.module_book.ui.fragment
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -21,7 +22,6 @@ import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.onCollect
@@ -72,12 +72,12 @@ class BookNovelFragment : BookFragment() {
             .addListener(mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    mBinding.bookInfoLoading.animateFadeOut()
-                    mBinding.bookInfoProgressText.animateFadeOut()
+                    mBinding.bookInfoLoading.isInvisible = true
+                    mBinding.bookInfoProgressText.isInvisible = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    mBinding.bookInfoLoading.alpha = 0f
-                    mBinding.bookInfoProgressText.alpha = 0f
+                    mBinding.bookInfoLoading.isInvisible = true
+                    mBinding.bookInfoProgressText.isInvisible = true
                     NoTransition()
                 }
             })

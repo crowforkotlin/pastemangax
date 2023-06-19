@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.doOnLayout
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.GenericTransitionOptions
@@ -17,9 +19,7 @@ import com.crow.base.copymanga.getComicCardWidth
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.copymanga.mSize10
 import com.crow.base.tools.extensions.BASE_ANIM_200L
-import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
-
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
 import com.crow.module_bookshelf.model.resp.bookshelf_comic.BookshelfComicResults
@@ -63,12 +63,8 @@ class BookshelfComicRvAdapter(
     override fun onBindViewHolder(vh: LoadingViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        vh.mLoadingPropertyAnimator?.cancel()
-        vh.mTextPropertyAnimator?.cancel()
-        vh.mLoadingPropertyAnimator = null
-        vh.mTextPropertyAnimator = null
-        vh.rvBinding.bookshelfRvLoading.alpha = 1f
-        vh.rvBinding.bookshelfRvProgressText.alpha = 1f
+        vh.rvBinding.bookshelfRvLoading.isVisible = true
+        vh.rvBinding.bookshelfRvProgressText.isVisible = true
         vh.rvBinding.bookshelfRvProgressText.text = AppGlideProgressFactory.PERCENT_0
         vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mComic.mCover) { _, _, percentage, _, _ ->
@@ -80,12 +76,12 @@ class BookshelfComicRvAdapter(
             .listener(vh.mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    vh.mLoadingPropertyAnimator = vh.rvBinding.bookshelfRvLoading.animateFadeOut()
-                    vh.mTextPropertyAnimator = vh.rvBinding.bookshelfRvProgressText.animateFadeOut()
+                    vh.rvBinding.bookshelfRvLoading.isInvisible = true
+                    vh.rvBinding.bookshelfRvProgressText.isInvisible = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    vh.rvBinding.bookshelfRvLoading.alpha = 0f
-                    vh.rvBinding.bookshelfRvProgressText.alpha = 0f
+                    vh.rvBinding.bookshelfRvLoading.isInvisible = true
+                    vh.rvBinding.bookshelfRvProgressText.isInvisible = true
                     NoTransition()
                 }
             })

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.doOnLayout
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +21,6 @@ import com.crow.base.copymanga.*
 import com.crow.base.copymanga.entity.IBookAdapterColor
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
-import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.ToolTipsView
@@ -60,12 +60,8 @@ class HomeComicChildRvAdapter<T>(
     private fun LoadingViewHolder.initView(pathword: String, name: String, imageUrl: String, author: List<AuthorResult>, hot: Int, lastestChapter: String?) {
         mPathWord = pathword                                                                                             // 设置路径值 （用于后续请求）
 
-        mLoadingPropertyAnimator?.cancel()
-        mTextPropertyAnimator?.cancel()
-        mLoadingPropertyAnimator = null
-        mTextPropertyAnimator = null
-        rvBinding.homeComicRvLoading.alpha = 1f
-        rvBinding.homeComicRvProgressText.alpha = 1f
+        rvBinding.homeComicRvLoading.isVisible = true
+        rvBinding.homeComicRvProgressText.isVisible = true
         rvBinding.homeComicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
         mAppGlideProgressFactory?.doRemoveListener()?.doClean()
         mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ ->
@@ -78,12 +74,12 @@ class HomeComicChildRvAdapter<T>(
             .addListener(mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    mLoadingPropertyAnimator = rvBinding.homeComicRvLoading.animateFadeOut()
-                    mTextPropertyAnimator = rvBinding.homeComicRvProgressText.animateFadeOut()
+                    rvBinding.homeComicRvLoading.isInvisible = true
+                    rvBinding.homeComicRvProgressText.isInvisible = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    rvBinding.homeComicRvLoading.alpha = 0f
-                    rvBinding.homeComicRvProgressText.alpha = 0f
+                    rvBinding.homeComicRvLoading.isInvisible = true
+                    rvBinding.homeComicRvProgressText.isInvisible = true
                     NoTransition()
                 }
             })

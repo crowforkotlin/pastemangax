@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.doOnLayout
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.GenericTransitionOptions
@@ -18,9 +20,7 @@ import com.crow.base.copymanga.getComicCardHeight
 import com.crow.base.copymanga.getComicCardWidth
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.copymanga.mSize10
-import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_200L
-import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.ToolTipsView
@@ -73,12 +73,8 @@ class DiscoverComicAdapter(
     override fun onBindViewHolder(vh: LoadingViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        vh.mLoadingPropertyAnimator?.cancel()
-        vh.mTextPropertyAnimator?.cancel()
-        vh.mLoadingPropertyAnimator = null
-        vh.mTextPropertyAnimator = null
-        vh.rvBinding.discoverLoading.alpha = 1f
-        vh.rvBinding.discoverProgressText.alpha = 1f
+        vh.rvBinding.discoverLoading.isVisible = true
+        vh.rvBinding.discoverProgressText.isVisible = true
         vh.rvBinding.discoverProgressText.text = AppGlideProgressFactory.PERCENT_0
         vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
 
@@ -91,13 +87,13 @@ class DiscoverComicAdapter(
             .addListener(vh.mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    vh.mLoadingPropertyAnimator = vh.rvBinding.discoverLoading.animateFadeOut(BASE_ANIM_100L)
-                    vh.mTextPropertyAnimator = vh.rvBinding.discoverProgressText.animateFadeOut(BASE_ANIM_100L)
+                    vh.rvBinding.discoverLoading.isInvisible = true
+                    vh.rvBinding.discoverProgressText.isInvisible = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    vh.rvBinding.discoverLoading.alpha = 0f
-                    vh.rvBinding.discoverProgressText.alpha = 0f
-                    NoTransition<Drawable>()
+                    vh.rvBinding.discoverLoading.isInvisible = true
+                    vh.rvBinding.discoverProgressText.isInvisible = true
+                    NoTransition()
                 }
             })
             .into(vh.rvBinding.discoverRvImage)

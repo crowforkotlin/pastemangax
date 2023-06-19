@@ -1,3 +1,4 @@
+
 package com.crow.module_home.ui.adapter
 
 import android.graphics.drawable.Drawable
@@ -5,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.doOnLayout
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.GenericTransitionOptions
@@ -19,7 +22,6 @@ import com.crow.base.copymanga.getComicCardWidth
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.copymanga.mSize10
 import com.crow.base.tools.extensions.BASE_ANIM_200L
-import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_home.databinding.HomeFragmentSearchRvNewBinding
@@ -59,12 +61,8 @@ class SearchNovelRvAdapter(
     override fun onBindViewHolder(vh: LoadingViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        vh.mLoadingPropertyAnimator?.cancel()
-        vh.mTextPropertyAnimator?.cancel()
-        vh.mLoadingPropertyAnimator = null
-        vh.mTextPropertyAnimator = null
-        vh.rvBinding.homeSearchRvLoading.alpha = 1f
-        vh.rvBinding.homeSearchRvProgressText.alpha = 1f
+        vh.rvBinding.homeSearchRvLoading.isVisible = true
+        vh.rvBinding.homeSearchRvProgressText.isVisible = true
         vh.rvBinding.homeSearchRvProgressText.text = AppGlideProgressFactory.PERCENT_0
         vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
@@ -76,12 +74,12 @@ class SearchNovelRvAdapter(
             .listener(vh.mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    vh.mLoadingPropertyAnimator = vh.rvBinding.homeSearchRvLoading.animateFadeOut()
-                    vh.mTextPropertyAnimator = vh.rvBinding.homeSearchRvProgressText.animateFadeOut()
+                    vh.rvBinding.homeSearchRvLoading.isInvisible = true
+                    vh.rvBinding.homeSearchRvProgressText.isInvisible = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    vh.rvBinding.homeSearchRvLoading.alpha = 0f
-                    vh.rvBinding.homeSearchRvProgressText.alpha = 0f
+                    vh.rvBinding.homeSearchRvLoading.isInvisible = true
+                    vh.rvBinding.homeSearchRvProgressText.isInvisible = true
                     NoTransition()
                 }
             })
