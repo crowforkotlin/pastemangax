@@ -228,20 +228,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     /** ● 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentBinding.inflate(inflater)
 
-    /** ● Lifecycle Create */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // 内存重启后隐藏SearchView
-        if (savedInstanceState != null) {
-            lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
-                withStarted {
-                    mBinding.homeSearchView.hide()
-                }
-            }
-        }
-    }
-
     /** ● Lifecycle Start */
     override fun onStart() {
         super.onStart()
@@ -275,6 +261,10 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     /** ● 初始化视图  */
     override fun initView(savedInstanceState: Bundle?) {
+
+        // 内存重启后隐藏SearchView
+        if (savedInstanceState != null) mBinding.homeSearchView.hide()
+
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.homeAppbar.immersionPadding(hideStatusBar = true, hideNaviateBar = false)

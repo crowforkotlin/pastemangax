@@ -23,4 +23,5 @@ object Versions {
     const val paging_version = "3.1.1"
     const val moshi_version = "1.14.0"
     const val media3_version = "1.0.1"
+    const val room_version = "2.5.1"
 }

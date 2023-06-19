@@ -23,6 +23,7 @@ import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.showSnackBar
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.base.ui.viewmodel.doOnError
@@ -88,9 +89,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         mBinding.discoverComicRefresh.setOnRefreshListener { mDiscoverComicAdapter.refresh() }
 
         // 更多选项 点击监听
-        mBinding.discoverComicAppbar.discoverAppbarToolbar.menu[0].doOnClickInterval {
-
-        }
+        mBinding.discoverComicAppbar.discoverAppbarToolbar.menu[0].doOnClickInterval { toast("此功能或许将在下个版本中完善....") }
     }
 
     /** ● 导航至漫画页 */

@@ -151,24 +151,16 @@ class BookNovelFragment : BookFragment() {
 * 4：根据Token是否空（登录状态）获取对应的章节名称
 * 5：未登录 -> 本地数据 ，已登录 -> 获取历史记录后会给适配器设置已读章节，当获取失败时， 设置状态false（代表历史记录可能还在请求中，或者是请求失败了）
 * */
-        mBookVM.bookChapterEntity.onCollect(this) { chapters ->
-            if (chapters == null) return@onCollect
+        mBookVM.bookChapterEntity.onCollect(this) { chapter ->
+            if (chapter == null) return@onCollect
 
-            val comic = mBookVM.mComicInfoPage?.mComic ?: return@onCollect
-
-            val chapter = chapters.datas[comic.mName]
-            if (chapter == null) {
-                mNovelChapterRvAdapter?.mChapterName = mNovelChapterRvAdapter?.mChapterName
-                mNovelChapterRvAdapter?.notifyItemRangeChanged(0, mNovelChapterRvAdapter?.itemCount ?: return@onCollect)
-            } else {
-                mNovelChapterRvAdapter?.mChapterName = if(BaseUser.CURRENT_USER_TOKEN.isEmpty()) chapter.bookChapterName else {
-                    mNovelChapterRvAdapter?.mChapterName ?: run {
-                        mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, false)
-                        return@onCollect
-                    }
+            mNovelChapterRvAdapter?.mChapterName = if(BaseUser.CURRENT_USER_TOKEN.isEmpty()) chapter.mChapterName else {
+                mNovelChapterRvAdapter?.mChapterName ?: run {
+                    mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, false)
+                    return@onCollect
                 }
-                mNovelChapterRvAdapter?.notifyItemRangeChanged(0, mNovelChapterRvAdapter?.itemCount ?: return@onCollect)
             }
+            mNovelChapterRvAdapter?.notifyItemRangeChanged(0, mNovelChapterRvAdapter?.itemCount ?: return@onCollect)
         }
     }
 
@@ -254,7 +246,7 @@ class BookNovelFragment : BookFragment() {
                                     mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, true)
                                     mNovelChapterRvAdapter?.notifyItemRangeChanged(0, mNovelChapterRvAdapter?.itemCount ?: return@doOnResult)
                                 }
-                                toast(getString(R.string.BookComicReadedPage, mNovelChapterRvAdapter?.mChapterName))
+                                toast(getString(R.string.book_readed_chapter, mNovelChapterRvAdapter?.mChapterName))
                             }
                         }
                 }

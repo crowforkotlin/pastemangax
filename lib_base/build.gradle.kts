@@ -11,8 +11,6 @@ plugins {
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
 
-    // kapt
-    kotlin(Plugins.kotlin_kapt)
 }
 
 android {
@@ -80,12 +78,8 @@ android {
         jniLibs.srcDirs(AppConfigs.source_libs, AppConfigs.source_jniLibs)
     }
 
-    kapt {
-        generateStubs = true
-    }
 }
 
-kotlin { jvmToolchain(11) }
 
 dependencies {
 
@@ -109,7 +103,7 @@ dependencies {
     api(Dependencies.androidx_paging_common_ktx)
     api(Dependencies.androidx_core_splash_screen)
 
-    // debugApi(Dependencies.glance)
+    debugApi(Dependencies.glance)
     debugApi(Dependencies.leakcanary) // 不支持在MinSdk 24以下的设备运行
     testApi(Dependencies.junit_junit)
     androidTestApi(Dependencies.androidx_test_junit_ktx)
@@ -120,6 +114,9 @@ dependencies {
     api(Dependencies.kotlinx_datetime)
     api(Dependencies.kotlin_stdlib)
     api(Dependencies.kotlin_reflect)
+
+    api(Dependencies.androidx_room_runtime)
+    api(Dependencies.androidx_room_ktx)
 
     /* Koin 注入框架 */
     api(Dependencies.android_koin)
@@ -140,7 +137,6 @@ dependencies {
 
     api(Dependencies.glide)
     api(Dependencies.glide_integration) { exclude(group = "glide-parent") }
-    kapt(Dependencies.glide_compiler)
 
     api(Dependencies.zguop_banner)
     api(Dependencies.tencent_bugly)

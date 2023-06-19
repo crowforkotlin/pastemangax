@@ -3,6 +3,7 @@ package com.crow.module_bookshelf.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.core.view.get
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -22,6 +23,7 @@ import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
@@ -283,6 +285,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
         // 按钮组 点击事件 （漫画、轻小说）
         mBinding.bookshelfButtonGropu.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (BaseUser.CURRENT_USER_TOKEN.isEmpty()) toast(getString(R.string.bookshelf_identity_expired))
             when (checkedId) {
                 R.id.bookshelf_comic -> {                                                              // 点击漫画
                     if (isChecked) {                                                                        // 选中
@@ -323,6 +326,10 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                     }
                 }
             }
+        }
+
+        mBinding.bookshelfToolbar.menu[0].doOnClickInterval {
+            toast("此功能或许将在下个版本中完善....")
         }
     }
 

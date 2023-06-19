@@ -3,7 +3,7 @@ plugins {
     id(Plugins.android_library)
 
     // Ksp
-    // id(Plugins.google_devtools_ksp) version Versions.ksp_version
+    id(Plugins.google_devtools_ksp) version Versions.ksp_version
 
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
@@ -65,11 +65,17 @@ android {
         // 指定编译器的命令行参数 可启用额外功能
         freeCompilerArgs = AppConfigs.free_compile_args
     }
+
+
 }
+
+kotlin { jvmToolchain(11) }
 
 dependencies {
 
     // 引入Base库
     implementation(project(mapOf("path" to ":lib_base")))
+
+    ksp(Dependencies.androidx_room_compiler)
 
 }

@@ -7,6 +7,8 @@ import android.content.SharedPreferences
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.crow.base.R
 import com.crow.base.app.appContext
 import kotlinx.coroutines.flow.first
@@ -34,14 +36,23 @@ object DataStoreAgent {
 object SpNameSpace {
 
     const val CATALOG_NIGHT_MODE = "Catalog.NightMode"
-    object Key {
-        const val ENABLE_DARK = "enable_dark"
-    }
+
+    object Key { const val ENABLE_DARK = "enable_dark" }
+}
+
+object DBNameSpace {
+    const val app = "preference.chapter.db"
 }
 
 val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(appContext.getString(R.string.BaseAppName))
-val Context.appConfigDataStore: DataStore<Preferences> by preferencesDataStore(appContext.getString(R.string.BaseAppName).plus(DataStoreAgent.APP_CONFIG.name))
-val Context.appBookDataStore: DataStore<Preferences> by preferencesDataStore(appContext.getString(R.string.BaseAppName).plus(DataStoreAgent.DATA_BOOK.name))
+val Context.appConfigDataStore: DataStore<Preferences> by preferencesDataStore(
+    appContext.getString(
+        R.string.BaseAppName
+    ).plus(DataStoreAgent.APP_CONFIG.name)
+)
+val Context.appBookDataStore: DataStore<Preferences> by preferencesDataStore(
+    appContext.getString(R.string.BaseAppName).plus(DataStoreAgent.DATA_BOOK.name)
+)
 
 suspend fun DataStore<Preferences>.getIntData(name: String) =
     data.map { preferences -> preferences[intPreferencesKey(name)] ?: 0 }.first()
@@ -93,9 +104,11 @@ suspend fun <T> Preferences.Key<T>.asyncEncode(value: T) {
 suspend fun <T> Preferences.Key<T>.asyncClear() {
     appContext.appDataStore.edit { it.clear() }
 }
+
 suspend fun <T> Preferences.Key<T>.asyncDecode(): T? {
     return appContext.appDataStore.data.map { it[this] }.firstOrNull()
 }
+
 fun <T> Preferences.Key<T>.encode(value: T) {
     runBlocking { appContext.appDataStore.edit { it[this@encode] = value } }
 }
@@ -110,4 +123,8 @@ fun <T> Preferences.Key<T>.clear() {
 
 fun String.getSharedPreferences(): SharedPreferences {
     return appContext.getSharedPreferences(this, Context.MODE_PRIVATE)
+}
+
+inline fun <reified T : RoomDatabase> buildDatabase(dbName: String): T {
+    return Room.databaseBuilder(appContext, T::class.java, dbName).fallbackToDestructiveMigration().build()
 }

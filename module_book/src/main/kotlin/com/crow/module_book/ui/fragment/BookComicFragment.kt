@@ -67,6 +67,7 @@ class BookComicFragment : BookFragment() {
      */
     private fun showComicInfoPage() {
         val comicInfoPage = mBookVM.mComicInfoPage?.mComic ?: return
+        mBookVM.findReadedBookChapter(comicInfoPage.mName, BookType.COMIC)
 
         mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(comicInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppGlideProgressFactory.getProgressString(percentage) }
 
@@ -143,34 +144,6 @@ class BookComicFragment : BookFragment() {
         // 开启协程 数据交给适配器去做出调整
         viewLifecycleOwner.lifecycleScope.launch {
             mComicChapterRvAdapter?.doNotify(comicChapterResp.mList.toMutableList())
-        }
-
-        /*
-        * 观察书页章节实体 写在这里观察是因为，防止在获取数据前未得到comicInfoPage从而导致剩下逻辑不生效
-        * 1：为空退出
-        * 2：获取已读章节数据
-        * 3：根据章节是否为空 设置适配器的Item
-        * 4：根据Token是否空（登录状态）获取对应的章节名称
-        * 5：未登录 -> 本地数据 ，已登录 -> 获取历史记录后会给适配器设置已读章节，当获取失败时， 设置状态false（代表历史记录可能还在请求中，或者是请求失败了）
-        * */
-        mBookVM.bookChapterEntity.onCollect(this) { chapters ->
-            if (chapters == null) return@onCollect
-
-            val comic = mBookVM.mComicInfoPage?.mComic ?: return@onCollect
-
-            val chapter = chapters.datas[comic.mName]
-            if (chapter == null) {
-                mComicChapterRvAdapter?.mChapterName = mComicChapterRvAdapter?.mChapterName
-                mComicChapterRvAdapter?.notifyItemRangeChanged(0, mComicChapterRvAdapter?.itemCount ?: return@onCollect)
-            } else {
-                mComicChapterRvAdapter?.mChapterName = if(BaseUser.CURRENT_USER_TOKEN.isEmpty()) chapter.bookChapterName else {
-                    mComicChapterRvAdapter?.mChapterName ?: run {
-                        mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, false)
-                        return@onCollect
-                    }
-                }
-                mComicChapterRvAdapter?.notifyItemRangeChanged(0, mComicChapterRvAdapter?.itemCount ?: return@onCollect)
-            }
         }
     }
 
@@ -263,6 +236,25 @@ class BookComicFragment : BookFragment() {
     override fun initObserver(savedInstanceState: Bundle?) {
         super.initObserver(savedInstanceState)
 
+        mBookVM.bookChapterEntity.onCollect(this) { chapter ->
+            if (chapter == null) return@onCollect
+
+            if (mComicChapterRvAdapter?.mChapterName == null) {
+                mComicChapterRvAdapter?.mChapterName = if(BaseUser.CURRENT_USER_TOKEN.isEmpty()) {
+                    toast(getString(R.string.book_readed_chapter, chapter.mChapterName))
+                    chapter.mChapterName
+                } else {
+                    mComicChapterRvAdapter?.mChapterName ?: run {
+                        mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, false)
+                        return@onCollect
+                    }
+                }
+            } else {
+                toast(getString(R.string.book_readed_chapter, mComicChapterRvAdapter?.mChapterName))
+            }
+            mComicChapterRvAdapter?.notifyItemRangeChanged(0, mComicChapterRvAdapter?.itemCount!!)
+        }
+
         mBookVM.onOutput { intent ->
             when(intent) {
                 is BookIntent.GetComicChapter -> doOnBookPageChapterIntent<ComicChapterResp>(intent)
@@ -278,7 +270,7 @@ class BookComicFragment : BookFragment() {
                                     mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, true)
                                     mComicChapterRvAdapter?.notifyItemRangeChanged(0, mComicChapterRvAdapter?.itemCount ?: return@doOnResult)
                                 }
-                                toast(getString(R.string.BookComicReadedPage, mComicChapterRvAdapter?.mChapterName))
+                                toast(getString(R.string.book_readed_chapter, mComicChapterRvAdapter?.mChapterName))
                             }
                          }
                 }
