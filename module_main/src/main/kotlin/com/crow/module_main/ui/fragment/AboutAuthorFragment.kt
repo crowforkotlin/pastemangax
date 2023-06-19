@@ -25,7 +25,7 @@ import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentAboutBinding
 import com.crow.module_main.model.intent.ContainerIntent
-import com.crow.module_main.ui.viewmodel.ContainerViewModel
+import com.crow.module_main.ui.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.crow.base.R as baseR
 
@@ -40,9 +40,9 @@ import com.crow.base.R as baseR
 class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
 
     // ContainerVM
-    private val mContainerVm by viewModel<ContainerViewModel>()
+    private val mContainerVm by viewModel<MainViewModel>()
 
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.About.toString())
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.About.name)
 
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentAboutBinding.inflate(inflater)
 
@@ -75,7 +75,7 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
         mBinding.mainAboutAppVersion.text = getString(R.string.main_about_app_version, getCurrentVersionName().split("_")[0])
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
         mContainerVm.onOutput {
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW

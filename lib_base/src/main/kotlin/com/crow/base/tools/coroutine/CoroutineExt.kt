@@ -1,7 +1,11 @@
 package com.crow.base.tools.coroutine
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.crow.base.tools.extensions.logError
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 /*************************
@@ -17,5 +21,15 @@ val globalCoroutineException = GlobalCoroutineExceptionHandler()
 class GlobalCoroutineExceptionHandler : CoroutineExceptionHandler {
 
     override val key: CoroutineContext.Key<*> get() = CoroutineExceptionHandler
-    override fun handleException(context: CoroutineContext, exception: Throwable) { "Catch GlobalCoroutineException : ${exception.stackTraceToString()}".logError() }
+    override fun handleException(context: CoroutineContext, exception: Throwable) {
+        "Catch GlobalCoroutineException : ${exception.stackTraceToString()}".logError()
+    }
+}
+
+
+inline fun LifecycleOwner.launchDelay(delay: Long, crossinline scope: suspend () -> Unit) {
+    lifecycleScope.launch {
+        delay(delay)
+        scope()
+    }
 }

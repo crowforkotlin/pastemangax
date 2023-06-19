@@ -2,16 +2,13 @@ package com.crow.module_book.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.crow.base.app.appContext
-import com.crow.base.tools.extensions.DataStoreAgent
-import com.crow.base.tools.extensions.appBookDataStore
-import com.crow.base.tools.extensions.asyncDecode
-import com.crow.base.tools.extensions.asyncEncode
-import com.crow.base.tools.extensions.toJson
+import com.crow.base.tools.extensions.DBNameSpace
+import com.crow.base.tools.extensions.buildDatabase
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_book.R
+import com.crow.module_book.model.database.BookChapterDB
 import com.crow.module_book.model.entity.BookChapterEntity
-import com.crow.module_book.model.entity.BookChapterPairOf
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.ComicChapterResp
 import com.crow.module_book.model.resp.ComicInfoResp
@@ -55,31 +52,33 @@ class BookInfoViewModel(val repository: BookRepository) : BaseMviViewModel<BookI
     var mUuid: String? = null
         private set
 
+    private val mChapterDBDao by lazy { buildDatabase<BookChapterDB>(DBNameSpace.app).bookChapterDao() }
+
     private var _bookChapterEntity = MutableStateFlow<BookChapterEntity?>(null)
     val bookChapterEntity: StateFlow<BookChapterEntity?> get() = _bookChapterEntity
 
+/*
     init {
         viewModelScope.launch {
             _bookChapterEntity.value = appContext.appBookDataStore.asyncDecode(DataStoreAgent.DATA_BOOK).toTypeEntity<BookChapterEntity>() ?: return@launch
         }
     }
+*/
 
 
-    fun updateBookChapter(bookName: String,  chapterName: String, type: Int) {
+    fun updateBookChapter(bookName: String, chapterName: String, bookType: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            val bookChapterEntity = appContext.appBookDataStore.asyncDecode(DataStoreAgent.DATA_BOOK).toTypeEntity<BookChapterEntity>()
-            if (bookChapterEntity == null) {
-                appContext.appBookDataStore.asyncEncode(DataStoreAgent.DATA_BOOK, toJson(BookChapterEntity(mutableMapOf(bookName to BookChapterPairOf(chapterName, type))).also {
-                    _bookChapterEntity.value = it
-                }))
-            }
-            else {
-                bookChapterEntity.datas[bookName] = BookChapterPairOf(chapterName, type)
-                appContext.appBookDataStore.asyncEncode(DataStoreAgent.DATA_BOOK, toJson(bookChapterEntity.also {
-                    _bookChapterEntity.value = it
-                }))
+            val bookChapterEntity = mChapterDBDao.find(bookName , bookType)
+            if (bookChapterEntity != null) {
+                mChapterDBDao.update(bookChapterEntity.copy(mChapterName = chapterName))
+            } else {
+                mChapterDBDao.insertAll(BookChapterEntity(mBookName = bookName, mChapterType = bookType, mChapterName = chapterName))
             }
         }
+    }
+
+    fun findReadedBookChapter(bookName: String, bookType: Int) {
+        viewModelScope.launch(Dispatchers.IO) { _bookChapterEntity.value = mChapterDBDao.find(bookName, bookType) }
     }
 
     override fun dispatcher(intent: BookIntent) {

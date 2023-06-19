@@ -7,7 +7,11 @@ import com.crow.base.R
 import com.crow.base.app.appContext
 
 interface IBookAdapterColor<T: ViewHolder> {
-    private val mRed: Int get() = ContextCompat.getColor(appContext, R.color.base_book_red)
+
+    private val mRed: Int get() {
+        return ContextCompat.getColor(appContext, R.color.base_book_red)
+    }
+
     private val mPurple: Int get() = ContextCompat.getColor(appContext, R.color.base_book_purple)
     private val mIndigo: Int get() = ContextCompat.getColor(appContext, R.color.base_book_indigo)
     private val mGreen: Int get() = ContextCompat.getColor(appContext, R.color.base_book_green)

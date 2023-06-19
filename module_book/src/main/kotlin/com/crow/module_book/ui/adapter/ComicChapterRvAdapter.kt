@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.appContext
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_book.R
 import com.crow.module_book.databinding.BookFragmentChapterRvBinding
 import com.crow.module_book.model.resp.comic_chapter.ComicChapterResult
 import kotlinx.coroutines.delay
+import kotlin.properties.Delegates
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -30,8 +32,18 @@ class ComicChapterRvAdapter(
 
     var mChapterName: String? = null
 
-    private val mBtSurfaceColor = ContextCompat.getColor(appContext, R.color.book_button_bg_white)
-    private val mBtTextColor = ContextCompat.getColor(appContext, R.color.book_button_text_purple)
+    private var mBtSurfaceColor by Delegates.notNull<Int>()
+    private var mBtTextColor by Delegates.notNull<Int>()
+
+    init {
+        if (isDarkMode()) {
+            mBtSurfaceColor = ContextCompat.getColor(appContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
+            mBtTextColor = ContextCompat.getColor(appContext, R.color.book_button_bg_white)
+        } else {
+            mBtSurfaceColor = ContextCompat.getColor(appContext, R.color.book_button_bg_white)
+            mBtTextColor = ContextCompat.getColor(appContext, R.color.book_button_text_purple)
+        }
+    }
 
     inner class ViewHolder(rvBinding: BookFragmentChapterRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { val mButton = rvBinding.comicInfoRvChip }
 

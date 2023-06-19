@@ -3,21 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:visibility="gone"
-    tools:visibility="visible">
+    android:layout_height="wrap_content">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/home_comic_rv_rec_refresh"
-        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+        style="@style/Base.Theme.Button.Elevated.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginEnd="@dimen/base_dp10"
         android:text="@string/home_refresh"
-        android:textAlignment="center"
         android:textStyle="bold"
-        app:backgroundTint="@color/home_blue_grey_50"
         app:elevation="@dimen/base_dp20"
         app:icon="@drawable/home_ic_refresh_24dp"
         app:iconPadding="@dimen/base_dp5"

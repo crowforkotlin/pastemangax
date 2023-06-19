@@ -50,6 +50,10 @@ object Dependencies {
     const val androidx_paging_common_ktx = "androidx.paging:paging-common-ktx:${Versions.paging_version}"
     const val androidx_paging_rxjava2_ktx = "androidx.paging:paging-rxjava2-ktx:${Versions.paging_version}"
 
+    const val androidx_room_runtime = "androidx.room:room-runtime:${Versions.room_version}"
+    const val androidx_room_ktx = "androidx.room:room-ktx:${Versions.room_version}"
+    const val androidx_room_compiler = "androidx.room:room-compiler:${Versions.room_version}"
+
     /** 使用“相对定位(约束布局)”灵活地确定控件的位置和大小 */
     const val androidx_constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
 

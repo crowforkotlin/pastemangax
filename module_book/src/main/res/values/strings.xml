@@ -8,7 +8,7 @@
 	<string name="book_comic_remove_from_bookshelf">取消收藏</string>
 	<string name="BookComicDownLoad">下载章节</string>
 	<string name="BookComicReadNow">开始阅读</string>
-	<string name="BookComicReadedPage">已阅读至：%s</string>
+	<string name="book_readed_chapter">已阅读至：%s</string>
 	<string name="BookComicRequestThrottled">请求过于频繁！请等待 %s 秒后尝试！</string>
     <string name="book_next">下一章</string>
     <string name="book_no_next">已经是最后一章啦≧ ﹏ ≦</string>

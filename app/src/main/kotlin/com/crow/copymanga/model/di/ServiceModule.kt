@@ -1,12 +1,12 @@
 package com.crow.copymanga.model.di
 
-import com.crow.module_anime.network.AnimeService
 import com.crow.module_book.network.ComicService
 import com.crow.module_bookshelf.network.BookShelfService
 import com.crow.module_discover.network.DiscoverService
 import com.crow.module_home.network.HomeService
 import com.crow.module_main.network.ContainerService
 import com.crow.module_user.network.UserService
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
@@ -20,11 +20,12 @@ import retrofit2.Retrofit
  **************************/
 
 val servicesModule = module {
-    single { get<Retrofit>().create(HomeService::class.java) }
+    val name = named("CopyMangaX")
     single { get<Retrofit>().create(ContainerService::class.java) }
-    single { get<Retrofit>().create(ComicService::class.java) }
-    single { get<Retrofit>().create(UserService::class.java) }
-    single { get<Retrofit>().create(BookShelfService::class.java) }
-    single { get<Retrofit>().create(DiscoverService::class.java) }
-    single { get<Retrofit>().create(AnimeService::class.java) }
+    single { get<Retrofit>(name).create(HomeService::class.java) }
+    single { get<Retrofit>(name).create(ComicService::class.java) }
+    single { get<Retrofit>(name).create(UserService::class.java) }
+    single { get<Retrofit>(name).create(BookShelfService::class.java) }
+    single { get<Retrofit>(name).create(DiscoverService::class.java) }
+    // single { get<Retrofit>().create(AnimeService::class.java) }
 }

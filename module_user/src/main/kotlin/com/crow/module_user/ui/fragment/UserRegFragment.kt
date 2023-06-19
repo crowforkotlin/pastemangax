@@ -63,7 +63,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
     }
 
     // 返回
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Reg.toString())
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Reg.name)
 
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentRegBinding.inflate(inflater)
 
@@ -97,7 +97,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
         }
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
         mUserVM.onOutput { intent ->
             when(intent) {
                 is UserIntent.Reg -> {

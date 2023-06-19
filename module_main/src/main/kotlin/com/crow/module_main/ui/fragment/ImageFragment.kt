@@ -19,7 +19,7 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
     // WindowInsets属性 （状态栏属性设置等...）
     private var mWindowInsets: WindowInsetsControllerCompat? = null
 
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Image.toString())
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Image.name)
 
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentImageBinding.inflate(inflater)
 

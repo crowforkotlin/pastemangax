@@ -9,8 +9,7 @@ import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.processTokenError
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.getNavigationBarHeight
-import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.popSyncWithClear
@@ -55,7 +54,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
     private var mExitFragment = false
 
     private fun navigateUp() {
-        parentFragmentManager.popSyncWithClear(Fragments.UserInfo.toString())
+        parentFragmentManager.popSyncWithClear(Fragments.UserInfo.name)
         mUserUpdateInfoVM.doClearUserUpdateInfoData()
     }
 
@@ -69,7 +68,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
     override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
-        mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())
+        mBinding.root.immersionPadding()
 
     }
 
@@ -77,14 +76,14 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
 
         // 头像 点击事件
         mBinding.userUpdateInfoIcon.doOnClickInterval {
-            parentFragmentManager.navigateToWithBackStack<UserIconFragment>(baseR.id.app_main_fcv, this, null, Fragments.Icon.toString(), Fragments.Icon.toString())
+            parentFragmentManager.navigateToWithBackStack<UserIconFragment>(baseR.id.app_main_fcv, this, null, Fragments.Icon.name, Fragments.Icon.name)
         }
 
         // 退出账号 点击事件
         mBinding.userUpdateInfoExitButton.doOnClickInterval { doExitFragment() }
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         // 恢复 标志位
         mExitFragment = false

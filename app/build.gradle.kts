@@ -1,15 +1,14 @@
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+
 plugins {
     // Android 应用程序插件
     id(Plugins.android_application)
 
-    // Ksp
-    // id(Plugins.google_devtools_ksp) version Versions.ksp_version
+    // Kapt
+    kotlin(Plugins.kotlin_kapt)
 
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
-
-    // kapt
-    kotlin(Plugins.kotlin_kapt)
 
     // 使用Kotlin序列化插件
     // kotlin(Plugins.kotlin_serialization) version Versions.kotlin_version
@@ -150,12 +149,11 @@ android {
         }
     }
 
-    kapt {
 
-        // 生成（桩代码）
-        generateStubs = true
-    }
 }
+
+
+kotlin { jvmToolchain(11) }
 
 dependencies {
 

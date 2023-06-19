@@ -23,6 +23,7 @@
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
+        style="@style/Base.Theme.BG"
         android:id="@+id/home_search_vp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

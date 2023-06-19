@@ -21,9 +21,15 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.globalCoroutineException
+import com.crow.base.tools.coroutine.launchDelay
+import com.crow.base.tools.extensions.BASE_ANIM_100L
+import com.crow.base.tools.extensions.BASE_ANIM_200L
+import com.crow.base.tools.extensions.BASE_ANIM_300L
+import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.setMaskAmount
@@ -48,7 +54,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -65,37 +70,32 @@ import com.crow.base.R as baseR
 
 class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
-    companion object {
+    /** ● 静态区 */
+    companion object { const val SEARCH_TAG = "INPUT" }
 
-        const val SEARCH_TAG = "INPUT"
-
-        fun newInstance() = HomeFragment()
-    }
-
-    /** 主页 VM */
+    /** ● 主页 VM */
     private val mHomeVM by viewModel<HomeViewModel>()
 
-    /** 主页布局刷新的时间 第一次进入布局默认10Ms 之后刷新 为 50Ms */
+    /** ● 主页布局刷新的时间 第一次进入布局默认10Ms 之后刷新 为 50Ms */
     private var mHomePageLayoutRefreshTime = 10L
 
-    /** 推荐 “换一批” 刷新按钮 */
+    /** ● 推荐 “换一批” 刷新按钮 */
     private var mRecRefresh: MaterialButton? = null
 
-    /** 主页数据量较多， 采用Rv方式 */
+    /** ● 主页数据量较多， 采用Rv方式 */
     private var mHomeComicParentRvAdapter: HomeComicParentRvAdapter? = null
 
-    /** 刷新回調 */
+    /** ● 刷新回調 */
     private val mRecRefreshCallback: (MaterialButton) -> Unit = {
         mRecRefresh = it
         mRecRefresh!!.isEnabled = false
         mHomeVM.input(HomeIntent.GetRecPageByRefresh())
     }
 
-    /** 新的Evnet事件*/
+    /** ● 新的Evnet事件*/
     private val mBaseEvent = BaseEvent.newInstance()
 
-
-    /** 注册FlowBus 设置主页头像 */
+    /** ● 注册FlowBus 设置主页头像 */
     init {
         FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).register(this) { drawable ->
             if (!isHidden) {
@@ -108,75 +108,96 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
     }
 
-
-    /** 导航至BookInfo */
+    /**
+     * ● 导航至BookComicInfo
+     *
+     * ● 2023-06-16 22:18:11 周五 下午
+     */
     private fun navigateBookComicInfo(pathword: String) {
-        val tag = Fragments.BookComicInfo.toString()
+        val tag = Fragments.BookComicInfo.name
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
-            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
-            get<Fragment>(named(Fragments.BookComicInfo)).also { it.arguments = bundle }, tag, tag)
+            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            get<Fragment>(named(Fragments.BookComicInfo.name)).also { it.arguments = bundle }, tag, tag)
     }
 
-    /** 加载主页数据 */
-    private fun doLoadHomePage(results: Results) {
-
-        val datas = mutableListOf(
-            results.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList(),
-            null, results.mRecComicsResult.mResult.toMutableList(), null,
-            null, results.mHotComics.toMutableList(),
-            null, results.mNewComics.toMutableList(),
-            null, results.mFinishComicDatas.mResult.toMutableList(),
-            null, results.mRankDayComics.mResult.toMutableList(),
-            null, results.mTopics.mResult.toMutableList()
+    /**
+     * ● 导航至BookNovelInfo
+     *
+     * ● 2023-06-16 22:17:57 周五 下午
+     */
+    private fun navigateBookNovelInfo(pathword: String) {
+        val bundle = Bundle()
+        bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(
+            com.crow.base.R.id.app_main_fcv,
+            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            get<Fragment>(named(Fragments.BookNovelInfo.name)).also { it.arguments = bundle }, tag, tag
         )
+    }
+
+    /** ● 加载主页数据 */
+    private fun doLoadHomePage(results: Results) {
 
         val isRefreshing = mBinding.homeRefresh.isRefreshing
 
+        if (mHomeVM.mHomeDatas == null) return
+
         viewLifecycleOwner.lifecycleScope.launch {
 
-            // 刷新控件动画消失
+
             if (isRefreshing) {
                 mBinding.homeRefresh.finishRefresh()
-                mHomeComicParentRvAdapter?.tryClearAndNotify()
-                mHomeComicParentRvAdapter = null
-                delay(200L)
-                mHomeComicParentRvAdapter = HomeComicParentRvAdapter(datas.toMutableList(), viewLifecycleOwner, mRecRefreshCallback) { navigateBookComicInfo(it) }
-
+                mHomeComicParentRvAdapter = HomeComicParentRvAdapter(mHomeVM.mHomeDatas!!.toMutableList(), viewLifecycleOwner, mRecRefreshCallback) { navigateBookComicInfo(it) }
                 mBinding.homeRv.adapter = mHomeComicParentRvAdapter
+                mBinding.homeRv.animateFadeIn(BASE_ANIM_300L)
             }
-            
-            else mHomeComicParentRvAdapter?.doNotify(datas.toMutableList(), 100L, 100L)
+
+            else {
+                mHomeComicParentRvAdapter?.doNotify(mHomeVM.mHomeDatas!!.toMutableList(), BASE_ANIM_100L)
+            }
 
             // 取消加载动画
             dismissLoadingAnim()
         }
     }
 
-    /** 导航至设置Fragment */
+    /** ● 导航至设置Fragment */
     private fun navigateSettings() {
             requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
-                requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
-                get(named(Fragments.Settings)), Fragments.Settings.toString(), Fragments.Settings.toString()
+                requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+                get(named(Fragments.Settings.name)), Fragments.Settings.name, Fragments.Settings.name
             )
     }
 
-    /** 初始化SearchView */
+    /** ● 初始化SearchView */
     private fun initSearchView() {
         mBaseEvent.eventInitLimitOnce {
             mBinding.homeSearchView.apply {
                 val binding = HomeFragmentSearchViewBinding.inflate(layoutInflater)                                                                 // 获取SearchViewBinding
                 val searchComicFragment = SearchComicFragment.newInstance(mBinding.homeSearchView) { navigateBookComicInfo(it) }   // 实例化SearchComicFragment
-                val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.homeSearchView) { navigateBookComicInfo(it) }     // 实例化SearchNovelFragment
+                val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.homeSearchView) { navigateBookNovelInfo(it) }     // 实例化SearchNovelFragment
+
+                val bgColor: Int; val tintColor: Int; val statusBarDrawable: Drawable?
+                if (isDarkMode()) {
+                    bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
+                    tintColor = ContextCompat.getColor(mContext, android.R.color.white)
+                    statusBarDrawable = AppCompatResources.getDrawable(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
+                } else {
+                    bgColor = ContextCompat.getColor(mContext, android.R.color.white)
+                    tintColor = ContextCompat.getColor(mContext, android.R.color.black)
+                    statusBarDrawable = AppCompatResources.getDrawable(mContext, baseR.color.base_white)
+                }
                 toolbar.setNavigationIcon(baseR.drawable.base_ic_back_24dp)                                                                             // 设置SearchView toolbar导航图标
-                toolbar.setBackgroundColor(ContextCompat.getColor(mContext, baseR.color.base_white))                                  // 设置SearchView toolbar背景色白，沉浸式
+                toolbar.navigationIcon?.setTint(tintColor)
+                toolbar.setBackgroundColor(bgColor)                                                                                                                    // 设置SearchView toolbar背景色白，沉浸式
                 setStatusBarSpacerEnabled(false)                                                                                                                          // 关闭状态栏空格间距
 
                 // 添加一个自定义 View设置其高度为StatubarHeight实现沉浸式效果
                 addHeaderView(View(mContext).also { view->
                     view.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mContext.getStatusBarHeight())
-                    view.foreground = AppCompatResources.getDrawable(mContext, baseR.color.base_white)
+                    view.foreground = statusBarDrawable
                 })
 
                 addView(binding.root)                                                                                                         // 添加SearcViewBinding 视图内容
@@ -201,16 +222,13 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
     }
 
-    /** 暴露的函数 提供给 ContainerFragment 用于通知主页刷新 */
+    /** ● 暴露的函数 提供给 ContainerFragment 用于通知主页刷新 */
     fun doRefresh() { mHomeVM.input(HomeIntent.GetHomePage()) }
 
+    /** ● 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentBinding.inflate(inflater)
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mRecRefresh = null  // 置空“换一批”控件 防止内存泄漏
-    }
-
+    /** ● Lifecycle Start */
     override fun onStart() {
         super.onStart()
         mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -219,18 +237,34 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
     }
 
+    /** ● Lifecycle Stop */
     override fun onStop() {
         super.onStop()
         mBaseEvent.remove(SEARCH_TAG)
     }
 
-    override fun initData() {
+    /** ● Lifecycle Destroy */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mRecRefresh = null  // 置空“换一批”控件 防止内存泄漏
+        parentFragmentManager.clearFragmentResultListener("Home")
+    }
+
+    /** ● 初始化数据 */
+    override fun initData(savedInstanceState: Bundle?) {
+
+        if (savedInstanceState != null) return
 
         // 获取主页数据
         mHomeVM.input(HomeIntent.GetHomePage())
     }
 
-    override fun initView(bundle: Bundle?) {
+    /** ● 初始化视图  */
+    override fun initView(savedInstanceState: Bundle?) {
+
+        // 内存重启后隐藏SearchView
+        if (savedInstanceState != null) mBinding.homeSearchView.hide()
+
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.homeAppbar.immersionPadding(hideStatusBar = true, hideNaviateBar = false)
@@ -245,7 +279,16 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeRv.adapter = mHomeComicParentRvAdapter
     }
 
+    /** ● 初始化监听器 */
     override fun initListener() {
+
+        // 设置容器Fragment的回调监听
+        parentFragmentManager.setFragmentResultListener("Home", this) { _, bundle ->
+            if (bundle.getInt("id") == 0) {
+                if (bundle.getBoolean("delay")) launchDelay(BASE_ANIM_200L) { mHomeVM.input(HomeIntent.GetHomePage()) }
+                else mHomeVM.input(HomeIntent.GetHomePage())
+            }
+        }
 
         // 搜索
         mBinding.homeToolbar.menu[0].doOnClickInterval {
@@ -257,26 +300,14 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeToolbar.menu[1].doOnClickInterval { navigateSettings() }
 
         // MaterialToolBar NavigateIcon 点击事件
-        mBinding.homeToolbar.navigateIconClickGap(flagTime = 1000L) { get<BottomSheetDialogFragment>(named(Fragments.User)).show(requireActivity().supportFragmentManager, null) }
+        mBinding.homeToolbar.navigateIconClickGap(flagTime = 1000L) { get<BottomSheetDialogFragment>(named(Fragments.User.name)).show(requireActivity().supportFragmentManager, null) }
 
         // 刷新
         mBinding.homeRefresh.setOnRefreshListener { mHomeVM.input(HomeIntent.GetHomePage()) }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // 内存重启后隐藏SearchView
-        if (savedInstanceState != null) {
-            lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
-                withStarted {
-                    mBinding.homeSearchView.hide()
-                }
-            }
-        }
-    }
-
-    override fun initObserver() {
+    /** ● 初始化监听器 */
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         mHomeVM.onOutput { intent ->
             when (intent) {

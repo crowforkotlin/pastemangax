@@ -72,10 +72,10 @@ object AppConfigs {
     const val target_sdk_version = 33
 
     // 应用版本号
-    const val version_code = 3
+    const val version_code = 4
 
     // 应用版本名
-    const val version_name = "1.1.1"
+    const val version_name = "1.2.0"
 
     // jvm版本
     const val jvm_target = "11"

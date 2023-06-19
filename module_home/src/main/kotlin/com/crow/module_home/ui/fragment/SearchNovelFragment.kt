@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.paging.LoadState
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
@@ -26,6 +27,7 @@ import com.crow.module_home.model.intent.HomeIntent
 import com.crow.module_home.ui.adapter.SearchNovelRvAdapter
 import com.crow.module_home.ui.viewmodel.HomeViewModel
 import com.google.android.material.search.SearchView
+import kotlinx.coroutines.flow.filter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
@@ -40,6 +42,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
     }
 
     private var mSearchView: SearchView? = null
+
     private var mOnTap: ((pathword: String) -> Unit)? = null
 
     private val mHomeVM by viewModel<HomeViewModel>()
@@ -63,11 +66,16 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
             mBinding.homeSearchNovelChipAuthor.id -> "author"
             else -> ""
         }))
+
         mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, true)
+
         repeatOnLifecycle {
-            mHomeVM.mNovelSearchFlowPage?.onCollect(this) {
-                mNovelRvAdapter.submitData(it)
-            }
+
+            mHomeVM.mNovelSearchFlowPage?.onCollect(this) { mNovelRvAdapter.submitData(it) }
+
+            mNovelRvAdapter.loadStateFlow
+                .filter { it.refresh is LoadState.Loading }
+                .collect { mBinding.homeSearchNovelRv.smoothScrollToPosition(0) }
         }
     }
 
@@ -87,15 +95,9 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
 
                 // 淡入
                 when(mBinding.homeSearchNovelChipGroup.checkedChipId) {
-                    mBinding.homeSearchNovelChipAll.id -> mBinding.homeSearchNovelChipAll.animateFadeIn(
-                        BASE_ANIM_300L
-                    )
-                    mBinding.homeSearchNovelChipName.id -> mBinding.homeSearchNovelChipName.animateFadeIn(
-                        BASE_ANIM_300L
-                    )
-                    mBinding.homeSearchNovelChipAuthor.id -> mBinding.homeSearchNovelChipAuthor.animateFadeIn(
-                        BASE_ANIM_300L
-                    )
+                    mBinding.homeSearchNovelChipAll.id -> mBinding.homeSearchNovelChipAll.animateFadeIn(BASE_ANIM_300L)
+                    mBinding.homeSearchNovelChipName.id -> mBinding.homeSearchNovelChipName.animateFadeIn(BASE_ANIM_300L)
+                    mBinding.homeSearchNovelChipAuthor.id -> mBinding.homeSearchNovelChipAuthor.animateFadeIn(BASE_ANIM_300L)
                 }
 
                 // 搜索内容不为空
@@ -104,8 +106,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
         }
     }
 
-    override fun initObserver() {
-
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         mHomeVM.onOutput { intent ->
             if (intent is HomeIntent.SearchNovel) {
@@ -120,6 +121,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
                     .doOnSuccess { mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, false) }
                     .doOnResult {
                         if (!mTag) return@doOnResult
+                        dismissLoadingAnim()
                         if (intent.searchNovelResp!!.mTotal == 0) {
                             if (!mBinding.homeSearchNovelTips.isVisible) {
                                 mBinding.homeSearchNovelRv.animateFadeOutWithEndInVisibility()
@@ -136,10 +138,6 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
                                 }
                             }
                         }
-                        mHandler.postDelayed({
-                            dismissLoadingAnim()
-                            mBinding.homeSearchNovelRv.smoothScrollToPosition(0)
-                        },  BASE_ANIM_300L)
                     }
             }
         }

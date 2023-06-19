@@ -2,6 +2,7 @@ package com.crow.module_book.ui.activity
 
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.activity.addCallback
@@ -31,6 +32,7 @@ import com.crow.module_book.ui.viewmodel.BookInfoViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.crow.base.R as baseR
 
+
 class ComicActivity : BaseMviActivity<BookActivityComicBinding>() {
 
     var mPathword: String? = null
@@ -40,6 +42,8 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>() {
     private val mComicVM by viewModel<BookInfoViewModel>()
 
     private var mBadgeView: PageBadgeView? = null
+
+    private var mWindowInsetsCompat: WindowInsetsControllerCompat? = null
 
     private fun onShowComicPage(comicPageResp: ComicPageResp) {
         FlowBus.with<String>(BaseEventEnum.UpdateChapter.name).post(lifecycleScope, comicPageResp.mChapter.mName)
@@ -65,17 +69,24 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
 
+        mWindowInsetsCompat = WindowCompat.getInsetsController(window, window.decorView)
 
         // 以便在刘海屏上使用刘海区域并适应窗口布局。
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
 
-        // 配置WindowFullScreen
-        WindowCompat.getInsetsController(window, window.decorView).apply {
-            hide(WindowInsetsCompat.Type.systemBars())
-            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            window.decorView.setOnSystemUiVisibilityChangeListener { visibility ->
+                if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
+                    mWindowInsetsCompat?.hide(WindowInsetsCompat.Type.systemBars())
+                }
+            }
         }
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        mWindowInsetsCompat!!.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        mWindowInsetsCompat!!.hide(WindowInsetsCompat.Type.systemBars())
 
         // 初始化BadgeView
         mBadgeView = PageBadgeView(this, mBinding)
@@ -119,6 +130,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>() {
     override fun onStart() {
         super.onStart()
         onBackPressedDispatcher.addCallback(this) {
+            mBinding.comicRv.stopScroll()
             finish()
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         }
@@ -127,6 +139,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>() {
     override fun onDestroy() {
         super.onDestroy()
         mComicVM.clearAllData()
+        mWindowInsetsCompat = null
         mBadgeView = null
     }
 }

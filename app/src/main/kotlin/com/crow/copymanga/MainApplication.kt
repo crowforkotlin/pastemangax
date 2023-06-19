@@ -6,7 +6,9 @@ import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crow.base.app.BaseApp
+import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.getCurrentVersionName
+import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.copymanga.model.di.factoryModule
 import com.crow.copymanga.model.di.fragmentModule
 import com.crow.copymanga.model.di.networkModule
@@ -40,14 +42,28 @@ class MainApplication : BaseApp() {
         strategy.appPackageName = packageName
         strategy.appReportDelay = 10000
 
-        CrashReport.initCrashReport(applicationContext, "b848968d52", false, strategy);
+        AppCompatDelegate.setDefaultNightMode(
+            if (SpNameSpace.CATALOG_NIGHT_MODE.getSharedPreferences()
+                    .getBoolean(SpNameSpace.Key.ENABLE_DARK, false)
+            ) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
+        )
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        CrashReport.initCrashReport(applicationContext, "b848968d52", false, strategy);
 
         startKoin {
             fragmentFactory()
             androidContext(this@MainApplication)
-            modules(listOf(singleModule, networkModule, servicesModule, viewModelModule, factoryModule, fragmentModule))
+            modules(
+                listOf(
+                    singleModule,
+                    networkModule,
+                    servicesModule,
+                    viewModelModule,
+                    factoryModule,
+                    fragmentModule
+                )
+            )
         }
     }
 

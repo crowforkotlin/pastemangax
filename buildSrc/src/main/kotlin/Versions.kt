@@ -9,8 +9,8 @@
  * @formatter:off
  *************************/
 object Versions {
-    const val kotlin_version = "1.8.10"
-    const val ksp_version = "1.8.10-1.0.9"
+    const val kotlin_version = "1.8.20"
+    const val ksp_version = "1.8.20-1.0.11"
     const val core_version = "1.9.0"
     const val smart_refresh = "2.0.5"
     const val retrofit_version = "2.9.0"
@@ -23,4 +23,5 @@ object Versions {
     const val paging_version = "3.1.1"
     const val moshi_version = "1.14.0"
     const val media3_version = "1.0.1"
+    const val room_version = "2.5.1"
 }

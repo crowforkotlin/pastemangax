@@ -37,7 +37,7 @@ interface HomeService {
         @Query("q_type") type: String,
         @Query("offset") start: Int,
         @Query("limit") limit: Int,
-        @Query("platform") platform: Int = 1
+        @Query("platform") platform: Int = 3
     ) : Flow<BaseResultResp<SearchComicResp>>
 
     @GET(BaseStrings.URL.NovelSearch)
@@ -46,6 +46,6 @@ interface HomeService {
         @Query("q_type") type: String,
         @Query("offset") start: Int,
         @Query("limit") limit: Int,
-        @Query("platform") platform: Int = 1
+        @Query("platform") platform: Int = 3
     ) : Flow<BaseResultResp<SearchNovelResp>>
 }

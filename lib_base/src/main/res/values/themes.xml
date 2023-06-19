@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Base_LoadingAnim_Dark" parent="Theme.Material3.DayNight.NoActionBar">
+
+    <style name="Base.Theme.Material3" parent="Theme.Material3.DayNight.NoActionBar" />
+
+    <style name="Base_LoadingAnim_Dark" parent="Base.Theme.Material3">
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="Base_LoadingAnim_Light" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base_LoadingAnim_Light" parent="Base.Theme.Material3">
         <item name="android:windowTranslucentNavigation">false</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+
+    <style name="Base.TextAppearance.Material3.ActionBar.Title.Bold" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textColor">@macro/m3_comp_top_app_bar_small_headline_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Base.TextAppearance.Material3.ActionBar.SubTitle.Bold" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textColor">@macro/m3_comp_top_app_bar_small_headline_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

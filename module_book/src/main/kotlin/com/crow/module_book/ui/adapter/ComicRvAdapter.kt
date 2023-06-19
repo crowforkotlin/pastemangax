@@ -1,9 +1,11 @@
+
 package com.crow.module_book.ui.adapter
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.GenericTransitionOptions
@@ -52,12 +54,8 @@ class ComicRvAdapter(
 
         if (this is LoadingViewHolder) {
             val item = mComicContent[position] ?: return
-            mLoadingPropertyAnimator?.cancel()
-            mTextPropertyAnimator?.cancel()
-            mLoadingPropertyAnimator = null
-            mTextPropertyAnimator = null
-            rvBinding.comicRvLoading.alpha = 1f
-            rvBinding.comicRvProgressText.alpha = 1f
+            rvBinding.comicRvLoading.isVisible = true
+            rvBinding.comicRvProgressText.isVisible = true
             rvBinding.comicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
             rvBinding.comicRvRetry.isVisible = false
             mAppGlideProgressFactory?.doRemoveListener()?.doClean()
@@ -82,12 +80,12 @@ class ComicRvAdapter(
                 }))
                 .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                     val transition = if (dataSource == DataSource.REMOTE) {
-                        mLoadingPropertyAnimator = rvBinding.comicRvLoading.animateFadeOut(100)
-                        mTextPropertyAnimator = rvBinding.comicRvProgressText.animateFadeOut(100)
-                        DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
+                        rvBinding.comicRvLoading.isInvisible = true
+                        rvBinding.comicRvProgressText.isInvisible = true
+                        DrawableCrossFadeTransition(300, true)
                     } else {
-                        rvBinding.comicRvLoading.alpha = 0f
-                        rvBinding.comicRvProgressText.alpha = 0f
+                        rvBinding.comicRvLoading.isInvisible = true
+                        rvBinding.comicRvProgressText.isInvisible = true
                         NoTransition()
                     }
                     mIsFirstInit = false

@@ -7,113 +7,14 @@
     android:orientation="vertical"
     tools:context=".ui.fragment.BookshelfFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bookshelf_bar"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/bookshelf_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/base_home_bar_bg">
-
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/bookshelf_button_gropu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            app:checkedButton="@+id/bookshelf_comic"
-            app:layout_constraintEnd_toStartOf="@+id/bookshelf_move_top"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:selectionRequired="true"
-            app:singleSelection="true">
-
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bookshelf_comic"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bookshelf_comic"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/bookshelfChip" />
-
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bookshelf_novel"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bookshelf_novel"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/bookshelfChip" />
-
-        </com.google.android.material.button.MaterialButtonToggleGroup>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/bookshelf_edit"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:icon="@drawable/base_ic_edit_24dp"
-            app:iconTint="@null"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/bookshelf_filter"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:icon="@drawable/bookshelf_ic_filter_24dp"
-            app:iconTint="@null"
-            app:layout_constraintEnd_toStartOf="@+id/bookshelf_edit"
-            app:layout_constraintTop_toTopOf="@+id/bookshelf_edit" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/bookshelf_move_top"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:icon="@drawable/base_ic_move_top_24dp"
-            app:iconTint="@null"
-            app:layout_constraintEnd_toStartOf="@+id/bookshelf_move_bottom"
-            app:layout_constraintTop_toTopOf="@+id/bookshelf_edit" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/bookshelf_move_bottom"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            app:icon="@drawable/base_ic_move_bottom_24dp"
-            app:iconTint="@null"
-            app:layout_constraintEnd_toStartOf="@+id/bookshelf_filter"
-            app:layout_constraintTop_toTopOf="@+id/bookshelf_edit" />
-
-        <TextView
-            android:id="@+id/bookshelf_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/base_dp5"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:textAlignment="center"
-            android:textSize="@dimen/base_sp16"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            app:drawableStartCompat="@drawable/bookshelf_ic_novel_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bookshelf_edit"
-            tools:drawableStartCompat="@drawable/bookshelf_ic_novel_24dp"
-            tools:text="@string/bookshelf_comic_count"
-            tools:visibility="visible" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:menu="@menu/bookshelf_appbar_menu"
+        app:popupTheme="@android:color/transparent"
+        app:title="@string/bookshelf_name"
+        app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold" />
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/bookshelf_refresh"
@@ -133,33 +34,107 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bookshelf_bar">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/bookshelf_rv_comic"
+            <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="invisible"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="3"
-                tools:listitem="@layout/bookshelf_fragment_rv"
-                tools:visibility="visible" />
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/bookshelf_rv_novel"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="invisible"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="3"
-                tools:listitem="@layout/bookshelf_fragment_rv" />
+                <FrameLayout
+                    android:id="@+id/bookshelf_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/base_dp10"
+                    app:layout_scrollEffect="compress"
+                    app:layout_scrollFlags="scroll|enterAlways">
 
-            <TextView
-                android:id="@+id/bookshelf_tips_empty"
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/bookshelf_button_gropu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/base_dp10"
+                        android:layout_marginBottom="@dimen/base_dp5"
+                        android:layout_marginTop="@dimen/base_dp5"
+                        android:layout_gravity="start|center_vertical"
+                        app:checkedButton="@+id/bookshelf_comic"
+                        app:selectionRequired="true"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bookshelf_comic"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/bookshelf_comic"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/bookshelfChip" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bookshelf_novel"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/bookshelf_novel"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/bookshelfChip" />
+
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                    <TextView
+                        android:id="@+id/bookshelf_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="@dimen/base_dp5"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/base_sp16"
+                        android:textStyle="bold"
+                        android:visibility="invisible"
+                        app:drawableStartCompat="@drawable/bookshelf_ic_novel_24dp"
+                        tools:drawableStartCompat="@drawable/bookshelf_ic_novel_24dp"
+                        tools:text="@string/bookshelf_comic_count"
+                        tools:visibility="visible" />
+
+                </FrameLayout>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/bookshelf_empty"
-                android:textSize="@dimen/base_sp18" />
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/bookshelf_rv_comic"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="invisible"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="3"
+                    tools:listitem="@layout/bookshelf_fragment_rv"
+                    tools:visibility="visible" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/bookshelf_rv_novel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="invisible"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="3"
+                    tools:listitem="@layout/bookshelf_fragment_rv" />
+
+                <TextView
+                    android:id="@+id/bookshelf_tips_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/bookshelf_empty"
+                    android:textSize="@dimen/base_sp18" />
+
+            </FrameLayout>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

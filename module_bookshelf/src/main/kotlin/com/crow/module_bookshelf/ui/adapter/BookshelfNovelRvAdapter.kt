@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.doOnLayout
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.GenericTransitionOptions
@@ -15,9 +17,7 @@ import com.crow.base.copymanga.getComicCardWidth
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.copymanga.mSize10
 import com.crow.base.tools.extensions.BASE_ANIM_200L
-import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
-
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
 import com.crow.module_bookshelf.model.resp.bookshelf_novel.BookshelfNovelResults
@@ -61,12 +61,8 @@ class BookshelfNovelRvAdapter(
     override fun onBindViewHolder(vh: LoadingViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        vh.mLoadingPropertyAnimator?.cancel()
-        vh.mTextPropertyAnimator?.cancel()
-        vh.mLoadingPropertyAnimator = null
-        vh.mTextPropertyAnimator = null
-        vh.rvBinding.bookshelfRvLoading.alpha = 1f
-        vh.rvBinding.bookshelfRvProgressText.alpha = 1f
+        vh.rvBinding.bookshelfRvLoading.isVisible = true
+        vh.rvBinding.bookshelfRvProgressText.isVisible = true
         vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mNovel.mCover) { _, _, percentage, _, _ ->
             vh.rvBinding.bookshelfRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
@@ -76,8 +72,8 @@ class BookshelfNovelRvAdapter(
             .load(item.mNovel.mCover)
             .addListener(vh.mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { _, _ ->
-                vh.mLoadingPropertyAnimator = vh.rvBinding.bookshelfRvLoading.animateFadeOut()
-                vh.mTextPropertyAnimator = vh.rvBinding.bookshelfRvProgressText.animateFadeOut()
+                vh.rvBinding.bookshelfRvLoading.isInvisible = true
+                vh.rvBinding.bookshelfRvProgressText.isInvisible = true
                 DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
             })
             .into(vh.rvBinding.bookshelfRvImage)

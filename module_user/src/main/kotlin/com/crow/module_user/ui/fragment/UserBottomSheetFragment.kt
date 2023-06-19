@@ -17,7 +17,7 @@ import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toast
-import com.crow.base.ui.fragment.BaseMviBottomSheetDF
+import com.crow.base.ui.fragment.BaseMviBottomSheetDialogFragment
 import com.crow.module_user.R
 import com.crow.module_user.databinding.UserFragmentBinding
 import com.crow.module_user.ui.adapter.UserRvAdapter
@@ -37,7 +37,7 @@ import com.crow.base.R as baseR
  * @formatter:on
  **************************/
 
-class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
+class UserBottomSheetFragment : BaseMviBottomSheetDialogFragment<UserFragmentBinding>() {
 
     // 用戶 VM
     private val mUserVM by sharedViewModel<UserViewModel>()
@@ -70,20 +70,20 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
 
             // 根据 位置 做对应的逻辑处理
             dismissAllowingStateLoss()
-            val parentFragment = parentFragmentManager.findFragmentByTag(Fragments.Container.toString())!!
+            val parentFragment = parentFragmentManager.findFragmentByTag(Fragments.Container.name)!!
             when (pos) {
                 // 登录 ＆ 个人信息
                 0 -> {
                     if (content == getString(R.string.user_info))
-                        parentFragmentManager.navigateToWithBackStack<UserUpdateInfoFragment>(app_main_fcv, parentFragment, null, Fragments.UserInfo.toString(), Fragments.UserInfo.toString())
+                        parentFragmentManager.navigateToWithBackStack<UserUpdateInfoFragment>(app_main_fcv, parentFragment, null, Fragments.UserInfo.name, Fragments.UserInfo.name)
                     else
-                        parentFragmentManager.navigateToWithBackStack<UserLoginFragment>(app_main_fcv, parentFragment, null, Fragments.Login.toString(), Fragments.Login.toString())
+                        parentFragmentManager.navigateToWithBackStack<UserLoginFragment>(app_main_fcv, parentFragment, null, Fragments.Login.name, Fragments.Login.name)
 
                 }
-                1 -> parentFragmentManager.navigateToWithBackStack<UserRegFragment>(app_main_fcv, parentFragment, null, Fragments.Reg.toString(), Fragments.Reg.toString())
+                1 -> parentFragmentManager.navigateToWithBackStack<UserRegFragment>(app_main_fcv, parentFragment, null, Fragments.Reg.name, Fragments.Reg.name)
                 2 -> toast(getString(baseR.string.BaseStillInDevelopment))
                 3 -> toast(getString(baseR.string.BaseStillInDevelopment))
-                4 -> parentFragmentManager.navigateToWithBackStack(app_main_fcv, parentFragment, get(named(Fragments.About)), Fragments.About.toString(), Fragments.About.toString())
+                4 -> parentFragmentManager.navigateToWithBackStack(app_main_fcv, parentFragment, get(named(Fragments.About.name)), Fragments.About.name, Fragments.About.name)
                 5 -> FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).post(lifecycleScope, Unit)
             }
         }
@@ -92,7 +92,7 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
         mBinding.userRv.adapter = mUserRvAdapter
     }
 
-    override fun initObserver() {
+    override fun initObserver(saveInstanceState: Bundle?) {
 
         // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {
@@ -129,7 +129,7 @@ class UserBottomSheetFragment : BaseMviBottomSheetDF<UserFragmentBinding>() {
             parentFragmentManager.navigateToWithBackStack<UserIconFragment>(
                 app_main_fcv, this,
                 bundleOf("iconUrl" to if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mUserVM.mIconUrl else null),
-                Fragments.Icon.toString(), Fragments.Icon.toString()
+                Fragments.Icon.name, Fragments.Icon.name
             )
         }
 

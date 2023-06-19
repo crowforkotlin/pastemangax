@@ -3,8 +3,10 @@ package com.crow.module_discover.ui.adapter
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.doOnLayout
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.GenericTransitionOptions
@@ -19,11 +21,11 @@ import com.crow.base.copymanga.getComicCardWidth
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.copymanga.mSize10
 import com.crow.base.tools.extensions.BASE_ANIM_200L
-import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.ToolTipsView
-import com.crow.module_discover.databinding.DiscoverFragmentRvBinding
+import com.crow.module_discover.databinding.DiscoverFragmentRvNewBinding
 import com.crow.module_discover.model.resp.comic_home.DiscoverComicHomeResult
 
 class DiscoverComicAdapter(
@@ -40,12 +42,12 @@ class DiscoverComicAdapter(
         }
     }
 
-    class LoadingViewHolder(binding: DiscoverFragmentRvBinding) : BaseGlideLoadingViewHolder<DiscoverFragmentRvBinding>(binding)
+    class LoadingViewHolder(binding: DiscoverFragmentRvNewBinding) : BaseGlideLoadingViewHolder<DiscoverFragmentRvNewBinding>(binding)
 
     private var mNameHeight: Int? =null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : LoadingViewHolder {
-        return LoadingViewHolder(DiscoverFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
+        return LoadingViewHolder(DiscoverFragmentRvNewBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
 
             val layoutParams = vh.rvBinding.discoverRvImage.layoutParams
             layoutParams.width = getComicCardWidth() - mSize10
@@ -53,8 +55,9 @@ class DiscoverComicAdapter(
 
             vh.rvBinding.discoverRvName.doOnLayout { view ->
                 if (mNameHeight == null) mNameHeight = if (vh.rvBinding.discoverRvName.lineCount == 1) view.measuredHeight * 2 else view.measuredHeight
-                (vh.rvBinding.discoverRvName.layoutParams as ConstraintLayout.LayoutParams).height = mNameHeight!!
+                (vh.rvBinding.discoverRvName.layoutParams as LinearLayoutCompat.LayoutParams).height = mNameHeight!!
             }
+
 
             vh.rvBinding.discoverRvBookCard.doOnClickInterval {
                 mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
@@ -71,16 +74,13 @@ class DiscoverComicAdapter(
     override fun onBindViewHolder(vh: LoadingViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        vh.mLoadingPropertyAnimator?.cancel()
-        vh.mTextPropertyAnimator?.cancel()
-        vh.mLoadingPropertyAnimator = null
-        vh.mTextPropertyAnimator = null
-        vh.rvBinding.discoverLoading.alpha = 1f
-        vh.rvBinding.discoverProgressText.alpha = 1f
+        vh.rvBinding.discoverLoading.isVisible = true
+        vh.rvBinding.discoverProgressText.isVisible = true
         vh.rvBinding.discoverProgressText.text = AppGlideProgressFactory.PERCENT_0
         vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
 
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
+            percentage.logMsg()
             vh.rvBinding.discoverProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
         }
 
@@ -89,13 +89,13 @@ class DiscoverComicAdapter(
             .addListener(vh.mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    vh.mLoadingPropertyAnimator = vh.rvBinding.discoverLoading.animateFadeOut(100)
-                    vh.mTextPropertyAnimator = vh.rvBinding.discoverProgressText.animateFadeOut(100)
+                    vh.rvBinding.discoverLoading.isInvisible = true
+                    vh.rvBinding.discoverProgressText.isInvisible = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    vh.rvBinding.discoverLoading.alpha = 0f
-                    vh.rvBinding.discoverProgressText.alpha = 0f
-                    NoTransition<Drawable>()
+                    vh.rvBinding.discoverLoading.isInvisible = true
+                    vh.rvBinding.discoverProgressText.isInvisible = true
+                    NoTransition()
                 }
             })
             .into(vh.rvBinding.discoverRvImage)
@@ -104,8 +104,6 @@ class DiscoverComicAdapter(
         vh.rvBinding.discoverRvAuthor.text = item.mAuthor.joinToString { it.mName }
         vh.rvBinding.discoverRvHot.text = formatValue(item.mPopular)
         vh.rvBinding.discoverRvTime.text = item.mDatetimeUpdated
-
-        toSetColor(vh, item.mPopular)
     }
 
     override fun setColor(vh: LoadingViewHolder, color: Int) {

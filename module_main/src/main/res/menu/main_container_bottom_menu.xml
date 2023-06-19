@@ -14,15 +14,17 @@
 		android:title="@string/home_comic"
 		app:showAsAction="ifRoom" />
 
+<!--
 	<item
 		android:id="@+id/main_menu_discovery_novel"
 		android:icon="@drawable/main_ic_novel_24dp"
 		android:title="@string/home_novel"
 		app:showAsAction="ifRoom" />
+-->
 
 	<item
 		android:id="@+id/main_menu_bookshelf"
 		android:icon="@drawable/main_ic_bookshelf_24dp"
-		android:title="@string/home_bookshelf"
+		android:title="@string/bookshelf_name"
 		app:showAsAction="ifRoom" />
 </menu>

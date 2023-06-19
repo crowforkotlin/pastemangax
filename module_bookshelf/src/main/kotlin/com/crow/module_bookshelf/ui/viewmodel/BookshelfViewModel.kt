@@ -31,6 +31,8 @@ class BookshelfViewModel(val repository: BookShelfRepository) : BaseMviViewModel
 
     var mOrder = "-datetime_modifier"
 
+    var mInitOk = false
+
     // 默认加载20页 第一次初始化加载的大小默认为 （PageSize * 3）这里也设置成20
     fun getBookshelfComic(intent: BookshelfIntent.GetBookshelfComic) {
         mBookshelfComicFlowPager = Pager(

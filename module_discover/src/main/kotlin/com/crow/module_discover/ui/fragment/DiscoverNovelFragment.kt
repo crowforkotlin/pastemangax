@@ -6,15 +6,13 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
-import com.crow.base.tools.extensions.getStatusBarHeight
+import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.showSnackBar
@@ -23,6 +21,7 @@ import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
+import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverFragmentNovelBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.ui.adapter.DiscoverNovelAdapter
@@ -54,8 +53,8 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
-            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.toString())!!,
-            get<Fragment>(named(Fragments.BookNovelInfo)).also { it.arguments = bundle }, Fragments.BookNovelInfo.toString(), Fragments.BookNovelInfo.toString()
+            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            get<Fragment>(named(Fragments.BookNovelInfo.name)).also { it.arguments = bundle }, Fragments.BookNovelInfo.name, Fragments.BookNovelInfo.name
         )
     }
 
@@ -63,6 +62,9 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (mDiscoverVM.mNovelHomeData != null) return
+
         mDiscoverVM.input(DiscoverIntent.GetNovelHome())    // 获取发现主页
     }
 
@@ -71,16 +73,17 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
         // 刷新 发送获取轻小说主页意图
         mBinding.discoverNovelRefresh.setOnRefreshListener { mDiscoverNovelAdapter.refresh() }
 
-        // 滑动 同时更新text
-        mBinding.discoverNovelRv.setOnScrollChangeListener { _, _, _, _, _ ->
-            val layoutManager = mBinding.discoverNovelRv.layoutManager
-            if(layoutManager is LinearLayoutManager) mBinding.discoverNovelAppbar.discoverAppbarTextPos.text = (layoutManager.findLastVisibleItemPosition() + 1).toString()
-        }
     }
 
-    override fun initView(bundle: Bundle?) {
+    override fun initView(savedInstanceState: Bundle?) {
 
-        mBinding.discoverNovelAppbar.root.setPadding(0, mContext.getStatusBarHeight(), 0,0)
+        return
+
+        // 设置 内边距属性 实现沉浸式效果
+        mBinding.discoverNovelAppbar.root.immersionPadding(hideNaviateBar = false)
+
+        // 设置Title
+        mBinding.discoverNovelAppbar.discoverAppbarToolbar.title = getString(R.string.discover_novel)
 
         // 初始化适配器
         mDiscoverNovelAdapter = DiscoverNovelAdapter { navigateBookNovelInfo(it.mPathWord) }
@@ -92,7 +95,7 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
         (mBinding.discoverNovelRv.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() { override fun getSpanSize(position: Int) = if (position == mDiscoverNovelAdapter.itemCount  && mDiscoverNovelAdapter.itemCount > 0) 3 else 1 }
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         // 意图观察者
         mDiscoverVM.onOutput { intent ->
@@ -106,33 +109,33 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
                             if (mDiscoverNovelAdapter.itemCount == 0) {
                                 if (mDiscoverVM.mCurrentItem == 1) {
                                     mBinding.discoverNovelTipsError.animateFadeIn()
-                                    mBinding.discoverNovelAppbar.discoverAppbarTagText.animateFadeOutWithEndInVisibility()
+                                    // mBinding.discoverNovelAppbar.discoverAppbarTagText.animateFadeOutWithEndInVisibility()
                                     mBinding.discoverNovelRv.animateFadeOutWithEndInVisibility()
-                                    mBinding.discoverNovelAppbar.discoverAppbarTextPos.animateFadeOut().withEndAction { mBinding.discoverNovelRv.isInvisible = true }
+                                    // mBinding.discoverNovelAppbar.discoverAppbarTextPos.animateFadeOut().withEndAction { mBinding.discoverNovelRv.isInvisible = true }
                                 } else {
                                     mBinding.discoverNovelTipsError.isVisible = true
                                     mBinding.discoverNovelRv.isInvisible = true
-                                    mBinding.discoverNovelAppbar.discoverAppbarTagText.isInvisible = true
-                                    mBinding.discoverNovelAppbar.discoverAppbarTextPos.isInvisible = true
+                                    // mBinding.discoverNovelAppbar.discoverAppbarTagText.isInvisible = true
+                                    // mBinding.discoverNovelAppbar.discoverAppbarTextPos.isInvisible = true
                                 }
                             }
                         }
                         .doOnResult {
                             // 错误提示 可见
                             if (mBinding.discoverNovelTipsError.isVisible) {
-                                mBinding.discoverNovelAppbar.discoverAppbarTagText.text = "全部 — 全部"
-                                mBinding.discoverNovelAppbar.discoverAppbarPosTotal.text = intent.novelHomeResp!!.mTotal.toString()
+                                // mBinding.discoverNovelAppbar.discoverAppbarTagText.text = "全部 — 全部"
+                                // mBinding.discoverNovelAppbar.discoverAppbarPosTotal.text = intent.novelHomeResp!!.mTotal.toString()
 
                                 // 若VP 显示的是当前页 则动画淡入 否则直接显示
                                 if (mDiscoverVM.mCurrentItem == 1) {
                                     mBinding.discoverNovelTipsError.animateFadeOutWithEndInVisible()
-                                    mBinding.discoverNovelAppbar.discoverAppbarTagText.animateFadeIn()
-                                    mBinding.discoverNovelAppbar.discoverAppbarTextPos.animateFadeIn()
+                                    // mBinding.discoverNovelAppbar.discoverAppbarTagText.animateFadeIn()
+                                    // mBinding.discoverNovelAppbar.discoverAppbarTextPos.animateFadeIn()
                                     mBinding.discoverNovelRv.animateFadeIn()
                                 } else {
                                     mBinding.discoverNovelTipsError.isVisible = false
-                                    mBinding.discoverNovelAppbar.discoverAppbarTagText.isVisible = true
-                                    mBinding.discoverNovelAppbar.discoverAppbarTextPos.isVisible = true
+                                    // mBinding.discoverNovelAppbar.discoverAppbarTagText.isVisible = true
+                                    // mBinding.discoverNovelAppbar.discoverAppbarTextPos.isVisible = true
                                     mBinding.discoverNovelRv.isVisible = true
                                 }
                             }

@@ -27,36 +27,29 @@ import com.crow.module_user.ui.viewmodel.UserViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import com.crow.base.R as baseR
 
-/*************************
- * @Machine: RedmiBook Pro 15 Win11
- * @Path: module_user/src/main/kotlin/com/crow/module_user/ui/fragment
- * @Time: 2023/3/20 13:23
- * @Author: CrowForKotlin
- * @Description: UserLoginFragment
- * @formatter:on
- *************************kk*/
 
 class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding>(){
 
     constructor(iUserLoginSuccessCallback: IUserLoginSuccessCallback) : this() { mLoginSuccessCallback = iUserLoginSuccessCallback }
 
+    /** 登录成功回调接口 */
     fun interface IUserLoginSuccessCallback {
         fun onLoginSuccess()
     }
 
-    // VM
+    /** （Activity 级别） 用户VM */
     private val mUserVM by sharedViewModel<UserViewModel>()
 
-    // 是否登录成功
+    /** 是否登录成功 */
     private var mIsLoginSuccess: Boolean = false
 
-    // 登录成功回调
+    /** 登录成功回调 */
     private var mLoginSuccessCallback: IUserLoginSuccessCallback? = null
 
-    // 返回
-    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Login.toString())
+    /** 返回 */
+    private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Login.name)
 
-    // 反转登录按钮
+    /** 反转登录按钮 */
     private fun doRevertLoginButton() {
 
         // 停止动画
@@ -73,14 +66,17 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
         }
     }
 
+    /** 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentLoginBinding.inflate(inflater)
 
+    /** Lifecycle Start */
     override fun onStart() {
         super.onStart()
         mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) { navigateUp() }
     }
 
-    override fun initObserver() {
+    /** 初始化观察者 */
+    override fun initObserver(savedInstanceState: Bundle?) {
         mUserVM.onOutput { intent ->
             when (intent) {
 
@@ -110,6 +106,7 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
         }
     }
 
+    /** 初始化视图 */
     override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
@@ -119,6 +116,7 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
         mBinding.userLogin.updateLifecycleObserver(viewLifecycleOwner.lifecycle)
     }
 
+    /** 初始化监听器 */
     override fun initListener() {
 
         mBinding.userLogin.doOnClickInterval {

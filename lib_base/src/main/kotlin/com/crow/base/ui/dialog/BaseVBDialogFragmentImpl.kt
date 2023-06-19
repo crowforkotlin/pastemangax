@@ -32,10 +32,10 @@ abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment, IBase
     override fun initListener() {}
 
     // 初始化数据
-    override fun initData() {}
+    override fun initData(savedInstanceState: Bundle?) {}
 
     // 初始化观察者
-    override fun initObserver() {}
+    override fun initObserver(saveInstanceState: Bundle?) {}
 
     override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) {
         LoadingAnimDialog.show(parentFragmentManager, loadingAnimConfig)
@@ -63,7 +63,7 @@ abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment, IBase
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(savedInstanceState)
-        initData()
+        initData(savedInstanceState)
         initListener()
     }
 }

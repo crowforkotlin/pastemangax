@@ -48,10 +48,15 @@ open class BaseEvent private constructor(flagTime: Long) {
         type: T,
         baseEvent: BaseEvent,
         iEven: BaseIEventIntervalExt<T>
-    ) {
+    ) : Boolean {
         val result = getIntervalResult(type, null, baseEvent)
-        if (result != null) iEven.onIntervalOk(result) else iEven.onIntervalFailure(getGapTime())
-
+        return if (result != null) {
+            iEven.onIntervalOk(result)
+            true
+        } else {
+            iEven.onIntervalFailure(getGapTime())
+            false
+        }
     }
 
     internal fun getGapTime() =

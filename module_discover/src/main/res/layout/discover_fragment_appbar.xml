@@ -4,8 +4,9 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
+	tools:theme="@style/Discover.Theme.CopyManga"
 	android:layout_height="wrap_content"
-	android:background="@color/base_home_bar_bg">
+	android:background="@color/base_bg">
 
 	<androidx.appcompat.widget.LinearLayoutCompat
 		android:layout_width="match_parent"

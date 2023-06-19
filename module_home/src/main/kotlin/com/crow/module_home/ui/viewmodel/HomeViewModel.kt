@@ -26,15 +26,27 @@ import kotlinx.coroutines.flow.flowOn
  **************************/
 class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<HomeIntent>() {
 
+    var mHomeDatas: MutableList<MutableList<out Any>?>?= null
     private var mRefreshStartIndex = 3
+
+
 
     var mComicSearchFlowPage : Flow<PagingData<SearchComicResult>>? = null
     var mNovelSearchFlowPage : Flow<PagingData<SearchNovelResult>>? = null
 
-
-    // 获取主页 （返回数据量很多）
+    /** ● 获取主页 （返回数据量很多）*/
     private fun getHomePage(intent: HomeIntent.GetHomePage) {
         flowResult(intent, repository.getHomePage()) { value ->
+            mHomeDatas = mutableListOf(
+                value.mResults.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList(),
+                null, value.mResults.mRecComicsResult.mResult.toMutableList(),
+                null,
+                null, value.mResults.mHotComics.toMutableList(),
+                null, value.mResults.mNewComics.toMutableList(),
+                null, value.mResults.mFinishComicDatas.mResult.toMutableList(),
+                null, value.mResults.mRankDayComics.mResult.toMutableList(),
+                null, value.mResults.mTopics.mResult.toMutableList()
+            )
             intent.copy(homePageData = value)
         }
     }

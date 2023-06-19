@@ -2,8 +2,6 @@ package com.crow.base.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,10 +15,16 @@ import com.crow.base.ui.viewmodel.mvi.IBaseMvi
 
 abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBaseMvi {
 
+    /** 私有VB */
     private var _mBinding: VB? = null
+
+    /** 模块VB */
     protected val mBinding get() = _mBinding!!
+
+    /** 返回调度 */
     protected var mBackDispatcher: OnBackPressedCallback? = null
-    protected var mHandler: Handler = Handler(Looper.getMainLooper())
+
+    /** 上下文 */
     protected lateinit var mContext: Context
 
     /**
@@ -30,18 +34,20 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
      * */
     abstract fun getViewBinding(inflater: LayoutInflater): VB
 
-    override fun initObserver() {}
+    override fun initObserver(savedInstanceState: Bundle?) {}
 
     override fun initListener() {}
 
-    override fun initView(bundle: Bundle?) {}
+    override fun initView(savedInstanceState: Bundle?) {}
 
     override fun <I : BaseMviIntent> BaseMviViewModel<I>.onOutput(state: Lifecycle.State, baseMviSuspendResult: BaseMviViewModel.BaseMviSuspendResult<I>) {
         repeatOnLifecycle(state) { output { intent -> baseMviSuspendResult.onResult(intent) } }
     }
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return getViewBinding(inflater).also { _mBinding = it }.root
+        val view = getViewBinding(inflater)
+        _mBinding = view
+        return view.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,14 +56,13 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initObserver()
+        initObserver(savedInstanceState)
         super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _mBinding = null
-        mHandler.removeCallbacksAndMessages(null)
     }
 
     override fun onDestroy() {

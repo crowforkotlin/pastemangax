@@ -2,11 +2,11 @@ package com.crow.module_discover.model.source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.crow.base.tools.extensions.logMsg
 import com.crow.module_discover.model.resp.DiscoverComicHomeResp
 import com.crow.module_discover.model.resp.comic_home.DiscoverComicHomeResult
 
-class DiscoverComicHomeDataSource(inline val mDoOnPageResults: suspend (position: Int, pageSize: Int) -> DiscoverComicHomeResp?) : PagingSource<Int, DiscoverComicHomeResult>() {
+class DiscoverComicHomeDataSource(inline val mDoOnPageResults: suspend (position: Int, pageSize: Int) -> DiscoverComicHomeResp?) :
+    PagingSource<Int, DiscoverComicHomeResult>() {
 
     companion object {
         private const val START_POSITION = 0
@@ -35,7 +35,8 @@ class DiscoverComicHomeDataSource(inline val mDoOnPageResults: suspend (position
         return try {
 
             // 获取书架漫画结果集
-            val result = mDoOnPageResults(position, params.loadSize) ?: return LoadResult.Page(data = mutableListOf(), null, null)
+            val result = mDoOnPageResults(position, params.loadSize)
+                ?: return LoadResult.Page(data = mutableListOf(), null, null)
 
             // 下一个键 = 如果 当前位置 + 预加载页数 大于 总共的数量则返回空 否则 返回下一个起点
             val nextKey = if (nextPos > result.mTotal) null else nextPos

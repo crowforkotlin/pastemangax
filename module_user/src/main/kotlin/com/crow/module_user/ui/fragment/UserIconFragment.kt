@@ -54,7 +54,7 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
     // 共享 用户VM
     private val mUserVM by sharedViewModel<UserViewModel>()
 
-    private fun navigateUp() = parentFragmentManager.popAsyncWithClear(Fragments.Icon.toString())
+    private fun navigateUp() = parentFragmentManager.popAsyncWithClear(Fragments.Icon.name)
 
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentIconBinding.inflate(inflater)
 
@@ -71,7 +71,7 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
         mWindowInsets = null
     }
 
-    override fun initObserver() {
+    override fun initObserver(savedInstanceState: Bundle?) {
 
         // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {

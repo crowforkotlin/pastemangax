@@ -25,19 +25,19 @@
             style="@style/Widget.Material3.CircularProgressIndicator.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:indicatorSize="@dimen/base_dp36"
             android:layout_gravity="center"
             android:indeterminate="true"
-            app:trackCornerRadius="@dimen/base_dp99"
-app:indicatorColor="@color/base_light_blue_500" />
+            app:indicatorColor="@color/base_light_blue_500"
+            app:indicatorSize="@dimen/base_dp36"
+            app:trackCornerRadius="@dimen/base_dp99" />
 
         <TextView
             android:id="@+id/home_comic_rv_progress_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="@dimen/base_sp10"
             android:text="@string/BaseZero"
+            android:textSize="@dimen/base_sp10"
             android:textStyle="bold" />
 
         <ImageView
@@ -76,11 +76,11 @@ app:indicatorColor="@color/base_light_blue_500" />
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
-        android:visibility="gone"
         android:paddingStart="@dimen/base_dp10"
         android:paddingEnd="@dimen/base_dp10"
         android:textSize="@dimen/base_sp10"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/home_comic_rv_lastest_chapter"
         app:layout_constraintEnd_toEndOf="@+id/home_comic_rv_name"
         app:layout_constraintStart_toStartOf="@+id/home_comic_rv_name"

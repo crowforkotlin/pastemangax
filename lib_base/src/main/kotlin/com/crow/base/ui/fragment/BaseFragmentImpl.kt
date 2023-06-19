@@ -22,20 +22,23 @@ import com.crow.base.ui.dialog.LoadingAnimDialog
  **************************/
 abstract class BaseFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
 
-    private val mHandler = Handler(Looper.getMainLooper())
+    /** UI Handler */
+    protected val mHandler by lazy { Handler(Looper.getMainLooper()) }
+
+    /** 权限 */
     private val mPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
         if (it.containsValue(false)) iBasePerEvent?.onFailure()
         else iBasePerEvent?.onSccess()
     }
 
     // 初始化View
-    override fun initView(bundle: Bundle?) {}
+    override fun initView(savedInstanceState: Bundle?) {}
 
     // 初始化监听事件
     override fun initListener() {}
 
     // 初始化数据
-    override fun initData() { }
+    override fun initData(savedInstanceState: Bundle?) { }
 
     override var iBasePerEvent: IBasePerEvent? = null
 
@@ -59,8 +62,13 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment, IBasePermission {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?){
         super.onViewCreated(view, savedInstanceState)
         initView(savedInstanceState)
-        initData()
+        initData(savedInstanceState)
         initListener()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mHandler.removeCallbacksAndMessages(null)
     }
 
     override fun onDestroy(){

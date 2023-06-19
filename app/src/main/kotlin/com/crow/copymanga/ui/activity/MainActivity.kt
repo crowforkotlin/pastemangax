@@ -14,6 +14,7 @@ import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.isLatestVersion
 import com.crow.base.tools.extensions.navigateByAdd
 import com.crow.base.tools.extensions.newMaterialDialog
@@ -30,32 +31,27 @@ import com.crow.module_main.model.intent.ContainerIntent
 import com.crow.module_main.model.resp.MainAppUpdateResp
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
 import com.crow.module_main.ui.fragment.ContainerFragment
-import com.crow.module_main.ui.viewmodel.ContainerViewModel
+import com.crow.module_main.ui.viewmodel.MainViewModel
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-/**
- *
- * 类名描述信息,测试文档生成类
- * @param T 泛型类型
- * @property value 属性value
- * @constructor 创建DokkaDocTest的构造器.
- * @Author haiyang
- *
- */
 class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
 
+    /** ● 查询更新 */
     init {
-        FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).register(this) { mContainerVM.input(ContainerIntent.GetUpdateInfo()) }  // 查询更新
+        FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).register(this) { mContainerVM.input(ContainerIntent.GetUpdateInfo()) }
     }
 
-    // 初始化更新是否完成
+    /** ● 初始化更新是否完成 */
     private var mInitUpdate: Boolean = false
 
-    private val mContainerVM by viewModel<ContainerViewModel>()
+    /** ● 容器VM */
+    private val mContainerVM by viewModel<MainViewModel>()
 
+    /** ● 获取ViewBinding */
     override fun getViewBinding() = AppActivityMainBinding.inflate(layoutInflater)
 
+    /** ● Lifecycle onCreate */
     override fun onCreate(savedInstanceState: Bundle?) {
 
         // 启动动画
@@ -72,32 +68,37 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
         super.onCreate(savedInstanceState)
     }
 
+    /** ● 初始化视图 */
     @SuppressLint("SourceLockedOrientationActivity")
     override fun initView(savedInstanceState: Bundle?) {
 
         // 设置屏幕方向
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        // 全屏布局
-        WindowCompat.setDecorFitsSystemWindows(window, true)
+        // 沉浸式Edge To Edge
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         // 设置布局
         setContentView(mBinding.root)
 
-
-
-        // 内存重启后 避免再次添加布局
-        if (savedInstanceState == null) supportFragmentManager.navigateByAdd<ContainerFragment>(R.id.app_main_fcv, null, Fragments.Container.toString())
+        if (savedInstanceState == null) {
+            supportFragmentManager.navigateByAdd<ContainerFragment>(R.id.app_main_fcv, null, Fragments.Container.name)
+        }
     }
 
+    /** ● 初始化观察者 */
     override fun initObserver(savedInstanceState: Bundle?) {
 
-        mContainerVM.appConfig.onCollect(this) { appConfig ->
-            if (appConfig != null) {
-                BaseStrings.URL.CopyManga = appConfig.mSite
-                BaseUser.CURRENT_ROUTE = appConfig.mRoute
-                if (appConfig.mAppFirstInit) { mContainerVM.input(ContainerIntent.GetDynamicSite()) }
-            }
+        mContainerVM.mAppConfig.onCollect(this) { appConfig ->
+
+            if (appConfig == null) return@onCollect
+
+            BaseStrings.URL.CopyManga = appConfig.mSite
+            BaseUser.CURRENT_ROUTE = appConfig.mRoute
+
+            if (appConfig.mAppFirstInit) mContainerVM.input(ContainerIntent.GetDynamicSite())
+
+            WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = (!isDarkMode())
         }
 
         mContainerVM.onOutput { intent ->
@@ -111,7 +112,7 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
         }
     }
 
-    // 检查更新
+    /** ● 检查更新 */
     private fun doUpdateChecker(appUpdateResp: MainAppUpdateResp) {
         val update = appUpdateResp.mUpdates.first()
         if (isLatestVersion(latest = update.mVersionCode.toLong())) return run {

@@ -54,4 +54,5 @@ object BaseStrings {
         const val HotManga = "https://mapi.hotmangasf.com"
 
     }
+
 }
