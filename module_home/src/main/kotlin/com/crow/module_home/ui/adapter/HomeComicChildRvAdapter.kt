@@ -6,8 +6,6 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater.from
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.view.doOnLayout
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,7 +22,7 @@ import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.ToolTipsView
-import com.crow.module_home.databinding.HomeFragmentComicRvBodyNewBinding
+import com.crow.module_home.databinding.HomeFragmentComicRvBodyBinding
 import com.crow.module_home.model.resp.homepage.*
 import com.crow.module_home.model.resp.homepage.results.AuthorResult
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
@@ -46,15 +44,12 @@ class HomeComicChildRvAdapter<T>(
     val doOnTap: (String) -> Unit
 ) : RecyclerView.Adapter<HomeComicChildRvAdapter<T>.LoadingViewHolder>() , IBookAdapterColor<HomeComicChildRvAdapter<T>.LoadingViewHolder>{
 
-    inner class LoadingViewHolder(binding: HomeFragmentComicRvBodyNewBinding) : BaseGlideLoadingViewHolder<HomeFragmentComicRvBodyNewBinding>(binding) {
+    inner class LoadingViewHolder(binding: HomeFragmentComicRvBodyBinding) : BaseGlideLoadingViewHolder<HomeFragmentComicRvBodyBinding>(binding) {
         var mPathWord: String = ""
     }
 
     // 父布局高度
     private var mParentHeight: Int? = null
-
-    // 名称高度
-    private var mNameHeight: Int? = null
 
     // 初始化卡片内部视图
     private fun LoadingViewHolder.initView(pathword: String, name: String, imageUrl: String, author: List<AuthorResult>, hot: Int, lastestChapter: String?) {
@@ -105,7 +100,7 @@ class HomeComicChildRvAdapter<T>(
     override fun getItemCount(): Int = mData.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LoadingViewHolder {
-        return LoadingViewHolder(HomeFragmentComicRvBodyNewBinding.inflate(from(parent.context), parent, false)).also { vh ->
+        return LoadingViewHolder(HomeFragmentComicRvBodyBinding.inflate(from(parent.context), parent, false)).also { vh ->
 
             val isTopic = mType == Type.TOPIC
 
@@ -113,11 +108,6 @@ class HomeComicChildRvAdapter<T>(
             val layoutParams = vh.rvBinding.homeComicRvImage.layoutParams
             layoutParams.width = (if (!isTopic) getComicCardWidth() else getComicCardWidth() / 2 + getComicCardWidth()) - mSize10
             layoutParams.height = getComicCardHeight()
-
-            vh.rvBinding.homeComicRvName.doOnLayout { view ->
-                if (mNameHeight == null) mNameHeight = if (vh.rvBinding.homeComicRvName.lineCount == 1) view.measuredHeight * 2 else view.measuredHeight
-                (vh.rvBinding.homeComicRvName.layoutParams as LinearLayoutCompat.LayoutParams).height = mNameHeight!!
-            }
 
             // 点击 父布局卡片 以及漫画卡片 事件 回调给上级 HomeFragment --> ContainerFragment
             vh.rvBinding.root.doOnClickInterval {

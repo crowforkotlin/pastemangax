@@ -10,8 +10,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenCreated
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.entity.AppConfigEntity
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.coroutine.launchDelay
@@ -90,6 +93,16 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
         // 更多选项 点击监听
         mBinding.discoverComicAppbar.discoverAppbarToolbar.menu[0].doOnClickInterval { toast("此功能或许将在下个版本中完善....") }
+
+        mBinding.discoverComicRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (AppConfigEntity.getInstance().mAppFirstInit)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    toast("${(recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()} / ${recyclerView.adapter?.itemCount}")
+                }
+            }
+        })
     }
 
     /** ● 导航至漫画页 */

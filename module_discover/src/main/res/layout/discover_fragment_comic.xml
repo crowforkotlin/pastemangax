@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/discover_comic_appbar"
-        layout="@layout/discover_fragment_appbar_new" />
+        layout="@layout/discover_fragment_appbar" />
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/discover_comic_refresh"

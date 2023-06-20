@@ -1,3 +1,4 @@
+
 package com.crow.base.copymanga.entity
 
 import com.crow.base.app.appContext
@@ -24,18 +25,27 @@ data class AppConfigEntity(
     /** ● 路线 "0", "1" */
     val mRoute: String = BaseUser.CURRENT_ROUTE,
 
+
 ) {
     companion object {
+
+        private var mAppConfigEntity: AppConfigEntity? =null
+
+        fun getInstance(): AppConfigEntity {
+            return mAppConfigEntity!!
+        }
+
         suspend fun saveAppConfig(appConfigEntity: AppConfigEntity) {
+            mAppConfigEntity = appConfigEntity
             appContext.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(appConfigEntity))
         }
 
         suspend fun readAppConfig(): AppConfigEntity? {
-            return appContext.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG).toTypeEntity<AppConfigEntity>()
+            return appContext.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG).toTypeEntity<AppConfigEntity>().also { mAppConfigEntity = it }
         }
 
         fun readAppConfigSync(): AppConfigEntity? {
-            return appContext.appConfigDataStore.decode(DataStoreAgent.APP_CONFIG).toTypeEntity<AppConfigEntity>()
+            return appContext.appConfigDataStore.decode(DataStoreAgent.APP_CONFIG).toTypeEntity<AppConfigEntity>().also { mAppConfigEntity = it }
         }
     }
 }

@@ -45,7 +45,7 @@
         <ImageView
             android:id="@+id/bookshelf_rv_image"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:contentDescription="@string/BaseTodoTextView"
             android:foreground="?attr/selectableItemBackground"
             android:scaleType="centerCrop"
@@ -62,6 +62,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
+        android:minLines="2"
         android:textSize="@dimen/base_sp12"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/bookshelf_rv_time"

@@ -3,8 +3,6 @@ package com.crow.module_discover.ui.adapter
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.doOnLayout
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
@@ -43,19 +41,12 @@ class DiscoverNovelAdapter(
 
     inner class ViewHolder(binding: DiscoverFragmentRvBinding) : BaseGlideLoadingViewHolder<DiscoverFragmentRvBinding>(binding)
 
-    private var mNameHeight: Int? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : ViewHolder {
-        return ViewHolder(DiscoverFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also {  vh ->
+        return ViewHolder(DiscoverFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
 
             val layoutParams = vh.rvBinding.discoverRvImage.layoutParams
             layoutParams.width = getComicCardWidth() - mSize10
             layoutParams.height = getComicCardHeight()
-
-            vh.rvBinding.discoverRvName.doOnLayout { view ->
-                if (mNameHeight == null) mNameHeight = if (vh.rvBinding.discoverRvName.lineCount == 1) view.measuredHeight * 2 else view.measuredHeight
-                (vh.rvBinding.discoverRvName.layoutParams as ConstraintLayout.LayoutParams).height = mNameHeight!!
-            }
 
             vh.rvBinding.discoverRvBookCard.doOnClickInterval {
                 mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -7,6 +8,7 @@
     android:layout_marginStart="@dimen/base_dp5"
     android:layout_marginTop="@dimen/base_dp12_5"
     android:layout_marginEnd="@dimen/base_dp5"
+    android:orientation="vertical"
     android:layout_marginBottom="@dimen/base_dp12_5">
 
     <com.google.android.material.card.MaterialCardView
@@ -15,8 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardElevation="1dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@color/base_grey_400_40"
         app:strokeWidth="1dp">
 
@@ -54,18 +54,16 @@
 
     <TextView
         android:id="@+id/home_search_rv_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/base_dp2_5"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
+        android:minLines="2"
         android:textSize="@dimen/base_sp12"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/home_search_rv_author"
-        app:layout_constraintEnd_toEndOf="@id/home_search_rv_card"
-        app:layout_constraintStart_toStartOf="@id/home_search_rv_card"
-        app:layout_constraintTop_toBottomOf="@id/home_search_rv_card"
+        android:layout_gravity="center"
         tools:text="书名" />
 
     <TextView
@@ -74,13 +72,11 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/base_dp2_5"
         android:ellipsize="end"
+        android:layout_gravity="center"
         android:gravity="center"
         android:maxLines="1"
         android:textSize="@dimen/base_sp10"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/home_search_rv_hot"
-        app:layout_constraintEnd_toEndOf="@+id/home_search_rv_name"
-        app:layout_constraintStart_toStartOf="@+id/home_search_rv_name"
         tools:text="作者" />
 
     <TextView
@@ -92,9 +88,7 @@
         android:maxLines="1"
         android:textSize="@dimen/base_sp10"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/home_search_rv_name"
-        app:layout_constraintStart_toStartOf="@+id/home_search_rv_name"
+        android:layout_gravity="center"
         tools:text="热度" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

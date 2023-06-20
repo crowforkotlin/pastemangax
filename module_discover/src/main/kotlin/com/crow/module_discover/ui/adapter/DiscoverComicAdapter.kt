@@ -3,8 +3,6 @@ package com.crow.module_discover.ui.adapter
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.view.doOnLayout
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
@@ -22,10 +20,9 @@ import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.copymanga.mSize10
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.logMsg
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.ToolTipsView
-import com.crow.module_discover.databinding.DiscoverFragmentRvNewBinding
+import com.crow.module_discover.databinding.DiscoverFragmentRvBinding
 import com.crow.module_discover.model.resp.comic_home.DiscoverComicHomeResult
 
 class DiscoverComicAdapter(
@@ -42,21 +39,14 @@ class DiscoverComicAdapter(
         }
     }
 
-    class LoadingViewHolder(binding: DiscoverFragmentRvNewBinding) : BaseGlideLoadingViewHolder<DiscoverFragmentRvNewBinding>(binding)
-
-    private var mNameHeight: Int? =null
+    class LoadingViewHolder(binding: DiscoverFragmentRvBinding) : BaseGlideLoadingViewHolder<DiscoverFragmentRvBinding>(binding)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : LoadingViewHolder {
-        return LoadingViewHolder(DiscoverFragmentRvNewBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
+        return LoadingViewHolder(DiscoverFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
 
             val layoutParams = vh.rvBinding.discoverRvImage.layoutParams
             layoutParams.width = getComicCardWidth() - mSize10
             layoutParams.height = getComicCardHeight()
-
-            vh.rvBinding.discoverRvName.doOnLayout { view ->
-                if (mNameHeight == null) mNameHeight = if (vh.rvBinding.discoverRvName.lineCount == 1) view.measuredHeight * 2 else view.measuredHeight
-                (vh.rvBinding.discoverRvName.layoutParams as LinearLayoutCompat.LayoutParams).height = mNameHeight!!
-            }
 
 
             vh.rvBinding.discoverRvBookCard.doOnClickInterval {
@@ -80,7 +70,6 @@ class DiscoverComicAdapter(
         vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
 
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
-            percentage.logMsg()
             vh.rvBinding.discoverProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
         }
 

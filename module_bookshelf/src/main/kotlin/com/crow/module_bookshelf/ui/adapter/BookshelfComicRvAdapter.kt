@@ -3,8 +3,6 @@ package com.crow.module_bookshelf.ui.adapter
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.doOnLayout
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
@@ -40,19 +38,12 @@ class BookshelfComicRvAdapter(
 
     inner class LoadingViewHolder(binding: BookshelfFragmentRvBinding) : BaseGlideLoadingViewHolder<BookshelfFragmentRvBinding>(binding)
 
-    private var mNameHeight: Int? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LoadingViewHolder {
         return LoadingViewHolder(BookshelfFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent,false)).also { vh ->
 
             val layoutParams = vh.rvBinding.bookshelfRvImage.layoutParams
             layoutParams.width = getComicCardWidth() - mSize10
             layoutParams.height = getComicCardHeight()
-
-            vh.rvBinding.bookshelfRvName.doOnLayout { view ->
-                if (mNameHeight == null) mNameHeight = if (vh.rvBinding.bookshelfRvName.lineCount == 1) view.measuredHeight * 2 else view.measuredHeight
-                (vh.rvBinding.bookshelfRvName.layoutParams as ConstraintLayout.LayoutParams).height = mNameHeight!!
-            }
 
             vh.rvBinding.bookshelfRvImage.doOnClickInterval {
                 doOnTap(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
