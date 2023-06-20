@@ -5,35 +5,33 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content">
 
-
 	<TextView
 		android:id="@+id/main_update_title"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:maxLines="1"
-		android:ellipsize="end"
-		android:textStyle="bold"
 		android:layout_marginTop="@dimen/base_dp10"
-		android:gravity="center"
-		android:textSize="@dimen/base_sp24"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintVertical_bias="0"
-		app:layout_constraintStart_toStartOf="parent"
 		android:drawablePadding="@dimen/base_dp5"
+		android:ellipsize="end"
+		android:gravity="center"
+		android:maxLines="1"
+		android:textSize="@dimen/base_sp24"
+		android:textStyle="bold"
+		app:drawableStartCompat="@drawable/user_ic_update_24dp"
+		app:layout_constraintStart_toStartOf="@+id/main_update_cancel"
 		app:layout_constraintTop_toTopOf="parent"
-		tools:text="有新的更新啦"
-		app:drawableStartCompat="@drawable/user_ic_update_24dp" />
+		tools:text="有新的更新啦" />
 
 	<TextView
 		android:id="@+id/main_update_time"
 		android:layout_width="wrap_content"
-		android:textSize="@dimen/base_sp10"
-		android:maxLines="1"
-		android:ellipsize="end"
 		android:layout_height="wrap_content"
-		android:textStyle="bold"
 		android:layout_margin="@dimen/base_dp5"
-		app:layout_constraintEnd_toEndOf="@+id/main_update_title"
+		android:ellipsize="end"
+		android:gravity="center"
+		android:maxLines="1"
+		android:minLines="2"
+		android:textSize="@dimen/base_sp10"
+		android:textStyle="bold"
 		app:layout_constraintStart_toStartOf="@+id/main_update_title"
 		app:layout_constraintTop_toBottomOf="@+id/main_update_title"
 		tools:text="更新日期：2023年4月18日" />
@@ -53,6 +51,8 @@
 			android:id="@+id/main_update_text"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:minLines="2"
+			android:gravity="center_vertical"
 			android:autoLink="web"
 			android:textSize="@dimen/base_sp16"
 			android:textStyle="bold"
@@ -65,6 +65,7 @@
 		style="@style/Widget.Material3.Button.ElevatedButton"
 		app:layout_constraintHorizontal_bias="0"
 		android:layout_width="wrap_content"
+		app:rippleColor="@color/base_grey_500"
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/base_dp10"
 		android:text="@string/main_update_cancel"
@@ -84,11 +85,25 @@
 		android:layout_margin="@dimen/base_dp10"
 		android:text="@string/main_update_go"
 		android:textColor="@color/base_black"
+		app:rippleColor="@color/base_grey_500"
 		android:textStyle="bold"
 		app:backgroundTint="@color/user_deep_purple_300"
 		app:icon="@drawable/user_ic_air_plane_24dp"
 		app:iconTint="@null"
+
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/main_update_history"
+		style="@style/Base.Theme.Button.Icon.Tint"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:icon="@drawable/user_ic_update_history_24dp"
+		app:iconTint="@null"
+		app:rippleColor="@color/base_grey_500"
+		app:backgroundTint="@color/user_deep_purple_300"
+		app:layout_constraintEnd_toEndOf="@+id/main_update_go"
+		app:layout_constraintTop_toTopOf="@+id/main_update_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

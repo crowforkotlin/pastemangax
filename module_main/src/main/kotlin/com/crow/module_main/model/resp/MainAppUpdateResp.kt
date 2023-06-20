@@ -1,9 +1,8 @@
 package com.crow.module_main.model.resp
 
 import com.crow.module_main.model.resp.update.Update
-import com.squareup.moshi.JsonClass
-
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 
 /*************************
@@ -18,7 +17,7 @@ import com.squareup.moshi.Json
 data class MainAppUpdateResp(
 
     @Json(name = "updates")
-    val mUpdates: List<Update>,
+    val mUpdates: MutableList<Update>,
 
     @Json(name = "update_force")
     val mForceUpdate: Boolean,

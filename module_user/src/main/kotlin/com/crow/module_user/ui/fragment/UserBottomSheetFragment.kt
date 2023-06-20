@@ -49,7 +49,8 @@ class UserBottomSheetFragment : BaseMviBottomSheetDialogFragment<UserFragmentBin
         R.drawable.user_ic_history_24dp to appContext.getString(R.string.user_browsing_history),
         baseR.drawable.base_ic_download_24dp to appContext.getString(R.string.user_download),
         R.drawable.user_ic_about_24dp to appContext.getString(R.string.user_about),
-        R.drawable.user_ic_update_24dp to appContext.getString(R.string.user_check_update)
+        R.drawable.user_ic_update_24dp to appContext.getString(R.string.user_check_update),
+        R.drawable.user_ic_update_history_24dp to appContext.getString(R.string.user_update_history_title)
     )
 
     // 用户适配器
@@ -85,6 +86,7 @@ class UserBottomSheetFragment : BaseMviBottomSheetDialogFragment<UserFragmentBin
                 3 -> toast(getString(baseR.string.BaseStillInDevelopment))
                 4 -> parentFragmentManager.navigateToWithBackStack(app_main_fcv, parentFragment, get(named(Fragments.About.name)), Fragments.About.name, Fragments.About.name)
                 5 -> FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).post(lifecycleScope, Unit)
+                6 -> parentFragmentManager.navigateToWithBackStack(app_main_fcv, parentFragment, get(named(Fragments.UpdateHistory.name)), Fragments.UpdateHistory.name, Fragments.UpdateHistory.name)
             }
         }
 

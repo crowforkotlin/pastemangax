@@ -22,7 +22,7 @@ import com.crow.module_discover.ui.fragment.DiscoverComicFragment
 import com.crow.module_home.ui.fragment.HomeFragment
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentContainerBinding
-import com.crow.module_main.model.intent.ContainerIntent
+import com.crow.module_main.model.intent.MainIntent
 import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import com.crow.module_user.ui.viewmodel.UserViewModel
@@ -77,7 +77,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 观察ContainerVM
         mContainerVM.onOutput { intent ->
             when(intent) {
-                is ContainerIntent.GetDynamicSite -> {
+                is MainIntent.GetDynamicSite -> {
                     intent.mBaseViewState
                         .doOnErrorInCoroutine { _, _ -> mContainerVM.saveAppConfig() }
                         .doOnResultInCoroutine {
@@ -109,7 +109,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mContainerVM.input(ContainerIntent.GetUpdateInfo())
+        mContainerVM.input(MainIntent.GetUpdateInfo())
     }
 
     override fun onDestroyView() {
