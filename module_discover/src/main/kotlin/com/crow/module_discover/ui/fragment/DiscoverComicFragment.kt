@@ -3,11 +3,8 @@ package com.crow.module_discover.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.get
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenCreated
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,19 +22,15 @@ import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
-import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
-import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
-import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverFragmentComicBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.ui.adapter.DiscoverComicAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.qualifier.named
@@ -71,19 +64,11 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         parentFragmentManager.setFragmentResultListener("Discover_Comic", this) { _, bundle ->
             if (bundle.getInt("id") == 1) {
                 if (bundle.getBoolean("delay")) {
-                    viewLifecycleOwner.launchDelay(BASE_ANIM_200L) {
-                        repeatOnLifecycle {
-                            mDiscoverVM.mDiscoverComicHomeFlowPager?.collect {
-                                mDiscoverComicAdapter.submitData(it)
-                            }
-                        }
+                    launchDelay(BASE_ANIM_200L) {
+                        onCollectState()
                     }
                 } else {
-                    repeatOnLifecycle {
-                        mDiscoverVM.mDiscoverComicHomeFlowPager?.collect {
-                            mDiscoverComicAdapter.submitData(it)
-                        }
-                    }
+                    onCollectState()
                 }
             }
         }
@@ -117,10 +102,9 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
     /** ● 收集状态 */
     fun onCollectState() {
-        lifecycleScope.launch {
-            whenCreated {
-                // 收集状态 通知适配器
-                repeatOnLifecycle { mDiscoverVM.mDiscoverComicHomeFlowPager?.collect { mDiscoverComicAdapter.submitData(it) } }
+        repeatOnLifecycle {
+            mDiscoverVM.mDiscoverComicHomeFlowPager?.collect {
+                mDiscoverComicAdapter.submitData(it)
             }
         }
     }
@@ -159,56 +143,27 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
             when(intent) {
                 is DiscoverIntent.GetComicHome -> {
                     intent.mBaseViewState
-                        .doOnSuccess { if (mBinding.discoverComicRefresh.isRefreshing) mBinding.discoverComicRefresh.finishRefresh() }
-                        .doOnError { code, msg ->
-
-                            // 解析地址失败 且 选中的时当前页面的状态才提示
-                            if (code == BaseViewState.Error.UNKNOW_HOST && mDiscoverVM.mCurrentItem == 1) mBinding.root.showSnackBar(msg ?: getString(com.crow.base.R.string.BaseLoadingError))
-
+                        .doOnError { _, _ ->
                             if (mDiscoverComicAdapter.itemCount == 0) {
-                                if (mDiscoverVM.mCurrentItem == 1) {
 
-                                    // 错误提示淡入
-                                    mBinding.discoverComicTipsError.animateFadeIn()
+                                // 错误提示淡入
+                                mBinding.discoverComicTipsError.animateFadeIn()
 
-                                    // “标签”文本 淡出
-                                    // mBinding.discoverComicAppbar.discoverAppbarTagText.animateFadeOutWithEndInVisibility()
-
-                                    // 发现页 “漫画” 淡出
-                                    mBinding.discoverComicRv.animateFadeOutWithEndInVisibility()
-
-                                    // “当前位置”文本 淡出
-                                    // mBinding.discoverComicAppbar.discoverAppbarTextPos.animateFadeOut().withEndAction { mBinding.discoverComicRv.isInvisible = true }
-                                }
-
-                                // 这里没有使用淡入淡出动画 而是直接设置可见性，因为在未预览当前页面的时候（在主界面没必要使用动画，减少卡顿）
-                                else {
-                                    mBinding.discoverComicTipsError.isVisible = true                        // 错误提示可见
-                                    mBinding.discoverComicRv.isInvisible = true                             // 漫画Rv不可见
-                                    // mBinding.discoverComicAppbar.discoverAppbarTagText.isInvisible = true   // 标签文本消失
-                                    // mBinding.discoverComicAppbar.discoverAppbarTextPos.isInvisible = true   // 当前位置消失
-                                }
+                                // 发现页 “漫画” 淡出
+                                mBinding.discoverComicRv.animateFadeOutWithEndInVisibility()
+                            }
+                            if (mBinding.discoverComicRefresh.isRefreshing) {
+                                mBinding.discoverComicRefresh.finishRefresh()
+                                if (!mBinding.discoverComicTipsError.isVisible) toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
                             }
                         }
                         .doOnResult {
                             // 错误提示 可见
                             if (mBinding.discoverComicTipsError.isVisible) {
-                                // mBinding.discoverComicAppbar.discoverAppbarTagText.text = "全部 — 全部"
-                                // mBinding.discoverComicAppbar.discoverAppbarPosTotal.text = intent.comicHomeResp!!.mTotal.toString()
-
-                                // 若 VP 显示的是当前页 则动画淡入 否则直接显示（减少动画带来的卡顿）
-                                if (mDiscoverVM.mCurrentItem == 1) {
-                                    mBinding.discoverComicTipsError.animateFadeOutWithEndInVisibility()
-                                    // mBinding.discoverComicAppbar.discoverAppbarTagText.animateFadeIn()
-                                    // mBinding.discoverComicAppbar.discoverAppbarTextPos.animateFadeIn()
-                                    mBinding.discoverComicRv.animateFadeIn()
-                                } else {
-                                    mBinding.discoverComicTipsError.isVisible = false
-                                    // mBinding.discoverComicAppbar.discoverAppbarTagText.isVisible = true
-                                    // mBinding.discoverComicAppbar.discoverAppbarTextPos.isVisible = true
-                                    mBinding.discoverComicRv.isVisible = true
-                                }
+                                mBinding.discoverComicTipsError.isVisible = false
+                                mBinding.discoverComicRv.animateFadeIn()
                             }
+                            if (mBinding.discoverComicRefresh.isRefreshing) mBinding.discoverComicRefresh.finishRefresh()
                         }
                 }
                 else -> {}

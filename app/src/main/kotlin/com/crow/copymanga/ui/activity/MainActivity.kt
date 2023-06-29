@@ -14,6 +14,7 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
+import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.isDarkMode
@@ -25,6 +26,7 @@ import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.base.ui.viewmodel.doOnError
+import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.copymanga.R
 import com.crow.copymanga.databinding.AppActivityMainBinding
@@ -110,21 +112,32 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
             when (intent) {
                 is MainIntent.GetUpdateInfo -> {
                     intent.mBaseViewState
-                        .doOnError { _, _ -> toast(getString(com.crow.module_main.R.string.main_update_error)) }
-                        .doOnResult { doUpdateChecker(intent.appUpdateResp!!) }
+                        .doOnLoading {
+                            showLoadingAnim{ dialog ->
+                                dialog.applyWindow()
+                                dialog.applyBg()
+                            }
+                        }
+                        .doOnError { _, _ -> dismissLoadingAnim { toast(getString(com.crow.module_main.R.string.main_update_error)) }}
+                        .doOnResult { dismissLoadingAnim { doUpdateChecker(savedInstanceState, intent.appUpdateResp!!) } }
                 }
             }
         }
     }
 
     /** ● 检查更新 */
-    private fun doUpdateChecker(appUpdateResp: MainAppUpdateResp) {
+    private fun doUpdateChecker(savedInstanceState: Bundle?, appUpdateResp: MainAppUpdateResp) {
         val update = appUpdateResp.mUpdates.first()
+        if (savedInstanceState != null) {
+            mInitUpdate = true
+            if (!appUpdateResp.mForceUpdate) return
+        }
         if (isLatestVersion(latest = update.mVersionCode.toLong())) return run {
-            if (mInitUpdate) toast(getString(com.crow.module_main.R.string.main_update_tips))
+            if (mInitUpdate ) toast(getString(com.crow.module_main.R.string.main_update_tips))
             mInitUpdate = true
         }
         mInitUpdate = true
+
         val updateBinding = MainUpdateLayoutBinding.inflate(layoutInflater)
         val updateDialog = newMaterialDialog { dialog ->
             dialog.setCancelable(false)
@@ -137,7 +150,7 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
         updateBinding.mainUpdateText.text = update.mContent
         updateBinding.mainUpdateTime.text = getString(com.crow.module_main.R.string.main_update_time, update.mTime)
         if (!appUpdateResp.mForceUpdate) { updateBinding.mainUpdateCancel.doOnClickInterval { updateDialog.dismiss() } }
-        updateBinding.mainUpdateGo.doOnClickInterval {
+        updateBinding.mainUpdateGo.doOnClickInterval(flagTime = BASE_ANIM_300L) {
             updateDialog.dismiss()
             val updateUrlBinding = MainUpdateUrlLayoutBinding.inflate(layoutInflater)
             val updateUrlDialog = newMaterialDialog {
@@ -149,7 +162,7 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
             updateUrlBinding.mainUpdateUrlRv.adapter = MainAppUpdateRv(update.mUrl)
             if (!appUpdateResp.mForceUpdate) { updateUrlBinding.mainUpdateUrlCancel.doOnClickInterval { updateUrlDialog.dismiss() } }
         }
-        updateBinding.mainUpdateHistory.doOnClickInterval {
+        updateBinding.mainUpdateHistory.doOnClickInterval(flagTime = BASE_ANIM_300L) {
             supportFragmentManager.navigateToWithBackStack(
                 R.id.app_main_fcv,
                 supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,

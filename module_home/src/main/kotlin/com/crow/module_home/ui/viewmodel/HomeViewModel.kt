@@ -29,8 +29,6 @@ class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<H
     var mHomeDatas: MutableList<MutableList<out Any>?>?= null
     private var mRefreshStartIndex = 3
 
-
-
     var mComicSearchFlowPage : Flow<PagingData<SearchComicResult>>? = null
     var mNovelSearchFlowPage : Flow<PagingData<SearchNovelResult>>? = null
 

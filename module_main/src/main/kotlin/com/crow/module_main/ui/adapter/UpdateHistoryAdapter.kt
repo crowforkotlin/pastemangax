@@ -28,13 +28,14 @@ class UpdateHistoryAdapter(var mUpdateResult: MutableList<Update>) : RecyclerVie
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UpdateViewHolder {
         return UpdateViewHolder(MainFragmentUpdateHistoryRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also {  vh ->
             var isAnimating = false
-            vh.rvBinding.updateMotion.addTransitionListener(object : MotionLayout.TransitionListener {
-                override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) { isAnimating = true }
-                override fun onTransitionChange(motionLayout: MotionLayout?, startId: Int, endId: Int, progress: Float) {}
-                override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) { isAnimating = false }
-                override fun onTransitionTrigger(motionLayout: MotionLayout?, triggerId: Int, positive: Boolean, progress: Float) {}
-            })
+
             vh.rvBinding.updateUp.doOnClickInterval(false) {
+                vh.rvBinding.updateMotion.setTransitionListener(object : MotionLayout.TransitionListener {
+                    override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) { isAnimating = true }
+                    override fun onTransitionChange(motionLayout: MotionLayout?, startId: Int, endId: Int, progress: Float) {}
+                    override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) { isAnimating = false }
+                    override fun onTransitionTrigger(motionLayout: MotionLayout?, triggerId: Int, positive: Boolean, progress: Float) {}
+                })
                 if (isAnimating) return@doOnClickInterval
                 if (vh.rvBinding.updateMotion.currentState == R.id.start) {
                     vh.rvBinding.updateMotion.transitionToEnd()

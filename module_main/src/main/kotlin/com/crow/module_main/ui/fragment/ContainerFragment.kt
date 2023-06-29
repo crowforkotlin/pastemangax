@@ -12,6 +12,7 @@ import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.tools.coroutine.FlowBus
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
@@ -101,6 +102,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
             mContainerVM.mIsRestarted = true
+            if (!isHidden) onNotifyPage()
         } else {
             saveItemPage(0)
             BaseEvent.getSIngleInstance().setBoolean(mFragmentList[0].hashCode().toString(), true)
@@ -126,17 +128,10 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 可见： 当返回ContainerFragment时回调此方法 则通知设置Icon
         mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
 
-        if (mContainerVM.mIsRestarted) {
-            mContainerVM.mIsRestarted = false
-            val bundle = bundleOf("id" to (arguments?.getInt("id") ?: 0).also {
-                saveItemPage(it)
-                BaseEvent.getSIngleInstance().setBoolean(mFragmentList[it].hashCode().toString(), true)
-            }, "delay" to true)
-            childFragmentManager.setFragmentResult("Home", bundle)
-            childFragmentManager.setFragmentResult("Discover_Comic", bundle)
-            childFragmentManager.setFragmentResult("Bookshelf", bundle)
-        }
+        onNotifyPage()
     }
+
+
 
     /** ● 初始化监听器 */
     override fun initListener() {
@@ -169,6 +164,25 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                 }
             }
         })
+    }
+
+    /**
+     * ● 通知页面更新
+     *
+     * ● 2023-06-29 01:28:48 周四 上午
+     */
+    private fun onNotifyPage() {
+        "notify".logMsg()
+        if (mContainerVM.mIsRestarted) {
+            mContainerVM.mIsRestarted = false
+            val bundle = bundleOf("id" to (arguments?.getInt("id") ?: 0).also {
+                saveItemPage(it)
+                BaseEvent.getSIngleInstance().setBoolean(mFragmentList[it].hashCode().toString(), true)
+            }, "delay" to true)
+            childFragmentManager.setFragmentResult("Home", bundle)
+            childFragmentManager.setFragmentResult("Discover_Comic", bundle)
+            childFragmentManager.setFragmentResult("Bookshelf", bundle)
+        }
     }
 
     /** ● 执行退出用户 */

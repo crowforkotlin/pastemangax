@@ -19,4 +19,6 @@
 
     <color name="base_light_blue_500">#03a9f4</color>
 
+    <color name="base_loading_frame">#4D141414</color>
+
 </resources>

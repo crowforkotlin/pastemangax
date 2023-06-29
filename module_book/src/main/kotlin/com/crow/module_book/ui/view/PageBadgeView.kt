@@ -20,13 +20,14 @@ class PageBadgeView(val mActivity: ComicActivity, val mBinding: BookActivityComi
 
     val mBadgeBinding = BookPageBadgeViewBinding.inflate(mActivity.layoutInflater)
 
+
     private val mFormatTime = SimpleDateFormat("HH:mm:ss")
 
     init {
-        mBinding.root.addView(mBadgeBinding.root)
+        mBinding.comicConstraint.addView(mBadgeBinding.root)
         mBadgeBinding.root.layoutParams = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
             endToEnd = PARENT_ID
-            topToTop = PARENT_ID
+            topToBottom = mBinding.mangaReaderToolbar.id
             setMargins(mActivity.resources.getDimensionPixelSize(baseR.dimen.base_dp10))
         }
         mActivity.lifecycleScope.launch {

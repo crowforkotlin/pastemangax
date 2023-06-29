@@ -20,7 +20,7 @@ import org.koin.androidx.viewmodel.ext.android.stateViewModel
 class CommonLoadingAnimDialog: BaseVBDialogFragment<BaseDialogOriginalLoadingBinding,BaseViewModel>() {
 
     init {
-        setStyle(STYLE_NO_TITLE, R.style.Base_LoadingAnim_Dark)
+        setStyle(STYLE_NO_TITLE, R.style.Base_LoadingAnim)
     }
 
     companion object {

@@ -15,4 +15,6 @@
     <string name="book_add_success">添加成功！</string>
     <string name="book_remove_success">已从书架中移除！</string>
     <string name="book_add_invalid">登录后才可添加至书架喔！</string>
+
+	<string name="book_comic_stript">条漫</string>
 </resources>

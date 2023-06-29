@@ -3,6 +3,7 @@ package com.crow.module_book.ui.fragment
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -43,10 +44,14 @@ import org.koin.core.qualifier.named
 
 class BookNovelFragment : BookFragment() {
 
+    /**
+     * ● Regist FlowBus
+     *
+     * ● 2023-06-24 23:45:12 周六 下午
+     */
     init {
         FlowBus.with<String>(BaseEventEnum.UpdateChapter.name).register(this) {
-            mBookVM.updateBookChapter(mBookVM.mComicInfoPage!!.mComic!!.mName, it, BookType.COMIC )
-            mNovelChapterRvAdapter?.mChapterName = it
+            mBookVM.updateBookChapterOnDB(mBookVM.mNovelInfoPage?.mNovel?.mName ?: return@register, it, BookType.NOVEL)
         }
     }
 
@@ -64,9 +69,8 @@ class BookNovelFragment : BookFragment() {
      */
     private fun showNovelInfoPage() {
         val novelInfoPage = mBookVM.mNovelInfoPage?.mNovel ?: return
-
+        mBookVM.findReadedBookChapterOnDB(novelInfoPage.mName, BookType.NOVEL)
         mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(novelInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppGlideProgressFactory.getProgressString(percentage) }
-
         Glide.with(this)
             .load(novelInfoPage.mCover)
             .addListener(mAppGlideProgressFactory?.getRequestListener())
@@ -82,16 +86,13 @@ class BookNovelFragment : BookFragment() {
                 }
             })
             .into(mBinding.bookInfoImage)
-
         mBinding.bookInfoAuthor.text = getString(R.string.BookComicAuthor, novelInfoPage.mAuthor.joinToString { it.mName })
         mBinding.bookInfoHot.text = getString(R.string.BookComicHot, formatValue(novelInfoPage.mPopular))
         mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, novelInfoPage.mDatetimeUpdated)
         mBinding.bookInfoNewChapter.text = getString(R.string.BookComicNewChapter, novelInfoPage.mLastChapter.mName)
         mBinding.bookInfoStatus.text = when (novelInfoPage.mStatus.mValue) {
-            Status.LOADING -> getString(R.string.BookComicStatus, novelInfoPage.mStatus.mDisplay).getSpannableString(
-                ContextCompat.getColor(mContext, R.color.book_green), 3)
-            Status.FINISH -> getString(R.string.BookComicStatus, novelInfoPage.mStatus.mDisplay).getSpannableString(
-                ContextCompat.getColor(mContext, R.color.book_red), 3)
+            Status.LOADING -> getString(R.string.BookComicStatus, novelInfoPage.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_green), 3)
+            Status.FINISH -> getString(R.string.BookComicStatus, novelInfoPage.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_red), 3)
             else -> null
         }
         mBinding.bookInfoName.text = novelInfoPage.mName
@@ -102,7 +103,6 @@ class BookNovelFragment : BookFragment() {
                 it.isClickable = false
             })
         }
-
         mBinding.bookInfoCardview.animateFadeIn()
         buttonGroupFadeIn()
     }
@@ -142,26 +142,6 @@ class BookNovelFragment : BookFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             mNovelChapterRvAdapter?.doNotify(novelChapterResp.mList.toMutableList())
         }
-
-        /*
-* 观察书页章节实体 写在这里观察是因为，防止在获取数据前未得到comicInfoPage从而导致剩下逻辑不生效
-* 1：为空退出
-* 2：获取已读章节数据
-* 3：根据章节是否为空 设置适配器的Item
-* 4：根据Token是否空（登录状态）获取对应的章节名称
-* 5：未登录 -> 本地数据 ，已登录 -> 获取历史记录后会给适配器设置已读章节，当获取失败时， 设置状态false（代表历史记录可能还在请求中，或者是请求失败了）
-* */
-        mBookVM.bookChapterEntity.onCollect(this) { chapter ->
-            if (chapter == null) return@onCollect
-
-            mNovelChapterRvAdapter?.mChapterName = if(BaseUser.CURRENT_USER_TOKEN.isEmpty()) chapter.mChapterName else {
-                mNovelChapterRvAdapter?.mChapterName ?: run {
-                    mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, false)
-                    return@onCollect
-                }
-            }
-            mNovelChapterRvAdapter?.notifyItemRangeChanged(0, mNovelChapterRvAdapter?.itemCount ?: return@onCollect)
-        }
     }
 
     /**
@@ -189,37 +169,34 @@ class BookNovelFragment : BookFragment() {
 
         if (chapterResp is NovelChapterResp) {
 
-            if (mBinding.comicInfoErrorTips.isVisible) {
-                mBinding.comicInfoErrorTips.animateFadeOutWithEndInVisibility()
-                mBinding.bookInfoLinearChapter.animateFadeIn()
-            }
+            if (!mBinding.bookInfoRefresh.isRefreshing) { dismissLoadingAnim() }
 
-            else if (!mBinding.bookInfoLinearChapter.isVisible) {
-                mBinding.bookInfoLinearChapter.animateFadeIn()
-            }
+            if (mBinding.comicInfoErrorTips.isVisible) mBinding.comicInfoErrorTips.animateFadeOutWithEndInVisibility()
 
-            if (mBinding.bookInfoRefresh.isRefreshing) notifyChapterPageShowNow(chapterResp)
-            else dismissLoadingAnim { notifyChapterPageShowNow(chapterResp) }
+            if (!mBinding.bookInfoLinearChapter.isVisible)  mBinding.bookInfoLinearChapter.animateFadeIn()
 
             if (!mBinding.bookInfoRvChapter.isVisible) mBinding.bookInfoRvChapter.animateFadeIn()
+
+            notifyChapterPageShowNow(chapterResp)
         }
     }
 
+    /**
+     * ● 刷新
+     *
+     * ● 2023-06-24 23:45:01 周六 下午
+     */
     override fun onRefresh() { mBookVM.input(BookIntent.GetNovelChapter(mPathword)) }
 
+    /**
+     * ● 初始化视图
+     *
+     * ● 2023-06-24 23:44:56 周六 下午
+     */
     override fun initView(savedInstanceState: Bundle?) {
 
         // 初始化父View
         super.initView(savedInstanceState)
-
-        // 漫画信息页面内容不为空 则显示漫画页
-        if (mBookVM.mNovelInfoPage != null) showNovelInfoPage()
-
-        // 漫画章节页面内容不为空 则显示漫画章节页面
-        if (mBookVM.mNovelChapterPage != null) {
-            mBinding.bookInfoRefresh.autoRefresh()
-            mBookVM.input(BookIntent.GetNovelBrowserHistory(mPathword))
-        }
 
         // 初始化适配器
         mNovelChapterRvAdapter = NovelChapterRvAdapter { toast("很抱歉暂未开发完成...") }
@@ -228,8 +205,21 @@ class BookNovelFragment : BookFragment() {
         mBinding.bookInfoRvChapter.adapter = mNovelChapterRvAdapter!!
     }
 
+    /**
+     * ● 初始化观察者
+     *
+     * ● 2023-06-24 23:44:47 周六 下午
+     */
     override fun initObserver(savedInstanceState: Bundle?) {
         super.initObserver(savedInstanceState)
+
+        mBookVM.bookChapterEntity.onCollect(this) { chapter ->
+            if (mBaseEvent.getBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED) == null && chapter != null) {
+                toast(getString(R.string.book_readed_chapter, chapter.mChapterName))
+                mNovelChapterRvAdapter?.mChapterName = chapter.mChapterName
+                mNovelChapterRvAdapter?.notifyItemRangeChanged(0, mNovelChapterRvAdapter?.itemCount ?: return@onCollect)
+            }
+        }
 
         mBookVM.onOutput { intent ->
             when(intent) {
@@ -242,10 +232,8 @@ class BookNovelFragment : BookFragment() {
                             intent.novelBrowser!!.apply {
                                 if (mCollect == null) setButtonAddToBookshelf() else setButtonRemoveFromBookshelf()
                                 mNovelChapterRvAdapter?.mChapterName = mBrowse?.chapterName ?: return@doOnResult
-                                if (mBaseEvent.getBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED) == false) {
-                                    mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, true)
-                                    mNovelChapterRvAdapter?.notifyItemRangeChanged(0, mNovelChapterRvAdapter?.itemCount ?: return@doOnResult)
-                                }
+                                mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, true)
+                                mNovelChapterRvAdapter?.notifyItemRangeChanged(0, mNovelChapterRvAdapter?.itemCount ?: return@doOnResult)
                                 toast(getString(R.string.book_readed_chapter, mNovelChapterRvAdapter?.mChapterName))
                             }
                         }
@@ -255,13 +243,16 @@ class BookNovelFragment : BookFragment() {
         }
     }
 
+    /**
+     * ● 初始化监听器
+     *
+     * ● 2023-06-24 23:44:28 周六 下午
+     */
     override fun initListener() {
         super.initListener()
 
         mBinding.bookInfoCardview.doOnClickInterval {
-            val fragment = get<Fragment>(named(Fragments.Image.name))
-            fragment.arguments =Bundle().also { bundle -> bundle.putString(BaseStrings.IMAGE_URL, mBookVM.mNovelInfoPage?.mNovel?.mCover) }
-            navigateImage(fragment)
+           navigateImage(get<Fragment>(named(Fragments.Image.name)).also { it.arguments = bundleOf(BaseStrings.IMAGE_URL to mBookVM.mNovelInfoPage?.mNovel?.mCover) })
         }
 
         mBinding.bookInfoAddToBookshelf.doOnClickInterval{
@@ -274,6 +265,21 @@ class BookNovelFragment : BookFragment() {
 
     }
 
+    /**
+     * ● Lifecycle onStop
+     *
+     * ● 2023-06-24 23:33:11 周六 下午
+     */
+    override fun onStop() {
+        super.onStop()
+        mBaseEvent.remove(LOGIN_CHAPTER_HAS_BEEN_SETED)
+    }
+
+    /**
+     * ● Lifecycle onDestroyView
+     *
+     * ● 2023-06-24 23:44:12 周六 下午
+     */
     override fun onDestroyView() {
         super.onDestroyView()
 

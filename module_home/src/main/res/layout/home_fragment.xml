@@ -47,5 +47,16 @@
 
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
+    <TextView
+        android:id="@+id/home_tips_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/BaseLoadingErrorNeedRefresh"
+        android:textSize="@dimen/base_sp16"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

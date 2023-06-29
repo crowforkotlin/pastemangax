@@ -32,26 +32,26 @@ interface IBaseImmersionBarAPI {
     fun ApiIn21To28(windowInsets: WindowInsets)
 }
 
-/* 设置状态栏的文字图标是否暗色显示 */
+/** 设置状态栏的文字图标是否暗色显示 */
 fun Activity.setStatusBarIsDark(isDark: Boolean = true) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { /* 大于等于 SDK_API 30 Android 11  */
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = isDark
     } else if (isDark) window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 }
 
-/* 获取顶部状态栏高度 */
+/** 获取顶部状态栏高度 */
 fun Context.getStatusBarHeight() : Int{
     val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
     return if (resourceId > 0) appContext.resources.getDimensionPixelSize(resourceId) else 0
 }
 
-/* 获取底部导航栏高度 */
+/** 获取底部导航栏高度 */
 fun Context.getNavigationBarHeight() : Int{
     val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
     return if (resourceId > 0) appContext.resources.getDimensionPixelSize(resourceId) else 0
 }
 
-/* 隐藏 [状态栏、导航栏、系统栏]*/
+/** 隐藏 [状态栏、导航栏、系统栏]*/
 fun View.hideBars(@InsetsType type: Int) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         windowInsetsController?.apply {
@@ -70,7 +70,7 @@ fun View.hideBars(@InsetsType type: Int) {
     }
 }
 
-/* 隐藏 [状态栏、导航栏、系统栏]*/
+/** 隐藏 [状态栏、导航栏、系统栏]*/
 fun Window.hideBars(@InsetsType type: Int) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         insetsController?.apply {
@@ -116,3 +116,23 @@ fun Window.immersionSystemBar(iBaseImmersionBarAPI: IBaseImmersionBarAPI) {
 fun View.immersionPadding(hideStatusBar: Boolean = true, hideNaviateBar: Boolean = true) {
     setPadding(0, if (hideStatusBar) context.getStatusBarHeight() else 0, 0, if(hideNaviateBar) context.getNavigationBarHeight() else 0)
 }
+
+/**
+ * ● 全屏沉浸式
+ *
+ * ● 2023-06-27 00:51:18 周二 上午
+ */
+fun immersureFullScreen(windowInsetsControllerCompat: WindowInsetsControllerCompat) {
+    windowInsetsControllerCompat.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    windowInsetsControllerCompat.hide(WindowInsetsCompat.Type.systemBars())
+}
+
+
+
+fun immerureCutoutCompat(window: Window) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+    }
+}
+
+fun immersureFullView(window: Window, fitView: Boolean = false) = WindowCompat.setDecorFitsSystemWindows(window, fitView)

@@ -80,6 +80,8 @@ fun BaseEvent.doOnInterval(mHandler: Handler?, runnable: Runnable): BaseEvent {
     return this
 }
 
+fun BaseEvent.doResetEventFlagTime(flagTime: Long) { mCurrentFlagTime = flagTime }
+
 
 /*
 // BaseEvent扩展 onFailure 使用内联

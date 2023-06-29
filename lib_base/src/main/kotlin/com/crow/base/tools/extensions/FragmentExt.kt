@@ -156,6 +156,17 @@ inline fun<reified T: Fragment> FragmentManager.navigateByAdd(
         .commit()
 }
 
+inline fun FragmentManager.navigateByAdd(
+    @IdRes id: Int,
+    fragment: Fragment,
+    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.setFadeAnimation() },
+) {
+    transaction(beginTransaction())
+        .add(id, fragment)
+        .commit()
+}
+
+
 
 
 fun FragmentManager.popSyncWithClear(vararg backStackName: String?, flags: Int = FragmentManager.POP_BACK_STACK_INCLUSIVE) {

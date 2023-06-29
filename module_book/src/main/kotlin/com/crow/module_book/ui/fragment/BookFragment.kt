@@ -32,7 +32,7 @@ import com.crow.module_book.databinding.BookFragmentBinding
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.ComicChapterResp
 import com.crow.module_book.model.resp.NovelChapterResp
-import com.crow.module_book.ui.viewmodel.BookInfoViewModel
+import com.crow.module_book.ui.viewmodel.BookViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -57,7 +57,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     protected var mAppGlideProgressFactory: AppGlideProgressFactory? = null
 
     /** ● 书架VM */
-    protected val mBookVM by viewModel<BookInfoViewModel>()
+    protected val mBookVM by viewModel<BookViewModel>()
 
     /** ● 漫画点击实体 */
     protected val mPathword: String by lazy {
@@ -73,10 +73,6 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
 
     /** ● BaseEvent 单例 */
     protected val mBaseEvent = BaseEvent.getSIngleInstance()
-
-    init {
-        mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, true)
-    }
 
     /** ● 添加章节选择器 */
     protected fun addBookChapterSlector(comicChapterResp: ComicChapterResp?, novelChapterResp: NovelChapterResp?) {
@@ -120,7 +116,10 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     protected fun doOnBookPageIntent(intent: BookIntent, onResult: Runnable) {
         intent.mBaseViewState
             // 执行加载动画
-            .doOnLoading { showLoadingAnim() }
+            .doOnLoading { showLoadingAnim { dialog ->
+                dialog.applyWindow()
+                dialog.applyBg()
+            } }
 
             // 发生错误 取消动画 退出界面 提示
             .doOnError { _, _ ->
@@ -266,8 +265,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
 
     /** ● 父类初始化数据 */
     override fun initData(savedInstanceState: Bundle?) {
-        // 数据不为空 则退出
-        if (mBookVM.isNovelDatasIsNotNull() || mBookVM.isComicDatasIsNotNull()) return
+
         onInitData()
     }
 
@@ -286,7 +284,10 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
                     // 当选项卡添加完成后就会触发该逻辑
                     if (!mIsTabAlreadyAdded) return@doOnInterval
                     mBinding.bookInfoRvChapterSelector.isEnabled = false
-                    showLoadingAnim()
+                    showLoadingAnim { dialog ->
+                        dialog.applyWindow()
+                        dialog.applyBg()
+                    }
                     mBookVM.reCountPos(tab.position)
                     mBookVM.input(BookIntent.GetComicChapter(mPathword))
                 }

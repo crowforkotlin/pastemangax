@@ -109,3 +109,5 @@ fun View.showSnackBar(resId: Int, actionResId: Int? = null, duration: Int = Snac
     if (actionResId != null && actionBlock != null) snackBar.setAction(actionResId) { actionBlock(snackBar) }
     snackBar.show()
 }
+
+fun error(message: Any): Nothing = throw IllegalStateException(message.toString())

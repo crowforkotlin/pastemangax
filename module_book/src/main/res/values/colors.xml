@@ -5,4 +5,5 @@
 	<color name="book_blue">#2196f3</color>
 	<color name="book_button_bg_white">#F7F2F9</color>
 	<color name="book_button_text_purple">#6750A4</color>
+    <color name="book_ant_10">#141414</color>
 </resources>
