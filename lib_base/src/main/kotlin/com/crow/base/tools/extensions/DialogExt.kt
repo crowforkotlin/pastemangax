@@ -50,4 +50,4 @@ fun Window.setLayoutWarp() = setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, View
 
 fun Window.setBackgroundTransparent() = setBackgroundDrawableResource(android.R.color.transparent)
 
-fun Window.setMaskAmount(@FloatRange(from = 0.0, to = 100.0) amount: Float) = setDimAmount(amount)
+fun Window.setMaskAmount(@FloatRange(from = 0.0, to = 1.0) amount: Float) = setDimAmount(amount)

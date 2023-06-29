@@ -12,6 +12,7 @@ import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.tools.coroutine.FlowBus
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
@@ -22,7 +23,7 @@ import com.crow.module_discover.ui.fragment.DiscoverComicFragment
 import com.crow.module_home.ui.fragment.HomeFragment
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentContainerBinding
-import com.crow.module_main.model.intent.ContainerIntent
+import com.crow.module_main.model.intent.MainIntent
 import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import com.crow.module_user.ui.viewmodel.UserViewModel
@@ -77,7 +78,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 观察ContainerVM
         mContainerVM.onOutput { intent ->
             when(intent) {
-                is ContainerIntent.GetDynamicSite -> {
+                is MainIntent.GetDynamicSite -> {
                     intent.mBaseViewState
                         .doOnErrorInCoroutine { _, _ -> mContainerVM.saveAppConfig() }
                         .doOnResultInCoroutine {
@@ -101,6 +102,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
             mContainerVM.mIsRestarted = true
+            if (!isHidden) onNotifyPage()
         } else {
             saveItemPage(0)
             BaseEvent.getSIngleInstance().setBoolean(mFragmentList[0].hashCode().toString(), true)
@@ -109,7 +111,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mContainerVM.input(ContainerIntent.GetUpdateInfo())
+        mContainerVM.input(MainIntent.GetUpdateInfo())
     }
 
     override fun onDestroyView() {
@@ -126,17 +128,10 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 可见： 当返回ContainerFragment时回调此方法 则通知设置Icon
         mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
 
-        if (mContainerVM.mIsRestarted) {
-            mContainerVM.mIsRestarted = false
-            val bundle = bundleOf("id" to (arguments?.getInt("id") ?: 0).also {
-                saveItemPage(it)
-                BaseEvent.getSIngleInstance().setBoolean(mFragmentList[it].hashCode().toString(), true)
-            }, "delay" to true)
-            childFragmentManager.setFragmentResult("Home", bundle)
-            childFragmentManager.setFragmentResult("Discover_Comic", bundle)
-            childFragmentManager.setFragmentResult("Bookshelf", bundle)
-        }
+        onNotifyPage()
     }
+
+
 
     /** ● 初始化监听器 */
     override fun initListener() {
@@ -169,6 +164,25 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                 }
             }
         })
+    }
+
+    /**
+     * ● 通知页面更新
+     *
+     * ● 2023-06-29 01:28:48 周四 上午
+     */
+    private fun onNotifyPage() {
+        "notify".logMsg()
+        if (mContainerVM.mIsRestarted) {
+            mContainerVM.mIsRestarted = false
+            val bundle = bundleOf("id" to (arguments?.getInt("id") ?: 0).also {
+                saveItemPage(it)
+                BaseEvent.getSIngleInstance().setBoolean(mFragmentList[it].hashCode().toString(), true)
+            }, "delay" to true)
+            childFragmentManager.setFragmentResult("Home", bundle)
+            childFragmentManager.setFragmentResult("Discover_Comic", bundle)
+            childFragmentManager.setFragmentResult("Bookshelf", bundle)
+        }
     }
 
     /** ● 执行退出用户 */

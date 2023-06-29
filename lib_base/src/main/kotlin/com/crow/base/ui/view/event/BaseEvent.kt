@@ -13,7 +13,7 @@ open class BaseEvent private constructor(flagTime: Long) {
     private var mLastClickGapTime: Long = 0L
     private var mCurrentTime: Long = 0L
     var mCurrentFlagTime = flagTime
-        private set
+        internal set
 
     companion object {
 

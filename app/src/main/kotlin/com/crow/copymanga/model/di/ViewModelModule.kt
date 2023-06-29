@@ -1,6 +1,7 @@
 package com.crow.copymanga.model.di
 
-import com.crow.module_book.ui.viewmodel.BookInfoViewModel
+import com.crow.module_book.ui.viewmodel.BookViewModel
+import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.crow.module_bookshelf.ui.viewmodel.BookshelfViewModel
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
 import com.crow.module_home.ui.viewmodel.HomeViewModel
@@ -25,8 +26,9 @@ val viewModelModule = module {
     viewModel { BookshelfViewModel(get()) }
     viewModel { MainViewModel(get()) }
     viewModel { DiscoverViewModel(get()) }
-    viewModel { BookInfoViewModel(get()) }
+    viewModel { BookViewModel(get()) }
     viewModel { UserViewModel(get()) }
+    viewModel { ComicViewModel(get()) }
     viewModel { UserInfoViewModel() }
     // viewModel { AnimeViewModel(get()) }
 }

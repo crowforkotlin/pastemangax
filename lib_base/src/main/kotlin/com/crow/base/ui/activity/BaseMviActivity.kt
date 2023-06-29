@@ -36,9 +36,9 @@ abstract class BaseMviActivity<out VB: ViewBinding> : BaseActivityImpl(), IBaseM
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setContentView(mBinding.root)
         initObserver(savedInstanceState)
         super.onCreate(savedInstanceState)
-        setContentView(mBinding.root)
     }
 
     override fun onDestroy() {

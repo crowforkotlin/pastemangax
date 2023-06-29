@@ -16,7 +16,7 @@ import kotlin.coroutines.CoroutineContext
  * @Description: Coroutine Ext
  **************************/
 
-val globalCoroutineException = GlobalCoroutineExceptionHandler()
+val baseCoroutineException = GlobalCoroutineExceptionHandler()
 
 class GlobalCoroutineExceptionHandler : CoroutineExceptionHandler {
 

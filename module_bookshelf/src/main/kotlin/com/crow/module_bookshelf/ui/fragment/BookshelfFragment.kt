@@ -27,7 +27,6 @@ import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
-import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.BaseViewState
@@ -95,7 +94,6 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
         // 解析地址失败 且 Resumed的状态才提示
         if (code == BaseViewState.Error.UNKNOW_HOST && isResumed) {
-            mBinding.bookshelfFrameRv.showSnackBar(msg ?: getString(baseR.string.BaseLoadingError))
             if (mBinding.bookshelfButtonGropu.checkedButtonId == R.id.bookshelf_comic) mBookshelfNovelRvAdapter.refresh()
             else mBookshelfComicRvAdapter.refresh()
         }
@@ -274,6 +272,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
             // 如果 空书架文本可见 刷新两个适配器 并退出逻辑
             if (mBinding.bookshelfTipsEmpty.isVisible) {
+                mBinding.bookshelfTipsEmpty.animateFadeIn()
                 mBookshelfComicRvAdapter.refresh()
                 mBookshelfNovelRvAdapter.refresh()
                 return@setOnRefreshListener

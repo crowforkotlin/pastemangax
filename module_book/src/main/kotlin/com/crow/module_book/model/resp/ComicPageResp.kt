@@ -7,7 +7,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class ComicPageResp(
+data class  ComicPageResp(
     @Json(name = "chapter")
     val mChapter: Chapter,
 

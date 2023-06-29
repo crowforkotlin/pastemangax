@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.popAsyncWithClear
@@ -35,16 +36,6 @@ import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCropImageEngine
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import com.crow.base.R as baseR
-
-
-/*************************
- * @Machine: RedmiBook Pro 15 Win11
- * @Path: module_user/src/main/kotlin/com/crow/module_user/ui/fragment
- * @Time: 2023/3/21 2:14
- * @Author: CrowForKotlin
- * @Description: UserIconFragment
- * @formatter:on
- **************************/
 
 class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
 
@@ -67,7 +58,7 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
         super.onDestroyView()
 
         // 恢复状态栏亮色 同时 置空（防止泄漏...?）
-        mWindowInsets?.isAppearanceLightStatusBars = true
+        mWindowInsets?.isAppearanceLightStatusBars = !isDarkMode()
         mWindowInsets = null
     }
 

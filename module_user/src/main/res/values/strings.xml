@@ -37,5 +37,5 @@
 	<string name="user_login_tips">小提示：登录和注册功能1分钟内只可请求5–10次左右，超过次数后需等待5分钟左右才可恢复!</string>
 	<string name="user_reg_tips">小提示：注册功能1分钟内只可请求5次左右，超过次数后需等待10分钟左右才可恢复!</string>
 	<string name="user_info_blank_tips">“温故一词，知新之趣。”</string>
-	d
+	<string name="user_update_history_title">版本历史记录</string>
 </resources>

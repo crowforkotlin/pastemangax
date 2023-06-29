@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.FrameLayout
 import androidx.activity.addCallback
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
@@ -20,33 +20,31 @@ import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.coroutine.globalCoroutineException
+import com.crow.base.tools.coroutine.baseCoroutineException
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.isDarkMode
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
-import com.crow.base.tools.extensions.setMaskAmount
 import com.crow.base.tools.extensions.showSnackBar
-import com.crow.base.ui.dialog.LoadingAnimDialog
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
-import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.base.ui.viewmodel.doOnError
-import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeFragmentBinding
 import com.crow.module_home.databinding.HomeFragmentSearchViewBinding
 import com.crow.module_home.model.intent.HomeIntent
-import com.crow.module_home.model.resp.homepage.results.Results
 import com.crow.module_home.ui.adapter.HomeComicParentRvAdapter
 import com.crow.module_home.ui.adapter.HomeVpAdapter
 import com.crow.module_home.ui.viewmodel.HomeViewModel
@@ -56,7 +54,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.qualifier.named
 import com.crow.base.R as baseR
 /*************************
@@ -74,7 +72,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     companion object { const val SEARCH_TAG = "INPUT" }
 
     /** ● 主页 VM */
-    private val mHomeVM by viewModel<HomeViewModel>()
+    private val mHomeVM by sharedViewModel<HomeViewModel>()
 
     /** ● 主页布局刷新的时间 第一次进入布局默认10Ms 之后刷新 为 50Ms */
     private var mHomePageLayoutRefreshTime = 10L
@@ -99,7 +97,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     init {
         FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).register(this) { drawable ->
             if (!isHidden) {
-                lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + globalCoroutineException) {
+                lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + baseCoroutineException) {
                     withStarted {
                         mBinding.homeToolbar.navigationIcon = drawable
                     }
@@ -116,10 +114,10 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     private fun navigateBookComicInfo(pathword: String) {
         val tag = Fragments.BookComicInfo.name
         val bundle = Bundle()
-        bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
+        bundle.putString(BaseStrings.PATH_WORD, pathword)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
-            get<Fragment>(named(Fragments.BookComicInfo.name)).also { it.arguments = bundle }, tag, tag)
+            get<Fragment>(named(tag)).also { it.arguments = bundle }, tag, tag)
     }
 
     /**
@@ -128,24 +126,30 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
      * ● 2023-06-16 22:17:57 周五 下午
      */
     private fun navigateBookNovelInfo(pathword: String) {
+        val tag = Fragments.BookNovelInfo.name
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(
             com.crow.base.R.id.app_main_fcv,
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
-            get<Fragment>(named(Fragments.BookNovelInfo.name)).also { it.arguments = bundle }, tag, tag
+            get<Fragment>(named(tag)).also { it.arguments = bundle }, tag, tag
         )
     }
 
     /** ● 加载主页数据 */
-    private fun doLoadHomePage(results: Results) {
+    private fun doLoadHomePage() {
+
+        // 错误提示 可见
+        if (mBinding.homeTipsError.isVisible) {
+            mBinding.homeTipsError.isVisible = false
+            mBinding.homeRv.animateFadeIn()
+        }
 
         val isRefreshing = mBinding.homeRefresh.isRefreshing
 
         if (mHomeVM.mHomeDatas == null) return
 
         viewLifecycleOwner.lifecycleScope.launch {
-
 
             if (isRefreshing) {
                 mBinding.homeRefresh.finishRefresh()
@@ -157,9 +161,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             else {
                 mHomeComicParentRvAdapter?.doNotify(mHomeVM.mHomeDatas!!.toMutableList(), BASE_ANIM_100L)
             }
-
-            // 取消加载动画
-            dismissLoadingAnim()
         }
     }
 
@@ -253,6 +254,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     /** ● 初始化数据 */
     override fun initData(savedInstanceState: Bundle?) {
 
+        savedInstanceState.logMsg()
         if (savedInstanceState != null) return
 
         // 获取主页数据
@@ -263,8 +265,11 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         // 内存重启后隐藏SearchView
-        if (savedInstanceState != null) mBinding.homeSearchView.hide()
-
+        if (savedInstanceState != null) {
+            lifecycleScope.launchWhenResumed {
+                mBinding.homeSearchView.hide()
+            }
+        }
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.homeAppbar.immersionPadding(hideStatusBar = true, hideNaviateBar = false)
@@ -284,6 +289,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
         // 设置容器Fragment的回调监听
         parentFragmentManager.setFragmentResultListener("Home", this) { _, bundle ->
+            mHomeVM.mHomeDatas.logMsg()
             if (bundle.getInt("id") == 0) {
                 if (bundle.getBoolean("delay")) launchDelay(BASE_ANIM_200L) { mHomeVM.input(HomeIntent.GetHomePage()) }
                 else mHomeVM.input(HomeIntent.GetHomePage())
@@ -315,24 +321,24 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                 // （获取主页）（根据 刷新事件 来决定是否启用加载动画） 正常加载数据、反馈View
                 is HomeIntent.GetHomePage -> {
                     intent.mBaseViewState
-                        .doOnLoading {
-                            if(!mBinding.homeRefresh.isRefreshing && !isHidden) {
-                                showLoadingAnim(object : LoadingAnimDialog.LoadingAnimConfig {
-                                    override fun isNoInitStyle(): Boolean = true
-                                    override fun doOnConfig(window: Window) {
-                                        window.setMaskAmount(0.2f)
-                                    }
-                                })
-                            }
-                        }
                         .doOnResult {
                             // 刷新控件没有刷新 代表 用的是加载动画 -> 取消加载动画 否则直接加载页面数据
-                            if (!mBinding.homeRefresh.isRefreshing) doLoadHomePage(intent.homePageData!!.mResults)
-                            else doLoadHomePage(intent.homePageData!!.mResults)
+                            if (!mBinding.homeRefresh.isRefreshing) doLoadHomePage()
+                            else doLoadHomePage()
                         }
-                        .doOnError { code, msg ->
-                            if (code == BaseViewState.Error.UNKNOW_HOST) mBinding.root.showSnackBar(msg ?: getString(baseR.string.BaseLoadingError))
-                            if (!mBinding.homeRefresh.isRefreshing) dismissLoadingAnim() else mBinding.homeRefresh.finishRefresh()
+                        .doOnError { _, _ ->
+                            if (mHomeComicParentRvAdapter?.itemCount == 0 || mHomeComicParentRvAdapter == null) {
+
+                                // 错误提示淡入
+                                mBinding.homeTipsError.animateFadeIn()
+
+                                // 发现页 “漫画” 淡出
+                                mBinding.homeRv.animateFadeOutWithEndInVisibility()
+                            }
+                            if (mBinding.homeRefresh.isRefreshing) {
+                                mBinding.homeRefresh.finishRefresh()
+                               if (!mBinding.homeTipsError.isVisible)  toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+                            }
                         }
                 }
 

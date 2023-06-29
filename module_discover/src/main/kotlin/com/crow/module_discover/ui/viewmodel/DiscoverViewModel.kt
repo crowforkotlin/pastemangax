@@ -67,7 +67,7 @@ class DiscoverViewModel(val repository: DiscoverRepository) : BaseMviViewModel<D
         }
     }
 
-    private fun getNovelHome(intent: DiscoverIntent.GetComicHome) {
+    private fun getComicHome(intent: DiscoverIntent.GetComicHome) {
         mDiscoverComicHomeFlowPager = Pager(
             config = PagingConfig (
                 pageSize = 30,
@@ -102,7 +102,7 @@ class DiscoverViewModel(val repository: DiscoverRepository) : BaseMviViewModel<D
     override fun dispatcher(intent: DiscoverIntent) {
         when(intent) {
             is DiscoverIntent.GetComicTag -> getComicTag(intent)
-            is DiscoverIntent.GetComicHome -> getNovelHome(intent)
+            is DiscoverIntent.GetComicHome -> getComicHome(intent)
             is DiscoverIntent.GetNovelTag -> getNovelTag(intent)
             is DiscoverIntent.GetNovelHome -> getNovelHome(intent)
         }

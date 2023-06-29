@@ -55,8 +55,8 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
     }
 
     // 将 Flow<T> 转换成适合于 MVI 架构的结果，并利用 _sharedFlow.emit() 发送结果到 UI。
-    fun <T> flowResult(intent: I, flow: Flow<T>, context: CoroutineContext = Dispatchers.Main, result: BaseMviFlowResult<I, T>) {
-        viewModelScope.launch(context) {
+    fun <T> flowResult(intent: I, flow: Flow<T>, result: BaseMviFlowResult<I, T>) {
+        viewModelScope.launch {
             flow
                 .onStart { _sharedFlow.emit(intent.also { it.mBaseViewState = Loading }) }
                 .onCompletion { _sharedFlow.emit(intent.also { it.mBaseViewState = Success }) }

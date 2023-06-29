@@ -34,7 +34,7 @@ import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentSettingsBinding
 import com.crow.module_main.databinding.MainSettingsProxyLayoutBinding
 import com.crow.module_main.databinding.MainSettingsSiteLayoutBinding
-import com.crow.module_main.model.intent.ContainerIntent
+import com.crow.module_main.model.intent.MainIntent
 import com.crow.module_main.ui.adapter.SettingsAdapter
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import com.google.android.material.radiobutton.MaterialRadioButton
@@ -96,7 +96,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
             // 动态站点 重新加载按钮点击事件： 发送动态站点意图、加载动画淡入、按钮淡出
             settingsSiteDynamicReload.doOnClickInterval {
-                mContainerVM.input(ContainerIntent.GetDynamicSite())
+                mContainerVM.input(MainIntent.GetDynamicSite())
                 settingsSiteLoadingLottie.animateFadeIn()
                 settingsSiteDynamicReload.animateFadeOutWithEndInVisibility()
             }
@@ -113,7 +113,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
         }
 
         // 打开弹窗后 发送获取动态站点意图
-        mContainerVM.input(ContainerIntent.GetDynamicSite())
+        mContainerVM.input(MainIntent.GetDynamicSite())
     }
 
     private fun initProxyView() {
@@ -169,7 +169,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
         }
     }
 
-    override fun initData(savedInstanceState: Bundle?) { mContainerVM.input(ContainerIntent.GetDynamicSite()) }
+    override fun initData(savedInstanceState: Bundle?) { mContainerVM.input(MainIntent.GetDynamicSite()) }
 
     override fun initListener() {
         mBinding.settingsToolbar.navigateIconClickGap { navigateUp() }
@@ -181,7 +181,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
         mContainerVM.onOutput { intent ->
             when(intent) {
-                is ContainerIntent.GetDynamicSite -> {
+                is MainIntent.GetDynamicSite -> {
                     intent.mBaseViewState
                         .doOnError { _, _ ->
                             if (mSiteDialogBinding != null) {

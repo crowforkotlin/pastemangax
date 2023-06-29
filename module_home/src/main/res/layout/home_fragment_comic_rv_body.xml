@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/base_dp5"
     android:layout_marginEnd="@dimen/base_dp5"
-    android:layout_marginBottom="@dimen/base_dp25">
+    android:layout_marginBottom="@dimen/base_dp25"
+    android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/home_book_card_view"
@@ -54,24 +55,23 @@
 
     <TextView
         android:id="@+id/home_comic_rv_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_margin="@dimen/base_dp2_5"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
+        android:minLines="2"
         android:textSize="@dimen/base_sp12"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/home_comic_rv_author"
-        app:layout_constraintEnd_toEndOf="@id/home_book_card_view"
-        app:layout_constraintStart_toStartOf="@id/home_book_card_view"
-        app:layout_constraintTop_toBottomOf="@+id/home_book_card_view"
         tools:text="书名" />
 
     <TextView
         android:id="@+id/home_comic_rv_author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginBottom="@dimen/base_dp2_5"
         android:ellipsize="end"
         android:gravity="center"
@@ -81,15 +81,14 @@
         android:textSize="@dimen/base_sp10"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/home_comic_rv_lastest_chapter"
-        app:layout_constraintEnd_toEndOf="@+id/home_comic_rv_name"
-        app:layout_constraintStart_toStartOf="@+id/home_comic_rv_name"
-        tools:text="作者" />
+        tools:text="作者"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/home_comic_rv_lastest_chapter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginBottom="@dimen/base_dp2_5"
         android:ellipsize="end"
         android:gravity="center"
@@ -98,23 +97,18 @@
         android:paddingEnd="@dimen/base_dp10"
         android:textSize="@dimen/base_sp10"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/home_comic_rv_hot"
-        app:layout_constraintEnd_toEndOf="@+id/home_comic_rv_name"
-        app:layout_constraintStart_toStartOf="@+id/home_comic_rv_name"
         tools:text="最新章节" />
 
     <TextView
         android:id="@+id/home_comic_rv_hot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
         android:textSize="@dimen/base_sp10"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/home_comic_rv_author"
-        app:layout_constraintStart_toStartOf="@+id/home_comic_rv_author"
         tools:text="热度" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

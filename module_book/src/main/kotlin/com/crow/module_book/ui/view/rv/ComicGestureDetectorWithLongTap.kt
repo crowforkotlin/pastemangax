@@ -12,7 +12,7 @@ import kotlin.math.abs
  * A custom gesture detector that also implements an on long tap confirmed, because the built-in
  * one conflicts with the quick scale feature.
  */
-open class ComicGestureDetectorWithLongTap(
+open class ComicGestureDetectorWithLongTap  (
     mContext: Context,
     mGestureComicGestureListener: ComicGestureListener,
 ) : GestureDetector(mContext, mGestureComicGestureListener) {

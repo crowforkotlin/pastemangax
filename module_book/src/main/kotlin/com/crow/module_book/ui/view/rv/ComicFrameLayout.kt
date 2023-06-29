@@ -16,6 +16,10 @@ import android.widget.FrameLayout
  */
 class ComicFrameLayout  : FrameLayout {
 
+    companion object {
+        var mIsScanning = false
+    }
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
@@ -25,6 +29,7 @@ class ComicFrameLayout  : FrameLayout {
      */
     private inner class ComicScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
+            mIsScanning = true
             mChildRv.onScaleBegin()
             return true
         }
@@ -53,7 +58,7 @@ class ComicFrameLayout  : FrameLayout {
             velocityX: Float,
             velocityY: Float,
         ): Boolean {
-            return mChildRv?.zoomFling(velocityX.toInt(), velocityY.toInt()) ?: false
+            return mChildRv.zoomFling(velocityX.toInt(), velocityY.toInt()) ?: false
         }
     }
     
@@ -77,7 +82,7 @@ class ComicFrameLayout  : FrameLayout {
     var mDoubleTapZoom = true
         set(value) {
             field = value
-            mChildRv?.mDoubleTapZoom = value
+            mChildRv.mDoubleTapZoom = value
             mScaleDetector.isQuickScaleEnabled = value
         }
     

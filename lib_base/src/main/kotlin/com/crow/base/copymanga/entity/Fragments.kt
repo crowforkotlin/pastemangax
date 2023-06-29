@@ -20,5 +20,7 @@ enum class Fragments {
     User,
     Settings,
     Image,
-    Styleable
+    Styleable,
+    UpdateHistory,
+    ComicStript
 }

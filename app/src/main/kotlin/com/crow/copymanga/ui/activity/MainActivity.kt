@@ -4,42 +4,49 @@ import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.isInvisible
+import androidx.fragment.app.Fragment
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
+import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.isLatestVersion
 import com.crow.base.tools.extensions.navigateByAdd
+import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.base.ui.viewmodel.doOnError
+import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.copymanga.R
 import com.crow.copymanga.databinding.AppActivityMainBinding
 import com.crow.module_main.databinding.MainUpdateLayoutBinding
 import com.crow.module_main.databinding.MainUpdateUrlLayoutBinding
-import com.crow.module_main.model.intent.ContainerIntent
+import com.crow.module_main.model.intent.MainIntent
 import com.crow.module_main.model.resp.MainAppUpdateResp
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
 import com.crow.module_main.ui.fragment.ContainerFragment
 import com.crow.module_main.ui.viewmodel.MainViewModel
+import org.koin.android.ext.android.get
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
 
 class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
 
     /** ● 查询更新 */
     init {
-        FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).register(this) { mContainerVM.input(ContainerIntent.GetUpdateInfo()) }
+        FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).register(this) { mContainerVM.input(MainIntent.GetUpdateInfo()) }
     }
 
     /** ● 初始化更新是否完成 */
@@ -96,30 +103,41 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
             BaseStrings.URL.CopyManga = appConfig.mSite
             BaseUser.CURRENT_ROUTE = appConfig.mRoute
 
-            if (appConfig.mAppFirstInit) mContainerVM.input(ContainerIntent.GetDynamicSite())
+            if (appConfig.mAppFirstInit) mContainerVM.input(MainIntent.GetDynamicSite())
 
             WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = (!isDarkMode())
         }
 
         mContainerVM.onOutput { intent ->
             when (intent) {
-                is ContainerIntent.GetUpdateInfo -> {
+                is MainIntent.GetUpdateInfo -> {
                     intent.mBaseViewState
-                        .doOnError { _, _ -> toast(getString(com.crow.module_main.R.string.main_update_error)) }
-                        .doOnResult { doUpdateChecker(intent.appUpdateResp!!) }
+                        .doOnLoading {
+                            showLoadingAnim{ dialog ->
+                                dialog.applyWindow()
+                                dialog.applyBg()
+                            }
+                        }
+                        .doOnError { _, _ -> dismissLoadingAnim { toast(getString(com.crow.module_main.R.string.main_update_error)) }}
+                        .doOnResult { dismissLoadingAnim { doUpdateChecker(savedInstanceState, intent.appUpdateResp!!) } }
                 }
             }
         }
     }
 
     /** ● 检查更新 */
-    private fun doUpdateChecker(appUpdateResp: MainAppUpdateResp) {
+    private fun doUpdateChecker(savedInstanceState: Bundle?, appUpdateResp: MainAppUpdateResp) {
         val update = appUpdateResp.mUpdates.first()
+        if (savedInstanceState != null) {
+            mInitUpdate = true
+            if (!appUpdateResp.mForceUpdate) return
+        }
         if (isLatestVersion(latest = update.mVersionCode.toLong())) return run {
-            if (mInitUpdate) toast(getString(com.crow.module_main.R.string.main_update_tips))
+            if (mInitUpdate ) toast(getString(com.crow.module_main.R.string.main_update_tips))
             mInitUpdate = true
         }
         mInitUpdate = true
+
         val updateBinding = MainUpdateLayoutBinding.inflate(layoutInflater)
         val updateDialog = newMaterialDialog { dialog ->
             dialog.setCancelable(false)
@@ -132,7 +150,7 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
         updateBinding.mainUpdateText.text = update.mContent
         updateBinding.mainUpdateTime.text = getString(com.crow.module_main.R.string.main_update_time, update.mTime)
         if (!appUpdateResp.mForceUpdate) { updateBinding.mainUpdateCancel.doOnClickInterval { updateDialog.dismiss() } }
-        updateBinding.mainUpdateGo.doOnClickInterval {
+        updateBinding.mainUpdateGo.doOnClickInterval(flagTime = BASE_ANIM_300L) {
             updateDialog.dismiss()
             val updateUrlBinding = MainUpdateUrlLayoutBinding.inflate(layoutInflater)
             val updateUrlDialog = newMaterialDialog {
@@ -143,6 +161,16 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
             updateUrlBinding.mainUpdateUrlCancel.isInvisible = appUpdateResp.mForceUpdate
             updateUrlBinding.mainUpdateUrlRv.adapter = MainAppUpdateRv(update.mUrl)
             if (!appUpdateResp.mForceUpdate) { updateUrlBinding.mainUpdateUrlCancel.doOnClickInterval { updateUrlDialog.dismiss() } }
+        }
+        updateBinding.mainUpdateHistory.doOnClickInterval(flagTime = BASE_ANIM_300L) {
+            supportFragmentManager.navigateToWithBackStack(
+                R.id.app_main_fcv,
+                supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+                get<Fragment>(named(Fragments.UpdateHistory.name)).also { it.arguments = bundleOf("force_update" to appUpdateResp.mForceUpdate) },
+                Fragments.UpdateHistory.name,
+                Fragments.UpdateHistory.name
+            )
+            updateDialog.dismiss()
         }
     }
 }

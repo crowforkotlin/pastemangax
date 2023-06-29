@@ -24,7 +24,7 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentAboutBinding
-import com.crow.module_main.model.intent.ContainerIntent
+import com.crow.module_main.model.intent.MainIntent
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.crow.base.R as baseR
@@ -51,7 +51,7 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
         mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) { navigateUp() }
     }
 
-    override fun initView(bundle: Bundle?) {
+    override fun initView(savedInstanceState: Bundle?) {
 
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())
 
@@ -80,7 +80,7 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW
             when(it) {
-                is ContainerIntent.GetQQGroup -> {
+                is MainIntent.GetQQGroup -> {
                     it.mBaseViewState
                         .doOnResult {
                             intent.data = Uri.parse(it.link!!)
@@ -98,7 +98,7 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
     override fun initListener() {
         mBinding.mainAboutBack.doOnClickInterval { navigateUp() }
         mBinding.userAboutAddQqGroup.doOnClickInterval {
-            mContainerVm.input(ContainerIntent.GetQQGroup())
+            mContainerVm.input(MainIntent.GetQQGroup())
         }
     }
 }

@@ -2,7 +2,7 @@
 
 	<string name="main_user">用户</string>
 	<string name="main_update_go">前往更新</string>
-	<string name="main_update_time">更新日期：%s</string>
+	<string name="main_update_time">◉  更新日期：%s</string>
 	<string name="main_update_url_title">更新节点</string>
 	<string name="main_update_cancel">暂不更新</string>
 
@@ -35,4 +35,5 @@
 	<string name="main_update_error">检查版本更新错误！</string>
     <string name="main_save_local">保存到本地</string>
     <string name="main_dark_mode">黑夜模式</string>
+
 </resources>
