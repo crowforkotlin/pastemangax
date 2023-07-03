@@ -16,6 +16,7 @@ import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
+import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -24,8 +25,10 @@ import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverFragmentComicBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
@@ -46,13 +49,25 @@ import com.crow.base.R as baseR
  **************************/
 class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
-    companion object { fun newInstance() = DiscoverComicFragment() }
+    companion object {
+        const val Comic = "Discover_Comic"
+
+        fun newInstance() = DiscoverComicFragment() }
 
     /** ● (Activity级别) 发现VM */
     private val mDiscoverVM by sharedViewModel<DiscoverViewModel>()
 
     /** ● 漫画适配器 */
     private lateinit var mDiscoverComicAdapter: DiscoverComicAdapter
+
+    /** ● 收集状态 */
+    fun onCollectState() {
+        repeatOnLifecycle {
+            mDiscoverVM.mDiscoverComicHomeFlowPager?.collect {
+                mDiscoverComicAdapter.submitData(it)
+            }
+        }
+    }
 
     /** ● 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = DiscoverFragmentComicBinding.inflate(inflater)
@@ -61,9 +76,10 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     override fun initListener() {
 
         // 设置容器Fragment的回调监听
-        parentFragmentManager.setFragmentResultListener("Discover_Comic", this) { _, bundle ->
-            if (bundle.getInt("id") == 1) {
-                if (bundle.getBoolean("delay")) {
+        parentFragmentManager.setFragmentResultListener(Comic, this) { _, bundle ->
+            if (bundle.getInt(BaseStrings.ID) == 1) {
+                mBinding.discoverComicRefresh.autoRefreshAnimationOnly()
+                if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
                     launchDelay(BASE_ANIM_200L) {
                         onCollectState()
                     }
@@ -100,15 +116,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         )
     }
 
-    /** ● 收集状态 */
-    fun onCollectState() {
-        repeatOnLifecycle {
-            mDiscoverVM.mDiscoverComicHomeFlowPager?.collect {
-                mDiscoverComicAdapter.submitData(it)
-            }
-        }
-    }
-
     /** ● 初始化视图 */
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -138,11 +145,14 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     /** ● 初始化观察者 */
     override fun initObserver(savedInstanceState: Bundle?) {
 
+        val baseEvent = BaseEvent.newInstance()
+
         // 意图观察者
         mDiscoverVM.onOutput { intent ->
             when(intent) {
                 is DiscoverIntent.GetComicHome -> {
                     intent.mBaseViewState
+                        .doOnSuccess { baseEvent.eventInitLimitOnce { mBinding.discoverComicRefresh.finishRefresh(BASE_ANIM_300L.toInt() shl 1) } }
                         .doOnError { _, _ ->
                             if (mDiscoverComicAdapter.itemCount == 0) {
 
@@ -183,6 +193,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         AppGlideProgressFactory.doReset()
-        parentFragmentManager.clearFragmentResultListener("Discover_Comic")
+        parentFragmentManager.clearFragmentResultListener(Comic)
     }
 }

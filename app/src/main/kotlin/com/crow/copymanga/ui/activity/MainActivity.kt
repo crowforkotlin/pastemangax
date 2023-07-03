@@ -113,9 +113,8 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
                 is MainIntent.GetUpdateInfo -> {
                     intent.mBaseViewState
                         .doOnLoading {
-                            showLoadingAnim{ dialog ->
-                                dialog.applyWindow()
-                                dialog.applyBg()
+                            showLoadingAnim { dialog ->
+                                dialog.applyWindow(dimAmount = 0.3f)
                             }
                         }
                         .doOnError { _, _ -> dismissLoadingAnim { toast(getString(com.crow.module_main.R.string.main_update_error)) }}

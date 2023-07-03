@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.GenericTransitionOptions
@@ -28,6 +30,7 @@ import com.crow.module_home.model.resp.homepage.results.AuthorResult
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.ui.adapter.HomeComicParentRvAdapter.Type
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
 /*************************
@@ -170,19 +173,21 @@ class HomeComicChildRvAdapter<T>(
         vh.rvBinding.homeComicRvLastestChapter.setTextColor(color)
     }
 
-    suspend fun doNotify(datas: MutableList<T>, delay: Long) {
+    fun doNotify(datas: MutableList<T>, delay: Long, viewLifecycleOwner: LifecycleOwner) {
         val isCountSame = itemCount == datas.size
         if (isCountSame) mData = datas
         else if(itemCount != 0) {
             notifyItemRangeRemoved(0, itemCount)
             mData.clear()
         }
-        datas.forEachIndexed { index, data ->
-            if (!isCountSame) {
-                mData.add(data)
-                notifyItemInserted(index)
-            } else notifyItemChanged(index)
-            delay(delay)
+        viewLifecycleOwner.lifecycleScope.launch {
+            datas.forEachIndexed { index, data ->
+                if (!isCountSame) {
+                    mData.add(data)
+                    notifyItemInserted(index)
+                } else notifyItemChanged(index)
+                delay(delay)
+            }
         }
     }
 }

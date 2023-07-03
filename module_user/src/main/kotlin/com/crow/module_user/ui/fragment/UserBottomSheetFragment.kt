@@ -39,7 +39,11 @@ import com.crow.base.R as baseR
 
 class UserBottomSheetFragment : BaseMviBottomSheetDialogFragment<UserFragmentBinding>() {
 
-    // 用戶 VM
+    /**
+     * ● (Activity 级别)用戶 VM
+     *
+     * ● 2023-07-02 20:31:08 周日 下午
+     */
     private val mUserVM by sharedViewModel<UserViewModel>()
 
     // 用户适配器数据
@@ -138,8 +142,8 @@ class UserBottomSheetFragment : BaseMviBottomSheetDialogFragment<UserFragmentBin
         // 点击 退出事件
         mBinding.userExit.doOnClickInterval {
 
-            // 发送事件清除用户数据
-            FlowBus.with<Unit>(BaseEventEnum.LogOut.name).post(lifecycleScope, Unit)
+            // 发送事件清除用户全部数据
+            parentFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name, bundleOf("isLogout" to true))
 
             // SnackBar提示
             mBinding.root.showSnackBar(getString(R.string.user_exit_sucess))

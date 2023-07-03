@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.get
-import androidx.core.view.isInvisible
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseLoadStateAdapter
@@ -16,7 +14,6 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.processTokenError
-import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
@@ -42,7 +39,6 @@ import com.crow.module_bookshelf.model.resp.BookshelfNovelResp
 import com.crow.module_bookshelf.ui.adapter.BookshelfComicRvAdapter
 import com.crow.module_bookshelf.ui.adapter.BookshelfNovelRvAdapter
 import com.crow.module_bookshelf.ui.viewmodel.BookshelfViewModel
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
@@ -60,10 +56,14 @@ import com.crow.base.R as baseR
 class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
     companion object {
-        fun newInstance() = BookshelfFragment()
+        const val Bookshelf = "Bookshelf"
     }
 
-    // 书架VM
+    /**
+     * ● 书架VM
+     *
+     * ● 2023-07-01 20:26:12 周六 下午
+     */
     private val mBsVM by viewModel<BookshelfViewModel>()
 
     // Bookshelf Comic适配器
@@ -109,7 +109,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             doOnCancel = {
                 mBookshelfComicRvAdapter.retry()
                 mBookshelfNovelRvAdapter.retry()
-                FlowBus.with<Unit>(BaseEventEnum.ClearUserInfo.name).post(lifecycleScope, Unit)
+                parentFragmentManager.setFragmentResult(BaseEventEnum.ClearUserInfo.name, arguments ?: Bundle())
             },
             doOnConfirm = {
                 requireParentFragment().parentFragmentManager.navigateToWithBackStack(
@@ -119,7 +119,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                     Fragments.Login.name,
                     Fragments.Login.name
                 )
-                FlowBus.with<Unit>(BaseEventEnum.ClearUserInfo.name).post(lifecycleScope, Unit)
+                parentFragmentManager.setFragmentResult(BaseEventEnum.ClearUserInfo.name, arguments ?: Bundle())
             }
         )
     }
@@ -131,7 +131,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         } else {
             if (bookshelfNovelResp == null) return
         }
-        if (!mBinding.bookshelfTipsEmpty.isVisible || mBinding.bookshelfTipsEmpty.tag != null) return
+        if (mBinding.bookshelfTipsEmpty.isGone || mBinding.bookshelfTipsEmpty.tag != null) return
         mBinding.bookshelfTipsEmpty.tag = Unit
         mBinding.bookshelfTipsEmpty.animateFadeOutWithEndInVisible()
         mBinding.bookshelfCount.animateFadeIn()
@@ -142,18 +142,6 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             mBinding.bookshelfCount.text = getString(R.string.bookshelf_novel_count, mNovelCount ?: -1)
             mBinding.bookshelfRvNovel.animateFadeIn()
         }
-    }
-
-    private fun processBookshelfResponse(response: Any?, view: View) {
-        when {
-            response == null -> {
-                view.isInvisible = true
-            }
-            else -> {
-
-            }
-        }
-        mBsVM.mInitOk = true
     }
 
     private fun navigateBookComicInfo(pathword: String) =
@@ -178,40 +166,6 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
         // 收集书架 轻小说Pager状态
         repeatOnLifecycle { mBsVM.mBookshelfNovelFlowPager?.collect { data -> mBookshelfNovelRvAdapter.submitData(data) } }
-    }
-
-    // 暴露的函数 当登录成功、退出登录时 ContainerFragment可调用该函数
-    fun doRefresh() {
-        mBinding.bookshelfRefresh.autoRefresh()
-        mBookshelfComicRvAdapter.refresh()
-        mBookshelfNovelRvAdapter.refresh()
-    }
-
-    fun doExitFromUser() {
-        mBinding.bookshelfCount.isInvisible = true
-        mBinding.bookshelfRvComic.isInvisible = true
-        mBinding.bookshelfRvNovel.isInvisible = true
-        viewLifecycleOwner.lifecycleScope.launch {
-            mBookshelfComicRvAdapter.submitData(PagingData.empty())
-            mBookshelfNovelRvAdapter.submitData(PagingData.empty())
-
-            // 每个FlowPager观察者需要一个单独的生命周期块，在同一个会导致第二个观察者失效 收集书架 漫画Pager状态
-            repeatOnLifecycle {
-                mBsVM.mBookshelfComicFlowPager?.collect { data ->
-                    mBookshelfComicRvAdapter.submitData(
-                        data
-                    )
-                }
-            }
-            repeatOnLifecycle {
-                mBsVM.mBookshelfNovelFlowPager?.collect { data ->
-                    mBookshelfNovelRvAdapter.submitData(
-                        data
-                    )
-                }
-            }
-        }
-        mBinding.bookshelfTipsEmpty.animateFadeIn()
     }
 
     override fun getViewBinding(inflater: LayoutInflater) =
@@ -257,14 +211,30 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     override fun initListener() {
 
         // 设置容器Fragment的共享结果回调
-        parentFragmentManager.setFragmentResultListener("Bookshelf", this) { _, bundle ->
-            if (bundle.getInt("id") == 2) {
-                if (bundle.getBoolean("delay")) {
+        parentFragmentManager.setFragmentResultListener(Bookshelf, this) { _, bundle ->
+            if (bundle.getInt(BaseStrings.ID) == 2) {
+                if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
                     launchDelay(BASE_ANIM_200L) { onOutput() }
                 } else {
                     onOutput()
                 }
             }
+        }
+
+        // 登录成功
+        parentFragmentManager.setFragmentResultListener(BaseEventEnum.LoginCategories.name, this) { _, bundle ->
+            if (bundle.getInt(BaseStrings.ID) == 2) {
+                mBinding.bookshelfTipsEmpty.animateFadeOutWithEndInVisible()
+            } else {
+                mBinding.bookshelfTipsEmpty.isGone = true
+            }
+            when(mBinding.bookshelfButtonGropu.checkedButtonId) {
+                mBinding.bookshelfComic.id -> mBinding.bookshelfRvComic.isVisible = true
+                mBinding.bookshelfNovel.id -> mBinding.bookshelfRvNovel.isVisible = true
+            }
+            mBinding.bookshelfRefresh.autoRefresh()
+            mBookshelfComicRvAdapter.refresh()
+            mBookshelfNovelRvAdapter.refresh()
         }
 
         // 刷新监听
@@ -273,6 +243,10 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             // 如果 空书架文本可见 刷新两个适配器 并退出逻辑
             if (mBinding.bookshelfTipsEmpty.isVisible) {
                 mBinding.bookshelfTipsEmpty.animateFadeIn()
+                when(mBinding.bookshelfButtonGropu.checkedButtonId) {
+                    mBinding.bookshelfComic.id -> mBinding.bookshelfRvComic.isVisible = true
+                    mBinding.bookshelfNovel.id -> mBinding.bookshelfRvNovel.isVisible = true
+                }
                 mBookshelfComicRvAdapter.refresh()
                 mBookshelfNovelRvAdapter.refresh()
                 return@setOnRefreshListener
@@ -327,6 +301,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             }
         }
 
+        // 更多选项
         mBinding.bookshelfToolbar.menu[0].doOnClickInterval {
             toast("此功能或许将在下个版本中完善....")
         }

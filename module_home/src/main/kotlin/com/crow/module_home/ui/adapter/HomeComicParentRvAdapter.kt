@@ -17,7 +17,6 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.appContext
@@ -37,7 +36,6 @@ import com.google.android.material.button.MaterialButton
 import com.to.aboomy.pager2banner.IndicatorView
 import com.to.aboomy.pager2banner.ScaleInTransformer
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import com.crow.base.R as baseR
 import com.to.aboomy.pager2banner.Banner as BannerView
 
@@ -86,7 +84,6 @@ class HomeComicParentRvAdapter(
                 R.drawable.home_ic_recommed_24dp,
                 R.string.home_recommend_comic
             )
-
             2 -> createComicVH<RecComicsResult>(parent, Type.REC, viewType)
             3 -> createRefreshButtonVH(parent)
             4 -> createHeaderVH(parent, R.drawable.home_ic_hot_24dp, R.string.home_hot_comic)
@@ -118,7 +115,7 @@ class HomeComicParentRvAdapter(
                     .also { it.setPadding(0, 0, 0, mDp20) })
         val adapter =HomeBannerRvAdapter { pathword -> doOnTap(pathword) }
         banner.adapter = adapter
-        viewLifecycleOwner.lifecycleScope.launch { adapter.doBannerNotify(mData!![0] as MutableList<Banner>, mRvDelayMs / 2) }
+        adapter.doBannerNotify(mData!![0] as MutableList<Banner>, mRvDelayMs / 2, viewLifecycleOwner)
         return HomeComicParentViewHolder(banner)
     }
 
@@ -164,8 +161,9 @@ class HomeComicParentRvAdapter(
         val adapter = HomeComicChildRvAdapter<T>(mType = type, doOnTap = { doOnTap(it) })
         recyclerView.adapter = adapter
         if (type == Type.REC) mHomeRecComicRvAdapter = recyclerView.adapter as HomeComicChildRvAdapter<RecComicsResult>
-        viewLifecycleOwner.lifecycleScope.launch { adapter.doNotify((mData!![viewType] as MutableList<T>), mRvDelayMs * 2) }
-        return HomeComicParentViewHolder(recyclerView)
+        return HomeComicParentViewHolder(recyclerView).also {
+            adapter.doNotify((((mData ?: return it)[viewType] ?: return it) as  MutableList<T>), mRvDelayMs * 2, viewLifecycleOwner)
+        }
     }
 
     private fun createRefreshButtonVH(parent: ViewGroup): HomeComicParentViewHolder<FrameLayout> {
@@ -207,8 +205,8 @@ class HomeComicParentRvAdapter(
         }
     }
 
-    suspend fun doRecNotify(datas: MutableList<RecComicsResult>, notifyMs: Long = mRvDelayMs) {
-        mHomeRecComicRvAdapter?.doNotify(datas, notifyMs)
+    fun doRecNotify(datas: MutableList<RecComicsResult>, notifyMs: Long = mRvDelayMs) {
+        mHomeRecComicRvAdapter?.doNotify(datas, notifyMs, viewLifecycleOwner)
     }
 
 }

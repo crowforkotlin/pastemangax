@@ -4,15 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
+import android.view.WindowManager
+import androidx.annotation.FloatRange
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.R
-import com.crow.base.app.appContext
 import com.crow.base.databinding.BaseDialogLoadingBinding
 import com.crow.base.tools.coroutine.baseCoroutineException
 import com.crow.base.tools.extensions.BASE_ANIM_200L
@@ -59,22 +57,6 @@ class LoadingAnimDialog : DialogFragment() {
         private var mShowTime = 0L
         private val mBaseEvent = BaseEvent.newInstance(1250L)
 
-/*        @JvmStatic
-        @Synchronized
-        fun show(fragmentManager: FragmentManager,loadingAnimConfig: LoadingAnimConfig? = null) {
-            val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: LoadingAnimDialog()
-            if (dialog.isAdded || dialog.isVisible || fragmentManager.isStateSaved || mIsLoading) return
-            dialog.show(fragmentManager, TAG)
-            mShowTime = System.currentTimeMillis()
-            mIsLoading = true
-            if (loadingAnimConfig != null) {
-                if (!loadingAnimConfig.isNoInitStyle()) dialog.setStyle(STYLE_NO_TITLE,  R.style.Base_LoadingAnim_Dark)
-                dialog.lifecycleScope.launchWhenStarted { loadingAnimConfig.doOnConfig(dialog.dialog?.window ?: return@launchWhenStarted) }
-            } else {
-                dialog.setStyle(STYLE_NO_TITLE,  R.style.Base_LoadingAnim_Dark)
-            }
-        }*/
-
         @JvmStatic
         fun show(fragmentManager: FragmentManager,loadingAnimConfig: LoadingAnimConfig? = null) {
             val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: LoadingAnimDialog()
@@ -88,16 +70,6 @@ class LoadingAnimDialog : DialogFragment() {
             }
 
         }
-/*
-        @JvmStatic
-        @Synchronized
-        fun dismiss(fragmentManager: FragmentManager, animCallBack: LoadingAnimCallBack? = null) {
-            if (!mIsLoading) return
-            val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: return
-            val consumeTime = System.currentTimeMillis() - mShowTime
-            // 判断 取消时间是否大于 显示超1S 时间
-            if (mDismissFlagTime > consumeTime) dialog.doAfterDelay(mDismissFlagTime - consumeTime) { dismissWithAnim(dialog, animCallBack) } else dismissWithAnim(dialog, animCallBack)
-        }*/
 
         @JvmStatic
         fun dismiss(fragmentManager: FragmentManager, animCallBack: LoadingAnimCallBack? = null) {
@@ -144,15 +116,13 @@ class LoadingAnimDialog : DialogFragment() {
         _mBinding = null
     }
 
-    fun applyBg(@DrawableRes frameBg: Int = R.color.base_loading_frame, @DrawableRes loadingViewBg: Int? = null) {
-        mBinding.loadingFrame.background = ContextCompat.getDrawable(appContext, frameBg)
-        mBinding.loadingLottie.background = ContextCompat.getDrawable(appContext, loadingViewBg ?: return)
-    }
-
-    fun applyWindow(isLightStatusbar: Boolean = !isDarkMode()) {
-        WindowCompat.setDecorFitsSystemWindows(dialog!!.window!!, false)
-        mWindowInsetsControllerCompat.isAppearanceLightStatusBars = isLightStatusbar
-        mWindowInsetsControllerCompat.isAppearanceLightNavigationBars = isLightStatusbar
+    fun applyWindow(lightStatusbar: Boolean = isDarkMode(), @FloatRange(from = 0.0, to = 1.0) dimAmount: Float = 0f) {
+        dialog?.window?.apply {
+            addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            setWindowAnimations(com.google.android.material.R.style.Animation_AppCompat_Dialog)
+            setDimAmount(dimAmount)
+            mWindowInsetsControllerCompat.isAppearanceLightStatusBars = !lightStatusbar
+        }
     }
 
 }

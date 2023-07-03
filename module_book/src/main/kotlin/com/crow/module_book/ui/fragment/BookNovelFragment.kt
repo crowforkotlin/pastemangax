@@ -214,7 +214,7 @@ class BookNovelFragment : BookFragment() {
         super.initObserver(savedInstanceState)
 
         mBookVM.bookChapterEntity.onCollect(this) { chapter ->
-            if (mBaseEvent.getBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED) == null && chapter != null) {
+            if (mBaseEvent.getBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED) == null && chapter != null && mBaseEvent.getBoolean(HIDDEN_CHANED) != true) {
                 toast(getString(R.string.book_readed_chapter, chapter.mChapterName))
                 mNovelChapterRvAdapter?.mChapterName = chapter.mChapterName
                 mNovelChapterRvAdapter?.notifyItemRangeChanged(0, mNovelChapterRvAdapter?.itemCount ?: return@onCollect)
@@ -252,7 +252,12 @@ class BookNovelFragment : BookFragment() {
         super.initListener()
 
         mBinding.bookInfoCardview.doOnClickInterval {
-           navigateImage(get<Fragment>(named(Fragments.Image.name)).also { it.arguments = bundleOf(BaseStrings.IMAGE_URL to mBookVM.mNovelInfoPage?.mNovel?.mCover) })
+           navigateImage(get<Fragment>(named(Fragments.Image.name)).also { it.arguments =
+               bundleOf(
+                   BaseStrings.IMAGE_URL to mBookVM.mNovelInfoPage?.mNovel?.mCover,
+                   "name" to mBookVM.mNovelInfoPage?.mNovel?.mName
+               )
+           })
         }
 
         mBinding.bookInfoAddToBookshelf.doOnClickInterval{

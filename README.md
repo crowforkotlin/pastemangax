@@ -6,11 +6,12 @@
 <h3 align="center">⭐⭐⭐CopyMangaX⭐⭐⭐</h3>
 </div>
 
-[![Join Our QQ Group](https://img.shields.io/badge/QQ%20Group-749015160-blue?style=for-the-badge&logo=tencent-qq&logoColor=white)](https://jq.qq.com/?_wv=1027&k=XIMjBxZW)
+[![Join Our QQ Group 闲聊 OR 技术交流](https://img.shields.io/badge/QQ%20Group-749015160-blue?style=for-the-badge&logo=tencent-qq&logoColor=white)](https://jq.qq.com/?_wv=1027&k=XIMjBxZW)
 
 - ### **🔶前言**
     - **🔷项目介绍**
         - **🟠项目采用 <u>多模块</u> 和 <u>MVI框架</u> 开发**
+        - **🟠此项目非常注重代码质量、重构估计有十次左右了 从最初的MVC --> MVVM --> MVI 都是借鉴了自己以前的项目去实现**
 
 - ### **🔶关于项目**
     - **🔷[预览最新的功能](https://www.mubucm.com/doc/7dmuZK6gvPP)**
@@ -23,6 +24,7 @@
 - ### **❓问题或方案参考及开源贡献**
     - **✅[非常感谢这个开源库Tachiyomi提供的代码！！！](https://github.com/tachiyomiorg/tachiyomi)**
     - **✅[自定义可缩放RecyclerView By Custom LayoutManager（已弃用、这计算原理捉摸不透）](https://ekibun.github.io/ekibook/2020/03/19/scalablelayoutmanager/)**
-    - **✅[自定义可缩放RecyclerView By Canvas（缺陷多、1.2.0前版本都是该实现）](https://github.com/AhaochGan/GalleryView)**
+    - **✅[自定义可缩放RecyclerView By Canvas（缺陷多、1.1.0前版本都是该实现）](https://github.com/AhaochGan/GalleryView)**
     - **✅[LoadingButton内存泄露（已修复）](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid/issues/144#issuecomment-585668460)**
     - **✅[Add Glide TransitionAnimation](https://github.com/bumptech/glide/issues/692)**
+    - **✅一路下来 还得靠这几位 404大佬、郭老师、史大拿（知乎、CSDN都可查询到）借鉴了他们的博客、开源等...**

@@ -33,6 +33,7 @@ import org.koin.core.context.startKoin
 class MainApplication : BaseApp() {
     override fun onCreate() {
         super.onCreate()
+        AppCompatDelegate.setDefaultNightMode(if (SpNameSpace.CATALOG_NIGHT_MODE.getSharedPreferences().getBoolean(SpNameSpace.Key.ENABLE_DARK, false)) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
 
         val strategy = UserStrategy(applicationContext)
         strategy.deviceID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID);
@@ -42,12 +43,6 @@ class MainApplication : BaseApp() {
         strategy.appPackageName = packageName
         strategy.appReportDelay = 10000
 
-        AppCompatDelegate.setDefaultNightMode(
-            if (SpNameSpace.CATALOG_NIGHT_MODE.getSharedPreferences()
-                    .getBoolean(SpNameSpace.Key.ENABLE_DARK, false)
-            ) AppCompatDelegate.MODE_NIGHT_YES
-            else AppCompatDelegate.MODE_NIGHT_NO
-        )
 
         CrashReport.initCrashReport(applicationContext, "b848968d52", false, strategy);
 

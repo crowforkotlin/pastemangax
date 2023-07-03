@@ -66,11 +66,13 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
 
         val builder = SpannableStringBuilder()
         val purple = ContextCompat.getColor(mContext, baseR.color.base_purple_8f6af1)
-        builder.appendLine(mContext.getString(R.string.main_about_crow).getSpannableString(purple, 5))
+        builder.appendLine(mContext.getString(R.string.main_about_crow).getSpannableString(purple, 6))
         builder.appendLine()
-        builder.appendLine(mContext.getString(R.string.main_about_crow_email).getSpannableString(purple, 5))
+        builder.appendLine(mContext.getString(R.string.main_about_crow_email).getSpannableString(purple, 6))
         builder.appendLine()
         builder.appendLine(mContext.getString(R.string.main_about_crow_help))
+        builder.appendLine()
+        builder.appendLine(mContext.getString(R.string.main_about_crow_cmmunication).getSpannableString(purple, 1))
         mBinding.mainAboutContent.text = builder
         mBinding.mainAboutAppVersion.text = getString(R.string.main_about_app_version, getCurrentVersionName().split("_")[0])
     }

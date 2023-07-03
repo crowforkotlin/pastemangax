@@ -3,12 +3,11 @@ package com.crow.module_user.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
-import androidx.lifecycle.lifecycleScope
 import com.crow.base.app.appContext
 import com.crow.base.copymanga.BaseEventEnum
+import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.updateLifecycleObserver
-import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getNavigationBarHeight
 import com.crow.base.tools.extensions.getStatusBarHeight
@@ -62,7 +61,7 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
         if (mIsLoginSuccess) {
             toast(getString(R.string.user_login_ok))
             navigateUp()
-            FlowBus.with<Unit>(BaseEventEnum.LoginScuess.name).post(lifecycleScope, Unit)
+            parentFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name, (arguments ?: Bundle()).also { it.putBoolean(BaseStrings.ENABLE_DELAY, true) })
         }
     }
 
