@@ -129,8 +129,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         if (hidden) return
 
         // 可见： 当返回ContainerFragment时回调此方法 则通知设置Icon
-        mUserVM.doLoadIcon(mContext, true) { resource ->
-            FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
+        mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
 
         onNotifyPage()
     }
