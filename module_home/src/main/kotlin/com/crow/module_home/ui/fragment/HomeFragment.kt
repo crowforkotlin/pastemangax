@@ -288,7 +288,9 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         // 设置容器Fragment的回调监听
         parentFragmentManager.setFragmentResultListener(Home, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 0) {
-                if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) launchDelay(BASE_ANIM_200L) { mHomeVM.input(HomeIntent.GetHomePage()) }
+                if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
+                    launchDelay(BASE_ANIM_200L) { mHomeVM.input(HomeIntent.GetHomePage()) }
+                }
                 else mHomeVM.input(HomeIntent.GetHomePage())
             }
         }
