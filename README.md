@@ -27,3 +27,28 @@
     - **✅[自定义可缩放RecyclerView By Canvas（缺陷多、1.1.0前版本都是该实现）](https://github.com/AhaochGan/GalleryView)**
     - **✅[LoadingButton内存泄露（已修复）](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid/issues/144#issuecomment-585668460)**
     - **✅[Add Glide TransitionAnimation](https://github.com/bumptech/glide/issues/692)**
+
+<table>
+	<tr>
+		<td align="center"><img src="docs/images/1.2.2_home_light.jpg"></td>
+		<td align="center"><img src="docs/images/1.2.2_home_comic_light.jpg"></td>
+		<td align="center"><img src="docs/images/1.2.2_home_bookshelf_light.jpg"></td>
+	</tr>
+    <tr>
+		<td align="center">主页</td>
+		<td align="center">漫画</td>
+        <td align="center">书架</td>
+	</tr>
+</table>
+<table>
+	<tr>
+		<td align="center"><img src="docs/images/1.2.2_comic_info_light.jpg"></td>
+		<td align="center"><img src="docs/images/1.2.2_comic_vertical.jpg"></td>
+		<td align="center"><img src="docs/images/1.2.2_search_light.jpg"></td>
+	</tr>
+    <tr>
+		<td align="center">漫画信息</td>
+		<td align="center">漫画页-支持横竖屏</td>
+        <td align="center">搜索</td>
+	</tr>
+</table>

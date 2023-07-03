@@ -79,6 +79,8 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         parentFragmentManager.setFragmentResultListener(Comic, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 1) {
                 mBinding.discoverComicRefresh.autoRefreshAnimationOnly()
+                mBinding.discoverComicRefresh.finishRefresh(BASE_ANIM_300L.toInt() shl 1)
+
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
                     launchDelay(BASE_ANIM_200L) {
                         onCollectState()
