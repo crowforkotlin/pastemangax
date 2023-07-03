@@ -16,11 +16,11 @@ import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
-import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
@@ -146,13 +146,16 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     override fun initObserver(savedInstanceState: Bundle?) {
 
         val baseEvent = BaseEvent.newInstance()
-
+        baseEvent.logMsg()
         // 意图观察者
         mDiscoverVM.onOutput { intent ->
             when(intent) {
                 is DiscoverIntent.GetComicHome -> {
                     intent.mBaseViewState
-                        .doOnSuccess { baseEvent.eventInitLimitOnce { mBinding.discoverComicRefresh.finishRefresh(BASE_ANIM_300L.toInt() shl 1) } }
+                        .doOnSuccess {
+                            "Success".logMsg()
+                            baseEvent.eventInitLimitOnce {
+                            mBinding.discoverComicRefresh.finishRefresh() } }
                         .doOnError { _, _ ->
                             if (mDiscoverComicAdapter.itemCount == 0) {
 
