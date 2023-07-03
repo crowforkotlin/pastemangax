@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentUpdateHistoryRvBinding
@@ -21,25 +22,26 @@ import kotlinx.coroutines.delay
  **************************/
 class UpdateHistoryAdapter(var mUpdateResult: MutableList<Update>) : RecyclerView.Adapter<UpdateHistoryAdapter.UpdateViewHolder>() {
 
-    inner class UpdateViewHolder(val rvBinding: MainFragmentUpdateHistoryRvBinding) : RecyclerView.ViewHolder(rvBinding.root)
+    inner class UpdateViewHolder(val rvBinding: MainFragmentUpdateHistoryRvBinding) : RecyclerView.ViewHolder(rvBinding.root) {
+
+    }
 
     override fun getItemCount(): Int = mUpdateResult.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UpdateViewHolder {
         return UpdateViewHolder(MainFragmentUpdateHistoryRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also {  vh ->
-            var isAnimating = false
 
             vh.rvBinding.updateUp.doOnClickInterval(false) {
                 vh.rvBinding.updateMotion.setTransitionListener(object : MotionLayout.TransitionListener {
-                    override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) { isAnimating = true }
+                    override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) { }
                     override fun onTransitionChange(motionLayout: MotionLayout?, startId: Int, endId: Int, progress: Float) {}
-                    override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) { isAnimating = false }
+                    override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) { }
                     override fun onTransitionTrigger(motionLayout: MotionLayout?, triggerId: Int, positive: Boolean, progress: Float) {}
                 })
-                if (isAnimating) return@doOnClickInterval
-                if (vh.rvBinding.updateMotion.currentState == R.id.start) {
+
+                if (vh.rvBinding.updateMotion.currentState == R.id.start && vh.rvBinding.updateMotion.progress.toInt() == 0) {
                     vh.rvBinding.updateMotion.transitionToEnd()
-                } else {
+                } else if(vh.rvBinding.updateMotion.progress.toInt() == 1){
                     vh.rvBinding.updateMotion.transitionToStart()
                 }
             }
@@ -55,17 +57,14 @@ class UpdateHistoryAdapter(var mUpdateResult: MutableList<Update>) : RecyclerVie
 
 
     suspend fun doNotify(updateResp: MainAppUpdateResp, delay: Long) {
-        val isCountSame = itemCount == updateResp.mUpdates.size
-        if (isCountSame) mUpdateResult = updateResp.mUpdates
-        else if(itemCount != 0) {
+        if(itemCount != 0) {
             notifyItemRangeRemoved(0, itemCount)
-            updateResp.mUpdates.clear()
+            mUpdateResult.clear()
+            delay(BASE_ANIM_100L)
         }
         updateResp.mUpdates.forEachIndexed { index, data ->
-            if (!isCountSame) {
-                mUpdateResult.add(data)
-                notifyItemInserted(index)
-            } else notifyItemChanged(index)
+            mUpdateResult.add(data)
+            notifyItemInserted(index)
             delay(delay)
         }
     }
