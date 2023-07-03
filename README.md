@@ -23,8 +23,7 @@
 
 - ### **❓问题或方案参考及开源贡献**
     - **✅[非常感谢这个开源库Tachiyomi提供的代码！！！](https://github.com/tachiyomiorg/tachiyomi)**
-    - **✅[自定义可缩放RecyclerView By Custom LayoutManager（已弃用、这计算原理捉摸不透）](https://ekibun.github.io/ekibook/2020/03/19/scalablelayoutmanager/)**
+    - **✅[自定义可缩放RecyclerView By Custom LayoutManager（已弃用、这计算原理过于复杂且参考代码可读性糟糕）](https://ekibun.github.io/ekibook/2020/03/19/scalablelayoutmanager/)**
     - **✅[自定义可缩放RecyclerView By Canvas（缺陷多、1.1.0前版本都是该实现）](https://github.com/AhaochGan/GalleryView)**
     - **✅[LoadingButton内存泄露（已修复）](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid/issues/144#issuecomment-585668460)**
     - **✅[Add Glide TransitionAnimation](https://github.com/bumptech/glide/issues/692)**
-    - **✅一路下来 还得靠这几位 404大佬、郭老师、史大拿（知乎、CSDN都可查询到）借鉴了他们的博客、开源等...**
