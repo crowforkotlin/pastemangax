@@ -16,11 +16,11 @@ import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
+import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
@@ -79,6 +79,8 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         parentFragmentManager.setFragmentResultListener(Comic, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 1) {
                 mBinding.discoverComicRefresh.autoRefreshAnimationOnly()
+                mBinding.discoverComicRefresh.finishRefresh(BASE_ANIM_300L.toInt() shl 1)
+
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
                     launchDelay(BASE_ANIM_200L) {
                         onCollectState()
@@ -146,16 +148,13 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     override fun initObserver(savedInstanceState: Bundle?) {
 
         val baseEvent = BaseEvent.newInstance()
-        baseEvent.logMsg()
+
         // 意图观察者
         mDiscoverVM.onOutput { intent ->
             when(intent) {
                 is DiscoverIntent.GetComicHome -> {
                     intent.mBaseViewState
-                        .doOnSuccess {
-                            "Success".logMsg()
-                            baseEvent.eventInitLimitOnce {
-                            mBinding.discoverComicRefresh.finishRefresh() } }
+                        .doOnSuccess { baseEvent.eventInitLimitOnce { mBinding.discoverComicRefresh.finishRefresh(BASE_ANIM_300L.toInt() shl 1) } }
                         .doOnError { _, _ ->
                             if (mDiscoverComicAdapter.itemCount == 0) {
 
