@@ -176,11 +176,11 @@ class HomeComicChildRvAdapter<T>(
     fun doNotify(datas: MutableList<T>, delay: Long, viewLifecycleOwner: LifecycleOwner) {
         val isCountSame = itemCount == datas.size
         if (isCountSame) mData = datas
+        else if(itemCount != 0) {
+            notifyItemRangeRemoved(0, itemCount)
+            mData.clear()
+        }
         viewLifecycleOwner.lifecycleScope.launch {
-            if(itemCount != 0) {
-                notifyItemRangeRemoved(0, itemCount)
-                mData.clear()
-            }
             datas.forEachIndexed { index, data ->
                 if (!isCountSame) {
                     mData.add(data)

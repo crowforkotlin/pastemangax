@@ -6,18 +6,14 @@
     - 🟢**ReferToThePicture**
     - ![微信图片_20230509231616](https://github.com/CrowForKotlin/CopyManga_Crow/assets/60876546/8eeff185-252d-4f5f-9c76-02b380ba6cdd)
     - 
-    - 🟢**This writing code is basically the same idea in almost every module in the entire project! So you need to understand it simply**
-    - 🟢**In the onBindViewHolder method, we first set default values for each ViewHolder to ensure that the loading progress is displayed correctly. Since Glide loads images asynchronously, when we process images, we need to enable the cache function of RecyclerView to prevent memory from skyrocketing. At the same time, before setting the default value, we need to cancel the previous fade-out animation to prevent the ViewHolder from being reused when the animation is not completed, causing the loading progress effect of the next reused ViewHolder to disappear. To avoid this, we call the cancel() method to cancel the animation before setting the default value. Although we set alpha to 1f to restore the default state, if the animation is not canceled, the reused view loading animation may already be in an invisible state. Therefore, we must use both the cancel() action and set the alpha value to ensure that the loading progress is displayed correctly.**
+    - 🟢**This code exists in almost every module of the entire project, basically the same idea! So you need to briefly understand 0_0**
+    - 🟢**In the onBindViewHolder method, we first set a default value for each ViewHolder to ensure that the loading progress is displayed correctly. Since Glide loads images asynchronously, when we process images, we need to turn on RecyclerView's caching function to prevent memory explosion. At the same time, before setting the default value, we need to make the view visible, otherwise it will cause the loading progress effect of the next reused ViewHolder to disappear. So, we have to use default visibility to ensure that the loading progress is displayed correctly.**
     ```kotlin
   override fun onBindViewHolder(vh: LoadingViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        vh.mLoadingPropertyAnimator?.cancel()
-        vh.mTextPropertyAnimator?.cancel()
-        vh.mLoadingPropertyAnimator = null
-        vh.mTextPropertyAnimator = null
-        vh.rvBinding.bookshelfRvLoading.alpha = 1f
-        vh.rvBinding.bookshelfRvProgressText.alpha = 1f
+        vh.rvBinding.bookshelfRvLoading.isVisible = true
+        vh.rvBinding.bookshelfRvProgressText.isVisible = true
         vh.rvBinding.bookshelfRvProgressText.text = AppGlideProgressFactory.PERCENT_0
         vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mComic.mCover) { _, _, percentage, _, _ ->
@@ -29,12 +25,12 @@
             .listener(vh.mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    vh.mLoadingPropertyAnimator = vh.rvBinding.bookshelfRvLoading.animateFadeOut()
-                    vh.mTextPropertyAnimator = vh.rvBinding.bookshelfRvProgressText.animateFadeOut()
+                    vh.rvBinding.isInvisilibity = true
+                    vh.rvBinding.isInvisilibity = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    vh.rvBinding.bookshelfRvLoading.alpha = 0f
-                    vh.rvBinding.bookshelfRvProgressText.alpha = 0f
+                    vh.rvBinding.bookshelfRvLoading.isInvisilibity = true
+                    vh.rvBinding.bookshelfRvProgressText.isInvisilibity = true
                     NoTransition()
                 }
             })

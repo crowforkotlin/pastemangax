@@ -23,11 +23,10 @@
 	<string name="main_site_two" translatable="false">（需要梯子-次选）站点② </string>
 	<string name="main_site_dynamic" translatable="false">动态站点</string>
 	<string name="main_permission_tips" translatable="false">您需要同意写入权限才可保存图片到本地！</string>
-	<string name="main_about_crow" translatable="false">开发人员：CrowForKotlin</string>
-	<string name="main_about_crow_email" translatable="false">电子邮箱：CrowForKotlin@gmail.com</string>
-	<string name="main_about_crow_help" translatable="false">CopyMangaX漫画App目前只有我一人在开发。如果您对我们的项目感兴趣，也想参与开发，请联系我！欢迎您的加入！</string>
-	<string name="main_about_crow_github_url" translatable="false">Github主页：<u>https://github.com/CrowForKotlin</u></string>
-	<string name="main_about_crow_github_project_url" translatable="false">项目开源链接：<u>https://github.com/CrowForKotlin/CopyManga_Crow</u></string>
+	<string name="main_about_crow" translatable="false">◉ 开发人员：CrowForKotlin</string>
+	<string name="main_about_crow_email" translatable="false">◉ 电子邮箱：CrowForKotlin@gmail.com</string>
+	<string name="main_about_crow_help" translatable="false">◉ CopyMangaX漫画App目前只有我一人在开发。如果您对我们的项目感兴趣，也想参与开发，请联系我！欢迎您的加入！</string>
+	<string name="main_about_crow_cmmunication" translatable="false">◉ 闲聊、技术都可加群交流、非常欢迎^_^</string>
 	<string name="main_about_add_to_qq_group" translatable="false">加入QQ群</string>
 	<string name="main_about_app_version" translatable="false">当前版本：%s</string>
 	<string name="main_about_qq_gropu" translatable="false">https://jq.qq.com/?_wv=1027&amp;k=XIMjBxZW</string>
