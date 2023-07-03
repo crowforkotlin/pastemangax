@@ -15,7 +15,6 @@ import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -126,7 +125,6 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
     override fun initObserver(savedInstanceState: Bundle?) {
 
         mMainVM.onOutput { intent ->
-            intent.mBaseViewState.logMsg()
             when (intent) {
                 is MainIntent.GetUpdateInfo -> {
                     intent.mBaseViewState
