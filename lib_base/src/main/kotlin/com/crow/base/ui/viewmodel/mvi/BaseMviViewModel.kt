@@ -38,7 +38,7 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
     fun interface BaseMviFlowResult<R : BaseMviIntent, T> { suspend fun onResult(value: T): R }
     fun interface BaseMviSuspendResult<T> { suspend fun onResult(value: T) }
 
-    @PublishedApi internal val _sharedFlow: MutableSharedFlow<I> = MutableSharedFlow (1, 4, BufferOverflow.SUSPEND)
+    @PublishedApi internal val _sharedFlow: MutableSharedFlow<I> = MutableSharedFlow (1, 3, BufferOverflow.SUSPEND)
 
     val sharedFlow: SharedFlow<I> get() = _sharedFlow
 
