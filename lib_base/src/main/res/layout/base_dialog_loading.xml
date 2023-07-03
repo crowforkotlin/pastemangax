@@ -4,14 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/loading_frame"
     android:layout_width="match_parent"
-    android:background="@android:color/transparent"
-    android:layout_height="match_parent"
-    tools:background="@color/base_loading_frame">
+    android:layout_height="match_parent">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/loading_lottie"
         android:layout_width="@dimen/base_dp200"
-        tools:background="@drawable/base_loading_radius"
         android:layout_height="@dimen/base_dp200"
         android:layout_gravity="center"
         app:lottie_autoPlay="true"

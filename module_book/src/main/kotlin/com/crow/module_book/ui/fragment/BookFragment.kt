@@ -51,6 +51,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
 
     companion object {
         const val LOGIN_CHAPTER_HAS_BEEN_SETED = "LOGIN_CHAPTER_HAS_BEEN_SETED"
+        const val HIDDEN_CHANED = "HIDDEN_CHANGED"
     }
 
     /** ● AppGlideFactory GLide 进度加载 */
@@ -116,10 +117,11 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     protected fun doOnBookPageIntent(intent: BookIntent, onResult: Runnable) {
         intent.mBaseViewState
             // 执行加载动画
-            .doOnLoading { showLoadingAnim { dialog ->
-                dialog.applyWindow()
-                dialog.applyBg()
-            } }
+            .doOnLoading {
+                showLoadingAnim { dialog ->
+                    dialog.applyWindow(dimAmount = 0.3f)
+                }
+            }
 
             // 发生错误 取消动画 退出界面 提示
             .doOnError { _, _ ->
@@ -284,10 +286,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
                     // 当选项卡添加完成后就会触发该逻辑
                     if (!mIsTabAlreadyAdded) return@doOnInterval
                     mBinding.bookInfoRvChapterSelector.isEnabled = false
-                    showLoadingAnim { dialog ->
-                        dialog.applyWindow()
-                        dialog.applyBg()
-                    }
+                    showLoadingAnim()
                     mBookVM.reCountPos(tab.position)
                     mBookVM.input(BookIntent.GetComicChapter(mPathword))
                 }
@@ -309,5 +308,15 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         mAppGlideProgressFactory = null
 
         mBaseEvent.remove(LOGIN_CHAPTER_HAS_BEEN_SETED)
+    }
+
+    /**
+     * ● 当隐藏时
+     *
+     * ● 2023-07-03 01:29:16 周一 上午
+     */
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        mBaseEvent.setBoolean(HIDDEN_CHANED, hidden)
     }
 }

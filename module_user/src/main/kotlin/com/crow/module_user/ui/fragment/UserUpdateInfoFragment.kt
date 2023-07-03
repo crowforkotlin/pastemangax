@@ -3,11 +3,11 @@ package com.crow.module_user.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
+import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.processTokenError
-import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
@@ -155,7 +155,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
             mExitFragment = true
 
             // 发送事件清除用户全部数据
-            FlowBus.with<Unit>(BaseEventEnum.LogOut.name).post(lifecycleScope, Unit)
+            parentFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name, bundleOf("isLogout" to true))
 
             // 清除当前界面的用户数据
             mUserUpdateInfoVM.doClearUserUpdateInfoData()

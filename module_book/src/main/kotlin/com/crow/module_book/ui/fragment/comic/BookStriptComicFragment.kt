@@ -78,8 +78,7 @@ class BookStriptComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
                 is BookIntent.GetComicPage -> {
                     intent.mBaseViewState
                         .doOnLoading { showLoadingAnim { dialog ->
-                            dialog.applyWindow(false)
-                            dialog.applyBg()
+                            dialog.applyWindow(dimAmount = 0.3f)
                         } }
                         .doOnError { _, _ -> dismissLoadingAnim { onErrorComicPage() } }
                         .doOnResult { dismissLoadingAnim { showComicPage(intent.comicPage!!) } }

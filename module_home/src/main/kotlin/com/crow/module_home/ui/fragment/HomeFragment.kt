@@ -31,7 +31,6 @@ import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getStatusBarHeight
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.isDarkMode
-import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.showSnackBar
@@ -52,6 +51,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -69,7 +69,10 @@ import com.crow.base.R as baseR
 class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     /** ● 静态区 */
-    companion object { const val SEARCH_TAG = "INPUT" }
+    companion object {
+        const val Home = "Home"
+        const val SEARCH_TAG = "INPUT"
+    }
 
     /** ● 主页 VM */
     private val mHomeVM by sharedViewModel<HomeViewModel>()
@@ -145,14 +148,13 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             mBinding.homeRv.animateFadeIn()
         }
 
-        val isRefreshing = mBinding.homeRefresh.isRefreshing
-
         if (mHomeVM.mHomeDatas == null) return
 
         viewLifecycleOwner.lifecycleScope.launch {
 
-            if (isRefreshing) {
+            if (mBinding.homeRefresh.isRefreshing) {
                 mBinding.homeRefresh.finishRefresh()
+                delay(BASE_ANIM_300L)
                 mHomeComicParentRvAdapter = HomeComicParentRvAdapter(mHomeVM.mHomeDatas!!.toMutableList(), viewLifecycleOwner, mRecRefreshCallback) { navigateBookComicInfo(it) }
                 mBinding.homeRv.adapter = mHomeComicParentRvAdapter
                 mBinding.homeRv.animateFadeIn(BASE_ANIM_300L)
@@ -223,9 +225,6 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
     }
 
-    /** ● 暴露的函数 提供给 ContainerFragment 用于通知主页刷新 */
-    fun doRefresh() { mHomeVM.input(HomeIntent.GetHomePage()) }
-
     /** ● 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentBinding.inflate(inflater)
 
@@ -248,13 +247,12 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         mRecRefresh = null  // 置空“换一批”控件 防止内存泄漏
-        parentFragmentManager.clearFragmentResultListener("Home")
+        parentFragmentManager.clearFragmentResultListener(Home)
     }
 
     /** ● 初始化数据 */
     override fun initData(savedInstanceState: Bundle?) {
 
-        savedInstanceState.logMsg()
         if (savedInstanceState != null) return
 
         // 获取主页数据
@@ -288,11 +286,16 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     override fun initListener() {
 
         // 设置容器Fragment的回调监听
-        parentFragmentManager.setFragmentResultListener("Home", this) { _, bundle ->
-            mHomeVM.mHomeDatas.logMsg()
-            if (bundle.getInt("id") == 0) {
-                if (bundle.getBoolean("delay")) launchDelay(BASE_ANIM_200L) { mHomeVM.input(HomeIntent.GetHomePage()) }
+        parentFragmentManager.setFragmentResultListener(Home, this) { _, bundle ->
+            if (bundle.getInt(BaseStrings.ID) == 0) {
+                if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) launchDelay(BASE_ANIM_200L) { mHomeVM.input(HomeIntent.GetHomePage()) }
                 else mHomeVM.input(HomeIntent.GetHomePage())
+            }
+        }
+
+        parentFragmentManager.setFragmentResultListener(BaseEventEnum.LoginCategories.name, this) { _, bundle ->
+            if (bundle.getInt(BaseStrings.ID) == 0) {
+                mHomeVM.input(HomeIntent.GetHomePage())
             }
         }
 
@@ -306,7 +309,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeToolbar.menu[1].doOnClickInterval { navigateSettings() }
 
         // MaterialToolBar NavigateIcon 点击事件
-        mBinding.homeToolbar.navigateIconClickGap(flagTime = 1000L) { get<BottomSheetDialogFragment>(named(Fragments.User.name)).show(requireActivity().supportFragmentManager, null) }
+        mBinding.homeToolbar.navigateIconClickGap(flagTime = 1000L) { get<BottomSheetDialogFragment>(named(Fragments.User.name)).show(requireParentFragment().parentFragmentManager, null) }
 
         // 刷新
         mBinding.homeRefresh.setOnRefreshListener { mHomeVM.input(HomeIntent.GetHomePage()) }
@@ -348,9 +351,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                         .doOnSuccess { mRecRefresh?.isEnabled = true }
                         .doOnError { _, _ -> mBinding.root.showSnackBar(getString(baseR.string.BaseLoadingError)) }
                         .doOnResult {
-                            viewLifecycleOwner.lifecycleScope.launch {
-                                mHomeComicParentRvAdapter?.doRecNotify(intent.recPageData?.mResults?.mResult?.toMutableList() ?: return@launch)
-                            }
+                            mHomeComicParentRvAdapter?.doRecNotify(intent.recPageData?.mResults?.mResult?.toMutableList() ?: return@doOnResult)
                         }
                 }
             }

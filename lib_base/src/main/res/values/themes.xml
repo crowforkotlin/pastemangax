@@ -3,11 +3,11 @@
 
     <style name="Base.Theme.Material3" parent="Theme.Material3.DayNight.NoActionBar" />
 
-    <style name="Base_LoadingAnim" parent="Base.Theme.Material3_Project">
-        <item name="android:windowBackground">@android:color/transparent</item>
+    <style name="Base_LoadingAnim" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="Base.TextAppearance.Material3.ActionBar.Title.Bold" parent="TextAppearance.Material3.TitleLarge">

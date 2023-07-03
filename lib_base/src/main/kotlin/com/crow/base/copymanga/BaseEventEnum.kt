@@ -2,9 +2,8 @@ package com.crow.base.copymanga
 
 enum class BaseEventEnum {
     SetIcon,
-    LoginScuess,
+    LoginCategories,
     ClearUserInfo,
-    LogOut,
     UpdateApp,
     UpdateChapter,
 }

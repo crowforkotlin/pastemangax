@@ -266,7 +266,12 @@ class BookComicFragment : BookFragment() {
         super.initListener()
 
         mBinding.bookInfoCardview.doOnClickInterval {
-            navigateImage(get<Fragment>(named(Fragments.Image.name)).also { it.arguments = bundleOf(BaseStrings.IMAGE_URL to mBookVM.mComicInfoPage?.mComic?.mCover) })
+            navigateImage(get<Fragment>(named(Fragments.Image.name)).also {
+                it.arguments = bundleOf(
+                    BaseStrings.IMAGE_URL to mBookVM.mComicInfoPage?.mComic?.mCover,
+                    "name" to mBookVM.mComicInfoPage?.mComic?.mName
+                )
+            })
         }
 
         mBinding.bookInfoAddToBookshelf.doOnClickInterval{

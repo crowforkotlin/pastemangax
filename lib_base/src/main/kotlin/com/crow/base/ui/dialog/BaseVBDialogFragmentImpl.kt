@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
-import com.crow.base.tools.extensions.permissionext.IBasePerEvent
-import com.crow.base.tools.extensions.permissionext.IBasePermission
 import com.crow.base.ui.fragment.IBaseFragment
 
 /*************************
@@ -18,12 +15,7 @@ import com.crow.base.ui.fragment.IBaseFragment
  * @Description: BaseVBDialogFragmentImpl
  * @formatter:on
  **************************/
-abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment, IBasePermission {
-
-    private val mPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-        if (it.containsValue(false)) iBasePerEvent?.onFailure()
-        else iBasePerEvent?.onSccess()
-    }
+abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment {
 
     // 初始化View
     override fun initView(bundle: Bundle?) {}
@@ -47,13 +39,6 @@ abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment, IBase
 
     override fun dismissLoadingAnim(loadingAnimCallBack: LoadingAnimDialog.LoadingAnimCallBack) {
         LoadingAnimDialog.dismiss(parentFragmentManager, loadingAnimCallBack)
-    }
-
-    override var iBasePerEvent: IBasePerEvent? = null
-
-    override fun requestPermission(permissions: Array<String>, iBasePerEvent: IBasePerEvent) {
-        this.iBasePerEvent = iBasePerEvent
-        mPermission.launch(permissions)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

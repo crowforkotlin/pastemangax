@@ -3,13 +3,11 @@ package com.crow.module_user.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
-import androidx.lifecycle.lifecycleScope
 import com.crow.base.app.appContext
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.updateLifecycleObserver
-import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getNavigationBarHeight
 import com.crow.base.tools.extensions.getStatusBarHeight
@@ -57,7 +55,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
 
         // 判断标志是否成功 (true : 然后返回上一个界面)
         if (mIsRegSuccess) {
-            FlowBus.with<String>(BaseEventEnum.LoginScuess.name).post(lifecycleScope, getString(R.string.user_reg_ok))
+            parentFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name, arguments ?: Bundle())
             navigateUp()
         }
     }

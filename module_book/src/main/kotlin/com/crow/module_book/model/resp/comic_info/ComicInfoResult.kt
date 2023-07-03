@@ -74,7 +74,7 @@ data class ComicInfoResult(
     val mRestrict: Restrict,
 
     @Json(name = "seo_baidu")
-    val mSeoBaidu: String,
+    val mSeoBaidu: String?,
 
     @Json(name = "status")
     val mStatus: Status,

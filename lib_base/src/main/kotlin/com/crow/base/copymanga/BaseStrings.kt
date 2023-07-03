@@ -5,6 +5,8 @@ object BaseStrings {
     const val PATH_WORD = "pathword"
     const val UUID = "uuid"
     const val IMAGE_URL = "image_url"
+    const val ID = "id"
+    const val ENABLE_DELAY = "enable_delay"
 
 
     object URL {
@@ -24,10 +26,10 @@ object BaseStrings {
         const val Login = "/api/v3/login"
         const val Reg = "/api/v3/register"
 
-        const val ComicInfo = "/api/v3/comic2/{pathword}?platform=1&_update=true"
+        const val ComicInfo = "/api/v3/comic2/{pathword}?platform=3&_update=true"
         const val ComicChapter = "/api/v3/comic/{pathword}/group/default/chapters?_update=true"
         const val ComicPage = "/api/v3/comic/{pathword}/chapter2/{uuid}?platform=3&_update=true"
-        const val ComicBrowserHistory = "/api/v3/comic2/{pathword}/query?platform=1&_update=true"
+        const val ComicBrowserHistory = "/api/v3/comic2/{pathword}/query?platform=3&_update=true"
         const val ComicAddToBookshelf = "/api/v3/member/collect/comic"
         const val ComicSearch = "/api/v3/search/comic"
 
