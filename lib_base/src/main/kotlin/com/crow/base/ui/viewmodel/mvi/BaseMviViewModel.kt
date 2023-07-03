@@ -12,6 +12,7 @@ import com.crow.base.ui.viewmodel.BaseViewState.Success
 import com.crow.base.ui.viewmodel.ViewStateException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -38,7 +39,7 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
     fun interface BaseMviFlowResult<R : BaseMviIntent, T> { suspend fun onResult(value: T): R }
     fun interface BaseMviSuspendResult<T> { suspend fun onResult(value: T) }
 
-    @PublishedApi internal val _sharedFlow: MutableSharedFlow<I> = MutableSharedFlow (1, 3, BufferOverflow.SUSPEND)
+    @PublishedApi internal val _sharedFlow: MutableSharedFlow<I> = MutableSharedFlow (2, 4, BufferOverflow.SUSPEND)
 
     val sharedFlow: SharedFlow<I> get() = _sharedFlow
 
@@ -58,11 +59,16 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
     fun <T> flowResult(intent: I, flow: Flow<T>, result: BaseMviFlowResult<I, T>) {
         viewModelScope.launch {
             flow
-                .onStart { _sharedFlow.emit(intent.also { it.mBaseViewState = Loading }) }
-                .onCompletion { _sharedFlow.emit(intent.also { it.mBaseViewState = Success }) }
-                .catch { catch -> _sharedFlow.emit(intent.also { it.mBaseViewState = Error(if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, msg = catch.message ?: appContext.getString(R.string.BaseUnknowError)) }) }
-                .collect { _sharedFlow.emit(result.onResult(it).also { event -> event.mBaseViewState = Result }) }
+                .onStart { emitValueMoreoverDelayAfter(intent.also { it.mBaseViewState = Loading }) }
+                .onCompletion { emitValueMoreoverDelayAfter(intent.also { it.mBaseViewState = Success }) }
+                .catch { catch -> emitValueMoreoverDelayAfter(intent.also { it.mBaseViewState = Error(if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, msg = catch.message ?: appContext.getString(R.string.BaseUnknowError)) })}
+                .collect { emitValueMoreoverDelayAfter(result.onResult(it).also { event -> event.mBaseViewState = Result }) }
         }
+    }
+
+    private suspend  fun emitValueMoreoverDelayAfter(result: I, delayMs: Long = 1L) {
+        _sharedFlow.emit(result)
+        delay(delayMs)
     }
 
 
@@ -78,22 +84,22 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
                     }
                 }
                 .collect {
-                    if (intent != null) _sharedFlow.emit(result.onResult(it).also { event -> event.mBaseViewState = Result })
+                    if (intent != null) emitValueMoreoverDelayAfter(result.onResult(it).also { event -> event.mBaseViewState = Result })
                     if (!continuation.isCompleted) continuation.resume(it)
                 }
         }
     }
 
-    private suspend inline fun<T> T.trySendIntent(intent: I?, state: BaseViewState, endLogic: () -> Unit = {}): I? {
+    private suspend inline fun trySendIntent(intent: I?, state: BaseViewState, endLogic: () -> Unit = {}): I? {
         if (intent != null) {
             intent.mBaseViewState = state
-            _sharedFlow.emit(intent)
+            emitValueMoreoverDelayAfter(intent)
         }
         endLogic()
         return intent
     }
 
     inline fun toEmitValue(context: CoroutineContext = Dispatchers.Main, crossinline result: suspend () -> I) {
-        viewModelScope.launch(context) { _sharedFlow.emit(result().also { it.mBaseViewState = BaseViewState.Result }) }
+        viewModelScope.launch(context) { _sharedFlow.emit(result().also { it.mBaseViewState = Result }) }
     }
 }
