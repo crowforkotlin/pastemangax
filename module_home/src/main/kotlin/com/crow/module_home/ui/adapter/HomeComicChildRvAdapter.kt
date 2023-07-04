@@ -173,21 +173,20 @@ class HomeComicChildRvAdapter<T>(
         vh.rvBinding.homeComicRvLastestChapter.setTextColor(color)
     }
 
-    fun doNotify(datas: MutableList<T>, delay: Long, viewLifecycleOwner: LifecycleOwner) {
+    fun doNotify(datas: MutableList<T>, delay: Long, viewLifecycleOwner: LifecycleOwner) = viewLifecycleOwner.lifecycleScope.launch {
         val isCountSame = itemCount == datas.size
         if (isCountSame) mData = datas
+
         else if(itemCount != 0) {
             notifyItemRangeRemoved(0, itemCount)
             mData.clear()
         }
-        viewLifecycleOwner.lifecycleScope.launch {
-            datas.forEachIndexed { index, data ->
-                if (!isCountSame) {
-                    mData.add(data)
-                    notifyItemInserted(index)
-                } else notifyItemChanged(index)
-                delay(delay)
-            }
+        datas.forEachIndexed { index, data ->
+            if (!isCountSame) {
+                mData.add(data)
+                notifyItemInserted(index)
+            } else notifyItemChanged(index)
+            delay(delay)
         }
     }
 }

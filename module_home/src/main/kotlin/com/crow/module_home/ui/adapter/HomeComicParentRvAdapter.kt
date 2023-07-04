@@ -17,6 +17,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.appContext
@@ -49,15 +50,14 @@ import com.to.aboomy.pager2banner.Banner as BannerView
  **************************/
 
 class HomeComicParentRvAdapter(
-
     private var mData: MutableList<Any?>? = null,
     private val viewLifecycleOwner: LifecycleOwner,
     private val doOnRecRefresh: (MaterialButton) -> Unit,
     val doOnTap: (String) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    enum class Type {
-        REC, HOT, NEW, FINISH, RANK, TOPIC
+    enum class Type(val POSIITON: Int) {
+        REC(2), HOT(5), NEW(7), FINISH(9), RANK(11), TOPIC(13)
     }
 
     inner class HomeComicParentViewHolder<T : ViewGroup>(view: T) : RecyclerView.ViewHolder(view) {
@@ -65,6 +65,7 @@ class HomeComicParentRvAdapter(
     }
 
     private var mHomeRecComicRvAdapter: HomeComicChildRvAdapter<RecComicsResult>? = null
+
     private var mRvDelayMs: Long = 20L
     private val mDp5 by lazy { appContext.resources.getDimensionPixelSize(baseR.dimen.base_dp5) }
     private val mDp10 by lazy { appContext.resources.getDimensionPixelSize(baseR.dimen.base_dp10) }
@@ -84,18 +85,18 @@ class HomeComicParentRvAdapter(
                 R.drawable.home_ic_recommed_24dp,
                 R.string.home_recommend_comic
             )
-            2 -> createComicVH<RecComicsResult>(parent, Type.REC, viewType)
+            2 -> createComicVH<RecComicsResult>(parent, Type.REC,)
             3 -> createRefreshButtonVH(parent)
             4 -> createHeaderVH(parent, R.drawable.home_ic_hot_24dp, R.string.home_hot_comic)
-            5 -> createComicVH<HotComic>(parent, Type.HOT, viewType)
+            5 -> createComicVH<HotComic>(parent, Type.HOT)
             6 -> createHeaderVH(parent, R.drawable.home_ic_new_24dp, R.string.home_new_comic)
-            7 -> createComicVH<NewComic>(parent, Type.NEW, viewType)
+            7 -> createComicVH<NewComic>(parent, Type.NEW)
             8 -> createHeaderVH(parent, R.drawable.home_ic_finish_24dp, R.string.home_commit_finish)
-            9 -> createComicVH<FinishComic>(parent, Type.FINISH, viewType)
+            9 -> createComicVH<FinishComic>(parent, Type.FINISH)
             10 -> createHeaderVH(parent, R.drawable.home_ic_rank_24dp, R.string.home_rank_comic)
-            11 -> createComicVH<RankComics>(parent, Type.RANK, viewType)
+            11 -> createComicVH<RankComics>(parent, Type.RANK)
             12 -> createHeaderVH(parent, R.drawable.home_ic_topic_24dp, R.string.home_topic_comic)
-            else -> createComicVH<Topices>(parent, Type.TOPIC, viewType)
+            else -> createComicVH<Topices>(parent, Type.TOPIC)
         }
     }
 
@@ -151,7 +152,6 @@ class HomeComicParentRvAdapter(
     private fun <T> createComicVH(
         parent: ViewGroup,
         type: Type,
-        viewType: Int
     ): HomeComicParentViewHolder<RecyclerView> {
         val recyclerView = RecyclerView(parent.context)
         recyclerView.layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
@@ -160,16 +160,21 @@ class HomeComicParentRvAdapter(
         recyclerView.layoutManager = GridLayoutManager(parent.context, if (type != Type.TOPIC) 3 else 2)
         val adapter = HomeComicChildRvAdapter<T>(mType = type, doOnTap = { doOnTap(it) })
         recyclerView.adapter = adapter
-        if (type == Type.REC) mHomeRecComicRvAdapter = recyclerView.adapter as HomeComicChildRvAdapter<RecComicsResult>
-        return HomeComicParentViewHolder(recyclerView).also {
-            adapter.doNotify((((mData ?: return it)[viewType] ?: return it) as  MutableList<T>), mRvDelayMs * 2, viewLifecycleOwner)
+        when (type) {
+            Type.REC -> {
+                mHomeRecComicRvAdapter = recyclerView.adapter as HomeComicChildRvAdapter<RecComicsResult>
+                mHomeRecComicRvAdapter?.doNotify((mData!![Type.REC.POSIITON] as  MutableList<RecComicsResult>), mRvDelayMs * 2, viewLifecycleOwner)
+            }
+            else -> {
+                adapter.doNotify((mData!![type.POSIITON] as  MutableList<T>), mRvDelayMs * 2, viewLifecycleOwner)
+            }
         }
+        return HomeComicParentViewHolder(recyclerView)
     }
 
     private fun createRefreshButtonVH(parent: ViewGroup): HomeComicParentViewHolder<FrameLayout> {
         val frameLayout = FrameLayout(parent.context)
-        val refreshButton =
-            MaterialButton(parent.context, null, baseR.attr.baseIconButtonElevatedStyle)
+        val refreshButton = MaterialButton(parent.context, null, baseR.attr.baseIconButtonElevatedStyle)
         frameLayout.layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         refreshButton.layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
         (refreshButton.layoutParams as FrameLayout.LayoutParams).apply {
@@ -206,7 +211,8 @@ class HomeComicParentRvAdapter(
     }
 
     fun doRecNotify(datas: MutableList<RecComicsResult>, notifyMs: Long = mRvDelayMs) {
-        mHomeRecComicRvAdapter?.doNotify(datas, notifyMs, viewLifecycleOwner)
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            mHomeRecComicRvAdapter?.doNotify(datas, notifyMs, viewLifecycleOwner)
+        }
     }
-
 }
