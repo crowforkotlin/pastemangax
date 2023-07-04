@@ -69,7 +69,7 @@ object AppConfigs {
     const val min_sdk_version = 23
 
     // 目标支持版本 Android 13 T
-    const val target_sdk_version = 33
+    const val target_sdk_version = 29
 
     // 应用版本号
     const val version_code = 6

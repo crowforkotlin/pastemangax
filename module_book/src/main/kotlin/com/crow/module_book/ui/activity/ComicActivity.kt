@@ -3,7 +3,7 @@ package com.crow.module_book.ui.activity
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.view.isVisible
+import androidx.core.view.isGone
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.immersureFullScreen
@@ -70,10 +70,12 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>() {
         mComicVM.mUuid = intent.getStringExtra(BaseStrings.UUID)
     }
 
+
     override fun initObserver(savedInstanceState: Bundle?) {
+
         mComicVM.mPageIndicator.observe(this) {
-            mBadgeView.updateCurrentPos(it)
-            if (!mBadgeView.mBadgeBinding.root.isVisible) {
+            if (it <= (mComicVM.mComicPage?.mChapter?.mContents?.size ?: 0)) mBadgeView.updateCurrentPos(it)
+            if (mBadgeView.mBadgeBinding.root.isGone) {
                 mBadgeView.mBadgeBinding.root.animateFadeIn()
                 mBadgeView.updateTotalCount(mComicVM.mComicPage?.mChapter?.mContents?.size ?: -1)
             }

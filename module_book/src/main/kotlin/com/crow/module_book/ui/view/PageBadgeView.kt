@@ -20,7 +20,6 @@ class PageBadgeView(val mActivity: ComicActivity, val mBinding: BookActivityComi
 
     val mBadgeBinding = BookPageBadgeViewBinding.inflate(mActivity.layoutInflater)
 
-
     private val mFormatTime = SimpleDateFormat("HH:mm:ss")
 
     init {

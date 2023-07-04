@@ -142,6 +142,9 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     /** ● 加载主页数据 */
     private fun doLoadHomePage() {
 
+        if (mBaseEvent.getBoolean("isLoadHomePage") == true) return
+        mBaseEvent.setBoolean("isLoadHomePage", true)
+
         // 错误提示 可见
         if (mBinding.homeTipsError.isVisible) {
             mBinding.homeTipsError.isVisible = false
@@ -168,10 +171,10 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     /** ● 导航至设置Fragment */
     private fun navigateSettings() {
-            requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
-                requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
-                get(named(Fragments.Settings.name)), Fragments.Settings.name, Fragments.Settings.name
-            )
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
+            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            get(named(Fragments.Settings.name)), Fragments.Settings.name, Fragments.Settings.name
+        )
     }
 
     /** ● 初始化SearchView */
@@ -252,8 +255,10 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     /** ● 初始化数据 */
     override fun initData(savedInstanceState: Bundle?) {
-
-        if (savedInstanceState != null) return
+        if (savedInstanceState != null) {
+            mBaseEvent.remove("isLoadHomePage")
+            return
+        }
 
         // 获取主页数据
         mHomeVM.input(HomeIntent.GetHomePage())
@@ -289,6 +294,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         parentFragmentManager.setFragmentResultListener(Home, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 0) {
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
+
                     launchDelay(BASE_ANIM_200L) { mHomeVM.input(HomeIntent.GetHomePage()) }
                 }
                 else mHomeVM.input(HomeIntent.GetHomePage())
@@ -314,7 +320,10 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeToolbar.navigateIconClickGap(flagTime = 1000L) { get<BottomSheetDialogFragment>(named(Fragments.User.name)).show(requireParentFragment().parentFragmentManager, null) }
 
         // 刷新
-        mBinding.homeRefresh.setOnRefreshListener { mHomeVM.input(HomeIntent.GetHomePage()) }
+        mBinding.homeRefresh.setOnRefreshListener {
+            mBaseEvent.remove("isLoadHomePage")
+            mHomeVM.input(HomeIntent.GetHomePage())
+        }
     }
 
     /** ● 初始化监听器 */
@@ -359,4 +368,5 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             }
         }
     }
+
 }

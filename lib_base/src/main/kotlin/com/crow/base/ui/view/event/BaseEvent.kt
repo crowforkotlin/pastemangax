@@ -63,11 +63,13 @@ open class BaseEvent private constructor(flagTime: Long) {
         (mCurrentFlagTime - (mCurrentTime - mLastClickGapTime)).absoluteValue
 
     // 事件限制仅一次初始化
-    fun eventInitLimitOnce(runnable: Runnable) {
+    fun eventInitLimitOnce(runnable: Runnable): Unit? {
         if (!mInitOnce) {
             mInitOnce = true
             runnable.run()
+            return Unit
         }
+        return null
     }
 
     private fun initFlagMap() {
