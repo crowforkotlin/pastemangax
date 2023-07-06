@@ -1,7 +1,5 @@
 package com.crow.module_book.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.ComicPageResp
@@ -39,14 +37,6 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      */
     var mComicPage: ComicPageResp? = null
         private set
-
-    /**
-     * ● 页面指示器（页码）
-     *
-     * ● 2023-06-28 22:18:35 周三 下午
-     */
-    private val _mPageIndicator = MutableLiveData<Int>()
-    val mPageIndicator: LiveData<Int> get() = _mPageIndicator
     
     /**
      * ● 通过检查意图的类型并执行相应的代码来处理意图
@@ -69,15 +59,5 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
             mComicPage = value.mResults
             intent.copy(comicPage = value.mResults)
         }
-    }
-
-
-    /**
-     * ● 页面滚动发生改变
-     *
-     * ● 2023-06-28 22:19:25 周三 下午
-     */
-    fun onPageScrollChanged(pos: Int) {
-        _mPageIndicator.value = pos
     }
 }

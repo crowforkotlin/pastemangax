@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 <!--
@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    -->
+-->
 
     <!-- Android 13版本适配，细化存储权限 -->
 <!--
@@ -26,11 +26,10 @@
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
-        android:enableOnBackInvokedCallback="true"
         android:hardwareAccelerated="true"
-        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/app_ic_launcher"
         android:label="@string/BaseAppName"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/App.Theme.CopyManga.Splash">
 
@@ -49,19 +48,17 @@
                 android:resource="@xml/app_provider_paths" />
         </provider>
 
-
         <activity
             android:name="com.crow.module_book.ui.activity.ComicActivity"
             android:exported="true"
             android:theme="@style/Book.Theme.CopyManga" />
 
-<!--
-        <activity
-            android:name="com.crow.module_anime.ui.activity.AnimeActivity"
-            android:exported="true"
-            android:theme="@style/Anime.Theme.CopyManga" />
--->
-
+        <!--
+                <activity
+                    android:name="com.crow.module_anime.ui.activity.AnimeActivity"
+                    android:exported="true"
+                    android:theme="@style/Anime.Theme.CopyManga" />
+        -->
 
         <activity
             android:name=".ui.activity.MainActivity"
@@ -72,22 +69,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-<!--        <activity
-            android:name=".ui.activity.MainActivity"
-            android:exported="true"
-            android:theme="@style/Anime.Theme.CopyManga" />
-
-        <activity
-            android:name="com.crow.module_anime.ui.activity.AnimeActivity"
-            android:exported="true"
-            android:theme="@style/Anime.Theme.CopyManga"
-            android:windowSoftInputMode="adjustNothing">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>-->
 
     </application>
 

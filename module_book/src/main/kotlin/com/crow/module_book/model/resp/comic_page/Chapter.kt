@@ -49,7 +49,7 @@ data class Chapter(
     val mOrdered: Int,
 
     @Json(name = "prev")
-    val mPrev: Any?,
+    val mPrev: String?,
 
     @Json(name = "size")
     val mSize: Int,

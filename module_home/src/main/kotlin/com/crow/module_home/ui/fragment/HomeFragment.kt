@@ -12,6 +12,7 @@ import androidx.activity.addCallback
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -57,14 +58,6 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.qualifier.named
 import com.crow.base.R as baseR
-/*************************
- * @Machine: RedmiBook Pro 15 Win11
- * @Path: module_home/src/main/kotlin/com/crow/module_home/view
- * @Time: 2023/3/6 0:14
- * @Author: CrowForKotlin
- * @Description: HomeBodyFragment
- * @formatter:on
- **************************/
 
 class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
@@ -142,6 +135,9 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     /** ● 加载主页数据 */
     private fun doLoadHomePage() {
 
+        if (mBaseEvent.getBoolean("isLoadHomePage") == true) return
+        mBaseEvent.setBoolean("isLoadHomePage", true)
+
         // 错误提示 可见
         if (mBinding.homeTipsError.isVisible) {
             mBinding.homeTipsError.isVisible = false
@@ -168,10 +164,10 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     /** ● 导航至设置Fragment */
     private fun navigateSettings() {
-            requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
-                requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
-                get(named(Fragments.Settings.name)), Fragments.Settings.name, Fragments.Settings.name
-            )
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
+            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            get(named(Fragments.Settings.name)), Fragments.Settings.name, Fragments.Settings.name
+        )
     }
 
     /** ● 初始化SearchView */
@@ -252,8 +248,10 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     /** ● 初始化数据 */
     override fun initData(savedInstanceState: Bundle?) {
-
-        if (savedInstanceState != null) return
+        if (savedInstanceState != null) {
+            mBaseEvent.remove("isLoadHomePage")
+            return
+        }
 
         // 获取主页数据
         mHomeVM.input(HomeIntent.GetHomePage())
@@ -289,6 +287,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         parentFragmentManager.setFragmentResultListener(Home, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 0) {
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
+
                     launchDelay(BASE_ANIM_200L) { mHomeVM.input(HomeIntent.GetHomePage()) }
                 }
                 else mHomeVM.input(HomeIntent.GetHomePage())
@@ -311,10 +310,16 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeToolbar.menu[1].doOnClickInterval { navigateSettings() }
 
         // MaterialToolBar NavigateIcon 点击事件
-        mBinding.homeToolbar.navigateIconClickGap(flagTime = 1000L) { get<BottomSheetDialogFragment>(named(Fragments.User.name)).show(requireParentFragment().parentFragmentManager, null) }
+        mBinding.homeToolbar.navigateIconClickGap(flagTime = BaseEvent.BASE_FLAG_TIME shl 1) {
+            mBinding.homeRv.stopScroll()
+            get<BottomSheetDialogFragment>(named(Fragments.User.name)).show(requireParentFragment().parentFragmentManager, null)
+        }
 
         // 刷新
-        mBinding.homeRefresh.setOnRefreshListener { mHomeVM.input(HomeIntent.GetHomePage()) }
+        mBinding.homeRefresh.setOnRefreshListener {
+            mBaseEvent.remove("isLoadHomePage")
+            mHomeVM.input(HomeIntent.GetHomePage())
+        }
     }
 
     /** ● 初始化监听器 */
@@ -326,23 +331,25 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                 // （获取主页）（根据 刷新事件 来决定是否启用加载动画） 正常加载数据、反馈View
                 is HomeIntent.GetHomePage -> {
                     intent.mBaseViewState
+                        .doOnSuccess {
+                            if (mBinding.homeRefresh.isRefreshing) {
+                                mBinding.homeRefresh.finishRefresh()
+                                if (mBinding.homeTipsError.isGone)  toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+                            }
+                        }
                         .doOnResult {
                             // 刷新控件没有刷新 代表 用的是加载动画 -> 取消加载动画 否则直接加载页面数据
                             if (!mBinding.homeRefresh.isRefreshing) doLoadHomePage()
                             else doLoadHomePage()
                         }
                         .doOnError { _, _ ->
-                            if (mHomeComicParentRvAdapter?.itemCount == 0 || mHomeComicParentRvAdapter == null) {
+                            if (mHomeComicParentRvAdapter?.itemCount == 0) {
 
                                 // 错误提示淡入
                                 mBinding.homeTipsError.animateFadeIn()
 
                                 // 发现页 “漫画” 淡出
                                 mBinding.homeRv.animateFadeOutWithEndInVisibility()
-                            }
-                            if (mBinding.homeRefresh.isRefreshing) {
-                                mBinding.homeRefresh.finishRefresh()
-                               if (!mBinding.homeTipsError.isVisible)  toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
                             }
                         }
                 }
@@ -359,4 +366,5 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             }
         }
     }
+
 }

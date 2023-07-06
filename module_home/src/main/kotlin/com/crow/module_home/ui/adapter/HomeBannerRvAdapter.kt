@@ -10,7 +10,6 @@ import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_home.databinding.HomeFragmentBannerRvItemBinding
 import com.crow.module_home.model.resp.homepage.Banner
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class HomeBannerRvAdapter(
     private var mBannerList: MutableList<Banner> = mutableListOf(),
@@ -45,7 +44,7 @@ class HomeBannerRvAdapter(
     }
 
     fun doBannerNotify(banners: MutableList<Banner>, delay: Long, viewLifecycleOwner: LifecycleOwner) {
-        viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             val isCountSame = itemCount == banners.size
             if (isCountSame) mBannerList = banners
             else if(itemCount != 0) {
