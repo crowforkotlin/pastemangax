@@ -12,7 +12,6 @@ import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.logError
 import com.crow.base.tools.extensions.onCollect
-import com.crow.base.tools.extensions.removeWhiteSpace
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -53,8 +52,10 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
 
     fun doInputSearchNovelIntent() {
 
-        val keyword = mSearchView?.text.toString().removeWhiteSpace().ifEmpty {
-            toast(getString(R.string.home_keyword_not_null))
+        val keyword = mSearchView?.text.toString().ifEmpty {
+            mBinding.homeSearchNovelTips.text = getString(R.string.home_saerch_tips)
+            if(mBinding.homeSearchNovelRv.isVisible) mBinding.homeSearchNovelRv.animateFadeOutWithEndInVisibility()
+            mBinding.homeSearchNovelTips.animateFadeIn()
             return
         }
 
@@ -100,8 +101,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
                     mBinding.homeSearchNovelChipAuthor.id -> mBinding.homeSearchNovelChipAuthor.animateFadeIn(BASE_ANIM_300L)
                 }
 
-                // 搜索内容不为空
-                if(!mSearchView?.text?.toString().isNullOrEmpty()) doInputSearchNovelIntent()
+                doInputSearchNovelIntent()
             }
         }
     }

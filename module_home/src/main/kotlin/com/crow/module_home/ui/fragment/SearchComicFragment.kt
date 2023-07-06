@@ -1,3 +1,4 @@
+
 package com.crow.module_home.ui.fragment
 
 import android.os.Bundle
@@ -52,7 +53,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
 
         val keyword = mSearchView?.text.toString().ifEmpty {
             mBinding.homeSearchComicTips.text = getString(R.string.home_saerch_tips)
-            mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
+            if (mBinding.homeSearchComicRv.isVisible) mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
             mBinding.homeSearchComicTips.animateFadeIn()
             return
         }
@@ -110,8 +111,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
                     mBinding.homeSearchComicChipLocal.id -> mBinding.homeSearchComicChipLocal.animateFadeIn(BASE_ANIM_300L)
                 }
 
-                // 搜索内容不为空
-                if(!mSearchView?.text?.toString().isNullOrEmpty()) doInputSearchComicIntent()
+                doInputSearchComicIntent()
             }
         }
     }
