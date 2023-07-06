@@ -86,10 +86,11 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     /** ● 初始化监听事件 */
     override fun initListener() {
 
-        // 设置容器Fragment的回调监听
+        // 设置容器Fragment的回调监听r
         parentFragmentManager.setFragmentResultListener(Comic, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 1) {
                 mBinding.discoverComicRefresh.autoRefreshAnimationOnly()
+                mBinding.discoverComicRefresh.finishRefresh((BASE_ANIM_300L.toInt() shl 1) or 0xFF)
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
                     launchDelay(BASE_ANIM_200L) {
                         onCollectState()
@@ -154,14 +155,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
             when(intent) {
                 is DiscoverIntent.GetComicHome -> {
                     intent.mBaseViewState
-                        .doOnSuccess {
-                            baseEvent.eventInitLimitOnce {
-                                mBinding.discoverComicRefresh.finishRefresh(BASE_ANIM_300L.toInt() shl 1)
-                                return@eventInitLimitOnce
-                            }.also {
-                                if (it == null && mBinding.discoverComicRefresh.isRefreshing) mBinding.discoverComicRefresh.finishRefresh()
-                            }
-                        }
+                        .doOnSuccess { if (mBinding.discoverComicRefresh.isRefreshing) mBinding.discoverComicRefresh.finishRefresh() }
                         .doOnError { _, _ ->
                             if (mDiscoverComicAdapter.itemCount == 0) {
 
