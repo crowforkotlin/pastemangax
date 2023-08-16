@@ -5,32 +5,33 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
-import androidx.core.view.setMargins
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.R
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.logMsg
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
-import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.ComicPageResp
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.ComicRvAdapter
 import com.crow.module_book.ui.fragment.BookFragment
-import com.crow.module_book.ui.view.PageBadgeView
-import com.crow.module_book.ui.view.WebtoonLayoutManager
+import com.crow.module_book.ui.view.comic.PageBadgeView
+import com.crow.module_book.ui.view.comic.rv.ComicLayoutManager
 import com.crow.module_book.ui.viewmodel.ComicViewModel
+import com.google.android.material.appbar.MaterialToolbar
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /*************************
@@ -47,37 +48,38 @@ class BookStriptComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     private lateinit var mComicRvAdapter: ComicRvAdapter
 
+    private val mWindowInsetsControllerCompat by lazy {
+        WindowInsetsControllerCompat(
+            requireActivity().window,
+            requireActivity().window.decorView
+        )
+    }
+
     private val mBadgeView: PageBadgeView by lazy {
-        PageBadgeView(layoutInflater, viewLifecycleOwner).also {  view ->
+        PageBadgeView(layoutInflater, viewLifecycleOwner).also { view ->
             mBinding.root.addView(view.mBadgeBinding.root)
-            view.mBadgeBinding.root.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            view.mBadgeBinding.root.layoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
                 gravity = Gravity.END or Gravity.TOP
-                setMargins(resources.getDimensionPixelSize(R.dimen.base_dp10))
+                marginEnd = resources.getDimensionPixelSize(R.dimen.base_dp10)
+                topMargin = (requireActivity() as ComicActivity).findViewById<MaterialToolbar>(com.crow.module_book.R.id.comic_toolbar).measuredHeight + resources.getDimensionPixelSize(R.dimen.base_dp10)
             }
         }
     }
 
-    override fun getViewBinding(inflater: LayoutInflater) = BookFragmentComicBinding.inflate(inflater)
+    private val mBaseEvent = BaseEvent.newInstance()
+
+    override fun getViewBinding(inflater: LayoutInflater) =
+        BookFragmentComicBinding.inflate(inflater)
 
     private fun showComicPage(comicPageResp: ComicPageResp) {
         FlowBus.with<String>(BaseEventEnum.UpdateChapter.name).post(lifecycleScope, comicPageResp.mChapter.mName)
-        mComicRvAdapter = ComicRvAdapter(
-            mComicContent =  comicPageResp.mChapter.mWords.zip(comicPageResp.mChapter.mContents).sortedBy { it.first }.map { it.second }.toMutableList().also { it.add(null) },
-            mHasNext = !comicPageResp.mChapter.mNext.isNullOrEmpty(),
-            mHasPrev = !comicPageResp. mChapter.mPrev.isNullOrEmpty()
-        ) {
-            showLoadingAnim()
-            mBinding.comicRv.animateFadeOutWithEndInVisibility()
-            mBadgeView.mBadgeBinding.root.animateFadeOut().withEndAction {
-                mComicVM.input(BookIntent.GetComicPage(comicPageResp.mChapter.mComicPathWord, comicPageResp.mChapter.mNext ?: return@withEndAction))
-                mBadgeView.mBadgeBinding.root.isInvisible = true
-            }
-        }
+        mComicRvAdapter.submitList(mComicVM.mContents.toMutableList())
         if (mBadgeView.mBadgeBinding.root.isInvisible) mBadgeView.mBadgeBinding.root.animateFadeIn()
         if (mBinding.comicRv.isInvisible) mBinding.comicRv.animateFadeIn()
-        mBinding.comicRv.layoutManager = WebtoonLayoutManager(requireActivity() as ComicActivity)
-        mBinding.comicRv.adapter = mComicRvAdapter
-        mBadgeView.updateTotalCount(comicPageResp.mChapter.mContents.size)
+        mBadgeView.updateTotalCount(mComicVM.mContents.size)
     }
 
     private fun onErrorComicPage() {
@@ -86,21 +88,61 @@ class BookStriptComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 
+    private fun onScrolled(pos: Int, dx: Int, dy: Int) {
+        mBadgeView.updateCurrentPos(pos + 1)
+        if (mBadgeView.mBadgeBinding.root.isGone) {
+            mBadgeView.mBadgeBinding.root.animateFadeIn()
+            mBadgeView.updateTotalCount(mComicRvAdapter.itemCount + 1)
+        }
+        if ((pos < 1 || pos > mComicRvAdapter.itemCount - 2) && dy != 0) {
+            "$pos $dy".logMsg()
+            if (mBaseEvent.getBoolean("loaded") == true) return
+            mBaseEvent.setBoolean("loaded", true)
+            // 向上滑动
+           when {
+               dy < 0 -> {
+                   mComicVM.input(BookIntent.GetComicPage(
+                       pathword = mComicVM.mPathword ?: return,
+                       uuid = mComicVM.mComicPage?.mChapter?.mPrev,
+                       loadPrev = true,
+                       loadNext = false
+                   ))
+               }
+               else -> {
+                   mComicVM.input(BookIntent.GetComicPage(
+                       pathword = mComicVM.mPathword ?: return,
+                       uuid = mComicVM.mComicPage?.mChapter?.mNext,
+                       loadPrev = false,
+                       loadNext = true
+                   ))
+               }
+           }
+        }
+    }
+
+    override fun initData(savedInstanceState: Bundle?) {
+        mComicVM.input(BookIntent.GetComicPage(mComicVM.mPathword ?: return, mComicVM.mUuid,
+            loadPrev = false,
+            loadNext = false
+        ))
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
+
+        mComicRvAdapter = ComicRvAdapter()
+        mBinding.comicRv.layoutManager = ComicLayoutManager(requireActivity() as ComicActivity)
+        mBinding.comicRv.adapter = mComicRvAdapter
 
         // 显示漫画页
         showComicPage(mComicVM.mComicPage ?: return)
     }
 
     override fun initListener() {
-        mBinding.comicRv.setOnScrollChangeListener { _, _, _, _, _ ->
-            val pos = (mBinding.comicRv.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1
-            if (pos <= (mComicVM.mComicPage?.mChapter?.mContents?.size ?: 0)) mBadgeView.updateCurrentPos(pos)
-            if (mBadgeView.mBadgeBinding.root.isGone) {
-                mBadgeView.mBadgeBinding.root.animateFadeIn()
-                mBadgeView.updateTotalCount(mComicVM.mComicPage?.mChapter?.mContents?.size ?: -1)
+        mBinding.comicRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                onScrolled(if(dy < 0) (mBinding.comicRv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() else (mBinding.comicRv.layoutManager as LinearLayoutManager).findLastVisibleItemPosition(), dx, dy)
             }
-        }
+        })
     }
 
     override fun onPause() {
@@ -108,18 +150,23 @@ class BookStriptComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
         mBinding.comicRv.stopScroll()
     }
 
-    override fun initData(savedInstanceState: Bundle?) {
-        if (mComicVM.mComicPage == null) { mComicVM.input(BookIntent.GetComicPage(mComicVM.mPathword ?: return, mComicVM.mUuid ?: return)) }
-    }
-
     override fun initObserver(savedInstanceState: Bundle?) {
+        mComicVM.mLoadedState.observe(this) { state ->
+            state.logMsg()
+            mComicRvAdapter.submitList(state)
+            mBaseEvent.eventInitLimitOnce { mBinding.comicRv.scrollBy(0, mContext.resources.getDimensionPixelSize(R.dimen.base_dp156)) }
+            mBaseEvent.setBoolean("loaded", false)
+        }
         mComicVM.onOutput { intent ->
-            when(intent) {
+            when (intent) {
                 is BookIntent.GetComicPage -> {
                     intent.mBaseViewState
-                        .doOnLoading { showLoadingAnim { dialog -> dialog.applyWindow(dimAmount = 0.3f) } }
-                        .doOnError { _, _ -> dismissLoadingAnim { onErrorComicPage() } }
-                        .doOnResult { dismissLoadingAnim { showComicPage(intent.comicPage!!) } }
+                        .doOnError { _, _ ->
+                            onErrorComicPage()
+                            mBaseEvent.setBoolean("loaded", false)
+                        }
+                        .doOnSuccess { mWindowInsetsControllerCompat.isAppearanceLightStatusBars = true }
+                        .doOnResult { showComicPage(intent.comicPage!!) }
                 }
             }
         }

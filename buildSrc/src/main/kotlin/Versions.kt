@@ -9,8 +9,14 @@
  * @formatter:off
  *************************/
 object Versions {
-    const val kotlin_version = "1.8.20"
-    const val ksp_version = "1.8.20-1.0.11"
+
+    /* AGP Android Gradle Plugin Version
+    * - HomePage : [https://developer.android.com/build/releases/gradle-plugin#8-1-0]
+    * */
+    const val agp_version = "8.1.0"
+
+    const val kotlin_version = "1.9.0"
+    const val ksp_version = "1.9.0-1.0.12"
     const val core_version = "1.9.0"
     const val smart_refresh = "2.0.5"
     const val retrofit_version = "2.9.0"

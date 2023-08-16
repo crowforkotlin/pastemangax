@@ -1,4 +1,4 @@
-package com.crow.module_book.ui.view
+package com.crow.module_book.ui.view.comic
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.crow.module_book.ui.view
+package com.crow.module_book.ui.view.comic.rv
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +12,7 @@ import com.crow.module_book.ui.activity.ComicActivity
  * This layout manager uses the same package name as the support library in order to use a package
  * protected method.
  */
-class WebtoonLayoutManager(activity: ComicActivity) : LinearLayoutManager(activity) {
+class ComicLayoutManager(activity: ComicActivity) : LinearLayoutManager(activity) {
 
     /**
      * Extra layout space is set to half the screen height.

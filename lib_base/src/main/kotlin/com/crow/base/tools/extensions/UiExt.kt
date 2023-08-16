@@ -7,6 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
+import android.graphics.Rect
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewPropertyAnimator
@@ -177,3 +178,13 @@ fun Canvas.doOnCanvas(iBaseUiCanvasEvent: IBaseUiCanvasEvent) {
 }
 
 fun isDarkMode() = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+
+/**
+ * Copy from Kotatsu
+ */
+fun hasGlobalPoint(view: View, x: Int, y: Int): Boolean {
+    if (!view.isVisible) return false
+    val rect = Rect()
+    view.getGlobalVisibleRect(rect)
+    return rect.contains(x, y)
+}

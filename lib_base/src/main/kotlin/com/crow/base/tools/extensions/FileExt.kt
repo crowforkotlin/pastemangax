@@ -1,15 +1,16 @@
 package com.crow.base.tools.extensions
 
-import java.io.*
-
-/*************************
- * @Machine: RedmiBook Pro 15 Win11
- * @Path: lib_base/src/main/java/com/barry/base/extensions
- * @Time: 2022/11/16 22:36
- * @Author: CrowForKotlin
- * @Description: FileExt
- * @formatter:on
- **************************/
+import android.content.Context
+import android.net.Uri
+import android.os.Build
+import androidx.core.content.FileProvider
+import androidx.core.net.toUri
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 
 fun copyStream(input: InputStream, output: OutputStream) {
     //文件存储
@@ -29,5 +30,21 @@ fun copyStream(input: InputStream, output: OutputStream) {
         bis.close()
     } catch (e: IOException) {
         e.printStackTrace()
+    }
+}
+
+val Context.cacheImageDir: File
+    get() = File(cacheDir, "shared_image")
+
+/**
+ * Returns the uri of a file
+ *
+ * @param context context of application
+ */
+fun File.getUriCompat(context: Context): Uri {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        FileProvider.getUriForFile(context, "com.crow.copymanga" + ".provider", this)
+    } else {
+        this.toUri()
     }
 }

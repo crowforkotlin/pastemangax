@@ -2,7 +2,7 @@ package com.crow.module_home.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.core.view.isInvisible
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import com.crow.base.tools.extensions.BASE_ANIM_300L
@@ -113,27 +113,26 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
                 val mTag = mBaseEvent.getBoolean(HomeFragment.SEARCH_TAG) ?: false
                 intent.mBaseViewState
                     .doOnLoading { if(mTag) showLoadingAnim() }
+                    .doOnSuccess { mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, false) }
                     .doOnError { _, msg ->
                         dismissLoadingAnim()
                         msg?.logError()
                         toast(getString(com.crow.base.R.string.BaseUnknowError))
                     }
-                    .doOnSuccess { mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, false) }
                     .doOnResult {
                         if (!mTag) return@doOnResult
                         dismissLoadingAnim()
                         if (intent.searchNovelResp!!.mTotal == 0) {
-                            if (!mBinding.homeSearchNovelTips.isVisible) {
+                            if (mBinding.homeSearchNovelTips.isGone) {
                                 mBinding.homeSearchNovelRv.animateFadeOutWithEndInVisibility()
                                 mBinding.homeSearchNovelTips.animateFadeIn()
                             }
-                            dismissLoadingAnim()
                             return@doOnResult
                         } else {
                             if (mBinding.homeSearchNovelTips.isVisible) {
                                 mBinding.homeSearchNovelRv.animateFadeIn()
                                 mBinding.homeSearchNovelTips.animateFadeOut().withEndAction {
-                                    mBinding.homeSearchNovelTips.isInvisible = true
+                                    mBinding.homeSearchNovelTips.isGone = true
                                     mBinding.homeSearchNovelTips.text = getString(R.string.home_saerch_null_result)
                                 }
                             }

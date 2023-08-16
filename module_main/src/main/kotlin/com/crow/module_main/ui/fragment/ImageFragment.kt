@@ -80,7 +80,7 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
 
-        mBinding.root.immersionPadding()
+        immersionPadding(mBinding.root)
 
         // 初始化 设置状态栏暗色
         mWindowInsets = WindowCompat.getInsetsController(requireActivity().window, requireActivity().window.decorView)

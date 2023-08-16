@@ -80,7 +80,7 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
         return
 
         // 设置 内边距属性 实现沉浸式效果
-        mBinding.discoverNovelAppbar.root.immersionPadding(hideNaviateBar = false)
+        immersionPadding(mBinding.discoverNovelAppbar.root, paddingNaviateBar = false)
 
         // 设置Title
         mBinding.discoverNovelAppbar.discoverAppbarToolbar.title = getString(R.string.discover_novel)

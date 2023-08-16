@@ -89,8 +89,8 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
      * ● 2023-06-21 00:13:06 周三 上午
      */
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.updateAppbar.immersionPadding(hideNaviateBar = false)
-        mBinding.updateRv.immersionPadding(hideStatusBar = false)
+        immersionPadding(mBinding.updateAppbar, paddingNaviateBar = false)
+        immersionPadding(mBinding.updateRv, paddingStatusBar = false)
         mBinding.updateRv.adapter = mUpdateAdapter
     }
 

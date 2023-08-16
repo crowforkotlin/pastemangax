@@ -64,7 +64,7 @@ class StyleableFragment : BaseMviFragment<MainFragmentStyleableBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
-        mBinding.root.immersionPadding()
+        immersionPadding(mBinding.root)
 
     }
 

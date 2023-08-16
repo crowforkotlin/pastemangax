@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
-
 plugins {
     // Android 应用程序插件
     id(Plugins.android_application)
@@ -18,6 +16,9 @@ kotlin { jvmToolchain(11) }
 
 android {
 
+    // 标识应用程序命名空间 （应用商店上的唯一标识符）
+    namespace = AppConfigs.namespace
+
     // 配置构建功能相关的选项
     buildFeatures(Action {
 
@@ -31,9 +32,6 @@ android {
 
         // 编译SDK 版本
         compileSdk = AppConfigs.compile_sdk_version
-
-        // 标识应用程序命名空间 （应用商店上的唯一标识符）
-        namespace = AppConfigs.namespace
 
         // 构建工具版本
         buildToolsVersion =  AppConfigs.build_tools_version

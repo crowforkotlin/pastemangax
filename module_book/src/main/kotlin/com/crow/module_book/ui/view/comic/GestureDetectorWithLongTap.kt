@@ -1,4 +1,4 @@
-package com.crow.module_book.ui.view
+package com.crow.module_book.ui.view.comic
 
 import android.content.Context
 import android.os.Handler

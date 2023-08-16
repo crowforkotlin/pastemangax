@@ -1,4 +1,4 @@
-package com.crow.module_book.ui.view.rv
+package com.crow.module_book.ui.view.comic.rv
 
 import android.content.Context
 import android.util.AttributeSet

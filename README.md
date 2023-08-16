@@ -43,7 +43,7 @@
 </table>
 <table>
 	<tr>
-		<td align="center"><img src="docs/images/1.2.2_comic_info_light.jpg"></td>
+		<td align="center"><img src="docs/images/1.2.2_book_info_light.jpg"></td>
 		<td align="center"><img src="docs/images/1.2.2_comic_vertical.jpg"></td>
 		<td align="center"><img src="docs/images/1.2.2_search_light.jpg"></td>
 	</tr>

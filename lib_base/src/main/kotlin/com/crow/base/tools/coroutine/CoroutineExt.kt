@@ -4,8 +4,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.tools.extensions.logError
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 /*************************
@@ -33,3 +37,10 @@ inline fun LifecycleOwner.launchDelay(delay: Long, crossinline scope: suspend ()
         scope()
     }
 }
+
+suspend fun <T> withUIContext(block: suspend CoroutineScope.() -> T) = withContext(Dispatchers.Main, block)
+
+suspend fun <T> withIOContext(block: suspend CoroutineScope.() -> T) = withContext(Dispatchers.IO, block)
+
+suspend fun <T> withNonCancellableContext(block: suspend CoroutineScope.() -> T) =
+    withContext(NonCancellable, block)

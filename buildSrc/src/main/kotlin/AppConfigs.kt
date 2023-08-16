@@ -60,10 +60,10 @@ object AppConfigs {
     const val application_id = "com.crow.copymanga"
 
     // 编译SDK版本 Android 13 T
-    const val compile_sdk_version = 33
+    const val compile_sdk_version = 34
 
     // 编译工具版本
-    const val build_tools_version = "33.0.0"
+    const val build_tools_version = "34.0.0"
 
     // 最小支持版本 Android 6
     const val min_sdk_version = 23

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/comic_constraint"
     android:layout_width="match_parent"
-    android:background="@color/book_ant_10"
     android:layout_height="match_parent"
+    android:background="@color/book_ant_10"
     tools:context=".ui.activity.ComicActivity">
 
     <androidx.fragment.app.FragmentContainerView
@@ -18,15 +18,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/manga_reader_toolbar"
+        android:id="@+id/comic_toolbar"
         style="@style/Widget.Material3.Toolbar.Surface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?actionBarSize"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/base_ic_back_24dp"
+        app:subtitle="@string/BaseAppName"
+        app:title="@string/BaseAppName"
+        tools:visibility="visible" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
