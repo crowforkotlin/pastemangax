@@ -85,11 +85,18 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
     /** ● 初始化监听事件 */
     override fun initListener() {
-
-        // 设置容器Fragment的回调监听
+      /*  launchDelay(4000L) {
+            repeat(Int.MAX_VALUE) {
+                delay(20L)
+                "${mDiscoverComicAdapter.itemCount}".logMsg()
+                mBinding.discoverComicRv.scrollToPosition(mDiscoverComicAdapter.itemCount - 1)
+            }
+        }*/
+        // 设置容器Fragment的回调监听r
         parentFragmentManager.setFragmentResultListener(Comic, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 1) {
                 mBinding.discoverComicRefresh.autoRefreshAnimationOnly()
+                mBinding.discoverComicRefresh.finishRefresh((BASE_ANIM_300L.toInt() shl 1) or 0xFF)
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
                     launchDelay(BASE_ANIM_200L) {
                         onCollectState()
@@ -122,7 +129,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
-        mBinding.discoverComicAppbar.root.immersionPadding(hideNaviateBar = false)
+        immersionPadding(mBinding.discoverComicAppbar.root, paddingNaviateBar = false)
 
         // 设置Title
         mBinding.discoverComicAppbar.discoverAppbarToolbar.title = getString(R.string.discover_comic)
@@ -154,14 +161,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
             when(intent) {
                 is DiscoverIntent.GetComicHome -> {
                     intent.mBaseViewState
-                        .doOnSuccess {
-                            baseEvent.eventInitLimitOnce {
-                                mBinding.discoverComicRefresh.finishRefresh(BASE_ANIM_300L.toInt() shl 1)
-                                return@eventInitLimitOnce
-                            }.also {
-                                if (it == null && mBinding.discoverComicRefresh.isRefreshing) mBinding.discoverComicRefresh.finishRefresh()
-                            }
-                        }
+                        .doOnSuccess { if (mBinding.discoverComicRefresh.isRefreshing) mBinding.discoverComicRefresh.finishRefresh() }
                         .doOnError { _, _ ->
                             if (mDiscoverComicAdapter.itemCount == 0) {
 

@@ -2,7 +2,7 @@ package com.crow.module_home.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.core.view.isInvisible
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import com.crow.base.tools.extensions.BASE_ANIM_300L
@@ -12,7 +12,6 @@ import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.logError
 import com.crow.base.tools.extensions.onCollect
-import com.crow.base.tools.extensions.removeWhiteSpace
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -53,8 +52,10 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
 
     fun doInputSearchNovelIntent() {
 
-        val keyword = mSearchView?.text.toString().removeWhiteSpace().ifEmpty {
-            toast(getString(R.string.home_keyword_not_null))
+        val keyword = mSearchView?.text.toString().ifEmpty {
+            mBinding.homeSearchNovelTips.text = getString(R.string.home_saerch_tips)
+            if(mBinding.homeSearchNovelRv.isVisible) mBinding.homeSearchNovelRv.animateFadeOutWithEndInVisibility()
+            mBinding.homeSearchNovelTips.animateFadeIn()
             return
         }
 
@@ -100,8 +101,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
                     mBinding.homeSearchNovelChipAuthor.id -> mBinding.homeSearchNovelChipAuthor.animateFadeIn(BASE_ANIM_300L)
                 }
 
-                // 搜索内容不为空
-                if(!mSearchView?.text?.toString().isNullOrEmpty()) doInputSearchNovelIntent()
+                doInputSearchNovelIntent()
             }
         }
     }
@@ -113,27 +113,26 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
                 val mTag = mBaseEvent.getBoolean(HomeFragment.SEARCH_TAG) ?: false
                 intent.mBaseViewState
                     .doOnLoading { if(mTag) showLoadingAnim() }
+                    .doOnSuccess { mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, false) }
                     .doOnError { _, msg ->
                         dismissLoadingAnim()
                         msg?.logError()
                         toast(getString(com.crow.base.R.string.BaseUnknowError))
                     }
-                    .doOnSuccess { mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, false) }
                     .doOnResult {
                         if (!mTag) return@doOnResult
                         dismissLoadingAnim()
                         if (intent.searchNovelResp!!.mTotal == 0) {
-                            if (!mBinding.homeSearchNovelTips.isVisible) {
+                            if (mBinding.homeSearchNovelTips.isGone) {
                                 mBinding.homeSearchNovelRv.animateFadeOutWithEndInVisibility()
                                 mBinding.homeSearchNovelTips.animateFadeIn()
                             }
-                            dismissLoadingAnim()
                             return@doOnResult
                         } else {
                             if (mBinding.homeSearchNovelTips.isVisible) {
                                 mBinding.homeSearchNovelRv.animateFadeIn()
                                 mBinding.homeSearchNovelTips.animateFadeOut().withEndAction {
-                                    mBinding.homeSearchNovelTips.isInvisible = true
+                                    mBinding.homeSearchNovelTips.isGone = true
                                     mBinding.homeSearchNovelTips.text = getString(R.string.home_saerch_null_result)
                                 }
                             }

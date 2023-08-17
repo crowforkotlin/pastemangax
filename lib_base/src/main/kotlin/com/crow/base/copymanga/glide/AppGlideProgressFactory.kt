@@ -5,7 +5,11 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
-
+/**
+ * ● Glide进度工厂
+ * ● @author: CrowForKotlin
+ * ● 2023-07-07 22:12:17 周五 下午
+ */
 class AppGlideProgressFactory private constructor (private val mUrl: String) {
 
     init { mProgressManagerMap[mUrl] = this }

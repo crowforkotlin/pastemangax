@@ -8,6 +8,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
@@ -66,19 +67,39 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      */
     private val mBsVM by viewModel<BookshelfViewModel>()
 
-    // Bookshelf Comic适配器
+    /**
+     * ● Bookshelf Comic适配器
+     *
+     * ● 2023-07-07 21:49:53 周五 下午
+     */
     private lateinit var mBookshelfComicRvAdapter: BookshelfComicRvAdapter
 
-    // Bookshelf Novel适配器
+    /**
+     * ● Bookshelf Novel适配器
+     *
+     * ● 2023-07-07 21:50:00 周五 下午
+     */
     private lateinit var mBookshelfNovelRvAdapter: BookshelfNovelRvAdapter
 
-    // 漫画计数
+    /**
+     * ● 漫画计数
+     *
+     * ● 2023-07-07 21:50:05 周五 下午
+     */
     private var mComicCount: Int? = null
 
-    // 轻小说计数
+    /**
+     * ● 轻小说计数
+     *
+     * ● 2023-07-07 21:50:10 周五 下午
+     */
     private var mNovelCount: Int? = null
 
-    // 处理错误时 隐藏控件
+    /**
+     * ● 处理错误时 隐藏控件
+     *
+     * ● 2023-07-07 21:50:17 周五 下午
+     */
     private fun processErrorHideView() {
         if (mBinding.bookshelfTipsEmpty.tag == null) return
         mBinding.bookshelfTipsEmpty.tag = null
@@ -89,7 +110,11 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBinding.bookshelfRefresh.finishRefresh()   // 完成刷新
     }
 
-    // 处理错误
+    /**
+     * ● 处理错误
+     *
+     * ● 2023-07-07 21:49:45 周五 下午
+     */
     private fun processError(code: Int, msg: String?) {
 
         // 解析地址失败 且 Resumed的状态才提示
@@ -124,32 +149,42 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         )
     }
 
-    // 处理结果
-    private fun processResult(bookshelfComicResp: BookshelfComicResp?, bookshelfNovelResp: BookshelfNovelResp?) {
-        if (mBinding.bookshelfButtonGropu.checkedButtonId == mBinding.bookshelfComic.id) {
-            if (bookshelfComicResp == null) return
-        } else {
-            if (bookshelfNovelResp == null) return
-        }
+    /**
+     * ● 处理结果视图
+     *
+     * ● 2023-07-07 22:03:47 周五 下午
+     */
+    private fun processResultView(bookshelfRv: RecyclerView) {
         if (mBinding.bookshelfTipsEmpty.isGone || mBinding.bookshelfTipsEmpty.tag != null) return
         mBinding.bookshelfTipsEmpty.tag = Unit
         mBinding.bookshelfTipsEmpty.animateFadeOutWithEndInVisible()
         mBinding.bookshelfCount.animateFadeIn()
-        if (bookshelfComicResp != null) {
-            mBinding.bookshelfCount.text =  getString(R.string.bookshelf_comic_count, mComicCount ?: -1)
-            mBinding.bookshelfRvComic.animateFadeIn()
-        } else {
-            mBinding.bookshelfCount.text = getString(R.string.bookshelf_novel_count, mNovelCount ?: -1)
-            mBinding.bookshelfRvNovel.animateFadeIn()
-        }
+        bookshelfRv.animateFadeIn()
     }
 
-    private fun navigateBookComicInfo(pathword: String) =
-        navigate(Fragments.BookComicInfo.name, pathword)
-
-    private fun navigateBookNovelInfo(pathword: String) =
-        navigate(Fragments.BookNovelInfo.name, pathword)
-
+    /**
+     * ● 处理结果
+     *
+     * ● 2023-07-07 21:50:30 周五 下午
+     */
+    private fun processResult(bookshelfComicResp: BookshelfComicResp?, bookshelfNovelResp: BookshelfNovelResp?) {
+        when(mBinding.bookshelfButtonGropu.checkedButtonId) {
+            mBinding.bookshelfComic.id -> {
+                processResultView(mBinding.bookshelfRvComic)
+                bookshelfComicResp?.let { mBinding.bookshelfCount.text =  getString(R.string.bookshelf_comic_count, mComicCount ?: -1) }
+            }
+            mBinding.bookshelfNovel.id -> {
+                processResultView(mBinding.bookshelfRvNovel)
+                bookshelfNovelResp?.let { mBinding.bookshelfCount.text = getString(R.string.bookshelf_novel_count, mNovelCount ?: -1) }
+            }
+        }
+    }
+    
+    /**
+     * ● 导航
+     *
+     * ● 2023-07-07 21:51:20 周五 下午
+     */
     private fun navigate(tag: String, pathword: String) {
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
@@ -160,6 +195,11 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         )
     }
 
+    /**
+     * ● Mvi Intent Output
+     *
+     * ● 2023-07-07 21:55:12 周五 下午
+     */
     private fun onOutput() {
         // 每个观察者需要一个单独的生命周期块，在同一个会导致第二个观察者失效 收集书架 漫画Pager状态
         repeatOnLifecycle { mBsVM.mBookshelfComicFlowPager?.collect { data -> mBookshelfComicRvAdapter.submitData(data) } }
@@ -168,9 +208,29 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         repeatOnLifecycle { mBsVM.mBookshelfNovelFlowPager?.collect { data -> mBookshelfNovelRvAdapter.submitData(data) } }
     }
 
+    /**
+     * ● 获取ViewBinding
+     *
+     * ● 2023-07-07 21:55:05 周五 下午
+     */
     override fun getViewBinding(inflater: LayoutInflater) =
         BookshelfFragmentBinding.inflate(inflater)
 
+    /**
+     * ● Lifecycle onDestroyView
+     *
+     * ● 2023-07-07 21:52:59 周五 下午
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        parentFragmentManager.clearFragmentResultListener(Bookshelf)
+    }
+
+    /**
+     * ● Lifecycle onCreate
+     *
+     * ● 2023-07-07 21:54:21 周五 下午
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -181,17 +241,22 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBsVM.input(BookshelfIntent.GetBookshelfNovel())
     }
 
+    /**
+     * ● 初始化视图
+     *
+     * ● 2023-07-07 21:54:34 周五 下午
+     */
     override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
-        mBinding.bookshelfToolbar.immersionPadding(hideNaviateBar = false)
+        immersionPadding(mBinding.bookshelfToolbar, paddingNaviateBar = false)
 
         // 设置刷新时不允许列表滚动
         mBinding.bookshelfRefresh.setDisableContentWhenRefresh(true)
 
         // 初始化适配器
-        mBookshelfComicRvAdapter = BookshelfComicRvAdapter { navigateBookComicInfo(it.mComic.mPathWord) }
-        mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter { navigateBookNovelInfo(it.mNovel.mPathWord) }
+        mBookshelfComicRvAdapter = BookshelfComicRvAdapter { navigate(Fragments.BookComicInfo.name, it.mComic.mPathWord) }
+        mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter { navigate(Fragments.BookNovelInfo.name, it.mNovel.mPathWord) }
 
         // 设置加载动画独占1行，卡片3行
         (mBinding.bookshelfRvComic.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -208,6 +273,11 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBinding.bookshelfRvNovel.adapter = mBookshelfNovelRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
     }
 
+    /**
+     * ● 初始化事件
+     *
+     * ● 2023-07-07 21:54:43 周五 下午
+     */
     override fun initListener() {
 
         // 设置容器Fragment的共享结果回调
@@ -307,6 +377,11 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         }
     }
 
+    /**
+     * ● 初始化观察者
+     *
+     * ● 2023-07-07 21:53:56 周五 下午
+     */
     override fun initObserver(savedInstanceState: Bundle?) {
 
         // 接收意图
@@ -320,7 +395,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                             // 如果当前按钮组不为 漫画 则退出
                             if (mBinding.bookshelfButtonGropu.checkedButtonId != R.id.bookshelf_comic) return@doOnError
 
-                            // 适配器数据 0 的逻辑
+                            // 适配器数据为0 则处理错误->隐藏视图
                             if (mBookshelfComicRvAdapter.itemCount == 0) processErrorHideView()
 
                             // 处理错误
@@ -368,10 +443,5 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        parentFragmentManager.clearFragmentResultListener("Bookshelkf")
     }
 }

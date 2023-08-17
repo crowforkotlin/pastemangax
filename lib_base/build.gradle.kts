@@ -1,5 +1,3 @@
-import com.android.build.api.dsl.LibraryBuildFeatures
-
 plugins {
 
     // 使用插件库
@@ -15,17 +13,24 @@ plugins {
 
 android {
 
+    // 标识应用程序命名空间 （应用商店上的唯一标识符）
+    namespace = AppConfigs.base_namespace
+
     // 配置构建功能相关的选项
-    buildFeatures(Action<LibraryBuildFeatures> {
+    buildFeatures {
 
         // 开启 ViewBinding
         viewBinding = true
-    })
+
+        // 开启 Compose
+        compose = true
+    }
 
     defaultConfig {
 
-        // 标识应用程序命名空间 （应用商店上的唯一标识符）
-        namespace = AppConfigs.base_namespace
+        buildConfigField("String", "APPLICATION_ID", "\"${AppConfigs.application_id}\"")
+        buildConfigField("String", "VERSION_NAME", "\"${AppConfigs.version_name}\"")
+        buildConfigField("int", "VERSION_CODE", "${AppConfigs.version_code}")
 
         // 资源前缀（所有资源前缀必须添加）
         resourcePrefix(AppConfigs.base_resource_prefix)
@@ -44,6 +49,7 @@ android {
             abiFilters.add("armeabi")
         }
     }
+
 
     // Android Gradle 构建时的编译选项
     compileOptions {
@@ -77,7 +83,9 @@ android {
         // JNI 库文件路径
         jniLibs.srcDirs(AppConfigs.source_libs, AppConfigs.source_jniLibs)
     }
-
+    composeOptions {
+        kotlinCompilerExtensionVersion = compose.versions.compiler.get()
+    }
 }
 
 kotlin { jvmToolchain(11) }
@@ -112,7 +120,7 @@ dependencies {
 
     /* Kotlin 协程 */
     api(Dependencies.kotlinx_coroutines)
-    api(Dependencies.kotlinx_datetime)
+    api(Dependencies.kotlinx_datetime)///
     api(Dependencies.kotlin_stdlib)
     api(Dependencies.kotlin_reflect)
 
@@ -148,4 +156,13 @@ dependencies {
 
     api(Dependencies.smart_refresh)
     api(Dependencies.smart_refresh_material_header)
+
+    api(platform(compose.bom))
+    api(compose.activity)
+    api(compose.material3.core)
+    api(compose.material.core)
+    api(compose.accompanist.themeadapter)
+    api(compose.ui.tooling)
+    api(compose.material.icons)
+
 }

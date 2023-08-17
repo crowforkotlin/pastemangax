@@ -28,6 +28,7 @@
     - **✅[LoadingButton内存泄露（已修复）](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid/issues/144#issuecomment-585668460)**
     - **✅[Add Glide TransitionAnimation](https://github.com/bumptech/glide/issues/692)**
 
+#### 浅色模式
 <table>
 	<tr>
 		<td align="center"><img src="docs/images/1.2.2_home_light.jpg"></td>
@@ -42,13 +43,39 @@
 </table>
 <table>
 	<tr>
-		<td align="center"><img src="docs/images/1.2.2_comic_info_light.jpg"></td>
+		<td align="center"><img src="docs/images/1.2.2_book_info_light.jpg"></td>
 		<td align="center"><img src="docs/images/1.2.2_comic_vertical.jpg"></td>
 		<td align="center"><img src="docs/images/1.2.2_search_light.jpg"></td>
 	</tr>
     <tr>
 		<td align="center">漫画信息</td>
-		<td align="center">漫画页-支持横竖屏</td>
+		<td align="center">漫画页-支持横竖屏-缩放</td>
+        <td align="center">搜索</td>
+	</tr>
+</table>
+
+#### 深色模式
+<table>
+	<tr>
+		<td align="center"><img src="docs/images/1.2.3_home_dark.jpg"></td>
+		<td align="center"><img src="docs/images/1.2.3_home_comic_dark.jpg"></td>
+		<td align="center"><img src="docs/images/1.2.3_home_bookshelf_dark.jpg"></td>
+	</tr>
+    <tr>
+		<td align="center">主页</td>
+		<td align="center">漫画</td>
+        <td align="center">书架</td>
+	</tr>
+</table>
+<table>
+	<tr>
+		<td align="center"><img src="docs/images/1.2.3_book_info_dark.jpg"></td>
+		<td align="center"><img src="docs/images/1.2.3_comic_vertical_dark.jpg"></td>
+		<td align="center"><img src="docs/images/1.2.3_search_dark.jpg"></td>
+	</tr>
+    <tr>
+		<td align="center">漫画信息</td>
+		<td align="center">漫画页-支持横竖屏-缩放</td>
         <td align="center">搜索</td>
 	</tr>
 </table>

@@ -191,6 +191,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                 toolbar.setNavigationIcon(baseR.drawable.base_ic_back_24dp)                                                                             // 设置SearchView toolbar导航图标
                 toolbar.navigationIcon?.setTint(tintColor)
                 toolbar.setBackgroundColor(bgColor)                                                                                                                    // 设置SearchView toolbar背景色白，沉浸式
+                binding.homeSearchVp.setBackgroundColor(bgColor)
                 setStatusBarSpacerEnabled(false)                                                                                                                          // 关闭状态栏空格间距
 
                 // 添加一个自定义 View设置其高度为StatubarHeight实现沉浸式效果
@@ -268,7 +269,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         }
 
         // 设置 内边距属性 实现沉浸式效果
-        mBinding.homeAppbar.immersionPadding(hideStatusBar = true, hideNaviateBar = false)
+        immersionPadding(mBinding.homeAppbar, paddingStatusBar = true, paddingNaviateBar = false)
 
         // 设置刷新时不允许列表滚动
         mBinding.homeRefresh.setDisableContentWhenRefresh(true)

@@ -5,8 +5,12 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.IntRange
+import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
@@ -14,17 +18,12 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
-import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
-import com.crow.module_book.R
 import com.crow.module_book.databinding.BookActivityComicButtonRvBinding
 import com.crow.module_book.databinding.BookActivityComicRvBinding
 import com.crow.module_book.model.resp.comic_page.Content
-import com.google.android.material.button.MaterialButton
-import kotlinx.coroutines.delay
 
 
 /*************************
@@ -35,116 +34,118 @@ import kotlinx.coroutines.delay
  * @Description: ComicInfoChapterRvAdapter
  * @formatter:on
  **************************/
-class ComicRvAdapter(
-    private var mComicContent: MutableList<Content?> = mutableListOf(),
-    val mHasNext: Boolean,
-    val mHasPrev: Boolean,
-    val doOnNext: Runnable
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ComicRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        private const val NextChapter = 0
+        private const val PageLastView = 0
         private const val PageView = 1
     }
 
-    private var mIsFirstInit: Boolean = true
-
-    inner class PageViewHolder(binding: BookActivityComicRvBinding) : BaseGlideLoadingViewHolder<BookActivityComicRvBinding>(binding)
-
-    inner class ButtonViewHolder(binding: BookActivityComicButtonRvBinding) : RecyclerView.ViewHolder(binding.root) {
-        val mNext: MaterialButton = binding.comicNext
+    private val mDiffCallback: DiffUtil.ItemCallback<Content> = object : DiffUtil.ItemCallback<Content>() {
+        override fun areItemsTheSame(oldItem: Content, newItem: Content): Boolean {
+            return oldItem == newItem
+        }
+        override fun areContentsTheSame(oldItem: Content, newItem: Content): Boolean {
+            return oldItem.mIsLoading == newItem.mIsLoading && oldItem.mPrev == newItem.mPrev && oldItem.mNext == newItem.mNext && oldItem.mTips == newItem.mTips
+        }
     }
+    private val mDiffer = AsyncListDiffer(this, mDiffCallback)
+    private fun getItem(@IntRange(from = 0) position: Int) = mDiffer.currentList[position]
 
-    private fun RecyclerView.ViewHolder.loadComicImage(position: Int) {
-        when (this) {
-            is PageViewHolder -> {
-                val item = mComicContent[position] ?: return
-                rvBinding.comicRvLoading.isVisible = true
-                rvBinding.comicRvProgressText.isVisible = true
-                rvBinding.comicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
-                rvBinding.comicRvRetry.isVisible = false
-                mAppGlideProgressFactory?.doRemoveListener()?.doClean()
-                mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
-                    rvBinding.comicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
-                }
+    fun getCurrentList() = mDiffer.currentList
 
-                Glide.with(itemView.context)
-                    .load(item.mImageUrl)
-                    .addListener(mAppGlideProgressFactory?.getRequestListener({
-                        rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
-                        rvBinding.comicRvRetry.isVisible = true
-                        rvBinding.comicRvRetry.doOnClickInterval(false) {
-                            rvBinding.comicRvRetry.animateFadeOut()
-                            loadComicImage(position)
-                        }
-                        false
-                    },  { _, _ ->
-                        rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
-                        false
-                    }))
-                    .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                        val transition = if (dataSource == DataSource.REMOTE) {
-                            rvBinding.comicRvLoading.isInvisible = true
-                            rvBinding.comicRvProgressText.isInvisible = true
-                            DrawableCrossFadeTransition(300, true)
-                        } else {
-                            rvBinding.comicRvLoading.isInvisible = true
-                            rvBinding.comicRvProgressText.isInvisible = true
-                            NoTransition()
-                        }
-                        mIsFirstInit = false
-                        transition
-                    })
-                    .into(rvBinding.comicRvImageView)
+    fun submitList(contents: MutableList<Content>) = mDiffer.submitList(contents)
+
+    inner class PageViewHolder(binding: BookActivityComicRvBinding) : BaseGlideLoadingViewHolder<BookActivityComicRvBinding>(binding) {
+
+
+
+        fun onBind(item: Content) {
+
+            rvBinding.comicRvLoading.isVisible = true
+            rvBinding.comicRvProgressText.isVisible = true
+            rvBinding.comicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
+            rvBinding.comicRvRetry.isVisible = false
+            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
+                rvBinding.comicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
             }
+
+            Glide.with(itemView.context)
+                .load(item.mImageUrl)
+                .addListener(mAppGlideProgressFactory?.getRequestListener({
+                    rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
+                    rvBinding.comicRvRetry.isVisible = true
+                    rvBinding.comicRvRetry.doOnClickInterval(false) {
+                        rvBinding.comicRvRetry.animateFadeOut()
+                        onBind(item)
+                    }
+                    false
+                },  { _, dataSource ->
+                    rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
+                    false
+                }))
+                .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
+                    val transition = if (dataSource == DataSource.REMOTE) {
+                        rvBinding.comicRvLoading.isInvisible = true
+                        rvBinding.comicRvProgressText.isInvisible = true
+
+                        DrawableCrossFadeTransition(300, true)
+                    } else {
+                        rvBinding.comicRvLoading.isInvisible = true
+                        rvBinding.comicRvProgressText.isInvisible = true
+                        NoTransition()
+                    }
+                    transition
+                })
+                .into(rvBinding.comicRvImageView)
         }
     }
 
+    inner class PageMoreViewHolder(val binding: BookActivityComicButtonRvBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun onBind(item: Content, position: Int) {
+            if (item.mIsLoading) {
+                binding.striptLoading.isVisible = true
+                binding.striptTipsCenter.isGone = true
+            } else {
+                binding.striptLoading.isInvisible = true
+                binding.striptTipsCenter.isVisible = true
+            }
+            binding.striptTipsPrev.isVisible = item.mPrev != null
+            binding.striptTipsNext.isVisible = item.mNext != null
+
+            binding.striptTipsCenter.text = item.mTips
+            binding.striptTipsPrev.text = item.mPrev
+            binding.striptTipsNext.text = item.mNext
+        }
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            NextChapter ->ButtonViewHolder(BookActivityComicButtonRvBinding.inflate(LayoutInflater.from(parent.context), parent,false)).also { vh ->
-                if (!mHasNext) vh.mNext.text = parent.context.getString(R.string.book_no_next)
-                vh.mNext.doOnClickInterval {
-                    if(!mHasNext) toast(parent.context.getString(R.string.book_no_next))
-                    else doOnNext.run()
-                }
-            }
+            PageLastView ->PageMoreViewHolder(BookActivityComicButtonRvBinding.inflate(LayoutInflater.from(parent.context), parent,false))
             PageView -> PageViewHolder(BookActivityComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> error("Unknown view type!")
         }
     }
 
-    override fun getItemCount(): Int = mComicContent.size
+    override fun getItemCount(): Int = mDiffer.currentList.size
 
-    override fun getItemViewType(position: Int): Int {
-        return if (position == mComicContent.size - 1) NextChapter else PageView
-    }
+    override fun getItemViewType(position: Int) = if (getItem(position).mTips != null) PageLastView else PageView
 
     override fun onViewRecycled(vh: RecyclerView.ViewHolder) {
         super.onViewRecycled(vh)
         when(vh) {
-            is PageViewHolder -> { vh.rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT }
+            is PageViewHolder -> {  vh.rvBinding.root.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT }
         }
     }
 
     override fun onBindViewHolder(vh: RecyclerView.ViewHolder, position: Int) {
-        vh.loadComicImage(position)
+        when(vh) {
+            is PageViewHolder -> vh.onBind(getItem(position))
+            is PageMoreViewHolder -> vh.onBind(getItem(position), position)
+        }
     }
 
-    suspend fun doNotify(newDataResult: MutableList<Content?>, delayMs: Long = 1L) {
-        val isCountSame = itemCount == newDataResult.size
-        if (isCountSame) mComicContent = newDataResult
-        else if(itemCount != 0) {
-            notifyItemRangeRemoved(0, itemCount)
-            mComicContent.clear()
-            delay(BASE_ANIM_200L)
-        }
-        newDataResult.forEachIndexed { index, data ->
-            if (!isCountSame) {
-                mComicContent.add(data)
-                notifyItemInserted(index)
-            } else notifyItemChanged(index)
-            delay(delayMs)
-        }
-    }
 }

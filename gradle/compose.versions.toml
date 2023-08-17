@@ -1,0 +1,20 @@
+[versions]
+compiler = "1.5.0"
+compose-bom = "2023.07.00-alpha02"
+accompanist = "0.31.2-alpha"
+
+[libraries]
+activity = "androidx.activity:activity-compose:1.7.2"
+bom = { group = "dev.chrisbanes.compose", name = "compose-bom", version.ref = "compose-bom" }
+foundation = { module = "androidx.compose.foundation:foundation" }
+animation = { module = "androidx.compose.animation:animation" }
+animation-graphics = { module = "androidx.compose.animation:animation-graphics" }
+ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+ui-util = { module = "androidx.compose.ui:ui-util" }
+material3-core = { module = "androidx.compose.material3:material3" }
+material-icons = { module = "androidx.compose.material:material-icons-extended" }
+material-core = { module = "androidx.compose.material:material" }
+accompanist-webview = { module = "com.google.accompanist:accompanist-webview", version.ref = "accompanist" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+accompanist-themeadapter = { module = "com.google.accompanist:accompanist-themeadapter-material3", version.ref = "accompanist" }
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }

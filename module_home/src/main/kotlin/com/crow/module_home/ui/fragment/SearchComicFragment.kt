@@ -1,8 +1,9 @@
+
 package com.crow.module_home.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.core.view.isInvisible
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.copymanga.BaseLoadStateAdapter
@@ -44,7 +45,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
 
     private val mHomeVM by viewModel<HomeViewModel>()
 
-    private val mBaseEvent = BaseEvent.getSIngleInstance()
+    private val mBaseEvent = BaseEvent.newInstance()
 
     private var mComicRvAdapter = SearchComicRvAdapter { mOnTap?.invoke(it.mPathWord) }
 
@@ -52,13 +53,12 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
 
         val keyword = mSearchView?.text.toString().ifEmpty {
             mBinding.homeSearchComicTips.text = getString(R.string.home_saerch_tips)
-            mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
+            if (mBinding.homeSearchComicRv.isVisible) mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
             mBinding.homeSearchComicTips.animateFadeIn()
             return
         }
 
         if (mBaseEvent.getBoolean(HomeFragment.SEARCH_TAG) == true) return
-
         mHomeVM.input(HomeIntent.SearchComic(keyword, when(mBinding.homeSearchComicChipGroup.checkedChipId) {
             mBinding.homeSearchComicChipAll.id -> ""
             mBinding.homeSearchComicChipName.id -> "name"
@@ -69,7 +69,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
         mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, true)
         repeatOnLifecycle {
             mHomeVM.mComicSearchFlowPage?.onCollect(this) {
-                mComicRvAdapter.submitData(lifecycle, it)
+                mComicRvAdapter.submitData(it)
             }
         }
     }
@@ -110,52 +110,44 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
                     mBinding.homeSearchComicChipLocal.id -> mBinding.homeSearchComicChipLocal.animateFadeIn(BASE_ANIM_300L)
                 }
 
-                // 搜索内容不为空
-                if(!mSearchView?.text?.toString().isNullOrEmpty()) doInputSearchComicIntent()
+                doInputSearchComicIntent()
             }
         }
     }
 
     override fun initObserver(savedInstanceState: Bundle?) {
 
-
         mHomeVM.onOutput { intent ->
-            if (intent is HomeIntent.SearchComic) {
-                val mTag = mBaseEvent.getBoolean(HomeFragment.SEARCH_TAG) ?: false
-                intent.mBaseViewState
-                    .doOnLoading { if(mTag) showLoadingAnim() }
-                    .doOnError { _, _ ->
-                        dismissLoadingAnim()
-                        toast(getString(com.crow.base.R.string.BaseUnknowError))
-                    }
-                    .doOnSuccess { mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, false) }
-                    .doOnResult {
-                        if (!mTag) return@doOnResult
-                        val listener: () -> Unit = {
-                            mBinding.homeSearchComicRv.smoothScrollToPosition(0)
-                        }
-                        mComicRvAdapter.addOnPagesUpdatedListener(listener)
-                        dismissLoadingAnim { mComicRvAdapter.removeOnPagesUpdatedListener(listener) }
-                        if (intent.searchComicResp!!.mTotal == 0) {
-                            if (!mBinding.homeSearchComicTips.isVisible) {
-                                mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
-                                mBinding.homeSearchComicTips.animateFadeIn()
-                            }
+            val mTag = mBaseEvent.getBoolean(HomeFragment.SEARCH_TAG) ?: false
+            when(intent) {
+                is HomeIntent.SearchComic -> {
+                    intent.mBaseViewState
+                        .doOnLoading { if(mTag) showLoadingAnim() }
+                        .doOnSuccess { mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, false) }
+                        .doOnError { _, _ ->
                             dismissLoadingAnim()
-                            return@doOnResult
-                        } else {
-                            if (mBinding.homeSearchComicTips.isVisible) {
-                                mBinding.homeSearchComicRv.animateFadeIn()
-                                mBinding.homeSearchComicTips.animateFadeOut().withEndAction {
-                                    mBinding.homeSearchComicTips.isInvisible = true
-                                    mBinding.homeSearchComicTips.text = getString(R.string.home_saerch_null_result)
+                            toast(getString(com.crow.base.R.string.BaseUnknowError))
+                        }
+                        .doOnResult {
+                            if (!mTag) return@doOnResult
+                            dismissLoadingAnim()
+                            if (intent.searchComicResp!!.mTotal == 0) {
+                                if (mBinding.homeSearchComicTips.isGone) {
+                                    mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
+                                    mBinding.homeSearchComicTips.animateFadeIn()
+                                }
+                            } else {
+                                if (mBinding.homeSearchComicTips.isVisible) {
+                                    mBinding.homeSearchComicRv.animateFadeIn()
+                                    mBinding.homeSearchComicTips.animateFadeOut().withEndAction {
+                                        mBinding.homeSearchComicTips.isGone = true
+                                        mBinding.homeSearchComicTips.text = getString(R.string.home_saerch_null_result)
+                                    }
                                 }
                             }
                         }
-                    }
+                }
             }
         }
-
-
     }
 }

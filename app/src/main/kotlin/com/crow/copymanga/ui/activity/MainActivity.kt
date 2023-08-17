@@ -9,6 +9,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
@@ -71,7 +72,7 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
 
         // 配置KoinFragmentFactory
         setupKoinFragmentFactory()
-
+        lifecycleScope
         super.onCreate(savedInstanceState)
     }
 

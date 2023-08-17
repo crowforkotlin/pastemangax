@@ -10,6 +10,10 @@
 
 object Dependencies {
 
+    object Compose {
+        const val activity = "androidx.activity:activity-compose:1.7.1"
+    }
+
     /** MultiDex
     * - Android Home : [https://developer.android.google.cn/studio/build/multidex?hl=zh_cn]
     */
@@ -76,7 +80,7 @@ object Dependencies {
     /** Coroutine 协程
     * - Github : [https://github.com/Kotlin/kotlinx.coroutines]
     */
-    const val kotlinx_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+    const val kotlinx_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
 
     /** KotlinX DataTime
     * - Github : [https://github.com/Kotlin/kotlinx-datetime]

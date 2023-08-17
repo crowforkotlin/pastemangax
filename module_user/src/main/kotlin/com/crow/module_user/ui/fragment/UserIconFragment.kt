@@ -78,7 +78,7 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
     override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
-        mBinding.root.immersionPadding()
+        immersionPadding(mBinding.root)
 
         // 初始化 设置状态栏暗色
         mWindowInsets = WindowCompat.getInsetsController(requireActivity().window, requireActivity().window.decorView)

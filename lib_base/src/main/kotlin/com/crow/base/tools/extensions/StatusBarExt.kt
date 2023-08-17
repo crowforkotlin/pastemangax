@@ -10,6 +10,7 @@ import android.content.Context
 import android.graphics.Insets
 import android.os.Build
 import android.view.*
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsCompat.Type.InsetsType
@@ -110,11 +111,23 @@ fun Window.immersionSystemBar(iBaseImmersionBarAPI: IBaseImmersionBarAPI) {
 /**
  * 设置 内边距属性 实现沉浸式效果
  *
- * @param hideStatusBar (Defualt) true
- * @param hideNaviateBar (Default) true
+ * @param paddingStatusBar (Defualt) true
+ * @param paddingNaviateBar (Default) true
  */
-fun View.immersionPadding(hideStatusBar: Boolean = true, hideNaviateBar: Boolean = true) {
-    setPadding(0, if (hideStatusBar) context.getStatusBarHeight() else 0, 0, if(hideNaviateBar) context.getNavigationBarHeight() else 0)
+fun immersionPadding(view: View, paddingStatusBar: Boolean = true, paddingNaviateBar: Boolean = true) {
+    view.setPadding(0, if (paddingStatusBar) view.context.getStatusBarHeight() else 0, 0, if(paddingNaviateBar) view.context.getNavigationBarHeight() else 0)
+}
+
+/**
+ * ● 沉浸式（推荐）
+ *
+ * ● 2023-07-08 02:08:38 周六 上午
+ */
+inline fun immersionPadding(root: View, crossinline update: (v: View, insets: androidx.core.graphics.Insets, gestureInsets: androidx.core.graphics.Insets) -> Unit) {
+    ViewCompat.setOnApplyWindowInsetsListener(root) { view: View, windowInsetsCompat: WindowInsetsCompat ->
+        update(view, windowInsetsCompat.getInsets(WindowInsetsCompat.Type.systemBars()), windowInsetsCompat.getInsets(WindowInsetsCompat.Type.systemGestures()))
+        WindowInsetsCompat.CONSUMED
+    }
 }
 
 /**

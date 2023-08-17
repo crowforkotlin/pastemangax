@@ -20,6 +20,7 @@
 	<string name="home_keyword_not_null">关键词不能为空</string>
 	<string name="home_saerch_null_result">很抱歉，没有找到匹配的结果。</string>
 	<string name="home_saerch_tips">输入关键词查询预期的漫画或轻小说吧！</string>
+	<string name="home_saerch_new_record">上滑发现新增记录！</string>
 
 
 </resources>
