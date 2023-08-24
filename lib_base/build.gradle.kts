@@ -164,5 +164,6 @@ dependencies {
     api(compose.accompanist.themeadapter)
     api(compose.ui.tooling)
     api(compose.material.icons)
+    api(compose.accompanist.systemuicontroller)
 
 }

@@ -16,7 +16,7 @@
     <string name="BaseStillInDevelopment">"正在开发中…"</string>
 
     <string name="BaseCrashScreenTitle">哎呀！</string>
-    <string name="BaseCrashScreenDescription">%s 遇到意外错误。我们建议您在 Q群中分享崩溃日志。.</string>
+    <string name="BaseCrashScreenDescription">%s 遇到意外错误。我们建议您 通过邮箱联系开发者（crowforkotlin@gmail.com） 分享崩溃日志。</string>
     <string name="BaseCrashScreenRestartApplication">重新启动应用程序</string>
     <string name="BaseCrashScreenShared">分享崩溃日志！</string>
 

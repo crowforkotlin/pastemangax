@@ -1,7 +1,10 @@
+# https://github.com/google/accompanist
+# https://github.com/chrisbanes/compose-bom
+# https://androidx.tech/artifacts/compose.compiler/compiler/
 [versions]
-compiler = "1.5.0"
-compose-bom = "2023.07.00-alpha02"
-accompanist = "0.31.2-alpha"
+compiler = "1.5.1"
+compose-bom = "2023.09.00-alpha02"
+accompanist = "0.32.0"
 
 [libraries]
 activity = "androidx.activity:activity-compose:1.7.2"

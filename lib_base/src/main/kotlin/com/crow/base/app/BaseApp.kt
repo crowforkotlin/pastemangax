@@ -5,18 +5,7 @@ import com.crow.base.ui.activity.CrashActivity
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 
-/*************************
- * @Machine: RedmiBook Pro 15
- * @RelativePath: com\barry\base\app\BaseApp.kt
- * @Path: D:\Barry\B_study\Android\2022\OrchardAssistant\lib_base\src\main\java\com\barry\base\app\BaseApp.kt
- * @Author: CrowForKotlin
- * @Time: 2022/2/20 03:12 凌晨
- * @Description:
- *************************/
-
 val appContext = BaseApp.context
-
-
 
 open class BaseApp : Application() {
 

@@ -38,6 +38,8 @@ import com.crow.module_main.model.resp.MainAppUpdateResp
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
 import com.crow.module_main.ui.fragment.ContainerFragment
 import com.crow.module_main.ui.viewmodel.MainViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -91,6 +93,11 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
 
         if (savedInstanceState == null) {
             supportFragmentManager.navigateByAdd<ContainerFragment>(R.id.app_main_fcv, null, Fragments.Container.name)
+        }
+
+        lifecycleScope.launch {
+            delay(3000)
+            throw RuntimeException("严重的错误！")
         }
     }
 

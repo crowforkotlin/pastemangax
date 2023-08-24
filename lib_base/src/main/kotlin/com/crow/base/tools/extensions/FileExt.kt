@@ -43,7 +43,7 @@ val Context.cacheImageDir: File
  */
 fun File.getUriCompat(context: Context): Uri {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        FileProvider.getUriForFile(context, "com.crow.copymanga" + ".provider", this)
+        FileProvider.getUriForFile(context, "com.crow.manga" + ".provider", this)
     } else {
         this.toUri()
     }

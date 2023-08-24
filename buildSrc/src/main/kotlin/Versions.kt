@@ -17,7 +17,7 @@ object Versions {
 
     const val kotlin_version = "1.9.0"
     const val ksp_version = "1.9.0-1.0.12"
-    const val core_version = "1.9.0"
+    const val core_version = "1.10.0"
     const val smart_refresh = "2.0.5"
     const val retrofit_version = "2.9.0"
     const val arouter_version = "1.5.2"
