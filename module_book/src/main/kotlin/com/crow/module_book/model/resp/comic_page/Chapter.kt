@@ -63,3 +63,5 @@ data class Chapter(
     @Json(name = "words")
     val mWords: List<Int>
 )
+
+internal fun Chapter.getSortedContets() = mWords.zip(mContents).sortedBy { it.first }.map { it.second }.toMutableList()

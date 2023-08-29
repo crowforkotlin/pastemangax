@@ -39,6 +39,7 @@ import com.crow.module_book.model.resp.ComicChapterResp
 import com.crow.module_book.model.resp.comic_info.Status
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.ComicChapterRvAdapter
+import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
@@ -209,8 +210,10 @@ class BookComicFragment : BookFragment() {
         mComicChapterRvAdapter = ComicChapterRvAdapter { comic  ->
 
             mContext.startActivity<ComicActivity> {
+                putExtra(ComicViewModel.PREV_UUID, comic.prev)
+                putExtra(ComicViewModel.NEXT_UUID, comic.next)
+                putExtra(ComicViewModel.UUID, comic.uuid)
                 putExtra(BaseStrings.PATH_WORD, comic.comicPathWord)
-                putExtra(BaseStrings.UUID, comic.uuid)
             }
             requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mComicChapterRvAdapter?.mChapterName = comic.name

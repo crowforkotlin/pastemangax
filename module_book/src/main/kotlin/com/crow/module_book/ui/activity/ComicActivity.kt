@@ -1,6 +1,7 @@
 package com.crow.module_book.ui.activity
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
@@ -123,7 +124,9 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun initData() {
         mComicVM.mPathword = intent.getStringExtra(BaseStrings.PATH_WORD)
-        mComicVM.mUuid = intent.getStringExtra(BaseStrings.UUID)
+        mComicVM.mUuid = intent.getStringExtra(ComicViewModel.UUID)
+        mComicVM.mPrevUuid = intent.getStringExtra(ComicViewModel.PREV_UUID)
+        mComicVM.mNextUuid = intent.getStringExtra(ComicViewModel.NEXT_UUID)
     }
 
     /**
@@ -146,7 +149,11 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         super.onStart()
         onBackPressedDispatcher.addCallback(this) {
             finish()
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            if (Build.VERSION.SDK_INT >= 34) {
+                overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, android.R.anim.fade_in, android.R.anim.fade_out)
+            } else {
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            }
         }
     }
 
@@ -163,7 +170,6 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      * ● 2023-07-07 23:57:39 周五 下午
      */
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-
         mGestureHelper.dispatchTouchEvent(ev, !hasGlobalPoint(mBinding.comicToolbar, ev.rawX.toInt(), ev.rawY.toInt()))
         return super.dispatchTouchEvent(ev)
     }

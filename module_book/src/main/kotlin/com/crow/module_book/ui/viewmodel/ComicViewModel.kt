@@ -1,12 +1,19 @@
 package com.crow.module_book.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import com.crow.base.tools.extensions.logMsg
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
+import com.crow.module_book.model.entity.ComicLoadMorePage
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.ComicPageResp
-import com.crow.module_book.model.resp.comic_page.Content
+import com.crow.module_book.model.resp.comic_page.getSortedContets
+import com.crow.module_book.model.resp.requireContentsSize
 import com.crow.module_book.network.BookRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import java.util.LinkedList
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -18,6 +25,13 @@ import com.crow.module_book.network.BookRepository
  **************************/
 class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookIntent>() {
 
+    companion object {
+        const val UUID = "uuid"
+        const val PREV_UUID = "prev_uuid"
+        const val NEXT_UUID = "next_uuid"
+        const val CHAPTER_LOADED_THRESHOLD = 2
+        const val CHAPTER_PRELOADED_INDEX = 2
+    }
 
     enum class  ComicState {
         PREV,
@@ -39,6 +53,20 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     var mUuid: String? = null
 
     /**
+     * ● 上一章漫画UID
+     *
+     * ● 2023-08-29 23:16:44 周二 下午
+     */
+    var mPrevUuid: String? = null
+
+    /**
+     * ● 下一章漫画UID
+     *
+     * ● 2023-08-29 23:16:17 周二 下午
+     */
+    var mNextUuid: String? = null
+
+    /**
      * ● 漫画内容
      *
      * ● 2023-06-28 22:08:26 周三 下午
@@ -46,9 +74,11 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     var mComicPage: ComicPageResp? = null
         private set
 
-    val mContents = mutableListOf<Content>()
+    private val mChapters: LinkedList<ComicPageResp> = LinkedList()
 
-    var mLoadedState = MutableLiveData<MutableList<Content>>()
+    val mContents = mutableListOf<Any>()
+
+    var mLoadedState = MutableLiveData<MutableList<Any>>()
 
     /**
      * ● 通过检查意图的类型并执行相应的代码来处理意图
@@ -67,58 +97,103 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      * ● 2023-06-28 22:17:41 周三 下午
      */
     private fun getComicPage(intent: BookIntent.GetComicPage) {
-        if (intent.uuid == null) {
-            mComicPage?.mChapter?.apply {
-                when {
-                    intent.loadPrev -> {
-                        val content = this@ComicViewModel.mContents.first().copy(mTips = "已经没有上一章啦...",mPrev = "", mNext = "当前章节：$mName", mIsLoading = false, mImageUrl = "")
-                        this@ComicViewModel.mContents.removeFirst()
-                        this@ComicViewModel.mContents.add(0, content)
-                        mLoadedState.value = this@ComicViewModel.mContents
-                    }
-                    intent.loadNext -> {
-                        val content = this@ComicViewModel.mContents.first().copy(mTips = "已经没有上一章啦...", mNext = "当前章节：$mName", mIsLoading = false, mImageUrl = "")
-                        this@ComicViewModel.mContents.removeFirst()
-                        this@ComicViewModel.mContents.add(0, content)
-                        mLoadedState.value = this@ComicViewModel.mContents
-                    }
-                }
-            }
-            return
-        }
         flowResult(intent, repository.getComicPage(intent.pathword, intent.uuid)) { value ->
             mComicPage = value.mResults
-            mComicPage?.mChapter?.apply {
-                when {
-                    intent.loadPrev -> {
-                        val content = this@ComicViewModel.mContents.first().copy(mPrev = "上一章节：$mName", mIsLoading = false)
-                        this@ComicViewModel.mContents.removeFirst()
-                        this@ComicViewModel.mContents.add(0, content)
-                        this@ComicViewModel.mContents.addAll(0, mWords.zip(mContents).sortedBy { it.first }.map { it.second }.toMutableList())
-                        if (mPrev.isNullOrEmpty()) this@ComicViewModel.mContents.add(0, Content(mTips = "已经没有上一章啦...", mNext = "当前章节：$mName",mIsLoading = false, mImageUrl = ""))
-                        else this@ComicViewModel.mContents.add(0, Content(mTips = "正在加载中...", mNext = "下一章节：$mName", mIsLoading = true, mImageUrl = ""))
-                    }
-                    intent.loadNext -> {
-                        val content = this@ComicViewModel.mContents.last().copy(mNext = "下一章节：$mName", mIsLoading = false)
-                        content.logMsg()
-                        this@ComicViewModel.mContents.removeLast()
-                        this@ComicViewModel.mContents.add(content)
-                        this@ComicViewModel.mContents.addAll(mWords.zip(mContents).sortedBy { it.first }.map { it.second }.toMutableList())
-                        if (mNext.isNullOrEmpty()) this@ComicViewModel.mContents.add(Content(mTips = "已经到最后一章啦...", mPrev = "当前章节：$mName", mIsLoading = false, mImageUrl = ""))
-                        else this@ComicViewModel.mContents.add(Content(mTips = "正在加载中...", mPrev = "上一章节：$mName", mIsLoading = true, mImageUrl = ""))
-                    }
-                    else -> {
-                        this@ComicViewModel.mContents.addAll(mWords.zip(mContents).sortedBy { it.first }.map { it.second }.toMutableList())
-                        if (mPrev.isNullOrEmpty()) this@ComicViewModel.mContents.add(0, Content(mTips = "已经没有上一章节了...", mNext = "当前章节：$mName", mIsLoading = false, mImageUrl = ""))
-                        else this@ComicViewModel.mContents.add(0, Content(mTips = "", mIsLoading = true, mNext = "下一章节：$mName", mPrev= "", mImageUrl = ""))
-                        if (mNext.isNullOrEmpty()) this@ComicViewModel.mContents.add(Content(mTips = "已经没有下一章节了...", mPrev = "当前章节：$mName", mIsLoading = false, mImageUrl = ""))
-                        else this@ComicViewModel.mContents.add(Content(mTips = "", mIsLoading = true, mPrev = "上一章节：$mName", mNext = "", mImageUrl = ""))
-                    }
-                }
+            val snapshot = if (mChapters.isEmpty()) {
+                mContents.addAll(value.mResults.mChapter.getSortedContets())
+                mContents.add(
+                        ComicLoadMorePage(
+                            mIsNext = true,
+                            mHasNext = mNextUuid == null,
+                            mIsLoading = true,
+                            mPrevContent = "",
+                            mNextContent = "",
+                        )
+                )
+                mContents.add(0,
+                        ComicLoadMorePage(
+                            mIsNext = false,
+                            mHasNext = mPrevUuid == null,
+                            mIsLoading = true,
+                            mPrevContent = "",
+                            mNextContent = ""
+                        )
+                )
+                intent.copy(contents = mContents)
+            } else{
+                intent.copy(contents = null)
             }
-            mLoadedState.value = this@ComicViewModel.mContents
-            intent.copy(comicPage = value.mResults)
+            mChapters.add(value.mResults)
+            snapshot
         }
     }
 
+    /**
+     * ● 加载上一章
+     *
+     * ● 2023-08-29 22:19:57 周二 下午
+     */
+    fun onScrollUp(position: Int) {
+        CoroutineScope(coroutineContext).launch {
+            mutex.tryLock()
+            if (position < CHAPTER_PRELOADED_INDEX) {
+                loadPrevNextChapter(isNext = false)
+            }
+            mutex.unlock()
+        }
+    }
+
+    /**
+     * ● 加载下一章
+     *
+     * ● 2023-08-29 22:19:57 周二 下午
+     */
+    fun onScrollDown(position: Int) {
+        CoroutineScope(coroutineContext).launch {
+            mutex.tryLock()
+            if (position > mComicPage.requireContentsSize() - CHAPTER_PRELOADED_INDEX) {
+                loadPrevNextChapter(isNext = true)
+            }
+            mutex.unlock()
+        }
+    }
+
+    val mutex = Mutex(locked = true)
+    val coroutineContext = SupervisorJob() + Dispatchers.Main.immediate
+
+    private suspend fun loadPrevNextChapter(isNext: Boolean) {
+        if (mChapters.size > CHAPTER_LOADED_THRESHOLD) {
+            if(isNext) {
+                mChapters.removeFirst()
+            } else {
+                mChapters.removeLast()
+            }
+        }
+        mChapters.map {
+            val contents = it.mChapter.getSortedContets()
+            mContents.addAll(contents)
+            if(isNext) {
+                mContents.add(
+                    ComicLoadMorePage(
+                        mIsNext = true,
+                        mHasNext = mNextUuid == null,
+                        mIsLoading = true,
+                        mPrevContent = "",
+                        mNextContent = "",
+                    )
+                )
+            } else {
+                mContents.add(0,
+                    ComicLoadMorePage(
+                        mIsNext = false,
+                        mHasNext = mPrevUuid == null,
+                        mIsLoading = true,
+                        mPrevContent = "",
+                        mNextContent = "",
+                    )
+                )
+            }
+        }
+        mLoadedState.value = mContents
+    }
 }

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.IntRange
-import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -20,9 +19,11 @@ import com.bumptech.glide.request.transition.NoTransition
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.logger
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_book.databinding.BookActivityComicButtonRvBinding
 import com.crow.module_book.databinding.BookActivityComicRvBinding
+import com.crow.module_book.model.entity.ComicLoadMorePage
 import com.crow.module_book.model.resp.comic_page.Content
 
 
@@ -37,16 +38,17 @@ import com.crow.module_book.model.resp.comic_page.Content
 class ComicRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        private const val PageLastView = 0
-        private const val PageView = 1
+        private const val LoadingView = 0
+        private const val ContentView = 1
     }
 
-    private val mDiffCallback: DiffUtil.ItemCallback<Content> = object : DiffUtil.ItemCallback<Content>() {
-        override fun areItemsTheSame(oldItem: Content, newItem: Content): Boolean {
+    private val mDiffCallback: DiffUtil.ItemCallback<Any> = object : DiffUtil.ItemCallback<Any>() {
+        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
             return oldItem == newItem
         }
-        override fun areContentsTheSame(oldItem: Content, newItem: Content): Boolean {
-            return oldItem.mIsLoading == newItem.mIsLoading && oldItem.mPrev == newItem.mPrev && oldItem.mNext == newItem.mNext && oldItem.mTips == newItem.mTips
+
+        override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+            return if (oldItem is Content && newItem is Content) { oldItem.mImageUrl == newItem.mImageUrl } else true
         }
     }
     private val mDiffer = AsyncListDiffer(this, mDiffCallback)
@@ -54,11 +56,9 @@ class ComicRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun getCurrentList() = mDiffer.currentList
 
-    fun submitList(contents: MutableList<Content>) = mDiffer.submitList(contents)
+    fun submitList(contents: MutableList<Any>) = mDiffer.submitList(contents)
 
     inner class PageViewHolder(binding: BookActivityComicRvBinding) : BaseGlideLoadingViewHolder<BookActivityComicRvBinding>(binding) {
-
-
 
         fun onBind(item: Content) {
 
@@ -104,35 +104,34 @@ class ComicRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class PageMoreViewHolder(val binding: BookActivityComicButtonRvBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun onBind(item: Content, position: Int) {
-            if (item.mIsLoading) {
-                binding.striptLoading.isVisible = true
-                binding.striptTipsCenter.isGone = true
-            } else {
-                binding.striptLoading.isInvisible = true
-                binding.striptTipsCenter.isVisible = true
-            }
-            binding.striptTipsPrev.isVisible = item.mPrev != null
-            binding.striptTipsNext.isVisible = item.mNext != null
+        fun onBind(item: ComicLoadMorePage, position: Int) {
 
-            binding.striptTipsCenter.text = item.mTips
-            binding.striptTipsPrev.text = item.mPrev
-            binding.striptTipsNext.text = item.mNext
         }
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            PageLastView ->PageMoreViewHolder(BookActivityComicButtonRvBinding.inflate(LayoutInflater.from(parent.context), parent,false))
-            PageView -> PageViewHolder(BookActivityComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            LoadingView ->PageMoreViewHolder(BookActivityComicButtonRvBinding.inflate(LayoutInflater.from(parent.context), parent,false))
+            ContentView -> PageViewHolder(BookActivityComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> error("Unknown view type!")
         }
     }
 
     override fun getItemCount(): Int = mDiffer.currentList.size
 
-    override fun getItemViewType(position: Int) = if (getItem(position).mTips != null) PageLastView else PageView
+    override fun getItemViewType(position: Int): Int {
+        val type = getItem(position)
+        type.logger()
+        return when(getItem(position)) {
+            is Content -> {
+                "isContent ${type}".logger()
+                ContentView
+            }
+            is ComicLoadMorePage -> LoadingView
+            else -> error("Unknown view type!")
+        }
+    }
 
     override fun onViewRecycled(vh: RecyclerView.ViewHolder) {
         super.onViewRecycled(vh)
@@ -143,8 +142,8 @@ class ComicRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(vh: RecyclerView.ViewHolder, position: Int) {
         when(vh) {
-            is PageViewHolder -> vh.onBind(getItem(position))
-            is PageMoreViewHolder -> vh.onBind(getItem(position), position)
+            is PageViewHolder -> vh.onBind(getItem(position) as Content)
+            is PageMoreViewHolder -> vh.onBind(getItem(position) as ComicLoadMorePage, position)
         }
     }
 

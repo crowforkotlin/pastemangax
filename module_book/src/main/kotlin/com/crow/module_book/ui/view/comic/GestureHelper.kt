@@ -3,7 +3,7 @@ package com.crow.module_book.ui.view.comic
 import android.content.Context
 import android.view.GestureDetector
 import android.view.MotionEvent
-import com.crow.base.tools.extensions.logMsg
+import com.crow.base.tools.extensions.logger
 import kotlin.math.roundToInt
 
 class GestureHelper(context: Context, private val listener: GestureListener) :
@@ -28,7 +28,7 @@ class GestureHelper(context: Context, private val listener: GestureListener) :
         if (!mIsDispatching) return true
         val xIndex = (e.rawX * 2f / width).roundToInt()
         val yIndex = (e.rawY * 2f / height).roundToInt()
-        "$xIndex\t\t$yIndex".logMsg()
+        "$xIndex\t\t$yIndex".logger()
         listener.onTouch(
             when (xIndex) {
                 0 -> AREA_LEFT

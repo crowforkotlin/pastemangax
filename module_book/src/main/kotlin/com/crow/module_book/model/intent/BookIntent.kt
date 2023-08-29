@@ -5,7 +5,6 @@ import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
 import com.crow.module_book.model.resp.ComicBrowserResp
 import com.crow.module_book.model.resp.ComicChapterResp
 import com.crow.module_book.model.resp.ComicInfoResp
-import com.crow.module_book.model.resp.ComicPageResp
 import com.crow.module_book.model.resp.NovelBrowserResp
 import com.crow.module_book.model.resp.NovelCatelogueResp
 import com.crow.module_book.model.resp.NovelChapterResp
@@ -18,7 +17,7 @@ open class BookIntent : BaseMviIntent() {
 
     data class GetComicChapter(val pathword: String, val comicChapter: ComicChapterResp? = null, val invalidResp: String? = null) : BookIntent()
 
-    data class GetComicPage(val pathword: String, val uuid: String?, val loadPrev: Boolean, val loadNext: Boolean,  val comicPage: ComicPageResp? = null) : BookIntent()
+    data class GetComicPage(val pathword: String, val uuid: String, val contents: MutableList<Any>? = null) : BookIntent()
 
     data class GetComicBrowserHistory(val pathword: String, val comicBrowser: ComicBrowserResp? = null) : BookIntent()
 

@@ -12,7 +12,7 @@ import com.crow.module_user.model.resp.LoginResultsOkResp
 import kotlinx.coroutines.delay
 
 class UserUpdateInfoRvAdapter(
-    private var mDatas: ArrayList<Pair<Res, String>> = arrayListOf(),
+    private var mDatas: ArrayList<Pair<Int, String>> = arrayListOf(),
     inline val itemTap: (pos: Int, content: String) -> Unit
 ) : RecyclerView.Adapter<UserUpdateInfoRvAdapter.ViewHolder>() {
 
@@ -56,5 +56,5 @@ class UserUpdateInfoRvAdapter(
         delay(waitTime)
     }
 
-    fun setData(datas: ArrayList<Pair<Res, String>>) { mDatas = datas }
+    fun setData(datas: ArrayList<Pair<Int, String>>) { mDatas = datas }
 }

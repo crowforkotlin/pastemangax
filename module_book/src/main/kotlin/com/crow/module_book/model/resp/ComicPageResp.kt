@@ -29,3 +29,5 @@ data class  ComicPageResp(
     @Json(name = "show_app")
     val mShowApp: Boolean
 )
+
+internal fun ComicPageResp?.requireContentsSize() = this?.mChapter?.mSize ?: 0
