@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.IntRange
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -19,9 +18,10 @@ import com.bumptech.glide.request.transition.NoTransition
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
-import com.crow.module_book.compose.comic.reader.IntentButtonContent
+import com.crow.base.ui.view.event.BaseEvent
 import com.crow.module_book.databinding.BookActivityComicRvBinding
 import com.crow.module_book.databinding.BookFragmentClassicIntentRvBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
@@ -69,6 +69,7 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
     inner class BodyViewHolder(binding: BookActivityComicRvBinding) : BaseGlideLoadingViewHolder<BookActivityComicRvBinding>(binding) {
         fun onBind(position: Int) {
             val item = getItem(position) as Content
+            if(binding.root.layoutParams.height == FrameLayout.LayoutParams.WRAP_CONTENT) binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
             binding.comicRvLoading.isVisible = true
             binding.comicRvProgressText.isVisible = true
             binding.comicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
@@ -80,18 +81,23 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
 
             Glide.with(itemView.context)
                 .load(item.mImageUrl)
-                .addListener(mAppGlideProgressFactory?.getRequestListener({
-                    binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
-                    binding.comicRvRetry.isVisible = true
-                    binding.comicRvRetry.doOnClickInterval(false) {
-                        binding.comicRvRetry.animateFadeOut()
-                        onBind(position)
-                    }
-                    false
-                },  { _, _ ->
-                    binding.root.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
-                    false
-                }))
+                .addListener(mAppGlideProgressFactory?.getRequestListener(
+                        failure = {
+
+                            binding.comicRvRetry.isVisible = true
+                            binding.comicRvRetry.doOnClickInterval(false) {
+                                binding.comicRvRetry.animateFadeOut().withEndAction {
+                                    onBind(position)
+                                }
+                            }
+                            false
+                        },
+                        ready = { _, _ ->
+                            binding.root.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
+                            false
+                         }
+                    )
+                )
                 .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                     val transition = if (dataSource == DataSource.REMOTE) {
                         binding.comicRvLoading.isInvisible = true
@@ -115,15 +121,15 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
             if (isNext) immersionPadding(binding.root, paddingStatusBar = false, paddingNaviateBar = true)
             else immersionPadding(binding.root, paddingStatusBar = true, paddingNaviateBar = false)
 
-            binding.comicCompose.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            binding.comicNext.setOnClickListener {
+                BaseEvent.getSIngleInstance().doOnInterval {
+                    onPrevNext(getItem(absoluteAdapterPosition) as ReaderPrevNextInfo)
+                }
+            }
         }
 
         fun onBind(position: Int) {
-            binding.comicCompose.setContent {
-                IntentButtonContent((getItem(position) as ReaderPrevNextInfo)) {
-                    onPrevNext(it.mType)
-                }
-            }
+            binding.comicNext.text = (getItem(absoluteAdapterPosition) as ReaderPrevNextInfo).mInfo
         }
     }
 
@@ -161,7 +167,7 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
         }
     }
 
-        private fun getItem(@IntRange(from = 0) position: Int) = mDiffer.currentList[position]
+    private fun getItem(@IntRange(from = 0) position: Int) = mDiffer.currentList[position]
 
     fun getCurrentList() = mDiffer.currentList
 

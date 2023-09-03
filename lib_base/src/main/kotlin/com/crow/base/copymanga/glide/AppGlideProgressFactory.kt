@@ -47,7 +47,7 @@ class AppGlideProgressFactory private constructor (private val mUrl: String) {
 
     private var mProgressPercentage: Int = -1
 
-    val mListener = object : AppGlideProgressResponseBody.InternalProgressListener {
+    val mOnProgressListener = object : AppGlideProgressResponseBody.InternalProgressListener {
         override fun onProgress(url: String, bytesRead: Long, totalBytes: Long) {
                 mProgressPercentage = (bytesRead * 1f / totalBytes * 100f).toInt()
                 val isComplete = mProgressPercentage >= 100
@@ -58,6 +58,7 @@ class AppGlideProgressFactory private constructor (private val mUrl: String) {
                 }
         }
     }
+
 
     inline fun<T> getRequestListener(crossinline failure: (catch: GlideException?) -> Boolean = { false }, crossinline ready: (resource: T, dataSource: DataSource?) -> Boolean= { _, _ -> false }): RequestListener<T> {
         return object : RequestListener<T> {

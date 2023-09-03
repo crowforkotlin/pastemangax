@@ -63,22 +63,22 @@ val networkModule = module {
      */
     single(named_ProgressGlide) {
         OkHttpClient.Builder().apply {
-            addNetworkInterceptor { chain ->
+            addInterceptor { chain ->
                 val request = chain.request()
                 val response = chain.proceed(request)
                 val appGlideProgressFactory = AppGlideProgressFactory.getGlideProgressFactory(request.url.toString())
                 if (appGlideProgressFactory == null) response
                 else {
-                    response.newBuilder().body(response.body?.let { AppGlideProgressResponseBody(request.url.toString(), appGlideProgressFactory.mListener, it) }).build()
+                    response.newBuilder().body(response.body?.let { AppGlideProgressResponseBody(request.url.toString(), appGlideProgressFactory.mOnProgressListener, it) }).build()
                 }
             }
             sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())
             hostnameVerifier(SSLSocketClient.hostnameVerifier)
             pingInterval(10, TimeUnit.SECONDS)
             connectTimeout(15, TimeUnit.SECONDS)
-            callTimeout(20, TimeUnit.SECONDS)
-            readTimeout(20, TimeUnit.SECONDS)
-            writeTimeout(20, TimeUnit.SECONDS)
+            callTimeout(15, TimeUnit.SECONDS)
+            readTimeout(15, TimeUnit.SECONDS)
+            writeTimeout(15, TimeUnit.SECONDS)
             retryOnConnectionFailure(false)
         }.build()
     }

@@ -19,7 +19,6 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.crow.base.tools.extensions.logError
-import com.crow.base.tools.extensions.logger
 import com.crow.base.tools.extensions.measureDimension
 import com.crow.base.tools.extensions.resolveDp
 import com.crow.module_book.R
@@ -135,7 +134,6 @@ class ReaderInfoBarView @JvmOverloads constructor(
 	}
 
 	fun update(currentPage: Int, totalPage: Int, percent: Float, info: ReaderInfo) {
-		logger((percent * 100).format())
 		text = context.getString(
 			R.string.book_reader_info_bar,
 			info.mChapterIndex + 1,

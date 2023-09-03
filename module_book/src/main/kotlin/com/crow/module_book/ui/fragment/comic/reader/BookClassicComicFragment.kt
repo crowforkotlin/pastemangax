@@ -40,8 +40,10 @@ class BookClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
             !reader.mIsNext && isUUIDEmpty -> getString(R.string.book_no_prev)
             else -> null
         }
-        if (message != null || reader.mUUID == null) return@ComicClassicRvAdapter toast(message ?: getString(baseR.string.BaseError, "uuid is null !"))
-            mComicVM.input(BookIntent.GetComicPage(mComicVM.mPathword, reader.mUUID, enableLoading = true))
+        if (reader.mUUID == null || message != null) {
+            return@ComicClassicRvAdapter toast(message ?: getString(baseR.string.BaseError, "uuid is null !"))
+        }
+        mComicVM.input(BookIntent.GetComicPage(mComicVM.mPathword, reader.mUUID, enableLoading = true))
         /*mBinding.comicRv.animateFadeOutWithEndInVisibility().withEndAction {
         }*/
     }

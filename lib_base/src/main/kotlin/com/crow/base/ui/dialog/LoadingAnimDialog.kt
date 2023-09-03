@@ -55,7 +55,7 @@ class LoadingAnimDialog : DialogFragment() {
 
         private val TAG: String = this::class.java.simpleName
         private var mShowTime = 0L
-        private val mBaseEvent = BaseEvent.newInstance(1250L)
+        private val mBaseEvent = BaseEvent.newInstance(1000L)
 
         @JvmStatic
         fun show(fragmentManager: FragmentManager,loadingAnimConfig: LoadingAnimConfig? = null) {
@@ -63,7 +63,7 @@ class LoadingAnimDialog : DialogFragment() {
             if (dialog.isAdded || dialog.isVisible || fragmentManager.isStateSaved) return
             mBaseEvent.doResetEventFlagTime(0L)
             mBaseEvent.doOnInterval { dialog.show(fragmentManager, TAG) }
-            mBaseEvent.doResetEventFlagTime(1250L)
+            mBaseEvent.doResetEventFlagTime(1000L)
             if (loadingAnimConfig != null) {
                 dialog.mIsApplyConfig = true
                 dialog.lifecycleScope.launchWhenStarted { loadingAnimConfig.initConfig(dialog) }

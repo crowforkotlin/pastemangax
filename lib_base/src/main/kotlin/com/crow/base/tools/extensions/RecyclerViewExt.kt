@@ -7,6 +7,10 @@ fun RecyclerView.findCenterViewPosition(): Int {
     return getChildAdapterPosition(findChildViewUnder(width / 2f, height / 2f) ?: return RecyclerView.NO_POSITION)
 }
 
+fun RecyclerView.findViewPosition(x: Float, y: Float): Int {
+     return getChildAdapterPosition(findChildViewUnder(x, y) ?: return RecyclerView.NO_POSITION)
+}
+
 fun RecyclerView.findFisrtVisibleViewPosition(): Int {
     var pos = -1
     if ( layoutManager is LinearLayoutManager) {

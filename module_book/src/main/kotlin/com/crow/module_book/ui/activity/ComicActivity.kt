@@ -9,15 +9,16 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.FrameLayout
 import androidx.activity.addCallback
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.forEach
 import androidx.core.view.get
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
@@ -40,6 +41,7 @@ import com.crow.module_book.ui.helper.GestureHelper
 import com.crow.module_book.ui.view.comic.rv.ComicFrameLayout
 import com.crow.module_book.ui.view.comic.rv.ComicRecyclerView
 import com.crow.module_book.ui.viewmodel.ComicViewModel
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.crow.base.R as baseR
@@ -200,7 +202,9 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      *
      * ● 2023-07-07 23:56:56 周五 下午
      */
-    override fun onTouch(area: Int) { transitionBar(mBinding.comicToolbar.isVisible) }
+    override fun onTouch(area: Int, ev: MotionEvent) {
+        transitionBar(mBinding.comicToolbar.isVisible)
+    }
 
     /**
      * ● Activity Event dispatchTouchEvent
@@ -208,20 +212,36 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      * ● 2023-07-07 23:57:39 周五 下午
      */
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        mGestureHelper.dispatchTouchEvent(ev, hasGlobalPoint(ev))
+        return super.dispatchTouchEvent(ev)
+    }
+
+    private fun hasGlobalPoint(ev: MotionEvent): Boolean {
+        val hasToolbar = hasGlobalPoint(mBinding.comicToolbar, ev.rawX.toInt(), ev.rawY.toInt())
+        var hasButton = false
         val fragment = supportFragmentManager.fragments.firstOrNull()
-        var dispatch = false
         if (fragment is BookClassicComicFragment) {
-            val frame = mBinding.comicFcv[0]
-            if (frame is ComicFrameLayout)  {
-                val rv = frame[0]
-                if (rv is ComicRecyclerView && rv.layoutManager is LinearLayoutManager) {
-                    val layoutManager = (rv.layoutManager as LinearLayoutManager)
-                    dispatch = (layoutManager.findFirstVisibleItemPosition() == 0) || (layoutManager.findLastVisibleItemPosition() == rv.adapter!!.itemCount - 1 )
+            val rv = ((fragment.view as ComicFrameLayout)[0] as ComicRecyclerView)
+            (rv.findChildViewUnder(ev.x, ev.y) as FrameLayout).forEach {
+                if (fragment.isRemoving) return hasToolbar
+                if(it is MaterialButton) {
+                    hasButton = hasGlobalPoint(it, ev.rawX.toInt(), ev.rawY.toInt())
                 }
             }
         }
-        if(!dispatch) mGestureHelper.dispatchTouchEvent(ev, !hasGlobalPoint(mBinding.comicToolbar, ev.rawX.toInt(), ev.rawY.toInt()))
-        return super.dispatchTouchEvent(ev)
+        return hasToolbar || hasButton
+    }
+    /**
+     * ● 判断是否是 Classic中的Button
+     *
+     * ● 2023-09-03 23:25:45 周日 下午
+     */
+    private fun judgeIsClassicButton(ev: MotionEvent): Boolean {
+        val fragment = supportFragmentManager.fragments.firstOrNull()
+        if (fragment is BookClassicComicFragment) {
+            super.dispatchTouchEvent(ev)
+        }
+        return true
     }
 
     /**

@@ -24,7 +24,7 @@ class GestureHelper(context: Context, private val listener: GestureListener) :
     }
 
     override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-        if (!mIsDispatching) return true
+        if (mIsDispatching) return true
         val xIndex = (e.rawX * 2f / width).roundToInt()
         val yIndex = (e.rawY * 2f / height).roundToInt()
         listener.onTouch(
@@ -40,7 +40,7 @@ class GestureHelper(context: Context, private val listener: GestureListener) :
                 }
                 2 -> AREA_RIGHT
                 else -> return false
-            },
+            }, ev = e
         )
         return true
     }
@@ -55,7 +55,7 @@ class GestureHelper(context: Context, private val listener: GestureListener) :
 
     interface GestureListener {
 
-        fun onTouch(area: Int)
+        fun onTouch(area: Int, ev: MotionEvent)
 
     }
 }
