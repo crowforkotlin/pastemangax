@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewbinding.ViewBinding
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
+import com.crow.base.ui.viewmodel.mvi.BaseMviSuspendResult
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.base.ui.viewmodel.mvi.IBaseMvi
 
@@ -34,13 +35,13 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
      * */
     abstract fun getViewBinding(inflater: LayoutInflater): VB
 
-    override fun initObserver(savedInstanceState: Bundle?) {}
+    override fun initObserver(saveInstanceState: Bundle?) {}
 
     override fun initListener() {}
 
     override fun initView(savedInstanceState: Bundle?) {}
 
-    override fun <I : BaseMviIntent> BaseMviViewModel<I>.onOutput(state: Lifecycle.State, baseMviSuspendResult: BaseMviViewModel.BaseMviSuspendResult<I>) {
+    override fun <I : BaseMviIntent> BaseMviViewModel<I>.onOutput(state: Lifecycle.State, baseMviSuspendResult: BaseMviSuspendResult<I>) {
         repeatOnLifecycle(state) { output { intent -> baseMviSuspendResult.onResult(intent) } }
     }
 

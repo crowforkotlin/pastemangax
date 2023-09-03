@@ -67,7 +67,7 @@ object Dependencies {
     /** Material Design 界面组件
     * - MvnRepository : [https://mvnrepository.com/artifact/com.google.android.material/material]
     */
-    const val android_material = "com.google.android.material:material:1.9.0"
+    const val android_material = "com.google.android.material:material:1.10.0-alpha06"
 
     /** Kotlin Android 注入库
     * - Home : [https://insert-koin.io/]
@@ -170,6 +170,7 @@ object Dependencies {
     */
     const val glide = "com.github.bumptech.glide:glide:${Versions.glide_version}"
     const val glide_compiler = "com.github.bumptech.glide:compiler:${Versions.glide_version}"
+    const val glide_compiler_ksp = "com.github.bumptech.glide:ksp:${Versions.glide_version}"
     const val glide_annotations  = "com.github.bumptech.glide:annotations:${Versions.glide_version}"
     const val glide_ksp = "com.github.bumptech.glide:ksp:${Versions.glide_version}"
     const val glide_integration = "com.github.bumptech.glide:okhttp3-integration:${Versions.glide_version}"

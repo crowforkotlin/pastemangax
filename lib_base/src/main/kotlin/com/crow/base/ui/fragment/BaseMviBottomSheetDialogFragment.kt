@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewbinding.ViewBinding
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
+import com.crow.base.ui.viewmodel.mvi.BaseMviSuspendResult
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 
 /*************************
@@ -28,13 +29,13 @@ abstract class BaseMviBottomSheetDialogFragment<out VB : ViewBinding> : BaseBott
 
     abstract fun getViewBinding(inflater: LayoutInflater): VB
 
-    fun <I : BaseMviIntent> BaseMviViewModel<I>.onOutput(state: Lifecycle.State = Lifecycle.State.CREATED, baseMviSuspendResult: BaseMviViewModel.BaseMviSuspendResult<I>) {
+    fun <I : BaseMviIntent> BaseMviViewModel<I>.onOutput(state: Lifecycle.State = Lifecycle.State.CREATED, baseMviSuspendResult: BaseMviSuspendResult<I>) {
         repeatOnLifecycle(state) { output { intent -> baseMviSuspendResult.onResult(intent) } }
     }
 
 
 
-    override fun getView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, ): View? {
+    override fun getView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return getViewBinding(inflater).also { _mBinding = it }.root
     }
 

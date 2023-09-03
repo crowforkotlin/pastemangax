@@ -135,7 +135,7 @@ inline fun immersionPadding(root: View, crossinline update: (v: View, insets: an
  *
  * ● 2023-06-27 00:51:18 周二 上午
  */
-fun immersureFullScreen(windowInsetsControllerCompat: WindowInsetsControllerCompat) {
+fun immersionFullScreen(windowInsetsControllerCompat: WindowInsetsControllerCompat) {
     windowInsetsControllerCompat.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     windowInsetsControllerCompat.hide(WindowInsetsCompat.Type.systemBars())
 }

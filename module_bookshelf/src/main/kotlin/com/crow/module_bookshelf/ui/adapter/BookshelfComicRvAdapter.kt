@@ -41,11 +41,11 @@ class BookshelfComicRvAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LoadingViewHolder {
         return LoadingViewHolder(BookshelfFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent,false)).also { vh ->
 
-            val layoutParams = vh.rvBinding.bookshelfRvImage.layoutParams
+            val layoutParams = vh.binding.bookshelfRvImage.layoutParams
             layoutParams.width = getComicCardWidth() - mSize10
             layoutParams.height = getComicCardHeight()
 
-            vh.rvBinding.bookshelfRvImage.doOnClickInterval {
+            vh.binding.bookshelfRvImage.doOnClickInterval {
                 doOnTap(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
         }
@@ -54,12 +54,12 @@ class BookshelfComicRvAdapter(
     override fun onBindViewHolder(vh: LoadingViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        vh.rvBinding.bookshelfRvLoading.isVisible = true
-        vh.rvBinding.bookshelfRvProgressText.isVisible = true
-        vh.rvBinding.bookshelfRvProgressText.text = AppGlideProgressFactory.PERCENT_0
+        vh.binding.bookshelfRvLoading.isVisible = true
+        vh.binding.bookshelfRvProgressText.isVisible = true
+        vh.binding.bookshelfRvProgressText.text = AppGlideProgressFactory.PERCENT_0
         vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mComic.mCover) { _, _, percentage, _, _ ->
-            vh.rvBinding.bookshelfRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+            vh.binding.bookshelfRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
         }
 
         Glide.with(vh.itemView.context)
@@ -67,17 +67,17 @@ class BookshelfComicRvAdapter(
             .listener(vh.mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    vh.rvBinding.bookshelfRvLoading.isInvisible = true
-                    vh.rvBinding.bookshelfRvProgressText.isInvisible = true
+                    vh.binding.bookshelfRvLoading.isInvisible = true
+                    vh.binding.bookshelfRvProgressText.isInvisible = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    vh.rvBinding.bookshelfRvLoading.isInvisible = true
-                    vh.rvBinding.bookshelfRvProgressText.isInvisible = true
+                    vh.binding.bookshelfRvLoading.isInvisible = true
+                    vh.binding.bookshelfRvProgressText.isInvisible = true
                     NoTransition()
                 }
             })
-            .into(vh.rvBinding.bookshelfRvImage)
-        vh.rvBinding.bookshelfRvName.text = item.mComic.mName
-        vh.rvBinding.bookshelfRvTime.text = item.mComic.mDatetimeUpdated
+            .into(vh.binding.bookshelfRvImage)
+        vh.binding.bookshelfRvName.text = item.mComic.mName
+        vh.binding.bookshelfRvTime.text = item.mComic.mDatetimeUpdated
     }
 }

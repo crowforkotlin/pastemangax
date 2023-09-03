@@ -19,6 +19,8 @@ android {
 
         // 开启 ViewBinding
         viewBinding = true
+
+        compose = true
     }
 
     // 应用程序的默认配置信息
@@ -65,8 +67,9 @@ android {
         // 指定编译器的命令行参数 可启用额外功能
         freeCompilerArgs = AppConfigs.free_compile_args
     }
-
-
+    composeOptions {
+        kotlinCompilerExtensionVersion = compose.versions.compiler.get()
+    }
 }
 
 kotlin { jvmToolchain(11) }

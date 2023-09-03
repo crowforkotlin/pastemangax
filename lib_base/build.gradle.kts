@@ -4,7 +4,10 @@ plugins {
     id(Plugins.android_library)
 
     // Ksp
-    kotlin(Plugins.kotlin_kapt)
+    // kotlin(Plugins.kotlin_kapt)
+
+    // Ksp
+    id(Plugins.google_devtools_ksp) version Versions.ksp_version
 
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
@@ -83,7 +86,11 @@ android {
         // JNI 库文件路径
         jniLibs.srcDirs(AppConfigs.source_libs, AppConfigs.source_jniLibs)
     }
+
+    // 配置Compose 选项
     composeOptions {
+
+        // 设置 Kotlin Compose 编译器扩展的版本 （Important）
         kotlinCompilerExtensionVersion = compose.versions.compiler.get()
     }
 }
@@ -146,7 +153,7 @@ dependencies {
 
     api(Dependencies.glide)
     api(Dependencies.glide_integration) { exclude(group = "glide-parent") }
-    kapt(Dependencies.glide_compiler)
+    ksp(Dependencies.glide_compiler_ksp)
 
     api(Dependencies.zguop_banner)
     api(Dependencies.tencent_bugly)

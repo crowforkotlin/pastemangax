@@ -1,6 +1,5 @@
 package com.crow.module_book.ui.activity
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.transition.Slide
@@ -14,24 +13,36 @@ import androidx.activity.addCallback
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.get
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.tools.extensions.BASE_ANIM_300L
+import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.hasGlobalPoint
+import com.crow.base.tools.extensions.immersionFullScreen
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.immersureFullScreen
 import com.crow.base.tools.extensions.immersureFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
 import com.crow.base.tools.extensions.isDarkMode
+import com.crow.base.tools.extensions.onCollect
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.activity.BaseMviActivity
+import com.crow.base.ui.viewmodel.doOnLoading
+import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_book.databinding.BookActivityComicBinding
-import com.crow.module_book.ui.fragment.comic.BookComicCategories
-import com.crow.module_book.ui.view.comic.GestureHelper
+import com.crow.module_book.model.intent.BookIntent
+import com.crow.module_book.ui.fragment.comic.reader.BookClassicComicFragment
+import com.crow.module_book.ui.fragment.comic.reader.BookComicCategories
+import com.crow.module_book.ui.helper.GestureHelper
+import com.crow.module_book.ui.view.comic.rv.ComicFrameLayout
+import com.crow.module_book.ui.view.comic.rv.ComicRecyclerView
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.crow.base.R as baseR
 
 
 class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper.GestureListener {
@@ -76,11 +87,10 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      *
      * ● 2023-07-07 23:55:31 周五 下午
      */
-    @SuppressLint("PrivateResource")
     override fun initView(savedInstanceState: Bundle?) {
 
         // 全屏
-        immersureFullScreen(mWindowInsetsCompat)
+        immersionFullScreen(mWindowInsetsCompat)
 
         // 沉浸式边距
         immersionPadding(mBinding.root) { view, insets, _ ->
@@ -92,19 +102,13 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         }
 
         // 沉浸式状态栏和工具栏
-        (mBinding.comicToolbar.background as MaterialShapeDrawable).apply {
-            elevation = resources.getDimension(com.google.android.material.R.dimen.m3_sys_elevation_level2)
-            alpha = 242
-            val color = ColorUtils.setAlphaComponent(resolvedTintColor, alpha)
-            window.statusBarColor = color
-            window.navigationBarColor = color
-        }
+        immersionBarStyle()
 
         // 内存重启 后 savedInstanceState不为空 防止重复添加Fragment
         if (savedInstanceState == null) {
 
-            // 条漫
-            mComicCategory.apply(BookComicCategories.Type.STRIPT)
+            // CLASSIC 经典 （按钮点击下一章）
+            mComicCategory.apply(BookComicCategories.Type.CLASSIC)
         }
     }
 
@@ -123,10 +127,51 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      * ● 2023-07-07 23:55:54 周五 下午
      */
     override fun initData() {
-        mComicVM.mPathword = intent.getStringExtra(BaseStrings.PATH_WORD)
-        mComicVM.mUuid = intent.getStringExtra(ComicViewModel.UUID)
+        mComicVM.mPathword = (intent.getStringExtra(BaseStrings.PATH_WORD) ?: "").also {
+            if (it.isEmpty()) finishActivity(getString(baseR.string.BaseError, "pathword is null or empty"))
+        }
+        mComicVM.mUuid = (intent.getStringExtra(ComicViewModel.UUID) ?: "").also {
+            if (it.isEmpty()) finishActivity(getString(baseR.string.BaseError, "uuid is null or empty"))
+        }
         mComicVM.mPrevUuid = intent.getStringExtra(ComicViewModel.PREV_UUID)
         mComicVM.mNextUuid = intent.getStringExtra(ComicViewModel.NEXT_UUID)
+        mComicVM.input(BookIntent.GetComicPage(mComicVM.mPathword, mComicVM.mUuid, enableLoading = true))
+    }
+
+    /**
+     * ● 初始化观察者
+     *
+     * ● 2023-09-01 23:08:52 周五 下午
+     */
+    override fun initObserver(savedInstanceState: Bundle?) {
+
+        mComicVM.uiState.onCollect(this) { state ->
+            if (state != null && state.mReaderContent.mInfo != null) {
+                if (mBinding.comicInfoBar.isGone) mBinding.comicInfoBar.animateFadeIn()
+                mBinding.comicInfoBar.update(
+                    currentPage = state.mCurrentPage,
+                    totalPage = state.mTotalPages,
+                    percent = mComicVM.computePercent(
+                        pageIndex = state.mCurrentPage,
+                        totalPage = state.mTotalPages,
+                        info = state.mReaderContent.mInfo
+                    ),
+                    info = state.mReaderContent.mInfo
+                )
+            }
+        }
+
+        mComicVM.onOutput { intent ->
+            when(intent) {
+                is BookIntent.GetComicPage -> {
+                    if (intent.enableLoading) {
+                        intent.mBaseViewState
+                            .doOnLoading{ showLoadingAnim { dialog -> dialog.applyWindow(dimAmount = 0.3f) } }
+                            .doOnSuccess(::dismissLoadingAnim)
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -147,14 +192,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun onStart() {
         super.onStart()
-        onBackPressedDispatcher.addCallback(this) {
-            finish()
-            if (Build.VERSION.SDK_INT >= 34) {
-                overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, android.R.anim.fade_in, android.R.anim.fade_out)
-            } else {
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            }
-        }
+        onBackPressedDispatcher.addCallback(this) { finishActivity() }
     }
 
     /**
@@ -170,10 +208,43 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      * ● 2023-07-07 23:57:39 周五 下午
      */
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        mGestureHelper.dispatchTouchEvent(ev, !hasGlobalPoint(mBinding.comicToolbar, ev.rawX.toInt(), ev.rawY.toInt()))
+        val fragment = supportFragmentManager.fragments.firstOrNull()
+        var dispatch = false
+        if (fragment is BookClassicComicFragment) {
+            val frame = mBinding.comicFcv[0]
+            if (frame is ComicFrameLayout)  {
+                val rv = frame[0]
+                if (rv is ComicRecyclerView && rv.layoutManager is LinearLayoutManager) {
+                    val layoutManager = (rv.layoutManager as LinearLayoutManager)
+                    dispatch = (layoutManager.findFirstVisibleItemPosition() == 0) || (layoutManager.findLastVisibleItemPosition() == rv.adapter!!.itemCount - 1 )
+                }
+            }
+        }
+        if(!dispatch) mGestureHelper.dispatchTouchEvent(ev, !hasGlobalPoint(mBinding.comicToolbar, ev.rawX.toInt(), ev.rawY.toInt()))
         return super.dispatchTouchEvent(ev)
     }
 
+    /**
+     * ● Exit Activity With Animation and can add information
+     *
+     * ● 2023-09-01 22:41:49 周五 下午
+     */
+    @Suppress("DEPRECATION")
+    private fun finishActivity(message: String? = null) {
+        message?.let { toast(it) }
+        finish()
+        if (Build.VERSION.SDK_INT >= 34) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, android.R.anim.fade_in, android.R.anim.fade_out)
+        } else {
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        }
+    }
+
+    /**
+     * ● TransitionBar With Animation
+     *
+     * ● 2023-09-01 22:43:35 周五 下午
+     */
     private fun transitionBar(isHide: Boolean) {
         val transition = TransitionSet()
             .setDuration(BASE_ANIM_300L)
@@ -183,10 +254,25 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         mBinding.comicToolbar.isGone = isHide
         mWindowInsetsCompat.isAppearanceLightStatusBars = !isDarkMode()
         if (isHide) {
-            immersureFullScreen(mWindowInsetsCompat)
+            immersionFullScreen(mWindowInsetsCompat)
         } else {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             mWindowInsetsCompat.show(WindowInsetsCompat.Type.systemBars())
+        }
+    }
+
+    /**
+     * ● 沉浸式工具栏、导航栏、状态栏样式
+     *
+     * ● 2023-09-02 19:12:24 周六 下午
+     */
+    private fun immersionBarStyle() {
+        (mBinding.comicToolbar.background as MaterialShapeDrawable).apply {
+            elevation = resources.getDimension(baseR.dimen.base_dp3)
+            alpha = 242
+            val color = ColorUtils.setAlphaComponent(resolvedTintColor, alpha)
+            window.statusBarColor = color
+            window.navigationBarColor = color
         }
     }
 }

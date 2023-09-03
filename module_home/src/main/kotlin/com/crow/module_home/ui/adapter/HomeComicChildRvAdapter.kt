@@ -58,12 +58,12 @@ class HomeComicChildRvAdapter<T>(
     private fun LoadingViewHolder.initView(pathword: String, name: String, imageUrl: String, author: List<AuthorResult>, hot: Int, lastestChapter: String?) {
         mPathWord = pathword                                                                                             // 设置路径值 （用于后续请求）
 
-        rvBinding.homeComicRvLoading.isVisible = true
-        rvBinding.homeComicRvProgressText.isVisible = true
-        rvBinding.homeComicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
+        binding.homeComicRvLoading.isVisible = true
+        binding.homeComicRvProgressText.isVisible = true
+        binding.homeComicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
         mAppGlideProgressFactory?.doRemoveListener()?.doClean()
         mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ ->
-            rvBinding.homeComicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+            binding.homeComicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
         }
 
         // 加载封面
@@ -72,31 +72,31 @@ class HomeComicChildRvAdapter<T>(
             .addListener(mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    rvBinding.homeComicRvLoading.isInvisible = true
-                    rvBinding.homeComicRvProgressText.isInvisible = true
+                    binding.homeComicRvLoading.isInvisible = true
+                    binding.homeComicRvProgressText.isInvisible = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    rvBinding.homeComicRvLoading.isInvisible = true
-                    rvBinding.homeComicRvProgressText.isInvisible = true
+                    binding.homeComicRvLoading.isInvisible = true
+                    binding.homeComicRvProgressText.isInvisible = true
                     NoTransition()
                 }
             })
-            .into(rvBinding.homeComicRvImage)
-        rvBinding.homeComicRvName.text = name                                                                // 漫画名
-        rvBinding.homeComicRvHot.text = formatValue(hot)                                                  // 热度 ： 12.3456 W
+            .into(binding.homeComicRvImage)
+        binding.homeComicRvName.text = name                                                                // 漫画名
+        binding.homeComicRvHot.text = formatValue(hot)                                                  // 热度 ： 12.3456 W
 
         // 作者 ：Crow
-        if (rvBinding.homeComicRvAuthor.isVisible) {
-            rvBinding.homeComicRvAuthor.text = author.joinToString { it.name }
+        if (binding.homeComicRvAuthor.isVisible) {
+            binding.homeComicRvAuthor.text = author.joinToString { it.name }
         } else {
-            rvBinding.homeComicRvAuthor.text = null
+            binding.homeComicRvAuthor.text = null
         }
 
         // 最新章节
-        if (lastestChapter == null) rvBinding.homeComicRvLastestChapter.isVisible = false
+        if (lastestChapter == null) binding.homeComicRvLastestChapter.isVisible = false
         else {
-            rvBinding.homeComicRvLastestChapter.isVisible = true
-            rvBinding.homeComicRvLastestChapter.text = lastestChapter
+            binding.homeComicRvLastestChapter.isVisible = true
+            binding.homeComicRvLastestChapter.text = lastestChapter
         }
     }
 
@@ -108,22 +108,22 @@ class HomeComicChildRvAdapter<T>(
             val isTopic = mType == Type.TOPIC
 
             // 漫画卡片高度
-            val layoutParams = vh.rvBinding.homeComicRvImage.layoutParams
+            val layoutParams = vh.binding.homeComicRvImage.layoutParams
             layoutParams.width = (if (!isTopic) getComicCardWidth() else getComicCardWidth() / 2 + getComicCardWidth()) - mSize10
             layoutParams.height = getComicCardHeight()
 
             // 点击 父布局卡片 以及漫画卡片 事件 回调给上级 HomeFragment --> ContainerFragment
-            vh.rvBinding.root.doOnClickInterval {
+            vh.binding.root.doOnClickInterval {
                 if (isTopic) { /* TOOD TOPIC*/  }
                 else doOnTap(vh.mPathWord)
             }
-            vh.rvBinding.homeBookCardView.doOnClickInterval {
+            vh.binding.homeBookCardView.doOnClickInterval {
                 if (isTopic) { /* TOOD TOPIC*/  }
                 else doOnTap(vh.mPathWord)
             }
 
             // Tooltips漫画名称设置
-            ToolTipsView.showToolTipsByLongClick(vh.rvBinding.homeComicRvName)
+            ToolTipsView.showToolTipsByLongClick(vh.binding.homeComicRvName)
         }
     }
 
@@ -131,7 +131,7 @@ class HomeComicChildRvAdapter<T>(
         when (mType) {
             Type.REC -> {
                 // 推荐 设置底部间距0
-                (vh.rvBinding.root.layoutParams as GridLayoutManager.LayoutParams).bottomMargin = 0
+                (vh.binding.root.layoutParams as GridLayoutManager.LayoutParams).bottomMargin = 0
                 val comic = (mData as MutableList<RecComicsResult>)[pos].mComic
                 vh.initView(comic.mPathWord, comic.mName, comic.mImageUrl, comic.mAuthorResult, comic.mPopular, null)
             }
@@ -153,9 +153,9 @@ class HomeComicChildRvAdapter<T>(
             }
             Type.TOPIC -> {
                 val comic = (mData as MutableList<Topices>)[pos]
-                Glide.with(vh.itemView).load(comic.mImageUrl).into(vh.rvBinding.homeComicRvImage)
+                Glide.with(vh.itemView).load(comic.mImageUrl).into(vh.binding.homeComicRvImage)
                 vh.mPathWord = comic.mPathWord
-                vh.rvBinding.apply {
+                vh.binding.apply {
                     homeComicRvName.maxLines = 4
                     homeComicRvName.text = comic.mTitle
                     homeComicRvAuthor.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
@@ -167,10 +167,10 @@ class HomeComicChildRvAdapter<T>(
     }
 
     override fun setColor(vh: LoadingViewHolder, color: Int) {
-        vh.rvBinding.homeComicRvName.setTextColor(color)
-        vh.rvBinding.homeComicRvHot.setTextColor(color)
-        vh.rvBinding.homeComicRvAuthor.setTextColor(color)
-        vh.rvBinding.homeComicRvLastestChapter.setTextColor(color)
+        vh.binding.homeComicRvName.setTextColor(color)
+        vh.binding.homeComicRvHot.setTextColor(color)
+        vh.binding.homeComicRvAuthor.setTextColor(color)
+        vh.binding.homeComicRvLastestChapter.setTextColor(color)
     }
 
     fun doNotify(datas: MutableList<T>, delay: Long, viewLifecycleOwner: LifecycleOwner) = viewLifecycleOwner.lifecycleScope.launch {

@@ -1,19 +1,19 @@
 package com.crow.module_book.ui.viewmodel
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.crow.base.copymanga.BaseEventEnum
+import com.crow.base.tools.coroutine.FlowBus
+import com.crow.base.tools.coroutine.createCoroutineExceptionHandler
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
-import com.crow.module_book.model.entity.ComicLoadMorePage
+import com.crow.module_book.model.entity.comic.reader.ReaderContent
+import com.crow.module_book.model.entity.comic.reader.ReaderInfo
+import com.crow.module_book.model.entity.comic.reader.ReaderState
 import com.crow.module_book.model.intent.BookIntent
-import com.crow.module_book.model.resp.ComicPageResp
-import com.crow.module_book.model.resp.comic_page.getSortedContets
-import com.crow.module_book.model.resp.requireContentsSize
+import com.crow.module_book.model.resp.comic_page.Chapter
 import com.crow.module_book.network.BookRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import java.util.LinkedList
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -33,24 +33,19 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         const val CHAPTER_PRELOADED_INDEX = 2
     }
 
-    enum class  ComicState {
-        PREV,
-        NEXT
-    }
-
     /**
      * ● 漫画关键字
      *
      * ● 2023-06-28 22:04:54 周三 下午
      */
-    var mPathword: String? = null
+    lateinit var mPathword: String
 
     /**
      * ● 漫画UID
      *
      * ● 2023-06-28 22:04:58 周三 下午
      */
-    var mUuid: String? = null
+    lateinit var mUuid: String
 
     /**
      * ● 上一章漫画UID
@@ -69,16 +64,18 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     /**
      * ● 漫画内容
      *
-     * ● 2023-06-28 22:08:26 周三 下午
+     * ● 2023-09-01 00:51:58 周五 上午
      */
-    var mComicPage: ComicPageResp? = null
-        private set
+    private val _mContent = MutableStateFlow(ReaderContent(emptyList(), null))
+    val mContent: StateFlow<ReaderContent> get() = _mContent
 
-    private val mChapters: LinkedList<ComicPageResp> = LinkedList()
-
-    val mContents = mutableListOf<Any>()
-
-    var mLoadedState = MutableLiveData<MutableList<Any>>()
+    /**
+     * ● UI State For InfoBar
+     *
+     * ● 2023-09-02 22:03:53 周六 下午
+     */
+    private val _uiState = MutableStateFlow<ReaderState?>(null)
+    val uiState : StateFlow<ReaderState?> get() = _uiState
 
     /**
      * ● 通过检查意图的类型并执行相应的代码来处理意图
@@ -87,7 +84,11 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      */
     override fun dispatcher(intent: BookIntent) {
         when(intent) {
-            is BookIntent.GetComicPage -> getComicPage(intent)
+            is BookIntent.GetComicPage -> {
+                viewModelScope.launch(createCoroutineExceptionHandler("GetComicPage Catch")) {
+                    getComicPage(intent)
+                }
+            }
         }
     }
 
@@ -96,36 +97,56 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      *
      * ● 2023-06-28 22:17:41 周三 下午
      */
-    private fun getComicPage(intent: BookIntent.GetComicPage) {
-        flowResult(intent, repository.getComicPage(intent.pathword, intent.uuid)) { value ->
-            mComicPage = value.mResults
-            val snapshot = if (mChapters.isEmpty()) {
-                mContents.addAll(value.mResults.mChapter.getSortedContets())
-                mContents.add(
-                        ComicLoadMorePage(
-                            mIsNext = true,
-                            mHasNext = mNextUuid == null,
-                            mIsLoading = true,
-                            mPrevContent = "",
-                            mNextContent = "",
-                        )
-                )
-                mContents.add(0,
-                        ComicLoadMorePage(
-                            mIsNext = false,
-                            mHasNext = mPrevUuid == null,
-                            mIsLoading = true,
-                            mPrevContent = "",
-                            mNextContent = ""
-                        )
-                )
-                intent.copy(contents = mContents)
-            } else{
-                intent.copy(contents = null)
+    private suspend fun getComicPage(intent: BookIntent.GetComicPage, isNext: Boolean? = null) {
+        val result = flowResult(repository.getComicPage(intent.pathword, intent.uuid), intent) { value ->
+            val readerContent = getReaderContent(value.mResults.mChapter)
+            val _intent = if (isNext == null) {
+                intent.copy(readerContent = readerContent)
+            } else {
+                intent.copy(readerContent = readerContent)
             }
-            mChapters.add(value.mResults)
-            snapshot
+            _mContent.value = readerContent
+            _intent
         }
+        FlowBus.with<String>(BaseEventEnum.UpdateChapter.name).post(result.mResults.mChapter.mName)
+    }
+
+    /**
+     * ● 获取阅读内容实体
+     *
+     * ● 2023-09-02 19:51:53 周六 下午
+     */
+    private fun getReaderContent(chapter: Chapter): ReaderContent {
+        return ReaderContent(
+            mPages = chapter.mWords
+                .zip(chapter.mContents)
+                .sortedBy { it.first }
+                .map { it.second }
+                .toMutableList(),
+            mInfo =  ReaderInfo(
+                mChapterIndex = chapter.mIndex,
+                mChapterID = chapter.mUuid,
+                mChapterName = chapter.mName,
+                mChapterCount = chapter.mCount,
+                mChapterUpdate = chapter.mDatetimeCreated,
+                mPrevUUID = chapter.mPrev,
+                mNextUUID = chapter.mNext
+            ))
+    }
+
+
+    /**
+     * ● 计算章节、页数累计和 的 百分比
+     *
+     * ● 2023-09-02 21:49:09 周六 下午
+     */
+    fun computePercent(pageIndex: Int, totalPage: Int, info: ReaderInfo): Float {
+        val ppc = 1f / info.mChapterCount
+        return ppc * info.mChapterIndex + ppc * (pageIndex / totalPage.toFloat())
+    }
+
+    fun updateUiState(readerState: ReaderState) {
+        _uiState.value = readerState
     }
 
     /**
@@ -133,67 +154,30 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      *
      * ● 2023-08-29 22:19:57 周二 下午
      */
-    fun onScrollUp(position: Int) {
-        CoroutineScope(coroutineContext).launch {
-            mutex.tryLock()
-            if (position < CHAPTER_PRELOADED_INDEX) {
-                loadPrevNextChapter(isNext = false)
-            }
-            mutex.unlock()
+    fun onScroll(position: Int) {
+        // TODO Future
+/*
+        if (position < CHAPTER_PRELOADED_INDEX) {
+            loadPrevNextChapter(isNext = false)
         }
+
+        if (position > mContent.value.mPages.size - CHAPTER_PRELOADED_INDEX) {
+            loadPrevNextChapter(isNext = true)
+        }
+*/
     }
 
-    /**
-     * ● 加载下一章
-     *
-     * ● 2023-08-29 22:19:57 周二 下午
-     */
-    fun onScrollDown(position: Int) {
-        CoroutineScope(coroutineContext).launch {
-            mutex.tryLock()
-            if (position > mComicPage.requireContentsSize() - CHAPTER_PRELOADED_INDEX) {
-                loadPrevNextChapter(isNext = true)
-            }
-            mutex.unlock()
+/*
+    private fun loadPrevNextChapter(isNext: Boolean) {
+        val prevJob = mLoadingJob
+        mLoadingJob = launchJob {
+            prevJob?.cancelAndJoin()
+            ensureActive()
+
+            val uuid = if (isNext) mNextUuid else mPrevUuid
+
+            getComicPage(BookIntent.GetComicPage(mPathword!!, uuid ?: return@launchJob,null), isNext)
         }
     }
-
-    val mutex = Mutex(locked = true)
-    val coroutineContext = SupervisorJob() + Dispatchers.Main.immediate
-
-    private suspend fun loadPrevNextChapter(isNext: Boolean) {
-        if (mChapters.size > CHAPTER_LOADED_THRESHOLD) {
-            if(isNext) {
-                mChapters.removeFirst()
-            } else {
-                mChapters.removeLast()
-            }
-        }
-        mChapters.map {
-            val contents = it.mChapter.getSortedContets()
-            mContents.addAll(contents)
-            if(isNext) {
-                mContents.add(
-                    ComicLoadMorePage(
-                        mIsNext = true,
-                        mHasNext = mNextUuid == null,
-                        mIsLoading = true,
-                        mPrevContent = "",
-                        mNextContent = "",
-                    )
-                )
-            } else {
-                mContents.add(0,
-                    ComicLoadMorePage(
-                        mIsNext = false,
-                        mHasNext = mPrevUuid == null,
-                        mIsLoading = true,
-                        mPrevContent = "",
-                        mNextContent = "",
-                    )
-                )
-            }
-        }
-        mLoadedState.value = mContents
-    }
+*/
 }

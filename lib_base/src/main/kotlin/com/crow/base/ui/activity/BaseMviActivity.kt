@@ -6,6 +6,7 @@ import androidx.viewbinding.ViewBinding
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
+import com.crow.base.ui.viewmodel.mvi.BaseMviSuspendResult
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.base.ui.viewmodel.mvi.IBaseMvi
 
@@ -30,7 +31,7 @@ abstract class BaseMviActivity<out VB: ViewBinding> : BaseActivityImpl(), IBaseM
 
     open fun initObserver(savedInstanceState: Bundle?) {}
 
-    override fun <I : BaseMviIntent> BaseMviViewModel<I>.onOutput(state: Lifecycle.State, baseMviSuspendResult: BaseMviViewModel.BaseMviSuspendResult<I>) {
+    override fun <I : BaseMviIntent> BaseMviViewModel<I>.onOutput(state: Lifecycle.State, baseMviSuspendResult: BaseMviSuspendResult<I>) {
         repeatOnLifecycle(state) { output { intent -> baseMviSuspendResult.onResult(intent) } }
     }
 

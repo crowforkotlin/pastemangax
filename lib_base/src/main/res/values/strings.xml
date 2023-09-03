@@ -9,6 +9,7 @@
     <string name="BaseLoadingRetry">重新加载</string>
     <string name="BaseRefreshScucess">"刷新成功~"</string>
     <string name="BaseUnknowError">Unknow Error!</string>
+    <string name="BaseError">error : %s</string>
     <string name="BaseUnknow">未知</string>
     <string name="BaseConfirm">确认</string>
     <string name="BaseCancel">取消</string>

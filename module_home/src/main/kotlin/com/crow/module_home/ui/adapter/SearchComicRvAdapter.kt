@@ -43,11 +43,11 @@ class SearchComicRvAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LoadingViewHolder {
         return LoadingViewHolder(HomeFragmentSearchRvBinding.inflate(LayoutInflater.from(parent.context), parent,false)).also { vh ->
 
-            val layoutParams = vh.rvBinding.homeSearchRvImage.layoutParams
+            val layoutParams = vh.binding.homeSearchRvImage.layoutParams
             layoutParams.width = getComicCardWidth() - mSize10
             layoutParams.height = getComicCardHeight()
 
-            vh.rvBinding.homeSearchRvImage.doOnClickInterval {
+            vh.binding.homeSearchRvImage.doOnClickInterval {
                 doOnTap(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
         }
@@ -56,12 +56,12 @@ class SearchComicRvAdapter(
     override fun onBindViewHolder(vh: LoadingViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        vh.rvBinding.homeSearchRvLoading.isVisible = true
-        vh.rvBinding.homeSearchRvProgressText.isVisible = true
-        vh.rvBinding.homeSearchRvProgressText.text = AppGlideProgressFactory.PERCENT_0
+        vh.binding.homeSearchRvLoading.isVisible = true
+        vh.binding.homeSearchRvProgressText.isVisible = true
+        vh.binding.homeSearchRvProgressText.text = AppGlideProgressFactory.PERCENT_0
         vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
-            vh.rvBinding.homeSearchRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+            vh.binding.homeSearchRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
         }
 
         Glide.with(vh.itemView.context)
@@ -69,25 +69,25 @@ class SearchComicRvAdapter(
             .listener(vh.mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    vh.rvBinding.homeSearchRvLoading.isInvisible = true
-                    vh.rvBinding.homeSearchRvProgressText.isInvisible = true
+                    vh.binding.homeSearchRvLoading.isInvisible = true
+                    vh.binding.homeSearchRvProgressText.isInvisible = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    vh.rvBinding.homeSearchRvLoading.isInvisible = true
-                    vh.rvBinding.homeSearchRvProgressText.isInvisible = true
+                    vh.binding.homeSearchRvLoading.isInvisible = true
+                    vh.binding.homeSearchRvProgressText.isInvisible = true
                     NoTransition()
                 }
             })
-            .into(vh.rvBinding.homeSearchRvImage)
+            .into(vh.binding.homeSearchRvImage)
 
-        vh.rvBinding.homeSearchRvName.text = item.mName
-        vh.rvBinding.homeSearchRvAuthor.text = item.mAuthor.joinToString { it.mName }
-        vh.rvBinding.homeSearchRvHot.text = formatValue(item.mPopular)
+        vh.binding.homeSearchRvName.text = item.mName
+        vh.binding.homeSearchRvAuthor.text = item.mAuthor.joinToString { it.mName }
+        vh.binding.homeSearchRvHot.text = formatValue(item.mPopular)
     }
 
     override fun setColor(vh: LoadingViewHolder, color: Int) {
-        vh.rvBinding.homeSearchRvName.setTextColor(color)
-        vh.rvBinding.homeSearchRvAuthor.setTextColor(color)
-        vh.rvBinding.homeSearchRvHot.setTextColor(color)
+        vh.binding.homeSearchRvName.setTextColor(color)
+        vh.binding.homeSearchRvAuthor.setTextColor(color)
+        vh.binding.homeSearchRvHot.setTextColor(color)
     }
 }

@@ -15,16 +15,16 @@ import com.crow.base.ui.dialog.LoadingAnimDialog
 sealed class BaseViewState {
 
     // 用于预构建
-    object Default : BaseViewState()
+    data object Default : BaseViewState()
 
     // 正在加载中
-    object Loading : BaseViewState()
+    data object Loading : BaseViewState()
 
     // 加载成功
-    object Success : BaseViewState()
+    data object Success : BaseViewState()
 
     // With结果
-    object Result : BaseViewState()
+    data object Result : BaseViewState()
 
     // 加载失败
     class Error(val code: Int = DEFAULT, val msg: String? = null) : BaseViewState() {

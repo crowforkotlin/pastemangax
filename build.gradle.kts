@@ -9,7 +9,7 @@ buildscript {
 
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin_version}")
-        classpath("com.android.tools.build:gradle:${Versions.agp_version}")
+        classpath("com.android.tools.build:gradle:8.3.0-alpha01")
     }
 }
 /*
