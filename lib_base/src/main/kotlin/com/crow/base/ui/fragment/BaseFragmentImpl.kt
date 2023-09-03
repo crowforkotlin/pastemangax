@@ -31,7 +31,7 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment {
     // 初始化数据
     override fun initData(savedInstanceState: Bundle?) { }
 
-    override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) { LoadingAnimDialog.show(childFragmentManager, loadingAnimConfig) }
+    override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) { LoadingAnimDialog.show(childFragmentManager, loadingAnimConfig = loadingAnimConfig) }
 
     override fun dismissLoadingAnim() { LoadingAnimDialog.dismiss(childFragmentManager) }
 

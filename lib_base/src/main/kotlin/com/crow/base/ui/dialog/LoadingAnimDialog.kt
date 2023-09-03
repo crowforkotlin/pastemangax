@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.annotation.FloatRange
+import androidx.annotation.StyleRes
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -34,7 +35,11 @@ import kotlinx.coroutines.launch
  * @Description: 加载动画弹窗
  * @formatter:off
  *************************/
-class LoadingAnimDialog : DialogFragment() {
+class LoadingAnimDialog(@StyleRes theme: Int) : DialogFragment() {
+
+    init {
+        setStyle(STYLE_NO_TITLE, theme)
+    }
 
     val mBinding: BaseDialogLoadingBinding get() = _mBinding!!
     private var _mBinding: BaseDialogLoadingBinding? = null
@@ -58,8 +63,8 @@ class LoadingAnimDialog : DialogFragment() {
         private val mBaseEvent = BaseEvent.newInstance(1000L)
 
         @JvmStatic
-        fun show(fragmentManager: FragmentManager,loadingAnimConfig: LoadingAnimConfig? = null) {
-            val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: LoadingAnimDialog()
+        fun show(fragmentManager: FragmentManager, @StyleRes theme: Int = R.style.Base_LoadingAnim,loadingAnimConfig: LoadingAnimConfig? = null) {
+            val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: LoadingAnimDialog(theme)
             if (dialog.isAdded || dialog.isVisible || fragmentManager.isStateSaved) return
             mBaseEvent.doResetEventFlagTime(0L)
             mBaseEvent.doOnInterval { dialog.show(fragmentManager, TAG) }
@@ -95,11 +100,6 @@ class LoadingAnimDialog : DialogFragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_TITLE, R.style.Base_LoadingAnim)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return BaseDialogLoadingBinding.inflate(inflater).also { _mBinding = it }.root
     }
@@ -119,6 +119,7 @@ class LoadingAnimDialog : DialogFragment() {
     fun applyWindow(lightStatusbar: Boolean = isDarkMode(), @FloatRange(from = 0.0, to = 1.0) dimAmount: Float = 0f) {
         dialog?.window?.apply {
             addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             setWindowAnimations(com.google.android.material.R.style.Animation_AppCompat_Dialog)
             setDimAmount(dimAmount)
             mWindowInsetsControllerCompat.isAppearanceLightStatusBars = !lightStatusbar

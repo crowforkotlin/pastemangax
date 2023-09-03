@@ -121,6 +121,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun initListener() {
         mGestureHelper =  GestureHelper(this, this)
+
     }
 
     /**
@@ -168,7 +169,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                 is BookIntent.GetComicPage -> {
                     if (intent.enableLoading) {
                         intent.mBaseViewState
-                            .doOnLoading{ showLoadingAnim { dialog -> dialog.applyWindow(dimAmount = 0.3f) } }
+                            .doOnLoading{ showLoadingAnim(baseR.style.Base_LoadingAnim_FullScreen) { dialog -> dialog.applyWindow(dimAmount = 0.3f) } }
                             .doOnSuccess(::dismissLoadingAnim)
                     }
                 }
