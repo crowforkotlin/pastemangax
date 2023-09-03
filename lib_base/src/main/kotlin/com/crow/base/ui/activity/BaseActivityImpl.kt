@@ -3,7 +3,6 @@ package com.crow.base.ui.activity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatActivity
 import com.crow.base.ui.dialog.LoadingAnimDialog
 
@@ -41,11 +40,11 @@ abstract class BaseActivityImpl : AppCompatActivity(), IBaseActivity {
         mHandler = null
     }
 
-    override fun showLoadingAnim(@StyleRes theme: Int) {
-        LoadingAnimDialog.show(supportFragmentManager, theme = theme)
+    override fun showLoadingAnim() {
+        LoadingAnimDialog.show(supportFragmentManager)
     }
 
-    override fun showLoadingAnim(@StyleRes theme: Int, loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) { LoadingAnimDialog.show(supportFragmentManager, loadingAnimConfig = loadingAnimConfig) }
+    override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) { LoadingAnimDialog.show(supportFragmentManager, loadingAnimConfig = loadingAnimConfig) }
 
     override fun dismissLoadingAnim() {
         LoadingAnimDialog.dismiss(supportFragmentManager)

@@ -178,7 +178,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                                     mIsNeedLoading = true
                                     return@doOnLoading
                                 }
-                                showLoadingAnim(baseR.style.Base_LoadingAnim_FullScreen) { dialog -> dialog.applyWindow(dimAmount = 0.3f) }
+                                showLoadingAnim() { dialog -> dialog.applyWindow(dimAmount = 0.3f, isFullScreen = true) }
                             }
                             .doOnSuccess(::dismissLoadingAnim)
                     }

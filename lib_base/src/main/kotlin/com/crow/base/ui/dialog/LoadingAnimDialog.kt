@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.annotation.FloatRange
-import androidx.annotation.StyleRes
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -35,10 +34,10 @@ import kotlinx.coroutines.launch
  * @Description: 加载动画弹窗
  * @formatter:off
  *************************/
-class LoadingAnimDialog(@StyleRes theme: Int) : DialogFragment() {
+class LoadingAnimDialog() : DialogFragment() {
 
     init {
-        setStyle(STYLE_NO_TITLE, theme)
+        setStyle(STYLE_NO_TITLE, R.style.Base_LoadingAnim)
     }
 
     val mBinding: BaseDialogLoadingBinding get() = _mBinding!!
@@ -63,8 +62,8 @@ class LoadingAnimDialog(@StyleRes theme: Int) : DialogFragment() {
         private val mBaseEvent = BaseEvent.newInstance(1000L)
 
         @JvmStatic
-        fun show(fragmentManager: FragmentManager, @StyleRes theme: Int = R.style.Base_LoadingAnim, loadingAnimConfig: LoadingAnimConfig? = null) {
-            val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: LoadingAnimDialog(theme)
+        fun show(fragmentManager: FragmentManager, loadingAnimConfig: LoadingAnimConfig? = null) {
+            val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: LoadingAnimDialog()
             if (dialog.isAdded || dialog.isVisible || fragmentManager.isStateSaved) return
             mBaseEvent.doResetEventFlagTime(0L)
             mBaseEvent.doOnInterval { dialog.show(fragmentManager, TAG) }
@@ -116,8 +115,9 @@ class LoadingAnimDialog(@StyleRes theme: Int) : DialogFragment() {
         _mBinding = null
     }
 
-    fun applyWindow(lightStatusbar: Boolean = isDarkMode(), @FloatRange(from = 0.0, to = 1.0) dimAmount: Float = 0f) {
+    fun applyWindow(lightStatusbar: Boolean = isDarkMode(), @FloatRange(from = 0.0, to = 1.0) dimAmount: Float = 0f, isFullScreen: Boolean = false) {
         dialog?.window?.apply {
+            if (isFullScreen) addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
             setWindowAnimations(com.google.android.material.R.style.Animation_AppCompat_Dialog)
             setDimAmount(dimAmount)
