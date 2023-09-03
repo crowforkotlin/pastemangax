@@ -78,6 +78,13 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
     private lateinit var mGestureHelper: GestureHelper
 
     /**
+     * ● 是否需要加载（默认为true）
+     *
+     * ● 2023-09-04 01:35:45 周一 上午
+     */
+    private var mIsNeedLoading = true
+
+    /**
      * ● 获取ViewBinding
      *
      * ● 2023-07-07 23:55:09 周五 下午
@@ -119,10 +126,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      *
      * ● 2023-07-08 01:06:02 周六 上午
      */
-    override fun initListener() {
-        mGestureHelper =  GestureHelper(this, this)
-
-    }
+    override fun initListener() { mGestureHelper =  GestureHelper(this, this) }
 
     /**
      * ● 初始化数据
@@ -169,7 +173,13 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                 is BookIntent.GetComicPage -> {
                     if (intent.enableLoading) {
                         intent.mBaseViewState
-                            .doOnLoading{ showLoadingAnim(baseR.style.Base_LoadingAnim_FullScreen) { dialog -> dialog.applyWindow(dimAmount = 0.3f) } }
+                            .doOnLoading{
+                                if (!mIsNeedLoading) {
+                                    mIsNeedLoading = true
+                                    return@doOnLoading
+                                }
+                                showLoadingAnim(baseR.style.Base_LoadingAnim_FullScreen) { dialog -> dialog.applyWindow(dimAmount = 0.3f) }
+                            }
                             .doOnSuccess(::dismissLoadingAnim)
                     }
                 }
@@ -184,6 +194,10 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (mComicVM.mOrientation != resources.configuration.orientation) {
+            mComicVM.mOrientation = resources.configuration.orientation
+            mIsNeedLoading = false
+        }
         immersureFullView(window)
         immerureCutoutCompat(window)
     }
@@ -217,6 +231,11 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         return super.dispatchTouchEvent(ev)
     }
 
+    /**
+     * ● 检查点击范围内是否存在指定控件
+     *
+     * ● 2023-09-04 01:30:21 周一 上午
+     */
     private fun hasGlobalPoint(ev: MotionEvent): Boolean {
         val hasToolbar = hasGlobalPoint(mBinding.comicToolbar, ev.rawX.toInt(), ev.rawY.toInt())
         var hasButton = false

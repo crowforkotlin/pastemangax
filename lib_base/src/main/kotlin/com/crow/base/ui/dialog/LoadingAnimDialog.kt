@@ -63,7 +63,7 @@ class LoadingAnimDialog(@StyleRes theme: Int) : DialogFragment() {
         private val mBaseEvent = BaseEvent.newInstance(1000L)
 
         @JvmStatic
-        fun show(fragmentManager: FragmentManager, @StyleRes theme: Int = R.style.Base_LoadingAnim,loadingAnimConfig: LoadingAnimConfig? = null) {
+        fun show(fragmentManager: FragmentManager, @StyleRes theme: Int = R.style.Base_LoadingAnim, loadingAnimConfig: LoadingAnimConfig? = null) {
             val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: LoadingAnimDialog(theme)
             if (dialog.isAdded || dialog.isVisible || fragmentManager.isStateSaved) return
             mBaseEvent.doResetEventFlagTime(0L)
@@ -119,7 +119,6 @@ class LoadingAnimDialog(@StyleRes theme: Int) : DialogFragment() {
     fun applyWindow(lightStatusbar: Boolean = isDarkMode(), @FloatRange(from = 0.0, to = 1.0) dimAmount: Float = 0f) {
         dialog?.window?.apply {
             addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             setWindowAnimations(com.google.android.material.R.style.Animation_AppCompat_Dialog)
             setDimAmount(dimAmount)
             mWindowInsetsControllerCompat.isAppearanceLightStatusBars = !lightStatusbar

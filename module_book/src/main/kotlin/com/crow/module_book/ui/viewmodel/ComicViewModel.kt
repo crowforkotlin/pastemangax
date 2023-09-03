@@ -1,6 +1,7 @@
 package com.crow.module_book.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.crow.base.app.appContext
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.createCoroutineExceptionHandler
@@ -76,6 +77,13 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      */
     private val _uiState = MutableStateFlow<ReaderState?>(null)
     val uiState : StateFlow<ReaderState?> get() = _uiState
+
+    /**
+     * ● 旋转角度
+     *
+     * ● 2023-09-04 01:33:44 周一 上午
+     */
+    var mOrientation = appContext.resources.configuration.orientation
 
     /**
      * ● 通过检查意图的类型并执行相应的代码来处理意图
