@@ -9,7 +9,10 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Insets
 import android.os.Build
-import android.view.*
+import android.view.View
+import android.view.Window
+import android.view.WindowInsets
+import android.view.WindowManager
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -135,7 +138,7 @@ inline fun immersionPadding(root: View, crossinline update: (v: View, insets: an
  *
  * ● 2023-06-27 00:51:18 周二 上午
  */
-fun immersureFullScreen(windowInsetsControllerCompat: WindowInsetsControllerCompat) {
+fun immersionFullScreen(windowInsetsControllerCompat: WindowInsetsControllerCompat) {
     windowInsetsControllerCompat.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     windowInsetsControllerCompat.hide(WindowInsetsCompat.Type.systemBars())
 }

@@ -44,33 +44,33 @@ class DiscoverComicAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : LoadingViewHolder {
         return LoadingViewHolder(DiscoverFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
 
-            val layoutParams = vh.rvBinding.discoverRvImage.layoutParams
+            val layoutParams = vh.binding.discoverRvImage.layoutParams
             layoutParams.width = getComicCardWidth() - mSize10
             layoutParams.height = getComicCardHeight()
 
 
-            vh.rvBinding.discoverRvBookCard.doOnClickInterval {
+            vh.binding.discoverRvBookCard.doOnClickInterval {
                 mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
 
-            vh.rvBinding.root.doOnClickInterval {
+            vh.binding.root.doOnClickInterval {
                 mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
 
-            ToolTipsView.showToolTipsByLongClick(vh.rvBinding.discoverRvName)
+            ToolTipsView.showToolTipsByLongClick(vh.binding.discoverRvName)
         }
     }
 
     override fun onBindViewHolder(vh: LoadingViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        vh.rvBinding.discoverLoading.isVisible = true
-        vh.rvBinding.discoverProgressText.isVisible = true
-        vh.rvBinding.discoverProgressText.text = AppGlideProgressFactory.PERCENT_0
+        vh.binding.discoverLoading.isVisible = true
+        vh.binding.discoverProgressText.isVisible = true
+        vh.binding.discoverProgressText.text = AppGlideProgressFactory.PERCENT_0
         vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
 
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
-            vh.rvBinding.discoverProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+            vh.binding.discoverProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
         }
 
         Glide.with(vh.itemView.context)
@@ -78,27 +78,27 @@ class DiscoverComicAdapter(
             .addListener(vh.mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    vh.rvBinding.discoverLoading.isInvisible = true
-                    vh.rvBinding.discoverProgressText.isInvisible = true
+                    vh.binding.discoverLoading.isInvisible = true
+                    vh.binding.discoverProgressText.isInvisible = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    vh.rvBinding.discoverLoading.isInvisible = true
-                    vh.rvBinding.discoverProgressText.isInvisible = true
+                    vh.binding.discoverLoading.isInvisible = true
+                    vh.binding.discoverProgressText.isInvisible = true
                     NoTransition()
                 }
             })
-            .into(vh.rvBinding.discoverRvImage)
+            .into(vh.binding.discoverRvImage)
 
-        vh.rvBinding.discoverRvName.text = item.mName
-        vh.rvBinding.discoverRvAuthor.text = item.mAuthor.joinToString { it.mName }
-        vh.rvBinding.discoverRvHot.text = formatValue(item.mPopular)
-        vh.rvBinding.discoverRvTime.text = item.mDatetimeUpdated
+        vh.binding.discoverRvName.text = item.mName
+        vh.binding.discoverRvAuthor.text = item.mAuthor.joinToString { it.mName }
+        vh.binding.discoverRvHot.text = formatValue(item.mPopular)
+        vh.binding.discoverRvTime.text = item.mDatetimeUpdated
     }
 
     override fun setColor(vh: LoadingViewHolder, color: Int) {
-        vh.rvBinding.discoverRvName.setTextColor(color)
-        vh.rvBinding.discoverRvAuthor.setTextColor(color)
-        vh.rvBinding.discoverRvHot.setTextColor(color)
-        vh.rvBinding.discoverRvTime.setTextColor(color)
+        vh.binding.discoverRvName.setTextColor(color)
+        vh.binding.discoverRvAuthor.setTextColor(color)
+        vh.binding.discoverRvHot.setTextColor(color)
+        vh.binding.discoverRvTime.setTextColor(color)
     }
 }

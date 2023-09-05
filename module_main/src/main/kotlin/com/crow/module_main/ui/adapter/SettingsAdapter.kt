@@ -6,9 +6,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_main.databinding.MainFragmentSettingsRvBinding
-import com.crow.module_user.ui.adapter.Res
 
-class SettingsAdapter(val contents: MutableList<Pair<Res?, String>>, val doOnClick: (pos: Int) -> Unit) : RecyclerView.Adapter<SettingsAdapter.SettingsMainViewHolder>() {
+class SettingsAdapter(val contents: MutableList<Pair<Int?, String>>, val doOnClick: (pos: Int) -> Unit) : RecyclerView.Adapter<SettingsAdapter.SettingsMainViewHolder>() {
 
     inner class SettingsMainViewHolder(val rvBinding: MainFragmentSettingsRvBinding) : RecyclerView.ViewHolder(rvBinding.root)
 

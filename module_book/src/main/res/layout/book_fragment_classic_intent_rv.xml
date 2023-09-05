@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/comic_next"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/book_next"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingTop="@dimen/base_dp15"
+        android:paddingBottom="@dimen/base_dp15"
+        android:textColor="@color/base_color_asc"
+        android:letterSpacing="0.8"
+        app:backgroundTint="@color/base_bg"
+        app:cornerRadius="3dp"
+        app:elevation="99dp"
+        app:rippleColor="@color/base_grey_500_75"
+        app:strokeColor="@color/base_grey_400_40"
+        app:strokeWidth="1dp" />
+
+</FrameLayout>

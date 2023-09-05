@@ -1,6 +1,8 @@
 package com.crow.module_home.model.resp.homepage
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 
 /**
  * Finish comics
@@ -14,25 +16,27 @@ import com.squareup.moshi.Json
  * @property mType "top"
  * @constructor Create empty Finish comics
  */
+
+@Serializable
 data class FinishComicDatas(
-    @Json(name = "list")
+    @SerialName(value = "list")
     val mResult: List<FinishComic>,
 
-    @Json(name = "total")
+    @SerialName(value = "total")
     val mTotal: Int,
 
-    @Json(name = "limit")
+    @SerialName(value = "limit")
     val mLimit: Int,
 
-    @Json(name = "offset")
+    @SerialName(value = "offset")
     val mOffset: Int,
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String,
 
-    @Json(name = "name")
+    @SerialName(value = "name")
     val mName: String,
 
-    @Json(name = "type")
+    @SerialName(value = "type")
     val mType: String,
 ) 

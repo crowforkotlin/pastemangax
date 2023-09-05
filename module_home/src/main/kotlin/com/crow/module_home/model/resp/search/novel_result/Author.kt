@@ -1,18 +1,17 @@
 package com.crow.module_home.model.resp.search.novel_result
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Author(
 
-    @Json(name = "alias")
+    @SerialName(value = "alias")
     val mAlias: String?,
 
-    @Json(name = "name")
+    @SerialName(value = "name")
     val mName: String,
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String
 )

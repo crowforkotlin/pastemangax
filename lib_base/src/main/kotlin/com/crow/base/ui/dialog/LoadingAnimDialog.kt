@@ -34,7 +34,11 @@ import kotlinx.coroutines.launch
  * @Description: 加载动画弹窗
  * @formatter:off
  *************************/
-class LoadingAnimDialog : DialogFragment() {
+class LoadingAnimDialog() : DialogFragment() {
+
+    init {
+        setStyle(STYLE_NO_TITLE, R.style.Base_LoadingAnim)
+    }
 
     val mBinding: BaseDialogLoadingBinding get() = _mBinding!!
     private var _mBinding: BaseDialogLoadingBinding? = null
@@ -55,15 +59,15 @@ class LoadingAnimDialog : DialogFragment() {
 
         private val TAG: String = this::class.java.simpleName
         private var mShowTime = 0L
-        private val mBaseEvent = BaseEvent.newInstance(1250L)
+        private val mBaseEvent = BaseEvent.newInstance(1000L)
 
         @JvmStatic
-        fun show(fragmentManager: FragmentManager,loadingAnimConfig: LoadingAnimConfig? = null) {
+        fun show(fragmentManager: FragmentManager, loadingAnimConfig: LoadingAnimConfig? = null) {
             val dialog = fragmentManager.findFragmentByTag(TAG) as? LoadingAnimDialog ?: LoadingAnimDialog()
             if (dialog.isAdded || dialog.isVisible || fragmentManager.isStateSaved) return
             mBaseEvent.doResetEventFlagTime(0L)
             mBaseEvent.doOnInterval { dialog.show(fragmentManager, TAG) }
-            mBaseEvent.doResetEventFlagTime(1250L)
+            mBaseEvent.doResetEventFlagTime(1000L)
             if (loadingAnimConfig != null) {
                 dialog.mIsApplyConfig = true
                 dialog.lifecycleScope.launchWhenStarted { loadingAnimConfig.initConfig(dialog) }
@@ -95,11 +99,6 @@ class LoadingAnimDialog : DialogFragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_TITLE, R.style.Base_LoadingAnim)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return BaseDialogLoadingBinding.inflate(inflater).also { _mBinding = it }.root
     }
@@ -116,8 +115,9 @@ class LoadingAnimDialog : DialogFragment() {
         _mBinding = null
     }
 
-    fun applyWindow(lightStatusbar: Boolean = isDarkMode(), @FloatRange(from = 0.0, to = 1.0) dimAmount: Float = 0f) {
+    fun applyWindow(lightStatusbar: Boolean = isDarkMode(), @FloatRange(from = 0.0, to = 1.0) dimAmount: Float = 0f, isFullScreen: Boolean = false) {
         dialog?.window?.apply {
+            if (isFullScreen) addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
             setWindowAnimations(com.google.android.material.R.style.Animation_AppCompat_Dialog)
             setDimAmount(dimAmount)

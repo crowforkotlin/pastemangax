@@ -53,12 +53,12 @@ class ComicFrameLayout  : FrameLayout {
         }
 
         override fun onFling(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             velocityX: Float,
-            velocityY: Float,
+            velocityY: Float
         ): Boolean {
-            return mChildRv.zoomFling(velocityX.toInt(), velocityY.toInt()) ?: false
+            return mChildRv.zoomFling(velocityX.toInt(), velocityY.toInt())
         }
     }
     

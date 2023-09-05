@@ -11,7 +11,7 @@ fun CopyMangaXTheme(content: @Composable () -> Unit) {
     val context = LocalContext.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val (colorScheme, typography) = createMdc3Theme(
+    val (colorScheme, typography, shape) = createMdc3Theme(
         context = context,
         layoutDirection = layoutDirection,
     )
@@ -19,6 +19,7 @@ fun CopyMangaXTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = colorScheme!!,
         typography = typography!!,
-        content = content,
+        shapes = shape!!,
+        content = content
     )
 }

@@ -31,6 +31,7 @@ import org.koin.core.context.startKoin
  * @formatter:on
  **************************/
 class MainApplication : BaseApp() {
+
     override fun onCreate() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(if (SpNameSpace.CATALOG_NIGHT_MODE.getSharedPreferences().getBoolean(SpNameSpace.Key.ENABLE_DARK, false)) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)

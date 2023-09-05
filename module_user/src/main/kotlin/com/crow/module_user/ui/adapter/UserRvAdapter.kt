@@ -3,7 +3,6 @@ package com.crow.module_user.ui.adapter
 import android.view.LayoutInflater.from
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -22,11 +21,8 @@ import com.crow.module_user.model.resp.LoginResultsOkResp
  * @Description: UserRvAdapter
  * @formatter:on
  **************************/
-
-typealias Res = @receiver:DrawableRes Int
-
 class UserRvAdapter(
-    private val datas: List<Pair<Res, String>>,
+    private val datas: List<Pair<Int, String>>,
     inline val itemTap: (pos: Int, content: String) -> Unit
 ) : RecyclerView.Adapter<UserRvAdapter.ViewHolder>() {
 

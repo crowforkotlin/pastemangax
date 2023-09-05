@@ -1,8 +1,10 @@
 package com.crow.base.tools.coroutine
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.tools.extensions.logError
+import com.crow.base.tools.extensions.logger
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +32,6 @@ class GlobalCoroutineExceptionHandler : CoroutineExceptionHandler {
     }
 }
 
-
 inline fun LifecycleOwner.launchDelay(delay: Long, crossinline scope: suspend () -> Unit) {
     lifecycleScope.launch {
         delay(delay)
@@ -44,3 +45,15 @@ suspend fun <T> withIOContext(block: suspend CoroutineScope.() -> T) = withConte
 
 suspend fun <T> withNonCancellableContext(block: suspend CoroutineScope.() -> T) =
     withContext(NonCancellable, block)
+
+/**
+ * ● 创建协程异常处理程序
+ *
+ * ● 2023-09-02 19:55:42 周六 下午
+ */
+fun createCoroutineExceptionHandler(content: String, handler: ((Throwable) -> Unit)? = null): CoroutineExceptionHandler {
+    return CoroutineExceptionHandler { _, throwable ->
+        handler?.invoke(throwable)
+        logger(content = "$content : ${throwable.stackTraceToString()}", level = Log.ERROR)
+    }
+}

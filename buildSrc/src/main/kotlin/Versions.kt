@@ -13,11 +13,11 @@ object Versions {
     /* AGP Android Gradle Plugin Version
     * - HomePage : [https://developer.android.com/build/releases/gradle-plugin#8-1-0]
     * */
-    const val agp_version = "8.1.0"
+    const val agp_version = "8.1.1"
 
-    const val kotlin_version = "1.9.0"
-    const val ksp_version = "1.9.0-1.0.12"
-    const val core_version = "1.9.0"
+    const val kotlin_version = "1.9.10"
+    const val ksp_version = "1.9.10-1.0.13"
+    const val core_version = "1.10.0"
     const val smart_refresh = "2.0.5"
     const val retrofit_version = "2.9.0"
     const val arouter_version = "1.5.2"
@@ -27,7 +27,8 @@ object Versions {
     const val lifecycle_version = "2.5.1"
     const val ktor_version = "2.1.3"
     const val paging_version = "3.1.1"
-    const val moshi_version = "1.14.0"
+    const val moshi_version = "1.15.0"
+    const val gson_version = "2.10.1"
     const val media3_version = "1.0.1"
     const val room_version = "2.5.1"
 }

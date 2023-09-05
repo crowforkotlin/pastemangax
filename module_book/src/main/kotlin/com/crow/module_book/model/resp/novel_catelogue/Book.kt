@@ -1,15 +1,17 @@
 package com.crow.module_book.model.resp.novel_catelogue
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Book(
-    @Json(name = "name")
+
+    @SerialName(value = "name")
     val name: String,
-    @Json(name = "path_word")
+
+    @SerialName(value = "path_word")
     val pathWord: String,
-    @Json(name = "uuid")
+
+    @SerialName(value = "uuid")
     val uuid: String
 )

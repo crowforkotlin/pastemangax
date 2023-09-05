@@ -6,7 +6,6 @@ import com.crow.module_user.R
 import com.crow.module_user.model.UserIntent
 import com.crow.module_user.model.resp.LoginResultsOkResp
 import com.crow.module_user.model.resp.user_info.Info
-import com.crow.module_user.ui.adapter.Res
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
@@ -22,7 +21,7 @@ import com.crow.base.R as baseR
  **************************/
 class UserInfoViewModel : BaseMviViewModel<UserIntent>() {
 
-    val mUserUpdateInfoData = arrayListOf<Pair<Res,String>>()
+    val mUserUpdateInfoData = arrayListOf<Pair<Int,String>>()
 
     private fun String.getDate() = runCatching { toInstant().toLocalDateTime(TimeZone.UTC).date.toString() }.getOrElse { appContext.getString(baseR.string.BaseUnknowError) }
 

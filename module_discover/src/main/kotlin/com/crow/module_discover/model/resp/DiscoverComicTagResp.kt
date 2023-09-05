@@ -4,15 +4,16 @@ package com.crow.module_discover.model.resp
 import com.crow.module_discover.model.resp.comic_tag.Ordering
 import com.crow.module_discover.model.resp.comic_tag.Theme
 import com.crow.module_discover.model.resp.comic_tag.Top
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 
-@JsonClass(generateAdapter = true)
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class DiscoverComicTagResp(
-    @Json(name = "ordering")
+    @SerialName(value = "ordering")
     val ordering: List<Ordering>,
-    @Json(name = "theme")
+    @SerialName(value = "theme")
     val theme: List<Theme>,
-    @Json(name = "top")
+    @SerialName(value = "top")
     val top: List<Top>
 )

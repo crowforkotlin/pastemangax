@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Newspaper
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -60,7 +62,7 @@ fun InfoScreen(
                         vertical = MaterialTheme.padding.small,
                     ),
             ) {
-                androidx.compose.material3.Button(
+                Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = onAcceptClick,
                 ) {
@@ -104,6 +106,7 @@ fun InfoScreen(
             Text(
                 text = headingText,
                 style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold
             )
             Text(
                 text = subtitleText,
@@ -111,6 +114,7 @@ fun InfoScreen(
                     .secondaryItemAlpha()
                     .padding(vertical = MaterialTheme.padding.small),
                 style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Black
             )
 
             content()
@@ -120,7 +124,7 @@ fun InfoScreen(
 
 @ThemePreviews
 @Composable
-private fun InfoScaffoldPreview() {
+private fun InfoScreenPreview() {
     InfoScreen(
         icon = Icons.Outlined.Newspaper,
         headingText = "Heading",

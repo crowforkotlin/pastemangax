@@ -3,7 +3,6 @@ package com.crow.base.copymanga
 object BaseStrings {
 
     const val PATH_WORD = "pathword"
-    const val UUID = "uuid"
     const val IMAGE_URL = "image_url"
     const val ID = "id"
     const val ENABLE_DELAY = "enable_delay"

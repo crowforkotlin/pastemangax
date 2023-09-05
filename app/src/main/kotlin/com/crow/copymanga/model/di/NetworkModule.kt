@@ -5,16 +5,17 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.copymanga.glide.AppGlideProgressResponseBody
-import com.crow.base.tools.extensions.baseMoshi
+import com.crow.base.tools.extensions.baseJson
+import com.crow.base.tools.extensions.ks.asConverterFactory
 import com.crow.base.tools.network.FlowCallAdapterFactory
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 val networkModule = module {
@@ -53,7 +54,7 @@ val networkModule = module {
             .baseUrl("https://gitee.com/")
             .client(get())
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
+            .addConverterFactory(baseJson.asConverterFactory("application/json; charset=utf-8".toMediaType()))
             .build()
     }
 
@@ -63,22 +64,22 @@ val networkModule = module {
      */
     single(named_ProgressGlide) {
         OkHttpClient.Builder().apply {
-            addNetworkInterceptor { chain ->
+            addInterceptor { chain ->
                 val request = chain.request()
                 val response = chain.proceed(request)
                 val appGlideProgressFactory = AppGlideProgressFactory.getGlideProgressFactory(request.url.toString())
                 if (appGlideProgressFactory == null) response
                 else {
-                    response.newBuilder().body(response.body?.let { AppGlideProgressResponseBody(request.url.toString(), appGlideProgressFactory.mListener, it) }).build()
+                    response.newBuilder().body(response.body?.let { AppGlideProgressResponseBody(request.url.toString(), appGlideProgressFactory.mOnProgressListener, it) }).build()
                 }
             }
             sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())
             hostnameVerifier(SSLSocketClient.hostnameVerifier)
             pingInterval(10, TimeUnit.SECONDS)
             connectTimeout(15, TimeUnit.SECONDS)
-            callTimeout(20, TimeUnit.SECONDS)
-            readTimeout(20, TimeUnit.SECONDS)
-            writeTimeout(20, TimeUnit.SECONDS)
+            callTimeout(15, TimeUnit.SECONDS)
+            readTimeout(15, TimeUnit.SECONDS)
+            writeTimeout(15, TimeUnit.SECONDS)
             retryOnConnectionFailure(false)
         }.build()
     }
@@ -126,7 +127,7 @@ val networkModule = module {
             .baseUrl(BaseStrings.URL.CopyManga)
             .client(get(named_CopyMangaX))
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
+            .addConverterFactory(baseJson.asConverterFactory("application/json; charset=utf-8".toMediaType()))
             .build()
     }
 }

@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
 	<style name="App.Theme.CopyManga" parent="Base.Theme.Material3_Project">
 		<item name="android:statusBarColor">@android:color/transparent</item>

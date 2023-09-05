@@ -1,87 +1,88 @@
 package com.crow.module_book.model.resp.comic_info
 
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNull
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class ComicInfoResult(
 
-    @Json(name = "alias")
+    @SerialName(value = "alias")
     val mAlias: String?,
 
-    @Json(name = "author")
+    @SerialName(value = "author")
     val mAuthor: List<Author>,
 
-    @Json(name = "b_404")
+    @SerialName(value = "b_404")
     val mB404: Boolean,
 
-    @Json(name = "b_hidden")
+    @SerialName(value = "b_hidden")
     val mBHidden: Boolean,
 
-    @Json(name = "brief")
+    @SerialName(value = "brief")
     val mBrief: String,
 
-    @Json(name = "close_comment")
+    @SerialName(value = "close_comment")
     val mBloseComment: Boolean,
 
-    @Json(name = "close_roast")
+    @SerialName(value = "close_roast")
     val mCloseRoast: Boolean,
 
-    @Json(name = "clubs")
-    val mClubs: List<Any>,
+    @SerialName(value = "clubs")
+    val mClubs: List<@Polymorphic Any>,
 
-    @Json(name = "cover")
+    @SerialName(value = "cover")
     val mCover: String,
 
-    @Json(name = "datetime_updated")
+    @SerialName(value = "datetime_updated")
     val mDatetimeUpdated: String,
 
-    @Json(name = "females")
-    val mFemales: List<Any>,
+    @SerialName(value = "females")
+    val mFemales: List<JsonNull>,
 
-    @Json(name = "free_type")
+    @SerialName(value = "free_type")
     val mFreeType: FreeType,
 
-    @Json(name = "img_type")
+    @SerialName(value = "img_type")
     val mImgType: Int,
 
-    @Json(name = "last_chapter")
+    @SerialName(value = "last_chapter")
     val mLastChapter: LastChapter,
 
-    @Json(name = "males")
-    val mMales: List<Any>,
+    @SerialName(value = "males")
+    val mMales: List<@Polymorphic Any>,
 
-    @Json(name = "name")
+    @SerialName(value = "name")
     val mName: String,
 
-    @Json(name = "parodies")
-    val mParodies: List<Any>,
+    @SerialName(value = "parodies")
+    val mParodies: List<@Polymorphic Any>,
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String,
 
-    @Json(name = "popular")
+    @SerialName(value = "popular")
     val mPopular: Int,
 
-    @Json(name = "reclass")
+    @SerialName(value = "reclass")
     val mReclass: Reclass,
 
-    @Json(name = "region")
+    @SerialName(value = "region")
     val mRegion: Region,
 
-    @Json(name = "restrict")
+    @SerialName(value = "restrict")
     val mRestrict: Restrict,
 
-    @Json(name = "seo_baidu")
+    @SerialName(value = "seo_baidu")
     val mSeoBaidu: String?,
 
-    @Json(name = "status")
+    @SerialName(value = "status")
     val mStatus: Status,
 
-    @Json(name = "theme")
+    @SerialName(value = "theme")
     val mTheme: List<Theme>,
 
-    @Json(name = "uuid")
+    @SerialName(value = "uuid")
     val mUuid: String,
 )

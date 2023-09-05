@@ -7,9 +7,6 @@ plugins {
 
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
-
-    // 使用Kotlin序列化插件
-    // kotlin(Plugins.kotlin_serialization) version Versions.kotlin_version
 }
 
 android {
@@ -19,6 +16,8 @@ android {
 
         // 开启 ViewBinding
         viewBinding = true
+
+        compose = true
     }
 
     // 应用程序的默认配置信息
@@ -65,17 +64,19 @@ android {
         // 指定编译器的命令行参数 可启用额外功能
         freeCompilerArgs = AppConfigs.free_compile_args
     }
-
-
+    composeOptions {
+        kotlinCompilerExtensionVersion = compose.versions.compiler.get()
+    }
 }
 
 kotlin { jvmToolchain(11) }
 
 dependencies {
 
+    // ksp for room
+    ksp(Dependencies.androidx_room_compiler)
+
     // 引入Base库
     implementation(project(mapOf("path" to ":lib_base")))
-
-    ksp(Dependencies.androidx_room_compiler)
 
 }

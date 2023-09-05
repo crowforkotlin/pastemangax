@@ -14,12 +14,11 @@ class CrashLogUtil(private val context: Context) {
 
     suspend fun dumpLogs() = withNonCancellableContext {
         runCatching {
-            val file = context.createFileInCacheDir("tachiyomi_crash_logs.txt")
+            val file = context.createFileInCacheDir("CopyMangaX_Crash_Logs.txt")
             Runtime.getRuntime().exec("logcat *:E -d -f ${file.absolutePath}").waitFor()
             file.appendText(getDebugInfo())
 
-            val uri = file.getUriCompat(context)
-            context.startActivity(uri.toShareIntent(context, "text/plain"))
+            context.startActivity(file.getUriCompat(context).toShareIntent(context, "text/plain"))
         }
             .onFailure {
                 withUIContext { toast("Failed to get logs") }

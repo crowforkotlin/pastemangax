@@ -3,7 +3,9 @@
 
     <application>
 
-        <activity android:name=".ui.activity.CrashActivity"/>
+        <activity
+            android:theme="@style/Base.Theme.Material3_Project"
+            android:name=".ui.activity.CrashActivity" />
 
     </application>
 

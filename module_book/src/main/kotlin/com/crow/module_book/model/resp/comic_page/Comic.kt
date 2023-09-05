@@ -1,21 +1,20 @@
 package com.crow.module_book.model.resp.comic_page
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Comic(
 
-    @Json(name = "name")
+    @SerialName(value = "name")
     val mName: String,
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String,
 
-    @Json(name = "restrict")
+    @SerialName(value = "restrict")
     val mRestrict: Restrict,
 
-    @Json(name = "uuid")
+    @SerialName(value = "uuid")
     val mUuid: String
 )

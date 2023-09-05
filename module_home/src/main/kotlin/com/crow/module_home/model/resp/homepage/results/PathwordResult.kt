@@ -1,6 +1,8 @@
 package com.crow.module_home.model.resp.homepage.results
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 
 /**
  * Pathword result
@@ -8,8 +10,10 @@ import com.squareup.moshi.Json
  * @property mPathWord 路径词
  * @constructor Create empty Pathword result
  */
+
+@Serializable
 data class PathwordResult(
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String
 )

@@ -6,4 +6,6 @@
 	<color name="book_button_bg_white">#F7F2F9</color>
 	<color name="book_button_text_purple">#6750A4</color>
     <color name="book_ant_10">#141414</color>
+    <color name="book_classic_prenext">#e6fffb</color>
+    <color name="book_classic_text">#000000</color>
 </resources>

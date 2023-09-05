@@ -188,3 +188,18 @@ fun hasGlobalPoint(view: View, x: Int, y: Int): Boolean {
     view.getGlobalVisibleRect(rect)
     return rect.contains(x, y)
 }
+
+fun View.measureDimension(desiredSize: Int, measureSpec: Int): Int {
+    var result: Int
+    val specMode = View.MeasureSpec.getMode(measureSpec)
+    val specSize = View.MeasureSpec.getSize(measureSpec)
+    if (specMode == View.MeasureSpec.EXACTLY) {
+        result = specSize
+    } else {
+        result = desiredSize
+        if (specMode == View.MeasureSpec.AT_MOST) {
+            result = result.coerceAtMost(specSize)
+        }
+    }
+    return result
+}

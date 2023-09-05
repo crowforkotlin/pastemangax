@@ -2,14 +2,12 @@ plugins {
     // Android 应用程序插件
     id(Plugins.android_application)
 
-    // Kapt
-    kotlin(Plugins.kotlin_kapt)
+    // Ksp
+    id(Plugins.google_devtools_ksp) version Versions.ksp_version
 
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
 
-    // 使用Kotlin序列化插件
-    // kotlin(Plugins.kotlin_serialization) version Versions.kotlin_version
 }
 
 kotlin { jvmToolchain(11) }
@@ -34,9 +32,9 @@ android {
         compileSdk = AppConfigs.compile_sdk_version
 
         // 构建工具版本
-        buildToolsVersion =  AppConfigs.build_tools_version
+        buildToolsVersion = AppConfigs.build_tools_version
 
-        // 标识应用程序ID （设备上的唯一标识符）
+        // 标识应用程序ID （设备上的唯一标识符）s
         applicationId = AppConfigs.application_id
 
         // 兼容最小版本的SDK
@@ -74,7 +72,10 @@ android {
             isShrinkResources = true
 
             // 添加ProGuard配置，优化发行版性能
-            proguardFiles(getDefaultProguardFile(AppConfigs.proguard_android_optimize_txt), AppConfigs.proguard_rules_pro)
+            proguardFiles(
+                getDefaultProguardFile(AppConfigs.proguard_android_optimize_txt),
+                AppConfigs.proguard_rules_pro
+            )
 
             setProperty("archivesBaseName", "CopyMangaX")
         }
@@ -156,7 +157,7 @@ kotlin { jvmToolchain(11) }
 dependencies {
 
     // Glide编译器
-    kapt(Dependencies.glide_compiler)
+    ksp(Dependencies.glide_compiler_ksp)
 
     // 引入Base库
     implementation(project(mapOf("path" to ":lib_base")))

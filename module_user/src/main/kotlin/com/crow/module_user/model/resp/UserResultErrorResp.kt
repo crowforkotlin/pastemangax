@@ -1,8 +1,7 @@
 package com.crow.module_user.model.resp
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -13,9 +12,9 @@ import com.squareup.moshi.JsonClass
  * @formatter:on
  **************************/
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class UserResultErrorResp(
 
-    @Json(name = "detail")
+    @SerialName(value = "detail")
     val mDetail: String,
 )

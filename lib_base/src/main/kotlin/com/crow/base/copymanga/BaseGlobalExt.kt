@@ -23,6 +23,7 @@ import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.BaseViewState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.JsonParseException
 import java.text.DecimalFormat
 import java.util.Locale
 
@@ -88,7 +89,7 @@ inline fun View.processTokenError(
     crossinline doOnCancel: (MaterialAlertDialogBuilder) -> Unit = { },
     crossinline doOnConfirm: (MaterialAlertDialogBuilder) -> Unit
 ) {
-    runCatching { msg.toTypeEntity<BaseContentInvalidResp>()!!.mResults }
+    runCatching { toTypeEntity<BaseContentInvalidResp>(msg)?.mResults ?: throw JsonParseException("parse exception!") }
         .onSuccess {
             context.newMaterialDialog { dialog ->
                 dialog.setCancelable(false)

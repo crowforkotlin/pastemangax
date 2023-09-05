@@ -3,7 +3,8 @@ package com.crow.module_home.model.resp.homepage
 import com.crow.module_home.model.resp.homepage.results.AuthorResult
 import com.crow.module_home.model.resp.homepage.results.FreeTypeResult
 import com.crow.module_home.model.resp.homepage.results.ThemeResult
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Finish comic
@@ -18,29 +19,31 @@ import com.squareup.moshi.Json
  * @property mDatetimeUpdated 更新日期
  * @constructor Create empty Finish comic
  */
+
+@Serializable
 data class FinishComic(
 
-    @Json(name = "name")
+    @SerialName(value = "name")
     val mName: String,
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String,
 
-    @Json(name = "free_type")
+    @SerialName(value = "free_type")
     val mFreeType: FreeTypeResult,
 
-    @Json(name = "author")
+    @SerialName(value = "author")
     val mAuthorResult: List<AuthorResult>,
 
-    @Json(name = "theme")
+    @SerialName(value = "theme")
     val mTheme: List<ThemeResult>,
 
-    @Json(name = "cover")
+    @SerialName(value = "cover")
     val mImageUrl: String,
 
-    @Json(name = "popular")
+    @SerialName(value = "popular")
     val mPopular: Int,
 
-    @Json(name = "datetime_updated")
+    @SerialName(value = "datetime_updated")
     val mDatetimeUpdated: String,
 )

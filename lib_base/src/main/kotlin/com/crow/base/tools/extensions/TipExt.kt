@@ -63,17 +63,17 @@ fun Any?.log(level :  Int = Logger.INFO,tag: String = TIPS_TAG) {
 }
 
 /* Original Android Logger */
-fun Any?.logMsg(level: Int = Logger.INFO, tag: String = TIPS_TAG) {
-    if (this == null) {
+fun logger(content: Any?, level: Int = Logger.INFO, tag: String = TIPS_TAG) {
+    if (content == null) {
         Log.e(tag, NullPointerException("Value is null.").stackTraceToString())
         return
     }
     when(level) {
-        Logger.ERROR -> Log.e(tag,"$this")
-        Logger.DEBUG -> Log.d(tag,"$this")
-        Logger.WARN -> Log.w(tag,"$this")
-        Logger.INFO -> Log.i(tag,"$this")
-        Logger.VERBOSE -> Log.v(tag,"$this")
+        Logger.ERROR -> Log.e(tag,"$content")
+        Logger.DEBUG -> Log.d(tag,"$content")
+        Logger.WARN -> Log.w(tag,"$content")
+        Logger.INFO -> Log.i(tag,"$content")
+        Logger.VERBOSE -> Log.v(tag,"$content")
     }
 }
 

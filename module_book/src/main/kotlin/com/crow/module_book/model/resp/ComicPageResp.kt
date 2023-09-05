@@ -3,29 +3,32 @@ package com.crow.module_book.model.resp
 
 import com.crow.module_book.model.resp.comic_page.Chapter
 import com.crow.module_book.model.resp.comic_page.Comic
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+
+@Serializable
 data class  ComicPageResp(
-    @Json(name = "chapter")
+    @SerialName(value = "chapter")
     val mChapter: Chapter,
 
-    @Json(name = "comic")
+    @SerialName(value = "comic")
     val mComic: Comic,
 
-    @Json(name = "is_lock")
+    @SerialName(value = "is_lock")
     val mIsLock: Boolean,
 
-    @Json(name = "is_login")
+    @SerialName(value = "is_login")
     val mIsLogin: Boolean,
 
-    @Json(name = "is_mobile_bind")
+    @SerialName(value = "is_mobile_bind")
     val mIsMobileBind: Boolean,
 
-    @Json(name = "is_vip")
+    @SerialName(value = "is_vip")
     val mIsVip: Boolean,
 
-    @Json(name = "show_app")
+    @SerialName(value = "show_app")
     val mShowApp: Boolean
 )
+
+internal fun ComicPageResp?.requireContentsSize() = this?.mChapter?.mSize ?: 0

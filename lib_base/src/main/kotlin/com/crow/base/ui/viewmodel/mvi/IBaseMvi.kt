@@ -11,5 +11,5 @@ import androidx.lifecycle.Lifecycle
  * @formatter:on
  **************************/
 interface IBaseMvi {
-    fun <I : BaseMviIntent> BaseMviViewModel<I>.onOutput(state: Lifecycle.State = Lifecycle.State.CREATED, baseMviSuspendResult: BaseMviViewModel.BaseMviSuspendResult<I>)
+    fun <I : BaseMviIntent> BaseMviViewModel<I>.onOutput(state: Lifecycle.State = Lifecycle.State.STARTED, baseMviSuspendResult: BaseMviSuspendResult<I>)
 }

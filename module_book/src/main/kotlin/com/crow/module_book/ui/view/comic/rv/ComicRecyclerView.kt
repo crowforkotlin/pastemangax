@@ -12,6 +12,7 @@ import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.extensions.BASE_ANIM_300L
+import com.crow.base.tools.extensions.findCenterViewPosition
 import kotlin.math.abs
 
 class ComicRecyclerView : RecyclerView {
@@ -128,6 +129,11 @@ class ComicRecyclerView : RecyclerView {
         }
     }
 
+    fun interface IComicPreScroll {
+
+        fun onPreScrollListener(position: Int)
+    }
+
     companion object {
         private const val ANIMATOR_DURATION_TIME = 200
         private const val MIN_SCALE_FACTOR = 1f
@@ -142,8 +148,10 @@ class ComicRecyclerView : RecyclerView {
     private var mOriginalHeight: Int = -1
     private var mFirstVisibleItemPosition = 0
     private var mLastVisibleItemPosition = 0
+    private var mLastCenterViewPosition = 0
     private var mCurrentScale = MIN_SCALE_FACTOR
 
+    private var mPreScrollListener: IComicPreScroll? = null
     private val mListener = ComicRvGestureListener()
     private val mDetector = ComicRvDetector()
 
@@ -180,6 +188,22 @@ class ComicRecyclerView : RecyclerView {
         mAtLastPosition = visibleItemCount > 0 && mLastVisibleItemPosition == totalItemCount - 1
         mAtFirstPosition = mFirstVisibleItemPosition == 0
     }
+
+    override fun dispatchNestedPreScroll(
+        dx: Int,
+        dy: Int,
+        consumed: IntArray?,
+        offsetInWindow: IntArray?,
+        type: Int
+    ): Boolean {
+        val position = findCenterViewPosition()
+        if (position != NO_POSITION && position != mLastCenterViewPosition) {
+            mLastCenterViewPosition = position
+            mPreScrollListener?.onPreScrollListener(position)
+        }
+        return super.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type)
+    }
+
 
     private fun getPositionX(positionX: Float): Float {
         if (mCurrentScale < 1) {
@@ -237,7 +261,7 @@ class ComicRecyclerView : RecyclerView {
 
     fun onScale(scaleFactor: Float) {
         mCurrentScale *= scaleFactor
-        mCurrentScale = mCurrentScale.coerceIn(MIN_SCALE_FACTOR, MAX_SCALE_FACTOR,)
+        mCurrentScale = mCurrentScale.coerceIn(MIN_SCALE_FACTOR, MAX_SCALE_FACTOR)
         setScaleRate(mCurrentScale)
         layoutParams.height = if (mCurrentScale < 1) { (mOriginalHeight / mCurrentScale).toInt() } else { mOriginalHeight }
         mHalfHeight = layoutParams.height / 2
@@ -287,5 +311,9 @@ class ComicRecyclerView : RecyclerView {
         animatorSet.start()
 
         return true
+    }
+
+    fun setPreScrollListener(iComicPreScroll: IComicPreScroll) {
+        mPreScrollListener = iComicPreScroll
     }
 }

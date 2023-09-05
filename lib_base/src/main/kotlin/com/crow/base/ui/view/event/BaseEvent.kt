@@ -1,5 +1,6 @@
 package com.crow.base.ui.view.event
 
+import androidx.annotation.FloatRange
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import kotlin.math.absoluteValue
@@ -27,6 +28,11 @@ open class BaseEvent private constructor(flagTime: Long) {
             if (mBaseEvent == null) synchronized(this) { if (mBaseEvent == null) mBaseEvent = BaseEvent(flagTime) }
             return mBaseEvent!!
         }
+    }
+
+
+    fun @receiver:FloatRange(from = 1.0, to = 2.0) Float.range() {
+        // TODO 1 = 0！
     }
 
     internal fun <T> getIntervalResult(

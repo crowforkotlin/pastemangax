@@ -1,8 +1,8 @@
 package com.crow.module_user.model.resp.user_info
 
-
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 /**
@@ -18,30 +18,31 @@ import com.squareup.moshi.JsonClass
  * @property mUsername 用户名
  * @constructor Create empty Info
  */
-@JsonClass(generateAdapter = true)
+
+@Serializable
 data class Info(
 
-    @Json(name = "avatar")
+    @SerialName(value = "avatar")
     val mIconUrl: String,
 
-    @Json(name = "avatar_rp")
+    @SerialName(value = "avatar_rp")
     val mIconUrlRP: String,
 
-    @Json(name = "gender")
+    @SerialName(value = "gender")
     val mGender: GenderX,
 
-    @Json(name = "invite_code")
-    val mInviteCode: Any?,
+    @SerialName(value = "invite_code")
+    val mInviteCode: @Polymorphic Any?,
 
-    @Json(name = "mobile")
-    val mMobile: Any?,
+    @SerialName(value = "mobile")
+    val mMobile: @Polymorphic Any?,
 
-    @Json(name = "mobile_region")
-    val mMobileRegion: Any?,
+    @SerialName(value = "mobile_region")
+    val mMobileRegion: @Polymorphic Any?,
 
-    @Json(name = "nickname")
+    @SerialName(value = "nickname")
     val mNickname: String,
 
-    @Json(name = "username")
+    @SerialName(value = "username")
     val mUsername: String
 )

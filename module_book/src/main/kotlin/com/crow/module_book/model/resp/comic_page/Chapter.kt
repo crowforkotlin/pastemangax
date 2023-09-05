@@ -1,65 +1,67 @@
 package com.crow.module_book.model.resp.comic_page
 
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Chapter(
-    @Json(name = "comic_id")
+    @SerialName(value = "comic_id")
     val mComicId: String,
 
-    @Json(name = "comic_path_word")
+    @SerialName(value = "comic_path_word")
     val mComicPathWord: String,
 
-    @Json(name = "contents")
+    @SerialName(value = "contents")
     var mContents: MutableList<Content>,
 
-    @Json(name = "count")
+    @SerialName(value = "count")
     val mCount: Int,
 
-    @Json(name = "datetime_created")
+    @SerialName(value = "datetime_created")
     val mDatetimeCreated: String,
 
-    @Json(name = "group_id")
-    val mGroupId: Any?,
+    @SerialName(value = "group_id")
+    val mGroupId: @Polymorphic Any?,
 
-    @Json(name = "group_path_word")
+    @SerialName(value = "group_path_word")
     val mGroupPathWord: String,
 
-    @Json(name = "img_type")
+    @SerialName(value = "img_type")
     val mImageType: Int,
 
-    @Json(name = "index")
+    @SerialName(value = "index")
     val mIndex: Int,
 
-    @Json(name = "is_long")
+    @SerialName(value = "is_long")
     val mIsLong: Boolean,
 
-    @Json(name = "name")
+    @SerialName(value = "name")
     val mName: String,
 
-    @Json(name = "news")
+    @SerialName(value = "news")
     val mNews: String,
 
-    @Json(name = "next")
+    @SerialName(value = "next")
     val mNext: String?,
 
-    @Json(name = "ordered")
+    @SerialName(value = "ordered")
     val mOrdered: Int,
 
-    @Json(name = "prev")
+    @SerialName(value = "prev")
     val mPrev: String?,
 
-    @Json(name = "size")
+    @SerialName(value = "size")
     val mSize: Int,
 
-    @Json(name = "type")
+    @SerialName(value = "type")
     val mType: Int,
 
-    @Json(name = "uuid")
+    @SerialName(value = "uuid")
     val mUuid: String,
 
-    @Json(name = "words")
+    @SerialName(value = "words")
     val mWords: List<Int>
 )
+
+internal fun Chapter.getSortedContets() = mWords.zip(mContents).sortedBy { it.first }.map { it.second }.toMutableList()

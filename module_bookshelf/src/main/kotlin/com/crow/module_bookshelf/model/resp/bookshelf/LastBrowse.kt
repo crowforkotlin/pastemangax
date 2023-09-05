@@ -1,15 +1,15 @@
 package com.crow.module_bookshelf.model.resp.bookshelf
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class LastBrowse(
 
-    @Json(name = "last_browse_id")
+    @SerialName(value = "last_browse_id")
     val mLastBrowseId: String,
 
-    @Json(name = "last_browse_name")
+    @SerialName(value = "last_browse_name")
     val mLastBrowseName: String
 )

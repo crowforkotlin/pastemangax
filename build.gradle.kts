@@ -6,14 +6,18 @@ buildscript {
         gradlePluginPortal()
         maven { url = uri("https://plugins.gradle.org/m2/") }
     }
-RE
-    dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin_version}")
-        classpath("com.android.tools.build:gradle:${Versions.agp_version}")
-    }
-}
-/*
 
+    dependencies {
+        classpath(kotlin("gradle-plugin", version = Versions.kotlin_version))
+        classpath(kotlin("serialization", version = Versions.kotlin_version))
+        classpath("com.android.tools.build:gradle:8.3.0-alpha01")
+
+    }
+
+}
+allprojects { apply(plugin = "kotlinx-serialization") }
+
+/*
 allprojects {
     repositories {
         google()
@@ -23,4 +27,5 @@ allprojects {
         maven { setUrl("https://maven.aliyun.com/nexus/content/groups/public/") }
         maven { setUrl("https://jitpack.io") }
     }
-}*/
+}
+*/

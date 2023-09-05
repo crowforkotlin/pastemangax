@@ -4,11 +4,10 @@ plugins {
     id(Plugins.android_library)
 
     // Ksp
-    kotlin(Plugins.kotlin_kapt)
+    id(Plugins.google_devtools_ksp) version Versions.ksp_version
 
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
-
 }
 
 android {
@@ -83,7 +82,11 @@ android {
         // JNI 库文件路径
         jniLibs.srcDirs(AppConfigs.source_libs, AppConfigs.source_jniLibs)
     }
+
+    // 配置Compose 选项
     composeOptions {
+
+        // 设置 Kotlin Compose 编译器扩展的版本 （Important）
         kotlinCompilerExtensionVersion = compose.versions.compiler.get()
     }
 }
@@ -120,9 +123,8 @@ dependencies {
 
     /* Kotlin 协程 */
     api(Dependencies.kotlinx_coroutines)
-    api(Dependencies.kotlinx_datetime)///
+    api(Dependencies.kotlinx_datetime)
     api(Dependencies.kotlin_stdlib)
-    api(Dependencies.kotlin_reflect)
 
     api(Dependencies.androidx_room_runtime)
     api(Dependencies.androidx_room_ktx)
@@ -132,10 +134,8 @@ dependencies {
 
     /* Github */
     api(Dependencies.retrofit)
-    api(Dependencies.retrofit_scalars)
-    api(Dependencies.retrofit_moshi)
 
-    api(Dependencies.moshi)
+    api(Dependencies.kotlin_serialization)
 
     api(Dependencies.okhttp)
     api(Dependencies.okhttp_loggin)
@@ -146,7 +146,7 @@ dependencies {
 
     api(Dependencies.glide)
     api(Dependencies.glide_integration) { exclude(group = "glide-parent") }
-    kapt(Dependencies.glide_compiler)
+    ksp(Dependencies.glide_compiler_ksp)
 
     api(Dependencies.zguop_banner)
     api(Dependencies.tencent_bugly)
@@ -164,5 +164,5 @@ dependencies {
     api(compose.accompanist.themeadapter)
     api(compose.ui.tooling)
     api(compose.material.icons)
-
+    api(compose.accompanist.systemuicontroller)
 }

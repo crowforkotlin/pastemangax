@@ -11,18 +11,22 @@ import com.crow.base.tools.extensions.asyncEncode
 import com.crow.base.tools.extensions.decode
 import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toTypeEntity
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class AppConfigEntity(
 
     /** ● 第一次初始化 */
+    @SerialName("App_FirstInit")
     val mAppFirstInit: Boolean = false,
 
     /** ● 站点 */
+    @SerialName("Site")
     val mSite: String = BaseStrings.URL.CopyManga,
 
     /** ● 路线 "0", "1" */
+    @SerialName("Route")
     val mRoute: String = BaseUser.CURRENT_ROUTE,
 
 
@@ -41,11 +45,11 @@ data class AppConfigEntity(
         }
 
         suspend fun readAppConfig(): AppConfigEntity? {
-            return appContext.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG).toTypeEntity<AppConfigEntity>().also { mAppConfigEntity = it }
+            return toTypeEntity<AppConfigEntity>(appContext.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG)).also { mAppConfigEntity = it }
         }
 
         fun readAppConfigSync(): AppConfigEntity? {
-            return appContext.appConfigDataStore.decode(DataStoreAgent.APP_CONFIG).toTypeEntity<AppConfigEntity>().also { mAppConfigEntity = it }
+            return toTypeEntity<AppConfigEntity>(appContext.appConfigDataStore.decode(DataStoreAgent.APP_CONFIG)).also { mAppConfigEntity = it }
         }
     }
 }

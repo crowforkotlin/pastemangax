@@ -30,7 +30,7 @@ abstract class BaseVBDialogFragmentImpl : DialogFragment(), IBaseFragment {
     override fun initObserver(saveInstanceState: Bundle?) {}
 
     override fun showLoadingAnim(loadingAnimConfig: LoadingAnimDialog.LoadingAnimConfig?) {
-        LoadingAnimDialog.show(parentFragmentManager, loadingAnimConfig)
+        LoadingAnimDialog.show(parentFragmentManager, loadingAnimConfig = loadingAnimConfig)
     }
 
     override fun dismissLoadingAnim() {

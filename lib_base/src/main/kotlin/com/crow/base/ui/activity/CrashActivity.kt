@@ -5,6 +5,9 @@ import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
 import com.crow.base.app.BaseAppExceptionHandler
 import com.crow.base.ui.compose.CopyMangaXTheme
+import com.crow.base.ui.compose.CrashScreen
+import kotlin.system.exitProcess
+
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -21,12 +24,18 @@ class CrashActivity : BaseActivity() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        val exception = BaseAppExceptionHandler.getThrowableFromIntent(intent)
-
         setContent {
-            CopyMangaXTheme(
-
-            ) {
+            CopyMangaXTheme {
+                CrashScreen(
+                    exception = BaseAppExceptionHandler.getThrowableFromIntent(intent),
+                    onAcceptClick = {
+                        moveTaskToBack(true)
+                    },
+                    onRestartClick = {
+                        finish()
+                        exitProcess(0)
+                    }
+                )
             }
         }
     }
