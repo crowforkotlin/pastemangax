@@ -2,14 +2,8 @@ plugins {
     // Android 应用程序插件
     id(Plugins.android_library)
 
-    // Ksp
-    // id(Plugins.google_devtools_ksp) version Versions.ksp_version
-
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
-
-    // 使用Kotlin序列化插件
-    // kotlin(Plugins.kotlin_serialization) version Versions.kotlin_version
 }
 
 android {
@@ -77,5 +71,6 @@ dependencies {
     api(project(mapOf("path" to ":module_bookshelf")))
     api(project(mapOf("path" to ":module_book")))
     api(project(mapOf("path" to ":module_user")))
+
     // api(project(mapOf("path" to ":module_anime")))
 }

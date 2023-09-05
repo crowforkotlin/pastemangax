@@ -1,14 +1,14 @@
 package com.crow.module_book.model.resp.novel_info
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class LastChapter(
-    @Json(name = "id")
+    @SerialName(value = "id")
     val mId: String,
 
-    @Json(name = "name")
+    @SerialName(value = "name")
     val mName: String
 )

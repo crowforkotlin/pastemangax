@@ -2,26 +2,26 @@ package com.crow.module_book.model.resp
 
 
 import com.crow.module_book.model.resp.novel_info.NovelInfoResult
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class NovelInfoResp(
-    @Json(name = "book")
+    @SerialName(value = "book")
     val mNovel: NovelInfoResult,
 
-    @Json(name = "is_lock")
+    @SerialName(value = "is_lock")
     val isLock: Boolean,
 
-    @Json(name = "is_login")
+    @SerialName(value = "is_login")
     val isLogin: Boolean,
 
-    @Json(name = "is_mobile_bind")
+    @SerialName(value = "is_mobile_bind")
     val isMobileBind: Boolean,
 
-    @Json(name = "is_vip")
+    @SerialName(value = "is_vip")
     val isVip: Boolean,
 
-    @Json(name = "popular")
+    @SerialName(value = "popular")
     val popular: Int
 )

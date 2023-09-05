@@ -1,15 +1,15 @@
 package com.crow.module_discover.model.resp.comic_tag
 
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Top(
 
-    @Json(name = "name")
+    @SerialName(value = "name")
     val mName: String,
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String
 )

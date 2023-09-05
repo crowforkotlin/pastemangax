@@ -1,7 +1,8 @@
 package com.crow.module_home.model.resp.homepage
 
 import com.crow.module_home.model.resp.homepage.results.SeriesResult
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Topices
@@ -17,32 +18,34 @@ import com.squareup.moshi.Json
  * @property mDatetimeCreated 创建日期
  * @constructor Create empty Topices
  */
+
+@Serializable
 data class Topices(
 
-    @Json(name = "title")
+    @SerialName(value = "title")
     val mTitle: String,
 
-    @Json(name = "series")
+    @SerialName(value = "series")
     val mSeries: SeriesResult,
 
-    @Json(name = "journal")
+    @SerialName(value = "journal")
     val mJournal: String,
 
-    @Json(name = "cover")
+    @SerialName(value = "cover")
     val mImageUrl: String,
 
-    @Json(name = "period")
+    @SerialName(value = "period")
     val mPeriod: String,
 
-    @Json(name = "type")
+    @SerialName(value = "type")
     val mType: Int,
 
-    @Json(name = "brief")
+    @SerialName(value = "brief")
     val mBrief: String,
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String,
 
-    @Json(name = "datetime_created")
+    @SerialName(value = "datetime_created")
     val mDatetimeCreated: String,
 )

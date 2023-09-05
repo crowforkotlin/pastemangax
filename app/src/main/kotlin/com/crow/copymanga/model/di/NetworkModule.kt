@@ -5,16 +5,17 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.copymanga.glide.AppGlideProgressResponseBody
-import com.crow.base.tools.extensions.baseMoshi
+import com.crow.base.tools.extensions.baseJson
+import com.crow.base.tools.extensions.ks.asConverterFactory
 import com.crow.base.tools.network.FlowCallAdapterFactory
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 val networkModule = module {
@@ -53,7 +54,7 @@ val networkModule = module {
             .baseUrl("https://gitee.com/")
             .client(get())
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
+            .addConverterFactory(baseJson.asConverterFactory("application/json; charset=utf-8".toMediaType()))
             .build()
     }
 
@@ -126,7 +127,7 @@ val networkModule = module {
             .baseUrl(BaseStrings.URL.CopyManga)
             .client(get(named_CopyMangaX))
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
+            .addConverterFactory(baseJson.asConverterFactory("application/json; charset=utf-8".toMediaType()))
             .build()
     }
 }

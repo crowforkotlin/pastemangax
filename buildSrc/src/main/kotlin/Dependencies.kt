@@ -122,7 +122,11 @@ object Dependencies {
     /** Moshi
     * - Github : [https://github.com/square/moshi]
     */
-    const val moshi = "com.squareup.moshi:moshi-kotlin:${Versions.moshi_version}"
+    const val moshi = "com.squareup.moshi:moshi:${Versions.moshi_version}"
+    const val moshi_ksp = "com.squareup.moshi:moshi-kotlin-codegen:${Versions.moshi_version}"
+    const val moshi_kotlin = "com.squareup.moshi:moshi-kotlin:${Versions.moshi_version}"
+
+    const val google_gson = "com.google.code.gson:gson:${Versions.gson_version}"
 
     /** ARouter 路由
     * - Github: [https://github.com/alibaba/ARouter]
@@ -133,7 +137,7 @@ object Dependencies {
     /** kotlin Json 序列化
     * - Github: [https://github.com/Kotlin/kotlinx.serialization]
     */
-    const val kotlin_serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
+    const val kotlin_serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
 
 
     /** okhttp 网络Http客户端

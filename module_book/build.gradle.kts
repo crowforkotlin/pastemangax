@@ -7,9 +7,6 @@ plugins {
 
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
-
-    // 使用Kotlin序列化插件
-    // kotlin(Plugins.kotlin_serialization) version Versions.kotlin_version
 }
 
 android {
@@ -76,9 +73,10 @@ kotlin { jvmToolchain(11) }
 
 dependencies {
 
+    // ksp for room
+    ksp(Dependencies.androidx_room_compiler)
+
     // 引入Base库
     implementation(project(mapOf("path" to ":lib_base")))
-
-    ksp(Dependencies.androidx_room_compiler)
 
 }

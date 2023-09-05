@@ -1,7 +1,8 @@
 package com.crow.module_home.model.resp.homepage
 
 import com.crow.module_home.model.resp.homepage.results.ComicResultXX
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Rank comics
@@ -15,26 +16,28 @@ import com.squareup.moshi.Json
  * @property mComic 漫画集
  * @constructor Create empty Rank comics
  */
+
+@Serializable
 data class RankComics(
 
-    @Json(name = "sort")
+    @SerialName(value = "sort")
     val mSort: Int,
 
-    @Json(name = "sort_last")
+    @SerialName(value = "sort_last")
     val mSortLast: Int,
 
-    @Json(name = "rise_sort")
+    @SerialName(value = "rise_sort")
     val mRiseSort: Int,
 
-    @Json(name = "rise_num")
+    @SerialName(value = "rise_num")
     val mRiseNum: Int,
 
-    @Json(name = "date_type")
+    @SerialName(value = "date_type")
     val mDateType: Int,
 
-    @Json(name = "popular")
+    @SerialName(value = "popular")
     val mPopular: Int,
 
-    @Json(name = "comic")
+    @SerialName(value = "comic")
     val mComic: ComicResultXX,
 )

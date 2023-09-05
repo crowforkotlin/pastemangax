@@ -1,6 +1,8 @@
 package com.crow.module_home.model.resp.homepage
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 
 /**
  * ComicPage datas
@@ -12,18 +14,19 @@ import com.squareup.moshi.Json
  * @property total 漫画总数
  * @constructor Create empty ComicPage datas
  */
+
+@Serializable
 data class ComicDatas<T>(
 
-
-    @Json(name = "list")
+    @SerialName(value = "list")
     val mResult: List<T>,
 
-    @Json(name = "offset")
+    @SerialName(value = "offset")
     val offset: Int,
 
-    @Json(name = "limit")
+    @SerialName(value = "limit")
     val mLimit: Int,
 
-    @Json(name = "total")
+    @SerialName(value = "total")
     val total: Int
 )

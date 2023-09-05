@@ -27,12 +27,17 @@ import com.crow.base.R as baseR
 class BookClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     /**
-     * ● ComicVM
+     * ● 漫画VM
      *
      * ● 2023-09-01 22:22:54 周五 下午
      */
     private val mComicVM by sharedViewModel<ComicViewModel>()
 
+    /**
+     * ● 漫画RV
+     *
+     * ● 2023-09-04 21:56:28 周一 下午
+     */
     private var mComicRvAdapter: ComicClassicRvAdapter? = ComicClassicRvAdapter { reader ->
         val isUUIDEmpty = reader.mUUID.isNullOrEmpty()
         val message = when {
@@ -48,8 +53,18 @@ class BookClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
         }*/
     }
 
+    /**
+     * ● 获取VB
+     *
+     * ● 2023-09-04 21:56:47 周一 下午
+     */
     override fun getViewBinding(inflater: LayoutInflater) = BookFragmentComicBinding.inflate(inflater)
 
+    /**
+     * ● 初始化视图
+     *
+     * ● 2023-09-04 21:56:53 周一 下午
+     */
     override fun initView(savedInstanceState: Bundle?) {
 
         mBinding.comicRv.adapter = mComicRvAdapter
@@ -59,6 +74,11 @@ class BookClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
         // showComicPage(mComicVM.mComicPage ?: return)
     }
 
+    /**
+     * ● 初始化监听器
+     *
+     * ● 2023-09-04 21:56:59 周一 下午
+     */
     override fun initListener() {
         mBinding.comicRv.setOnScrollChangeListener { _, _, _, _, _ ->
 

@@ -1,53 +1,53 @@
 package com.crow.module_book.model.resp.novel_info
 
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class NovelInfoResult(
-    @Json(name = "author")
+    @SerialName(value = "author")
     val mAuthor: List<Author>,
 
-    @Json(name = "brief")
+    @SerialName(value = "brief")
     val mBrief: String,
 
-    @Json(name = "close_comment")
+    @SerialName(value = "close_comment")
     val mCloseComment: Boolean,
 
-    @Json(name = "close_roast")
+    @SerialName(value = "close_roast")
     val mCloseRoast: Boolean,
 
-    @Json(name = "cover")
+    @SerialName(value = "cover")
     val mCover: String,
 
-    @Json(name = "datetime_updated")
+    @SerialName(value = "datetime_updated")
     val mDatetimeUpdated: String,
 
-    @Json(name = "last_chapter")
+    @SerialName(value = "last_chapter")
     val mLastChapter: LastChapter,
 
-    @Json(name = "name")
+    @SerialName(value = "name")
     val mName: String,
 
-    @Json(name = "parodies")
-    val mParodies: List<Any>,
+    @SerialName(value = "parodies")
+    val mParodies: List<@Polymorphic Any>,
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String,
 
-    @Json(name = "popular")
+    @SerialName(value = "popular")
     val mPopular: Int,
 
-    @Json(name = "region")
+    @SerialName(value = "region")
     val mRegion: Region,
 
-    @Json(name = "status")
+    @SerialName(value = "status")
     val mStatus: Status,
 
-    @Json(name = "theme")
+    @SerialName(value = "theme")
     val mTheme: List<Theme>,
 
-    @Json(name = "uuid")
+    @SerialName(value = "uuid")
     val mUuid: String
 )

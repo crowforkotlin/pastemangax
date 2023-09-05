@@ -1,9 +1,9 @@
 package com.crow.module_user.model
 
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
-import com.crow.module_user.model.resp.UserResultErrorResp
 import com.crow.module_user.model.resp.LoginResultsOkResp
 import com.crow.module_user.model.resp.RegResultsOkResp
+import com.crow.module_user.model.resp.UserResultErrorResp
 import com.crow.module_user.model.resp.UserUpdateInfoResp
 
 /*************************

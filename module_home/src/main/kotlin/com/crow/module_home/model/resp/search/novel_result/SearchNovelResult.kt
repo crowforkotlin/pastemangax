@@ -1,8 +1,8 @@
 package com.crow.module_home.model.resp.search.novel_result
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 
 /**
  * Novel search result
@@ -14,21 +14,22 @@ import com.squareup.moshi.JsonClass
  * @property mPopular 热度
  * @constructor Create empty Novel search result
  */
-@JsonClass(generateAdapter = true)
+
+@Serializable
 data class SearchNovelResult(
 
-    @Json(name = "author")
+    @SerialName(value = "author")
     val mAuthor: List<Author>,
 
-    @Json(name = "cover")
+    @SerialName(value = "cover")
     val mImageUrl: String,
 
-    @Json(name = "name")
+    @SerialName(value = "name")
     val mName: String,
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String,
 
-    @Json(name = "popular")
+    @SerialName(value = "popular")
     val mPopular: Int
 )

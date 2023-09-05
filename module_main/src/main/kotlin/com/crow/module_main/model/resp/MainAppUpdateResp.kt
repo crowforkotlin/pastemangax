@@ -1,8 +1,8 @@
 package com.crow.module_main.model.resp
 
 import com.crow.module_main.model.resp.update.Update
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 /*************************
@@ -13,16 +13,17 @@ import com.squareup.moshi.JsonClass
  * @Description: MainAppUpdateResp
  * @formatter:on
  **************************/
-@JsonClass(generateAdapter = true)
+
+@Serializable
 data class MainAppUpdateResp(
 
-    @Json(name = "updates")
+    @SerialName(value = "updates")
     val mUpdates: MutableList<Update>,
 
-    @Json(name = "update_force")
+    @SerialName(value = "update_force")
     val mForceUpdate: Boolean,
 
-    @Json(name = "update_force_version_code")
+    @SerialName(value = "update_force_version_code")
     val mForceUpdateVersionCode: Int,
 )
 

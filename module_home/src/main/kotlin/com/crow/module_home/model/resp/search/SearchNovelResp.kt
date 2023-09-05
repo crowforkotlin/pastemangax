@@ -2,8 +2,8 @@ package com.crow.module_home.model.resp.search
 
 
 import com.crow.module_home.model.resp.search.novel_result.SearchNovelResult
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Novel search resp
@@ -14,18 +14,19 @@ import com.squareup.moshi.JsonClass
  * @property mTotal 总数
  * @constructor Create empty Novel search resp
  */
-@JsonClass(generateAdapter = true)
+
+@Serializable
 data class SearchNovelResp(
 
-    @Json(name = "limit")
+    @SerialName(value = "limit")
     val mLimit: Int,
 
-    @Json(name = "list")
+    @SerialName(value = "list")
     val mList: List<SearchNovelResult>,
 
-    @Json(name = "offset")
+    @SerialName(value = "offset")
     val mOffset: Int,
 
-    @Json(name = "total")
+    @SerialName(value = "total")
     val mTotal: Int
 )

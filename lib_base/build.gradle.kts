@@ -4,14 +4,10 @@ plugins {
     id(Plugins.android_library)
 
     // Ksp
-    // kotlin(Plugins.kotlin_kapt)
-
-    // Ksp
     id(Plugins.google_devtools_ksp) version Versions.ksp_version
 
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
-
 }
 
 android {
@@ -127,9 +123,8 @@ dependencies {
 
     /* Kotlin 协程 */
     api(Dependencies.kotlinx_coroutines)
-    api(Dependencies.kotlinx_datetime)///
+    api(Dependencies.kotlinx_datetime)
     api(Dependencies.kotlin_stdlib)
-    api(Dependencies.kotlin_reflect)
 
     api(Dependencies.androidx_room_runtime)
     api(Dependencies.androidx_room_ktx)
@@ -139,10 +134,8 @@ dependencies {
 
     /* Github */
     api(Dependencies.retrofit)
-    api(Dependencies.retrofit_scalars)
-    api(Dependencies.retrofit_moshi)
 
-    api(Dependencies.moshi)
+    api(Dependencies.kotlin_serialization)
 
     api(Dependencies.okhttp)
     api(Dependencies.okhttp_loggin)
@@ -172,5 +165,4 @@ dependencies {
     api(compose.ui.tooling)
     api(compose.material.icons)
     api(compose.accompanist.systemuicontroller)
-
 }

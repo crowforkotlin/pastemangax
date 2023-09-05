@@ -1,39 +1,39 @@
 package com.crow.module_discover.model.resp.comic_home
 
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class DiscoverComicHomeResult (
 
-    @Json(name = "author")
+    @SerialName(value = "author")
     val mAuthor: List<Author>,
 
-    @Json(name = "cover")
+    @SerialName(value = "cover")
     val mImageUrl: String,
 
-    @Json(name = "datetime_updated")
+    @SerialName(value = "datetime_updated")
     val mDatetimeUpdated: String,
 
-    @Json(name = "females")
-    val mFemales: List<Any>,
+    @SerialName(value = "females")
+    val mFemales: List<@Polymorphic Any>,
 
-    @Json(name = "free_type")
+    @SerialName(value = "free_type")
     val mFreeType: FreeType,
 
-    @Json(name = "males")
-    val mMales: List<Any>,
+    @SerialName(value = "males")
+    val mMales: List<@Polymorphic Any>,
 
-    @Json(name = "name")
+    @SerialName(value = "name")
     val mName: String,
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String,
 
-    @Json(name = "popular")
+    @SerialName(value = "popular")
     val mPopular: Int,
 
-    @Json(name = "theme")
+    @SerialName(value = "theme")
     val mTheme: List<Theme>
 )

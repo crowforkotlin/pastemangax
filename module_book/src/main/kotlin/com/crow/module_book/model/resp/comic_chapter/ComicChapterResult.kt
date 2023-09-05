@@ -1,56 +1,56 @@
 package com.crow.module_book.model.resp.comic_chapter
 
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class ComicChapterResult(
-    @Json(name = "comic_id")
+    @SerialName(value = "comic_id")
     val comicId: String,
 
-    @Json(name = "comic_path_word")
+    @SerialName(value = "comic_path_word")
     val comicPathWord: String,
 
-    @Json(name = "count")
+    @SerialName(value = "count")
     val count: Int,
 
-    @Json(name = "datetime_created")
+    @SerialName(value = "datetime_created")
     val datetimeCreated: String,
 
-    @Json(name = "group_id")
-    val groupId: Any?,
+    @SerialName(value = "group_id")
+    val groupId: @Polymorphic Any?,
 
-    @Json(name = "group_path_word")
+    @SerialName(value = "group_path_word")
     val groupPathWord: String,
 
-    @Json(name = "img_type")
+    @SerialName(value = "img_type")
     val imgType: Int,
 
-    @Json(name = "index")
+    @SerialName(value = "index")
     val index: Int,
 
-    @Json(name = "name")
+    @SerialName(value = "name")
     val name: String,
 
-    @Json(name = "news")
+    @SerialName(value = "news")
     val news: String,
 
-    @Json(name = "next")
+    @SerialName(value = "next")
     val next: String?,
 
-    @Json(name = "ordered")
+    @SerialName(value = "ordered")
     val ordered: Int,
 
-    @Json(name = "prev")
+    @SerialName(value = "prev")
     val prev: String?,
 
-    @Json(name = "size")
+    @SerialName(value = "size")
     val size: Int,
 
-    @Json(name = "type")
+    @SerialName(value = "type")
     val type: Int,
 
-    @Json(name = "uuid")
+    @SerialName(value = "uuid")
     val uuid: String,
 )

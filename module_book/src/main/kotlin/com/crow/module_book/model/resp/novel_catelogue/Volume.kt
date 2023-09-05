@@ -1,33 +1,34 @@
 package com.crow.module_book.model.resp.novel_catelogue
 
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Volume(
-    @Json(name = "book_id")
+    @SerialName(value = "book_id")
     val bookId: String,
-    @Json(name = "book_path_word")
+    @SerialName(value = "book_path_word")
     val bookPathWord: String,
-    @Json(name = "contents")
+    @SerialName(value = "contents")
     val contents: List<Content>,
-    @Json(name = "count")
+    @SerialName(value = "count")
     val count: Int,
-    @Json(name = "id")
+    @SerialName(value = "id")
     val id: String,
-    @Json(name = "index")
+    @SerialName(value = "index")
     val index: Int,
-    @Json(name = "name")
+    @SerialName(value = "name")
     val name: String,
-    @Json(name = "next")
+    @SerialName(value = "next")
     val next: String,
-    @Json(name = "prev")
-    val prev: Any?,
-    @Json(name = "sort")
+    @SerialName(value = "prev")
+    val prev: @Polymorphic Any?,
+    @SerialName(value = "sort")
     val sort: Int,
-    @Json(name = "txt_addr")
+    @SerialName(value = "txt_addr")
     val txtAddr: String,
-    @Json(name = "txt_encoding")
+    @SerialName(value = "txt_encoding")
     val txtEncoding: String
 )

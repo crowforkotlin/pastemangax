@@ -17,21 +17,27 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
-import com.crow.base.copymanga.*
 import com.crow.base.copymanga.entity.IBookAdapterColor
+import com.crow.base.copymanga.formatValue
+import com.crow.base.copymanga.getComicCardHeight
+import com.crow.base.copymanga.getComicCardWidth
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.base.copymanga.mSize10
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_home.databinding.HomeFragmentComicRvBodyBinding
-import com.crow.module_home.model.resp.homepage.*
+import com.crow.module_home.model.resp.homepage.FinishComic
+import com.crow.module_home.model.resp.homepage.HotComic
+import com.crow.module_home.model.resp.homepage.NewComic
+import com.crow.module_home.model.resp.homepage.RankComics
+import com.crow.module_home.model.resp.homepage.Topices
 import com.crow.module_home.model.resp.homepage.results.AuthorResult
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.ui.adapter.HomeComicParentRvAdapter.Type
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11

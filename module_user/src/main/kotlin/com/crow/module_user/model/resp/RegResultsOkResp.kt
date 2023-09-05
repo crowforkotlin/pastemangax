@@ -1,30 +1,30 @@
 package com.crow.module_user.model.resp
 
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class RegResultsOkResp(
 
-    @Json(name = "avatar")
+    @SerialName(value = "avatar")
     val mAvatar: String,
 
-    @Json(name = "datetime_created")
+    @SerialName(value = "datetime_created")
     val mDatetimeCreated: String,
 
-    @Json(name = "invite_code")
-    val mInviteCode: Any?,
+    @SerialName(value = "invite_code")
+    val mInviteCode: @Polymorphic Any?,
 
-    @Json(name = "nickname")
+    @SerialName(value = "nickname")
     val mNickname: String,
 
-    @Json(name = "token")
-    val mToken: Any?,
+    @SerialName(value = "token")
+    val mToken: @Polymorphic Any?,
 
-    @Json(name = "user_id")
+    @SerialName(value = "user_id")
     val mUserId: String,
 
-    @Json(name = "uuid")
+    @SerialName(value = "uuid")
     val mUuid: String
 )

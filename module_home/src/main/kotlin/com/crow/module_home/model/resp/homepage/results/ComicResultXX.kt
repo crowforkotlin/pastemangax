@@ -1,6 +1,7 @@
 package com.crow.module_home.model.resp.homepage.results
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 /**
@@ -15,26 +16,28 @@ import com.squareup.moshi.Json
  * @property mPopular 热度（应该是浏览量）
  * @constructor Create empty Hot comic result
  */
+
+@Serializable
 data class ComicResultXX(
-    @Json(name = "name")
+    @SerialName(value = "name")
     val mName: String,
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String,
 
-    @Json(name = "author")
+    @SerialName(value = "author")
     val mAuthorResult: List<AuthorResult>,
 
-    @Json(name = "img_type")
+    @SerialName(value = "img_type")
     val mImageType: Int,
 
-    @Json(name = "theme")
+    @SerialName(value = "theme")
     val mTheme: List<ThemeResult>,
 
-    @Json(name = "cover")
+    @SerialName(value = "cover")
     val mImageUrl: String,
 
-    @Json(name = "popular")
+    @SerialName(value = "popular")
     val mPopular: Int,
 
     )

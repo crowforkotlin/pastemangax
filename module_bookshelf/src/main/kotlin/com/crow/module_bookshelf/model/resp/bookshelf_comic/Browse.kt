@@ -1,20 +1,19 @@
 package com.crow.module_bookshelf.model.resp.bookshelf_comic
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Browse(
-    @Json(name = "chapter_name")
+    @SerialName(value = "chapter_name")
     val mChapterName: String,
 
-    @Json(name = "chapter_uuid")
+    @SerialName(value = "chapter_uuid")
     val mChapterUuid: String,
 
-    @Json(name = "comic_uuid")
+    @SerialName(value = "comic_uuid")
     val mComicUuid: String,
 
-    @Json(name = "path_word")
+    @SerialName(value = "path_word")
     val mPathWord: String
 )

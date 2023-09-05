@@ -1,98 +1,99 @@
 package com.crow.module_user.model.resp
 
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class LoginResultsOkResp (
 
-    @Json(name = "ads_vip_end")
-    val mAdsVipEnd: Any?,
+    @SerialName(value = "ads_vip_end")
+    val mAdsVipEnd: @Polymorphic Any?,
 
-    @Json(name = "avatar")
+    @SerialName(value = "avatar")
     val mIconUrl: String?,
 
-    @Json(name = "b_sstv")
+    @SerialName(value = "b_sstv")
     val mBSstv: Boolean,
 
-    @Json(name = "b_verify_email")
+    @SerialName(value = "b_verify_email")
     val mBVerifyEmail: Boolean,
 
-    @Json(name = "cartoon_vip")
+    @SerialName(value = "cartoon_vip")
     val mCartoonVip: Int,
 
-    @Json(name = "cartoon_vip_end")
-    val mCartoonVipEnd: Any?,
+    @SerialName(value = "cartoon_vip_end")
+    val mCartoonVipEnd: @Polymorphic Any?,
 
-    @Json(name = "cartoon_vip_start")
-    val mCartoonVipStart: Any?,
+    @SerialName(value = "cartoon_vip_start")
+    val mCartoonVipStart: @Polymorphic Any?,
 
-    @Json(name = "close_report")
+    @SerialName(value = "close_report")
     val mCloseReport: Boolean,
 
-    @Json(name = "comic_vip")
+    @SerialName(value = "comic_vip")
     val mComicVip: Int,
 
-    @Json(name = "comic_vip_end")
-    val mComicVipEnd: Any?,
+    @SerialName(value = "comic_vip_end")
+    val mComicVipEnd: @Polymorphic Any?,
 
-    @Json(name = "comic_vip_start")
-    val mComicVipStart: Any?,
+    @SerialName(value = "comic_vip_start")
+    val mComicVipStart: @Polymorphic Any?,
 
-    @Json(name = "datetime_created")
+    @SerialName(value = "datetime_created")
     val mDatetimeCreated: String,
 
-    @Json(name = "downloads")
+    @SerialName(value = "downloads")
     val mDownloads: Int,
 
-    @Json(name = "email")
+    @SerialName(value = "email")
     val mEmail: String,
 
-    @Json(name = "invite_code")
-    val mInviteCode: Any?,
+    @SerialName(value = "invite_code")
+    val mInviteCode: @Polymorphic Any?,
 
-    @Json(name = "invited")
-    val mInvited: Any?,
+    @SerialName(value = "invited")
+    val mInvited: @Polymorphic Any?,
 
-    @Json(name = "is_authenticated")
+    @SerialName(value = "is_authenticated")
     val mIsAuthenticated: Boolean,
 
-    @Json(name = "mobile")
-    val mMobile: Any?,
+    @SerialName(value = "mobile")
+    val mMobile: @Polymorphic Any?,
 
-    @Json(name = "mobile_region")
-    val mMobileRegion: Any?,
+    @SerialName(value = "mobile_region")
+    val mMobileRegion: @Polymorphic Any?,
 
-    @Json(name = "nickname")
+    @SerialName(value = "nickname")
     val mNickname: String,
 
-    @Json(name = "point")
+    @SerialName(value = "point")
     val mPoint: Int,
 
-    @Json(name = "reward_downloads")
+    @SerialName(value = "reward_downloads")
     val mRewardDownloads: Int,
 
-    @Json(name = "scy_answer")
+    @SerialName(value = "scy_answer")
     val mScyAnswer: Boolean,
 
-    @Json(name = "token")
+    @SerialName(value = "token")
     val mToken: String,
 
-    @Json(name = "user_id")
+    @SerialName(value = "user_id")
     val mUserId: String,
 
-    @Json(name = "username")
+    @SerialName(value = "username")
     val mUsername: String,
 
-    @Json(name = "vip_downloads")
+    @SerialName(value = "vip_downloads")
     val mVipDownloads: Int,
 
-   /* @Json(name = "vip_downloads")
-    val mDayDownloadsRefresh: String? = null,
+    /* @SerialName(value = "vip_downloads")
+     val mDayDownloadsRefresh: String? = null,
 
-    @Json(name = "day_downloads")
-    val mDayDownloads: Int? = null,*/
+     @SerialName(value = "day_downloads")
+     val mDayDownloads: Int? = null,*/
 
     var mPassword: String? = null,
 )

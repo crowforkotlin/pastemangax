@@ -27,7 +27,8 @@ object Versions {
     const val lifecycle_version = "2.5.1"
     const val ktor_version = "2.1.3"
     const val paging_version = "3.1.1"
-    const val moshi_version = "1.14.0"
+    const val moshi_version = "1.15.0"
+    const val gson_version = "2.10.1"
     const val media3_version = "1.0.1"
     const val room_version = "2.5.1"
 }
