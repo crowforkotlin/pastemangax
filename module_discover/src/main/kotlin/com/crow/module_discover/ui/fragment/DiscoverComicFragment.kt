@@ -2,6 +2,7 @@ package com.crow.module_discover.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.core.os.bundleOf
 import androidx.core.view.get
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -85,13 +86,25 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
     /** ● 初始化监听事件 */
     override fun initListener() {
-      /*  launchDelay(4000L) {
-            repeat(Int.MAX_VALUE) {
-                delay(20L)
-                "${mDiscoverComicAdapter.itemCount}".logMsg()
-                mBinding.discoverComicRv.scrollToPosition(mDiscoverComicAdapter.itemCount - 1)
+        parentFragmentManager.setFragmentResultListener("onDoubleTap", this) { _, bundle ->
+            if (mBinding.discoverComicRv.scrollState != RecyclerView.SCROLL_STATE_IDLE) return@setFragmentResultListener
+            val layoutManager = mBinding.discoverComicRv.layoutManager as LinearLayoutManager
+            val top = layoutManager.findFirstVisibleItemPosition()
+            val bottom = layoutManager.findLastVisibleItemPosition()
+            var lastPosition: Int = 0
+            if (arguments == null) {
+                arguments = bundleOf()
+            } else {
+                lastPosition = arguments!!.getInt("Rv_Pos", 0)
             }
-        }*/
+            if (lastPosition >= top) {
+                arguments!!.putInt("Rv_Pos", 0)
+            } else {
+                arguments!!.putInt("Rv_Pos", bottom)
+            }
+            mBinding.discoverComicRv.smoothScrollToPosition(lastPosition)
+        }
+
         // 设置容器Fragment的回调监听r
         parentFragmentManager.setFragmentResultListener(Comic, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 1) {

@@ -2,7 +2,6 @@ package com.crow.module_discover.model.resp.novel_tag
 
 import com.squareup.moshi.Json
 
-
 data class Theme(
     @Json(name =  "color_h5")
     val colorH5: Any?,

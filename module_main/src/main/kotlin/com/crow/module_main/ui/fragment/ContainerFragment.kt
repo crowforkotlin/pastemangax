@@ -1,9 +1,12 @@
 package com.crow.module_main.ui.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Base64
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -29,6 +32,7 @@ import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import com.crow.module_user.ui.viewmodel.UserViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: module_home/src/main/kotlin/com/crow/module_home/ui/fragment
@@ -50,6 +54,22 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     /** ● 碎片集 */
     private val mFragmentList by lazy { mutableListOf<Fragment>(HomeFragment(), DiscoverComicFragment(), BookshelfFragment()) }
+
+    /**
+     * ● 手势检测
+     *
+     * ● 2023-09-08 01:04:40 周五 上午
+     */
+    private val mGestureDetector by lazy {
+        GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                if (mBinding.mainViewPager.currentItem == 1) {
+                    childFragmentManager.setFragmentResult("onDoubleTap", arguments ?: bundleOf())
+                }
+                return super.onDoubleTap(e)
+            }
+        })
+    }
 
     /** ● 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
@@ -135,6 +155,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     /** ● 初始化监听器 */
+    @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
 
         // 登录类别
@@ -181,7 +202,14 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                 }
             }
         })
+
+        // Item onTouchEvent
+        mBinding.mainBottomNavigation.setItemOnTouchListener(R.id.main_menu_discovery_comic) { _, event ->
+            mGestureDetector.onTouchEvent(event)
+        }
     }
+
+
 
     /**
      * ● 通知页面更新
