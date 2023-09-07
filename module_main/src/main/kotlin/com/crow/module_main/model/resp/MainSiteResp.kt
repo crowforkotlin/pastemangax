@@ -1,9 +1,8 @@
 package com.crow.module_main.model.resp
 
-
 import com.crow.module_main.model.resp.site.Site
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
+
 
 /**
  * Main site resp
@@ -12,9 +11,8 @@ import kotlinx.serialization.Serializable
  * @constructor Create empty Main site resp
  */
 
-@Serializable
 data class MainSiteResp(
 
-    @SerialName(value = "webList  ")
+    @Json(name =  "webList  ")
     val mSiteList: List<Site?>?
 )

@@ -1,26 +1,25 @@
 package com.crow.module_main.model.resp.update
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
+
 data class Update (
 
-    @SerialName(value = "update_content")
+    @Json(name =  "update_content")
     val mContent: String,
 
-    @SerialName(value = "update_title")
+    @Json(name =  "update_title")
     val mTitle: String,
 
-    @SerialName(value = "update_url")
+    @Json(name =  "update_url")
     val mUrl: List<Url>,
 
-    @SerialName(value = "update_version_code")
+    @Json(name =  "update_version_code")
     val mVersionCode: Int,
 
-    @SerialName(value = "update_version_name")
+    @Json(name =  "update_version_name")
     val mVersionName: String,
 
-    @SerialName(value = "update_time")
+    @Json(name =  "update_time")
     val mTime: String
 )

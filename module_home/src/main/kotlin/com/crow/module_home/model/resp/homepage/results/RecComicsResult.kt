@@ -1,7 +1,6 @@
 package com.crow.module_home.model.resp.homepage.results
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
 
 /**
@@ -12,11 +11,10 @@ import kotlinx.serialization.Serializable
  * @constructor Create empty Rec comics result
  */
 
-@Serializable
 data class RecComicsResult(
-    @SerialName(value = "type")
+    @Json(name =  "type")
     val mType: Int,
 
-    @SerialName(value = "comic")
+    @Json(name =  "comic")
     val mComic: ComicResultXX,
 )

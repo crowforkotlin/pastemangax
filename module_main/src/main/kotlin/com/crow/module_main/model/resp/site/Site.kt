@@ -1,7 +1,6 @@
 package com.crow.module_main.model.resp.site
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
 
 /**
@@ -16,24 +15,23 @@ import kotlinx.serialization.Serializable
  * @constructor Create empty Site
  */
 
-@Serializable
 data class Site(
 
-    @SerialName(value = "desc")
+    @Json(name =  "desc")
     val mDesc: String,
 
-    @SerialName(value = "level")
+    @Json(name =  "level")
     val mLevel: Int,
 
-    @SerialName(value = "magic")
+    @Json(name =  "magic")
     val mNeedVPN: Boolean,
 
-    @SerialName(value = "name  ")
+    @Json(name =  "name  ")
     val mName: String,
 
-    @SerialName(value = "site")
+    @Json(name =  "site")
     val mEncodeSite: String,
 
-    @SerialName(value = "update_time")
+    @Json(name =  "update_time")
     val mUpdateTime: String
 )

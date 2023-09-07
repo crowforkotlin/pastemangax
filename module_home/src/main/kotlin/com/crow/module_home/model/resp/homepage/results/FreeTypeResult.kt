@@ -1,7 +1,6 @@
 package com.crow.module_home.model.resp.homepage.results
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
 
 /**
@@ -12,13 +11,12 @@ import kotlinx.serialization.Serializable
  * @constructor Create empty Free code result
  */
 
-@Serializable
 data class FreeTypeResult(
 
-    @SerialName(value = "display")
+    @Json(name =  "display")
     val mDisplay: String,
 
-    @SerialName(value = "value")
+    @Json(name =  "value")
     val mValue: Int,
 )
 

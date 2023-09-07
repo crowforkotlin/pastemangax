@@ -1,28 +1,25 @@
 package com.crow.module_book.model.resp
 
-
 import com.crow.module_book.model.resp.comic_browser.Browse
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
 data class ComicBrowserResp(
 
-    @SerialName(value = "browse")
+    @Json(name =  "browse")
     val mBrowse: Browse?,
 
-    @SerialName(value = "collect")
+    @Json(name =  "collect")
     val mCollectId: Int?,
 
-    @SerialName(value = "is_lock")
+    @Json(name =  "is_lock")
     val mIsLock: Boolean,
 
-    @SerialName(value = "is_login")
+    @Json(name =  "is_login")
     val mIsLogin: Boolean,
 
-    @SerialName(value = "is_mobile_bind")
+    @Json(name =  "is_mobile_bind")
     val mIsMobileBind: Boolean,
 
-    @SerialName(value = "is_vip")
+    @Json(name =  "is_vip")
     val mIsVip: Boolean,
 )

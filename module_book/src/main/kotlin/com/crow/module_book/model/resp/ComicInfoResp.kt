@@ -1,10 +1,9 @@
 package com.crow.module_book.model.resp
 
-
 import com.crow.module_book.model.resp.comic_info.ComicInfoResult
 import com.crow.module_book.model.resp.comic_info.Groups
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
+
 
 /**
  * Results
@@ -19,26 +18,25 @@ import kotlinx.serialization.Serializable
  * @constructor Create empty Results
  */
 
-@Serializable
 data class ComicInfoResp(
-    @SerialName(value = "comic")
+    @Json(name =  "comic")
     val mComic: ComicInfoResult?,
 
-    @SerialName(value = "groups")
+    @Json(name =  "groups")
     val mGroups: Groups?,
 
-    @SerialName(value = "is_lock")
+    @Json(name =  "is_lock")
     val mIsLock: Boolean?,
 
-    @SerialName(value = "is_login")
+    @Json(name =  "is_login")
     val mIsLogin: Boolean?,
 
-    @SerialName(value = "is_mobile_bind")
+    @Json(name =  "is_mobile_bind")
     val mIsMobileBind: Boolean?,
 
-    @SerialName(value = "is_vip")
+    @Json(name =  "is_vip")
     val mIsVip: Boolean?,
 
-    @SerialName(value = "popular")
+    @Json(name =  "popular")
     val mPopular: Int?
 )

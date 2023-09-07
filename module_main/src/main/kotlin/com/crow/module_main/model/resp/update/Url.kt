@@ -1,14 +1,13 @@
 package com.crow.module_main.model.resp.update
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
+
 data class Url(
 
-    @SerialName(value = "url_link")
+    @Json(name =  "url_link")
     val mLink: String,
 
-    @SerialName(value = "url_name")
+    @Json(name =  "url_name")
     val mName: String
 )

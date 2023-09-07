@@ -1,14 +1,16 @@
 package com.crow.module_user.ui.viewmodel
 
+import android.os.Build
 import com.crow.base.app.appContext
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_user.R
 import com.crow.module_user.model.UserIntent
 import com.crow.module_user.model.resp.LoginResultsOkResp
 import com.crow.module_user.model.resp.user_info.Info
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
+import java.text.SimpleDateFormat
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import com.crow.base.R as baseR
 
 /*************************
@@ -23,7 +25,19 @@ class UserInfoViewModel : BaseMviViewModel<UserIntent>() {
 
     val mUserUpdateInfoData = arrayListOf<Pair<Int,String>>()
 
-    private fun String.getDate() = runCatching { toInstant().toLocalDateTime(TimeZone.UTC).date.toString() }.getOrElse { appContext.getString(baseR.string.BaseUnknowError) }
+    private fun timestamp(time: String): String? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            OffsetDateTime
+                .parse(time, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSX"))
+                .toLocalDate()
+                .withDayOfMonth(1)
+                .toString()
+        } else {
+            SimpleDateFormat("yyyy-MM-dd", Locale.US).format(SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSX", Locale.US).parse(time) ?: throw NullPointerException("parse time is null"))
+        }
+    }
+
+    private fun String.getDate() = runCatching {timestamp(this) }.getOrElse { appContext.getString(baseR.string.BaseUnknowError) }
 
     fun setData(userInfo: LoginResultsOkResp) {
         mUserUpdateInfoData.add(R.drawable.user_ic_time_24dp to appContext.getString(R.string.user_datetime_created, userInfo.mDatetimeCreated.getDate()))

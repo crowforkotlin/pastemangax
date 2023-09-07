@@ -1,7 +1,6 @@
 package com.crow.module_home.model.resp.search.comic_reuslt
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
 
 /**
@@ -13,15 +12,14 @@ import kotlinx.serialization.Serializable
  * @constructor Create empty Author
  */
 
-@Serializable
 data class Author(
 
-    @SerialName(value = "alias")
+    @Json(name =  "alias")
     val mAlias: String?,
 
-    @SerialName(value = "name")
+    @Json(name =  "name")
     val mName: String,
 
-    @SerialName(value = "path_word")
+    @Json(name =  "path_word")
     val mPathword: String
 )

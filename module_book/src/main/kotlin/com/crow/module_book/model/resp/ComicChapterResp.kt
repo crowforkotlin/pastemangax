@@ -1,22 +1,19 @@
 package com.crow.module_book.model.resp
 
-
 import com.crow.module_book.model.resp.comic_chapter.ComicChapterResult
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
 data class ComicChapterResp(
 
-    @SerialName(value = "limit")
+    @Json(name =  "limit")
     val mLimit: Int,
 
-    @SerialName(value = "list")
+    @Json(name =  "list")
     val mList: List<ComicChapterResult>,
 
-    @SerialName(value = "offset")
+    @Json(name =  "offset")
     val mOffset: Int,
 
-    @SerialName(value = "total")
+    @Json(name =  "total")
     val mTotal: Int,
 )

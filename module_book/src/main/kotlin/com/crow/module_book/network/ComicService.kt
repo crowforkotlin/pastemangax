@@ -11,7 +11,7 @@ import com.crow.module_book.model.resp.NovelBrowserResp
 import com.crow.module_book.model.resp.NovelCatelogueResp
 import com.crow.module_book.model.resp.NovelInfoResp
 import kotlinx.coroutines.flow.Flow
-import kotlinx.serialization.Polymorphic
+
 import okhttp3.ResponseBody
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -37,7 +37,7 @@ interface ComicService {
 
     // 获取漫画章节列表
     @GET(URL.ComicChapter)
-    fun getComicChapter(@Path(PATH_WORD) pathword: String, @Query("offset") start: Int, @Query("limit") limit: Int): Flow<BaseResultResp<@Polymorphic Any>>
+    fun getComicChapter(@Path(PATH_WORD) pathword: String, @Query("offset") start: Int, @Query("limit") limit: Int): Flow<BaseResultResp<Any>>
 
     // 获取漫画内容
     @GET(URL.ComicPage)

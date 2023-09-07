@@ -1,11 +1,10 @@
 package com.crow.module_book.model.resp.comic_info
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
+
 data class Groups(
 
-    @SerialName(value = "default")
+    @Json(name =  "default")
     val mDefault: Default,
 )

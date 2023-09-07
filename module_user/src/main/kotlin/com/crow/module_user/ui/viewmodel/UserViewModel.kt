@@ -12,11 +12,11 @@ import com.crow.base.copymanga.BaseUser
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncClear
 import com.crow.base.tools.extensions.asyncDecode
-import com.crow.base.tools.extensions.safeAs
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_user.model.UserIntent
 import com.crow.module_user.model.resp.LoginResultsOkResp
+import com.crow.module_user.model.resp.UserResultErrorResp
 import com.crow.module_user.network.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,19 +61,21 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
         // 200代表 登录 请求成功
         flowResult(intent, repository.login(intent.username, intent.password)) { value ->
             if (value.mCode == HttpURLConnection.HTTP_OK) {
-                intent.copy(loginResultsOkResp = safeAs<LoginResultsOkResp>(value.mResults)?.also {
+                intent.copy(loginResultsOkResp = toTypeEntity<LoginResultsOkResp>(value.mResults)?.also {
                     mIconUrl = it.mIconUrl
                     _userInfo.emit(it)
                 })
             }
-            else intent.copy(userResultErrorResp = (safeAs(value.mResults) ?: return@flowResult intent))
+            else {
+                intent.copy(userResultErrorResp = (toTypeEntity<UserResultErrorResp>(value.mResults) ?: return@flowResult intent))
+            }
         }
     }
 
     private fun doReg(intent: UserIntent.Reg) {
         flowResult(intent, repository.reg(intent.username, intent.password)) { value ->
-            if (value.mCode == HttpURLConnection.HTTP_OK) intent.copy(regResultsOkResp = (safeAs(value.mResults) ?: return@flowResult intent))
-            else intent.copy(userResultErrorResp = (safeAs(value.mResults) ?: return@flowResult intent))
+            if (value.mCode == HttpURLConnection.HTTP_OK) intent.copy(regResultsOkResp = (toTypeEntity(value.mResults) ?: return@flowResult intent))
+            else intent.copy(userResultErrorResp = (toTypeEntity(value.mResults) ?: return@flowResult intent))
         }
     }
 

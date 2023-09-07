@@ -5,6 +5,7 @@ import com.crow.base.app.appContext
 import com.crow.base.tools.coroutine.baseCoroutineException
 import com.crow.base.tools.extensions.DBNameSpace
 import com.crow.base.tools.extensions.buildDatabase
+import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_book.R
 import com.crow.module_book.model.database.BookChapterDB
@@ -168,7 +169,7 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
     private fun getComicChapter(intent: BookIntent.GetComicChapter) {
         flowResult(intent, repository.getComicChapter(intent.pathword, mChapterStartIndex, 100)) { value ->
             if (value.mCode == HttpURLConnection.HTTP_OK) {
-                val comicChapterPage = value.mResults as ComicChapterResp
+                val comicChapterPage = toTypeEntity<ComicChapterResp>(value.mResults)
                 intent.copy(comicChapter = comicChapterPage)
             } else {
                 intent.copy(

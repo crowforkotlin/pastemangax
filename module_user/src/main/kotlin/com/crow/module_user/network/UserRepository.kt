@@ -4,8 +4,8 @@ import android.util.Base64
 import com.crow.base.copymanga.BaseResultResp
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncEncode
-import com.crow.base.tools.extensions.safeAs
 import com.crow.base.tools.extensions.toJson
+import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.module_user.model.resp.LoginResultsOkResp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
@@ -26,7 +26,11 @@ class UserRepository(val service: UserService) {
         val encodePwd = Base64.encode("$password-$salt".toByteArray(), Base64.DEFAULT).decodeToString()
         return service.login(username, encodePwd, salt).onEach { value ->
             if (value.mCode == 200) {
-                DataStoreAgent.DATA_USER.asyncEncode(toJson(safeAs<LoginResultsOkResp>(value.mResults)?.also { it.mPassword = password }))
+                val resp: LoginResultsOkResp? = toTypeEntity<LoginResultsOkResp>(value.mResults)
+                if (resp != null) {
+                    resp.mPassword = password
+                    DataStoreAgent.DATA_USER.asyncEncode(toJson(resp))
+                }
             }
         }
     }

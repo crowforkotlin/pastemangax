@@ -1,8 +1,8 @@
 package com.crow.module_home.model.resp.homepage
 
 import com.crow.module_home.model.resp.homepage.results.PathwordResult
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
+
 
 /**
  * Banner
@@ -15,21 +15,20 @@ import kotlinx.serialization.Serializable
  * @constructor Create empty Banner
  */
 
-@Serializable
 data class Banner(
 
-    @SerialName(value = "brief")
+    @Json(name =  "brief")
     val mBrief: String,
 
-    @SerialName(value = "comic")
+    @Json(name =  "comic")
     val mComic: PathwordResult?,
 
-    @SerialName(value = "cover")
+    @Json(name =  "cover")
     val mImgUrl: String,
 
-    @SerialName(value = "out_uuid")
+    @Json(name =  "out_uuid")
     val mOutUuid: String,
 
-    @SerialName(value = "type")
+    @Json(name =  "type")
     val mType: Int,
 )

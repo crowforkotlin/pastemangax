@@ -1,13 +1,11 @@
 package com.crow.module_discover.model.resp.novel_tag
 
+import com.squareup.moshi.Json
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class Top(
-    @SerialName(value = "name")
+    @Json(name =  "name")
     val name: String,
-    @SerialName(value = "path_word")
+    @Json(name =  "path_word")
     val pathWord: String
 )

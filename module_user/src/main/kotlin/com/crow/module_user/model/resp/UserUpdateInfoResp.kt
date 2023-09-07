@@ -1,10 +1,9 @@
 package com.crow.module_user.model.resp
 
-
 import com.crow.module_user.model.resp.user_info.Gender
 import com.crow.module_user.model.resp.user_info.Info
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
+
 
 /**
  * User update info resp
@@ -14,12 +13,11 @@ import kotlinx.serialization.Serializable
  * @constructor Create empty User update info resp
  */
 
-@Serializable
 data class UserUpdateInfoResp(
 
-    @SerialName(value = "genders")
+    @Json(name =  "genders")
     val mGenders: List<Gender>,
 
-    @SerialName(value = "info")
+    @Json(name =  "info")
     val mInfo: Info
 )

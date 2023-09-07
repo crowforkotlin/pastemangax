@@ -1,33 +1,30 @@
 package com.crow.module_book.model.resp
 
-
 import com.crow.module_book.model.resp.comic_page.Chapter
 import com.crow.module_book.model.resp.comic_page.Comic
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
 
-@Serializable
 data class  ComicPageResp(
-    @SerialName(value = "chapter")
+    @Json(name =  "chapter")
     val mChapter: Chapter,
 
-    @SerialName(value = "comic")
+    @Json(name =  "comic")
     val mComic: Comic,
 
-    @SerialName(value = "is_lock")
+    @Json(name =  "is_lock")
     val mIsLock: Boolean,
 
-    @SerialName(value = "is_login")
+    @Json(name =  "is_login")
     val mIsLogin: Boolean,
 
-    @SerialName(value = "is_mobile_bind")
+    @Json(name =  "is_mobile_bind")
     val mIsMobileBind: Boolean,
 
-    @SerialName(value = "is_vip")
+    @Json(name =  "is_vip")
     val mIsVip: Boolean,
 
-    @SerialName(value = "show_app")
+    @Json(name =  "show_app")
     val mShowApp: Boolean
 )
 

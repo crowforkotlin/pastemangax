@@ -1,19 +1,17 @@
 package com.crow.module_book.model.resp.novel_catelogue
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
 
-@Serializable
 data class Content(
-    @SerialName(value = "content")
+    @Json(name =  "content")
     val content: String?,
-    @SerialName(value = "content_type")
+    @Json(name =  "content_type")
     val contentType: Int,
-    @SerialName(value = "end_lines")
+    @Json(name =  "end_lines")
     val endLines: Int,
-    @SerialName(value = "name")
+    @Json(name =  "name")
     val name: String,
-    @SerialName(value = "start_lines")
+    @Json(name =  "start_lines")
     val startLines: Int
 )

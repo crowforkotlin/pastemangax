@@ -1,8 +1,8 @@
 package com.crow.module_home.model.resp.homepage
 
 import com.crow.module_home.model.resp.homepage.results.ComicResultX
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
+
 
 /**
  * New comic
@@ -13,16 +13,15 @@ import kotlinx.serialization.Serializable
  * @constructor Create empty New comic
  */
 
-@Serializable
 data class NewComic(
 
-    @SerialName(value = "name")
+    @Json(name =  "name")
     val mName: String,
 
-    @SerialName(value = "datetime_created")
+    @Json(name =  "datetime_created")
     val mDatetimeCreated: String,
 
-    @SerialName(value = "comic")
+    @Json(name =  "comic")
     val mComic: ComicResultX,
 )
 
