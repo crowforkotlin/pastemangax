@@ -63,8 +63,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private val mGestureDetector by lazy {
         GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
             override fun onDoubleTap(e: MotionEvent): Boolean {
-                if (mBinding.mainViewPager.currentItem == 1) {
-                    childFragmentManager.setFragmentResult("onDoubleTap", arguments ?: bundleOf())
+                when(mBinding.mainViewPager.currentItem) {
+                    1 -> childFragmentManager.setFragmentResult("onDoubleTap_Discover_Comic", arguments ?: bundleOf())
+                    2 -> childFragmentManager.setFragmentResult("onDoubleTap_Bookshelf", arguments ?: bundleOf())
                 }
                 return super.onDoubleTap(e)
             }
@@ -205,6 +206,10 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
         // Item onTouchEvent
         mBinding.mainBottomNavigation.setItemOnTouchListener(R.id.main_menu_discovery_comic) { _, event ->
+            mGestureDetector.onTouchEvent(event)
+        }
+
+        mBinding.mainBottomNavigation.setItemOnTouchListener(R.id.main_menu_bookshelf) { _, event ->
             mGestureDetector.onTouchEvent(event)
         }
     }

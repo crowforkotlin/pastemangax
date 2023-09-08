@@ -2,25 +2,20 @@ package com.crow.module_discover.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import androidx.core.view.get
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.entity.AppConfigEntity
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
@@ -56,11 +51,11 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
     companion object {
 
-        private const val TRANSITION_VALUE_THRESHOLD = 60
 
         const val Comic = "Discover_Comic"
 
-        fun newInstance() = DiscoverComicFragment() }
+        fun newInstance() = DiscoverComicFragment()
+    }
 
     /** ● (Activity级别) 发现页VM */
     private val mDiscoverVM by sharedViewModel<DiscoverViewModel>()
@@ -68,38 +63,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     /** ● 漫画适配器 */
     private lateinit var mDiscoverComicAdapter: DiscoverComicAdapter
 
-    /**
-     * ● RecyclerView 滚动处理
-     *
-     * ● 2023-09-09 01:26:38 周六 上午
-     */
-    private val mRvOnScroll = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-
-            // 获取最后一个可见Child View
-            val pos = (mBinding.discoverComicRv.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-
-            // onScrolled 在初始化添加给Rv时 Rv会第一次进行初始化
-            if (mDiscoverVM.mVisiblePos == null) mDiscoverVM.mVisiblePos = pos
-            else if (mDiscoverVM.mVisiblePos!! != pos) mDiscoverVM.mRvPos = pos
-        }
-    }
-
-    /**
-     * ● RecyclerView 状态处理
-     *
-     * ● 2023-09-09 01:26:20 周六 上午
-     */
-    private val mRvOnState = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                mBinding.discoverComicRv.removeOnScrollListener(this)
-                mBinding.discoverComicRv.addOnScrollListener(mRvOnScroll)
-            }
-        }
-    }
 
     /** ● 收集状态 */
     fun onCollectState() {
@@ -123,58 +86,19 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         )
     }
 
-    /**
-     * ● 处理滚动RV
-     *
-     * ● 2023-09-09 01:16:52 周六 上午
-     */
-    private fun onInterceptScrollRv(pos: Int) {
-        when {
-            pos == 0 -> {
-                if (mDiscoverVM.mRvPos > TRANSITION_VALUE_THRESHOLD) onProcessScroll(pos)
-                else onProcessSmoothScroll(pos)
-            }
-            pos > TRANSITION_VALUE_THRESHOLD -> onProcessScroll(pos)
-            else -> onProcessSmoothScroll(pos)
-        }
-    }
-
-    /**
-     * ● 平滑滚动
-     *
-     * ● 2023-09-09 01:17:03 周六 上午
-     */
-    private fun onProcessSmoothScroll(pos: Int) {
-        mBinding.discoverComicRv.removeOnScrollListener(mRvOnScroll)
-        mBinding.discoverComicRv.addOnScrollListener(mRvOnState)
-        mBinding.discoverComicRv.smoothScrollToPosition(pos)
-    }
-
-    /**
-     * ● 带有过渡效果的滚动
-     *
-     * ● 2023-09-09 01:17:11 周六 上午
-     */
-    private fun onProcessScroll(pos: Int) {
-        mBinding.discoverComicRv.animateFadeOut().withEndAction {
-            mBinding.discoverComicRv.scrollToPosition(pos)
-            mBinding.discoverComicRv.animateFadeIn()
-        }
-    }
-
     /** ● 初始化监听事件 */
     override fun initListener() {
 
-        parentFragmentManager.setFragmentResultListener("onDoubleTap", this) { _, _ ->
+        // 处理双击事件
+        parentFragmentManager.setFragmentResultListener("onDoubleTap_Discover_Comic", this) { _, _ ->
             BaseEvent.getSIngleInstance().doOnInterval {
                 if (mBinding.discoverComicRv.findFisrtVisibleViewPosition() > 0) {
-                   onInterceptScrollRv(0)
+                    mBinding.discoverComicRv.onInterceptScrollRv(0)
                 } else {
-                   onInterceptScrollRv(mDiscoverVM.mRvPos)
+                    mBinding.discoverComicRv.onInterceptScrollRv(mBinding.discoverComicRv.mRvPos)
                 }
             }
         }
-
 
         // 设置容器Fragment的回调监听r
         parentFragmentManager.setFragmentResultListener(Comic, this) { _, bundle ->
@@ -196,17 +120,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
         // 更多选项 点击监听
         mBinding.discoverComicAppbar.discoverAppbarToolbar.menu[0].doOnClickInterval { toast("此功能或许将在下个版本中完善....") }
-
-        // 滑动监听
-        mBinding.discoverComicRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (AppConfigEntity.getInstance().mAppFirstInit)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    toast("${(recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()} / ${recyclerView.adapter?.itemCount}")
-                }
-            }
-        })
     }
 
     /** ● 初始化视图 */
@@ -275,20 +188,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         if (mDiscoverVM.mComicHomeData != null) return
         mDiscoverVM.input(DiscoverIntent.GetComicTag())     // 获取标签
         mDiscoverVM.input(DiscoverIntent.GetComicHome())    // 获取发现主页
-    }
-
-    /**
-     * ● Lifecycle OnViewCreated
-     *
-     * ● 2023-09-09 01:37:34 周六 上午
-     */
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        // 在onViewCreate 中装载事件 确保可初始化预加载可见的 Child View的个数
-        mBinding.discoverComicRv.addOnScrollListener(mRvOnScroll)
-
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
     /** ● Lifecycle onDestroyView */

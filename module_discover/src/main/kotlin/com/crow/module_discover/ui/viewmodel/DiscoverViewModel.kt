@@ -50,20 +50,6 @@ class DiscoverViewModel(val repository: DiscoverRepository) : BaseMviViewModel<D
     var mNovelHomeData: DiscoverNovelHomeResp? = null
         private set
 
-    /**
-     * ● RecyclerView Position
-     *
-     * ● 2023-09-08 22:46:26 周五 下午
-     */
-    var mRvPos: Int = 0
-
-    /**
-     * ● RecyclerView 可见的ChildView 个数
-     *
-     * ● 2023-09-09 01:53:44 周六 上午
-     */
-    var mVisiblePos: Int? = null
-
     // 排序方式
     private var mOrder: String = "-datetime_updated"
 

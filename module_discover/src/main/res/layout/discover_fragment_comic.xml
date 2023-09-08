@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
             android:id="@+id/discover_comic_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

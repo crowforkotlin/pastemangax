@@ -15,6 +15,7 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.processTokenError
+import com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
@@ -22,11 +23,14 @@ import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.doOnInterval
+import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
@@ -279,6 +283,19 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      * ● 2023-07-07 21:54:43 周五 下午
      */
     override fun initListener() {
+
+        // 处理双击事件
+        parentFragmentManager.setFragmentResultListener("onDoubleTap_Bookshelf", this) { _, _ ->
+            BaseEvent.getSIngleInstance().doOnInterval {
+                val recyclerView: BaseTapScrollRecyclerView = if (mBinding.bookshelfRvComic.isVisible) mBinding.bookshelfRvComic else mBinding.bookshelfRvNovel
+                if (recyclerView.findFisrtVisibleViewPosition() > 0) {
+                    recyclerView.onInterceptScrollRv(0)
+                } else {
+                    recyclerView.onInterceptScrollRv(recyclerView.mRvPos)
+                }
+            }
+        }
+
 
         // 设置容器Fragment的共享结果回调
         parentFragmentManager.setFragmentResultListener(Bookshelf, this) { _, bundle ->
