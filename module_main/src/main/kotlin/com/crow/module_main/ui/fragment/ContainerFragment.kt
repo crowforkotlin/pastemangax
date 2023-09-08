@@ -204,11 +204,12 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             }
         })
 
-        // Item onTouchEvent
+        // Item onTouchEvent 漫画
         mBinding.mainBottomNavigation.setItemOnTouchListener(R.id.main_menu_discovery_comic) { _, event ->
             mGestureDetector.onTouchEvent(event)
         }
 
+        // Item onTouchEvent 书架
         mBinding.mainBottomNavigation.setItemOnTouchListener(R.id.main_menu_bookshelf) { _, event ->
             mGestureDetector.onTouchEvent(event)
         }
