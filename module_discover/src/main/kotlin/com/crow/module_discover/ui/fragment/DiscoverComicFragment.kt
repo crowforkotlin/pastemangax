@@ -93,9 +93,9 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         parentFragmentManager.setFragmentResultListener("onDoubleTap_Discover_Comic", this) { _, _ ->
             BaseEvent.getSIngleInstance().doOnInterval {
                 if (mBinding.discoverComicRv.findFisrtVisibleViewPosition() > 0) {
-                    mBinding.discoverComicRv.onInterceptScrollRv(0)
+                    mBinding.discoverComicRv.onInterceptScrollRv(toPosition = 0, precisePosition = mBinding.discoverComicRv.mRvPos)
                 } else {
-                    mBinding.discoverComicRv.onInterceptScrollRv(mBinding.discoverComicRv.mRvPos)
+                    mBinding.discoverComicRv.onInterceptScrollRv(precisePosition = mBinding.discoverComicRv.mRvPos)
                 }
             }
         }
