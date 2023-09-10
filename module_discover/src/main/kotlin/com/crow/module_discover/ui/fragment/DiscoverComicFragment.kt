@@ -52,7 +52,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     companion object {
 
 
-        const val Comic = "Discover_Comic"
+        const val COMIC = "Discover_Comic"
 
         fun newInstance() = DiscoverComicFragment()
     }
@@ -101,7 +101,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         }
 
         // 设置容器Fragment的回调监听r
-        parentFragmentManager.setFragmentResultListener(Comic, this) { _, bundle ->
+        parentFragmentManager.setFragmentResultListener(COMIC, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 1) {
                 mBinding.discoverComicRefresh.autoRefreshAnimationOnly()
                 mBinding.discoverComicRefresh.finishRefresh((BASE_ANIM_300L.toInt() shl 1) or 0xFF)
@@ -194,6 +194,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         AppGlideProgressFactory.doReset()
-        parentFragmentManager.clearFragmentResultListener(Comic)
+        parentFragmentManager.clearFragmentResultListener(COMIC)
     }
 }
