@@ -21,5 +21,8 @@ data class Update (
     val mVersionName: String,
 
     @Json(name =  "update_time")
-    val mTime: String
+    val mTime: String,
+
+    @Json(ignore = true)
+    var mExpand: Boolean = false
 )
