@@ -37,6 +37,7 @@ import com.google.android.material.button.MaterialButton
 import com.to.aboomy.pager2banner.IndicatorView
 import com.to.aboomy.pager2banner.ScaleInTransformer
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import com.crow.base.R as baseR
 import com.to.aboomy.pager2banner.Banner as BannerView
 
@@ -114,9 +115,8 @@ class HomeComicParentRvAdapter(
                     .setIndicatorSelectorColor(Color.WHITE)
                     .setIndicatorStyle(IndicatorView.IndicatorStyle.INDICATOR_BEZIER)
                     .also { it.setPadding(0, 0, 0, mDp20) })
-        val adapter =HomeBannerRvAdapter { pathword -> doOnTap(pathword) }
-        banner.adapter = adapter
-        adapter.doBannerNotify(mData!![0] as MutableList<Banner>, mRvDelayMs / 2, viewLifecycleOwner)
+        banner.adapter = HomeBannerRvAdapter { pathword -> doOnTap(pathword) }
+        viewLifecycleOwner.lifecycleScope.launch { (banner.adapter as HomeBannerRvAdapter).doBannerNotify(mData!![0] as MutableList<Banner>, mRvDelayMs shr 1) }
         return HomeComicParentViewHolder(banner)
     }
 
@@ -211,7 +211,7 @@ class HomeComicParentRvAdapter(
     }
 
     fun doRecNotify(datas: MutableList<RecComicsResult>, notifyMs: Long = mRvDelayMs) {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launch {
             mHomeRecComicRvAdapter?.doNotify(datas, notifyMs, viewLifecycleOwner)
         }
     }

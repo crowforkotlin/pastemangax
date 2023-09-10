@@ -2,8 +2,6 @@ package com.crow.module_home.ui.adapter
 
 import android.view.LayoutInflater.from
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -43,8 +41,7 @@ class HomeBannerRvAdapter(
          vh.rvBinding.bannerText.text = banner.mBrief
     }
 
-    fun doBannerNotify(banners: MutableList<Banner>, delay: Long, viewLifecycleOwner: LifecycleOwner) {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+    suspend fun doBannerNotify(banners: MutableList<Banner>, delay: Long) {
             val isCountSame = itemCount == banners.size
             if (isCountSame) mBannerList = banners
             else if(itemCount != 0) {
@@ -58,6 +55,5 @@ class HomeBannerRvAdapter(
                 } else notifyItemChanged(index)
                 delay(delay)
             }
-        }
     }
 }

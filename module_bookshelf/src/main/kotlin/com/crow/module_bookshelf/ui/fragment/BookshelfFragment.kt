@@ -61,7 +61,7 @@ import com.crow.base.R as baseR
 class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
     companion object {
-        const val Bookshelf = "Bookshelf"
+        const val BOOKSHELF = "Bookshelf"
     }
 
     /**
@@ -227,7 +227,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      */
     override fun onDestroyView() {
         super.onDestroyView()
-        parentFragmentManager.clearFragmentResultListener(Bookshelf)
+        parentFragmentManager.clearFragmentResultListener(BOOKSHELF)
     }
 
     /**
@@ -288,17 +288,17 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         parentFragmentManager.setFragmentResultListener("onDoubleTap_Bookshelf", this) { _, _ ->
             BaseEvent.getSIngleInstance().doOnInterval {
                 val recyclerView: BaseTapScrollRecyclerView = if (mBinding.bookshelfRvComic.isVisible) mBinding.bookshelfRvComic else mBinding.bookshelfRvNovel
-                if (recyclerView.findFisrtVisibleViewPosition() > 0) {
-                    recyclerView.onInterceptScrollRv(0)
+                val first = recyclerView.findFisrtVisibleViewPosition()
+                if (first > 0) {
+                    recyclerView.onInterceptScrollRv(toPosition = 0, precisePosition = first)
                 } else {
-                    recyclerView.onInterceptScrollRv(recyclerView.mRvPos)
+                    recyclerView.onInterceptScrollRv(precisePosition = first)
                 }
             }
         }
 
-
         // 设置容器Fragment的共享结果回调
-        parentFragmentManager.setFragmentResultListener(Bookshelf, this) { _, bundle ->
+        parentFragmentManager.setFragmentResultListener(BOOKSHELF, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 2) {
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
                     launchDelay(BASE_ANIM_200L) { onOutput() }
@@ -390,7 +390,8 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
         // 更多选项
         mBinding.bookshelfToolbar.menu[0].doOnClickInterval {
-            toast("此功能或许将在下个版本中完善....")
+            // toast("此功能或许将在下个版本中完善....")
+
         }
     }
 
@@ -399,7 +400,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      *
      * ● 2023-07-07 21:53:56 周五 下午
      */
-    override fun initObserver(savedInstanceState: Bundle?) {
+    override fun initObserver(saveInstanceState: Bundle?) {
 
         // 接收意图
         mBsVM.onOutput { intent ->

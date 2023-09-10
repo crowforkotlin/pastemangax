@@ -76,7 +76,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
     /** ● 初始化观察者 */
-    override fun initObserver(savedInstanceState: Bundle?) {
+    override fun initObserver(saveInstanceState: Bundle?) {
 
         // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {
@@ -112,6 +112,11 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mBinding.mainViewPager.adapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
     }
 
+    /**
+     * ● Lifecycle OnViewCreated
+     *
+     * ● 2023-09-10 20:01:04 周日 下午
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
@@ -197,9 +202,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                     if (BaseEvent.getSIngleInstance().getBoolean(mFragmentList[mBinding.mainViewPager.currentItem].hashCode().toString()) == true) return
                     else BaseEvent.getSIngleInstance().setBoolean(mFragmentList[mBinding.mainViewPager.currentItem].hashCode().toString(), true)
                     val bundle = bundleOf(BaseStrings.ID to mBinding.mainViewPager.currentItem, BaseStrings.ENABLE_DELAY to false)
-                    childFragmentManager.setFragmentResult(HomeFragment.Home, bundle)
-                    childFragmentManager.setFragmentResult(DiscoverComicFragment.Comic, bundle)
-                    childFragmentManager.setFragmentResult(BookshelfFragment.Bookshelf, bundle)
+                    childFragmentManager.setFragmentResult(HomeFragment.HOME, bundle)
+                    childFragmentManager.setFragmentResult(DiscoverComicFragment.COMIC, bundle)
+                    childFragmentManager.setFragmentResult(BookshelfFragment.BOOKSHELF, bundle)
                 }
             }
         })
@@ -215,8 +220,6 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
     }
 
-
-
     /**
      * ● 通知页面更新
      *
@@ -229,9 +232,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                 saveItemPageID(it)
                 BaseEvent.getSIngleInstance().setBoolean(mFragmentList[it].hashCode().toString(), true)
             }, BaseStrings.ENABLE_DELAY to true)
-            childFragmentManager.setFragmentResult(HomeFragment.Home, bundle)
-            childFragmentManager.setFragmentResult(DiscoverComicFragment.Comic, bundle)
-            childFragmentManager.setFragmentResult(BookshelfFragment.Bookshelf, bundle)
+            childFragmentManager.setFragmentResult(HomeFragment.HOME, bundle)
+            childFragmentManager.setFragmentResult(DiscoverComicFragment.COMIC, bundle)
+            childFragmentManager.setFragmentResult(BookshelfFragment.BOOKSHELF, bundle)
         }
     }
 

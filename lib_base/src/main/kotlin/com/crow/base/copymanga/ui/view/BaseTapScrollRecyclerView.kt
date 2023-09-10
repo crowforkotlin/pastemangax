@@ -42,6 +42,13 @@ class BaseTapScrollRecyclerView : RecyclerView {
         private set
 
     /**
+     * ● 是否正在滑动？
+     *
+     * ● 2023-09-10 20:35:37 周日 下午
+     */
+    private var mIsScrolling = false
+
+    /**
      * ● RecyclerView 滚动处理
      *
      * ● 2023-09-09 01:26:38 周六 上午
@@ -55,6 +62,7 @@ class BaseTapScrollRecyclerView : RecyclerView {
             // onScrolled 在初始化添加给Rv时 Rv会第一次进行初始化
             if (mVisiblePos == null) mVisiblePos = pos
             else if (mVisiblePos!! != pos) mRvPos = pos
+
         }
     }
 
@@ -63,12 +71,13 @@ class BaseTapScrollRecyclerView : RecyclerView {
      *
      * ● 2023-09-09 01:26:20 周六 上午
      */
-    private val mRvOnState = object : OnScrollListener() {
+    private val mRvOnScrollState = object : OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
             if (newState == SCROLL_STATE_IDLE) {
                 removeOnScrollListener(this)
                 addOnScrollListener(mRvOnScroll)
+                mIsScrolling = false
             }
         }
     }
@@ -81,15 +90,18 @@ class BaseTapScrollRecyclerView : RecyclerView {
      * ● 处理滚动RV
      *
      * ● 2023-09-09 01:16:52 周六 上午
+     *
+     * @param toPosition 目标位置
+     * @param precisePosition 精准的实际位置
      */
-    fun onInterceptScrollRv(pos: Int) {
+    fun onInterceptScrollRv(toPosition: Int = mRvPos, precisePosition: Int) {
         when {
-            pos == 0 -> {
-                if (mRvPos > TRANSITION_VALUE_THRESHOLD) onProcessScroll(pos)
-                else onProcessSmoothScroll(pos)
+            toPosition == 0 -> {
+                if (mRvPos > TRANSITION_VALUE_THRESHOLD) onProcessScroll(toPosition)
+                else onProcessSmoothScroll(toPosition, precisePosition)
             }
-            pos > TRANSITION_VALUE_THRESHOLD -> onProcessScroll(pos)
-            else -> onProcessSmoothScroll(pos)
+            toPosition > TRANSITION_VALUE_THRESHOLD -> onProcessScroll(toPosition)
+            else -> onProcessSmoothScroll(toPosition, precisePosition)
         }
     }
 
@@ -98,10 +110,23 @@ class BaseTapScrollRecyclerView : RecyclerView {
      *
      * ● 2023-09-09 01:17:03 周六 上午
      */
-    private fun onProcessSmoothScroll(pos: Int) {
+    private fun onProcessSmoothScroll(toPosition: Int, precisePosition: Int) {
+
+        /*
+        * 可能在处理平滑滚动的时候 会手动继续 让平滑滚动处理下去导致 无法对SCROLL STATE进行IDLE(终止)捕获
+        * 所以当下次事件到来 时 需要做判断是否大于 临界值，是的话则直接定位到实际位置 并让SCROLL STATE 的IDLE捕获到 从而恢复
+        * 滚动的POS监听处理
+        * */
+
+        if (precisePosition > TRANSITION_VALUE_THRESHOLD) {
+            onProcessScroll(toPosition)
+            return
+        }
+        if (mIsScrolling) return
+        mIsScrolling = true
         removeOnScrollListener(mRvOnScroll)
-        addOnScrollListener(mRvOnState)
-        smoothScrollToPosition(pos)
+        addOnScrollListener(mRvOnScrollState)
+        smoothScrollToPosition(toPosition)
     }
 
     /**

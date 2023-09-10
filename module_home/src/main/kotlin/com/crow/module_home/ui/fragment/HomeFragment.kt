@@ -1,6 +1,7 @@
 @file:SuppressWarnings("RestrictedApi")
 package com.crow.module_home.ui.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import androidx.core.view.get
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
 import com.crow.base.copymanga.BaseEventEnum
@@ -34,8 +36,8 @@ import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
-import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toast
+import com.crow.base.tools.extensions.withLifecycle
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
@@ -63,7 +65,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
     /** ● 静态区 */
     companion object {
-        const val Home = "Home"
+        const val HOME = "Home"
         const val SEARCH_TAG = "INPUT"
     }
 
@@ -171,6 +173,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     }
 
     /** ● 初始化SearchView */
+    @SuppressLint("PrivateResource")
     private fun initSearchView() {
         mBaseEvent.eventInitLimitOnce {
             mBinding.homeSearchView.apply {
@@ -244,7 +247,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         mRecRefresh = null  // 置空“换一批”控件 防止内存泄漏
-        parentFragmentManager.clearFragmentResultListener(Home)
+        parentFragmentManager.clearFragmentResultListener(HOME)
     }
 
     /** ● 初始化数据 */
@@ -263,7 +266,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
 
         // 内存重启后隐藏SearchView
         if (savedInstanceState != null) {
-            lifecycleScope.launchWhenResumed {
+            withLifecycle(state = Lifecycle.State.RESUMED) {
                 mBinding.homeSearchView.hide()
             }
         }
@@ -285,7 +288,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     override fun initListener() {
 
         // 设置容器Fragment的回调监听
-        parentFragmentManager.setFragmentResultListener(Home, this) { _, bundle ->
+        parentFragmentManager.setFragmentResultListener(HOME, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 0) {
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
 
@@ -324,7 +327,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
     }
 
     /** ● 初始化监听器 */
-    override fun initObserver(savedInstanceState: Bundle?) {
+    override fun initObserver(saveInstanceState: Bundle?) {
 
         mHomeVM.onOutput { intent ->
             when (intent) {
@@ -359,7 +362,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
                 is HomeIntent.GetRecPageByRefresh -> {
                     intent.mBaseViewState
                         .doOnSuccess { mRecRefresh?.isEnabled = true }
-                        .doOnError { _, _ -> mBinding.root.showSnackBar(getString(baseR.string.BaseLoadingError)) }
+                        .doOnError { _, _ -> toast(getString(baseR.string.BaseLoadingError)) }
                         .doOnResult {
                             mHomeComicParentRvAdapter?.doRecNotify(intent.recPageData?.mResults?.mResult?.toMutableList() ?: return@doOnResult)
                         }
