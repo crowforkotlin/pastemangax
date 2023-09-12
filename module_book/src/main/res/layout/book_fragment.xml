@@ -11,14 +11,13 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_back"
         style="@style/Base.Theme.Button.Icon.Back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/base_dp48"
+        android:layout_height="@dimen/base_dp48"
         android:layout_marginStart="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
         android:contentDescription="@string/BaseAppName"
-        android:minWidth="@dimen/base_dp48"
-        android:minHeight="@dimen/base_dp48"
         app:icon="@drawable/base_ic_back_24dp"
+        app:iconSize="@dimen/base_dp24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="DuplicateSpeakableTextCheck" />
@@ -42,9 +41,10 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_setting"
+        app:iconSize="@dimen/base_dp24"
         style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/base_dp48"
+        android:layout_height="@dimen/base_dp48"
         android:layout_marginTop="@dimen/base_dp10"
         android:layout_marginEnd="@dimen/base_dp10"
         android:contentDescription="@string/BaseAppName"
@@ -106,6 +106,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
+        android:textSize="@dimen/base_sp12_5"
         android:ellipsize="end"
         android:maxLines="1"
         android:textStyle="bold"
@@ -119,6 +120,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
+        android:textSize="@dimen/base_sp12_5"
         android:layout_marginTop="@dimen/base_dp10"
         android:ellipsize="end"
         android:maxLines="2"
@@ -130,6 +132,7 @@
 
     <TextView
         android:id="@+id/book_info_hot"
+        android:textSize="@dimen/base_sp12_5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
@@ -148,6 +151,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
+        android:textSize="@dimen/base_sp12_5"
         android:ellipsize="end"
         android:maxLines="1"
         android:textStyle="bold"
@@ -158,6 +162,7 @@
 
     <TextView
         android:id="@+id/book_info_new_chapter"
+        android:textSize="@dimen/base_sp12_5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
@@ -173,12 +178,12 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_add_to_bookshelf"
         style="@style/Base.Theme.Button.Icon.Tint.Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/base_dp74"
+        android:layout_height="@dimen/base_dp74"
+        app:iconSize="@dimen/base_dp24"
         android:layout_weight="0.25"
-        android:minWidth="@dimen/base_dp48"
-        android:minHeight="@dimen/base_dp48"
         android:text="@string/book_comic_add_to_bookshelf"
+        android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
         android:visibility="invisible"
         app:icon="@drawable/book_ic_add_to_bookshelf_24dp"
@@ -190,8 +195,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_download"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/base_dp74"
+        android:layout_height="@dimen/base_dp74"
         style="@style/Base.Theme.Button.Icon.Tint.Text"
         android:layout_marginTop="@dimen/base_dp10"
         android:minWidth="@dimen/base_dp48"
@@ -200,7 +205,9 @@
         android:textStyle="bold"
         android:visibility="invisible"
         app:icon="@drawable/base_ic_download_24dp"
+        app:iconSize="@dimen/base_dp24"
         app:iconGravity="top"
+        android:textSize="@dimen/base_sp12_5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/book_info_cardview"
@@ -208,13 +215,15 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_readnow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/base_dp74"
+        android:layout_height="@dimen/base_dp74"
         style="@style/Base.Theme.Button.Icon.Tint.Text"
+        app:iconSize="@dimen/base_dp24"
         android:minWidth="@dimen/base_dp48"
         android:minHeight="@dimen/base_dp48"
         android:text="@string/BookComicReadNow"
         android:textStyle="bold"
+        android:textSize="@dimen/base_sp12_5"
         android:visibility="invisible"
         app:icon="@drawable/book_ic_readnow_24dp"
         app:iconGravity="top"
@@ -233,8 +242,8 @@
         app:layout_constraintTop_toBottomOf="@+id/book_info_download">
 
         <com.scwang.smart.refresh.header.MaterialHeader
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/base_dp40" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/bookCoordinatorlayout"
@@ -261,7 +270,7 @@
                         android:layout_marginEnd="@dimen/base_dp10"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"/>
 
                     <TextView
                         android:id="@+id/book_info_desc"
@@ -271,6 +280,7 @@
                         android:layout_marginTop="@dimen/base_dp10"
                         android:layout_marginEnd="@dimen/base_dp10"
                         android:ellipsize="end"
+                        android:textSize="@dimen/base_sp12_5"
                         android:maxLines="10"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -287,6 +297,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="invisible"
+                tools:visibility="visible"
                 android:layout_marginTop="@dimen/base_dp10"
                 android:orientation="vertical"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
@@ -298,9 +309,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/base_dp10"
                     android:background="@android:color/transparent"
+                    app:tabIndicatorFullWidth="true"
                     android:contentDescription="@string/BaseAppName"
+                    app:tabTextAppearance="@style/Book.Tablayout.TextAppearance"
                     android:visibility="gone"
-                    tools:visibility="visible" />
+                    tools:visibility="visible" >
+
+
+                </com.google.android.material.tabs.TabLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/book_info_rv_chapter"
@@ -317,6 +333,8 @@
 
             <TextView
                 android:id="@+id/comic_info_error_tips"
+                android:textStyle="bold"
+                android:textSize="@dimen/base_sp14"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"

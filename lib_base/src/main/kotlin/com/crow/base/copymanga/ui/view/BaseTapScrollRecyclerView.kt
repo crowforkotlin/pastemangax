@@ -95,6 +95,8 @@ class BaseTapScrollRecyclerView : RecyclerView {
      * @param precisePosition 精准的实际位置
      */
     fun onInterceptScrollRv(toPosition: Int = mRvPos, precisePosition: Int) {
+        if (toPosition < 0) return
+        if (toPosition == precisePosition) return
         when {
             toPosition == 0 -> {
                 if (mRvPos > TRANSITION_VALUE_THRESHOLD) onProcessScroll(toPosition)
@@ -114,7 +116,7 @@ class BaseTapScrollRecyclerView : RecyclerView {
 
         /*
         * 可能在处理平滑滚动的时候 会手动继续 让平滑滚动处理下去导致 无法对SCROLL STATE进行IDLE(终止)捕获
-        * 所以当下次事件到来 时 需要做判断是否大于 临界值，是的话则直接定位到实际位置 并让SCROLL STATE 的IDLE捕获到 从而恢复
+        * 所以当下次事件到来 时 需要做 判断是否大于 临界值，是的话则直接定位到实际位置 并让SCROLL STATE 的IDLE捕获到 从而恢复
         * 滚动的POS监听处理
         * */
 
@@ -127,6 +129,7 @@ class BaseTapScrollRecyclerView : RecyclerView {
         removeOnScrollListener(mRvOnScroll)
         addOnScrollListener(mRvOnScrollState)
         smoothScrollToPosition(toPosition)
+
     }
 
     /**

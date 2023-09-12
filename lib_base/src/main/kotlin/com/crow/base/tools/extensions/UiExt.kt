@@ -46,6 +46,10 @@ fun Context.px2dp(px: Float): Float {
     return px / resources.displayMetrics.density + 0.5f
 }
 
+fun Context.px2sp(px: Float): Float {
+    return px / resources.displayMetrics.density + 0.5f
+}
+
 fun Context.dip2px(dp: Float): Int {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
 }

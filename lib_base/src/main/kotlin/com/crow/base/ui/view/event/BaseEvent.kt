@@ -14,7 +14,7 @@ import kotlin.math.absoluteValue
  */
 open class BaseEvent private constructor() {
 
-    private var mFlagTime: Long = 1000L
+    private var mFlagTime: Long = BASE_FLAG_TIME_500
     private var mFlagMap: MutableMap<String, Boolean>? = null
     private var mInitOnce: Boolean = false
     private var mLastClickGapTime: Long = 0L
@@ -24,19 +24,25 @@ open class BaseEvent private constructor() {
 
     companion object {
 
-        const val BASE_FLAG_TIME = 500L
+        const val BASE_FLAG_TIME_500 = 500L
+        const val BASE_FLAG_TIME_1000 = 1000L
 
         private var mBaseEvent: BaseEvent? = null
 
-        fun newInstance(flagTime: Long = BASE_FLAG_TIME): BaseEvent {
+        fun newInstance(initFlagTime: Long = BASE_FLAG_TIME_500): BaseEvent {
             val baseEvent = BaseEvent()
-            baseEvent.mFlagTime = flagTime
+            baseEvent.mFlagTime = initFlagTime
             return baseEvent
         }
 
-        fun getSIngleInstance(flagTime: Long = BASE_FLAG_TIME): BaseEvent {
-            if (mBaseEvent == null) synchronized(this) { if (mBaseEvent == null) mBaseEvent = BaseEvent() }
-            mBaseEvent!!.mFlagTime = flagTime
+        fun getSIngleInstance(): BaseEvent {
+            if (mBaseEvent == null) {
+                synchronized(this) {
+                    if (mBaseEvent == null) {
+                        mBaseEvent = BaseEvent()
+                    }
+                }
+            }
             return mBaseEvent!!
         }
     }

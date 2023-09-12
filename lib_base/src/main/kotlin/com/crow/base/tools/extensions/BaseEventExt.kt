@@ -9,7 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import com.crow.base.ui.view.event.BaseEvent
-import com.crow.base.ui.view.event.BaseEvent.Companion.BASE_FLAG_TIME
+import com.crow.base.ui.view.event.BaseEvent.Companion.BASE_FLAG_TIME_500
 import com.crow.base.ui.view.event.click.BaseIEventInterval
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.google.android.material.appbar.MaterialToolbar
@@ -27,20 +27,20 @@ import com.google.android.material.appbar.MaterialToolbar
 
 
 // View 点击事件间隔 默认1秒
-fun View.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME, msg: String? = null, iEven: BaseIEventInterval<View>) {
-    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance(flagTime) else BaseEvent.newInstance(flagTime)
+fun View.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_500, msg: String? = null, iEven: BaseIEventInterval<View>) {
+    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance(flagTime)
     setOnClickListener { iEven.onIntervalOk(baseEvent.getIntervalResult(this, msg, baseEvent) ?: return@setOnClickListener) }
 }
 
 // View 扩展 onFailure
-fun View.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME, iEven: BaseIEventIntervalExt<View>) {
-    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance(flagTime) else BaseEvent.newInstance(flagTime)
+fun View.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_500, iEven: BaseIEventIntervalExt<View>) {
+    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance(flagTime)
     setOnClickListener { baseEvent.doOnIntervalResult(this, baseEvent, iEven) }
 }
 
 // MenuItem 点击事件间隔 默认1秒
-fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME, msg: String? = null, iEven: BaseIEventInterval<MenuItem>) {
-    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance(flagTime) else BaseEvent.newInstance(flagTime)
+fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_500, msg: String? = null, iEven: BaseIEventInterval<MenuItem>) {
+    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance(flagTime)
     setOnMenuItemClickListener {
         iEven.onIntervalOk(baseEvent.getIntervalResult(this, msg, baseEvent) ?: return@setOnMenuItemClickListener true)
         true
@@ -48,8 +48,8 @@ fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FL
 }
 
 // MenuItem 扩展 onFailure
-fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME, iEvent: BaseIEventIntervalExt<MenuItem>) {
-    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance(flagTime) else BaseEvent.newInstance(flagTime)
+fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_500, iEvent: BaseIEventIntervalExt<MenuItem>) {
+    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance(flagTime)
     setOnMenuItemClickListener {
         baseEvent.doOnIntervalResult(this, baseEvent, iEvent)
         true
@@ -57,8 +57,8 @@ fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FL
 }
 
 // MaterialToolbar 点击事件间隔 默认1秒
-fun MaterialToolbar.navigateIconClickGap(isGlobal: Boolean = true, flagTime: Long = BASE_FLAG_TIME, msg: String? = null, iEven: BaseIEventInterval<MaterialToolbar>) {
-    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance(flagTime) else BaseEvent.newInstance(flagTime)
+fun MaterialToolbar.navigateIconClickGap(isGlobal: Boolean = true, flagTime: Long = BASE_FLAG_TIME_500, msg: String? = null, iEven: BaseIEventInterval<MaterialToolbar>) {
+    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance(flagTime)
     setNavigationOnClickListener {
         iEven.onIntervalOk(baseEvent.getIntervalResult(this, msg, baseEvent) ?: return@setNavigationOnClickListener)
     }

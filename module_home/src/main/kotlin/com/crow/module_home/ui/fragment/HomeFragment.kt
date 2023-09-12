@@ -298,6 +298,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
             }
         }
 
+        // 登录成功 监听
         parentFragmentManager.setFragmentResultListener(BaseEventEnum.LoginCategories.name, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 0) {
                 mHomeVM.input(HomeIntent.GetHomePage())
@@ -314,7 +315,7 @@ class HomeFragment : BaseMviFragment<HomeFragmentBinding>() {
         mBinding.homeToolbar.menu[1].doOnClickInterval { navigateSettings() }
 
         // MaterialToolBar NavigateIcon 点击事件
-        mBinding.homeToolbar.navigateIconClickGap(flagTime = BaseEvent.BASE_FLAG_TIME shl 1) {
+        mBinding.homeToolbar.navigateIconClickGap(flagTime = BaseEvent.BASE_FLAG_TIME_500 shl 1) {
             mBinding.homeRv.stopScroll()
             get<BottomSheetDialogFragment>(named(Fragments.User.name)).show(requireParentFragment().parentFragmentManager, null)
         }

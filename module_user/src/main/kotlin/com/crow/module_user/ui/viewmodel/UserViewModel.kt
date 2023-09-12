@@ -12,6 +12,7 @@ import com.crow.base.copymanga.BaseUser
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncClear
 import com.crow.base.tools.extensions.asyncDecode
+import com.crow.base.tools.extensions.dp2px
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_user.model.UserIntent
@@ -108,7 +109,7 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
             Glide.with(context)
                 .load(if (mIconUrl == null) baseR.drawable.base_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl))
                 .placeholder(baseR.drawable.base_icon_app)
-                .apply(RequestOptions().circleCrop().override(context.resources.getDimensionPixelSize(com.crow.base.R.dimen.base_dp36)))
+                .apply(RequestOptions().circleCrop().override(context.dp2px(48f).toInt()))
                 .into(object : CustomTarget<Drawable>() {
                     override fun onLoadCleared(placeholder: Drawable?) {}
                     override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { doOnReady(resource) }

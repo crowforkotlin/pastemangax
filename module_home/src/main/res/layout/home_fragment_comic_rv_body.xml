@@ -12,14 +12,15 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/home_book_card_view"
         style="@style/Widget.Material3.CardView.Filled"
+        app:cardCornerRadius="@dimen/base_dp10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardElevation="1dp"
+        app:cardElevation="@dimen/base_dp1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@color/base_grey_400_40"
-        app:strokeWidth="1dp">
+        app:strokeWidth="@dimen/base_dp1">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/home_comic_rv_loading"

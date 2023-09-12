@@ -61,7 +61,7 @@ fun String.getSpannableString(color: Int, start: Int, end: Int = length): Spanna
 private val comic_card_height: Int by lazy {
     val width = appContext.resources.displayMetrics.widthPixels
     val height = appContext.resources.displayMetrics.heightPixels
-    (width.toFloat() / (3 - width.toFloat() / height.toFloat())).toInt()
+    (width.toFloat() / (3.10 - width.toFloat() / height.toFloat())).toInt()
 }
 
 fun getComicCardHeight() = comic_card_height

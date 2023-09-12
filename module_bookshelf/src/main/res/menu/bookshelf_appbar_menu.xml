@@ -3,9 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/discover_menu_settings"
-        app:showAsAction="always"
-        android:icon="@drawable/base_ic_more_24dp"
-        android:title="@string/BaseStillInDevelopment" />
+        android:id="@+id/bookshelf_menu_sort_add"
+        app:showAsAction="never"
+        android:title="@string/bookshelf_sort_add_time" />
+
+    <item
+        android:id="@+id/bookshelf_menu_sort_update"
+        app:showAsAction="never"
+        android:title="@string/bookshelf_sort_update_time" />
+
+    <item
+        android:id="@+id/bookshelf_menu_sort_readed"
+        app:showAsAction="never"
+        android:title="@string/bookshelf_sort_readed_time" />
+
 
 </menu>

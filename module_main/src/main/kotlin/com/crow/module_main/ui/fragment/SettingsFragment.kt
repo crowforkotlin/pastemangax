@@ -108,7 +108,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                     settingsSiteStaticRadioTwo.id -> BaseStrings.URL.setCopyMangaUrl(BaseStrings.URL.CopyManga_TLD_SITE)
                 }
                 mContainerVM.saveAppConfig()
-                mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME)
+                mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
             }
         }
 
@@ -140,7 +140,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
             mContainerVM.saveAppConfig()
 
             // 延时关闭Dialog 让RadioButton选中后的过渡效果执行完毕
-            mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME)
+            mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
         }
     }
 
@@ -235,7 +235,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                                                 mSiteDialogBinding!!.settingsSiteDynamicRadioGroup.forEach { childView -> if (buttonView.id != (childView as MaterialRadioButton).id) childView.isChecked = false }
                                                 BaseStrings.URL.CopyManga = buttonView.tag.toString()
                                                 mContainerVM.saveAppConfig()
-                                                mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME)
+                                                mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
                                             }
                                         }
                                     })

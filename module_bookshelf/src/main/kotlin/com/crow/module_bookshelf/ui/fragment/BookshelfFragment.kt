@@ -3,10 +3,10 @@ package com.crow.module_bookshelf.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.get
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.copymanga.BaseEventEnum
@@ -17,15 +17,16 @@ import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.processTokenError
 import com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
 import com.crow.base.tools.coroutine.launchDelay
+import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
-import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.logger
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
@@ -277,6 +278,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBinding.bookshelfRvNovel.adapter = mBookshelfNovelRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
     }
 
+
     /**
      * ● 初始化事件
      *
@@ -286,14 +288,12 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
         // 处理双击事件
         parentFragmentManager.setFragmentResultListener("onDoubleTap_Bookshelf", this) { _, _ ->
-            BaseEvent.getSIngleInstance().doOnInterval {
-                val recyclerView: BaseTapScrollRecyclerView = if (mBinding.bookshelfRvComic.isVisible) mBinding.bookshelfRvComic else mBinding.bookshelfRvNovel
-                val first = recyclerView.findFisrtVisibleViewPosition()
-                if (first > 0) {
-                    recyclerView.onInterceptScrollRv(toPosition = 0, precisePosition = first)
-                } else {
-                    recyclerView.onInterceptScrollRv(precisePosition = first)
-                }
+            val recyclerView: BaseTapScrollRecyclerView = if (mBinding.bookshelfRvComic.isVisible) mBinding.bookshelfRvComic else mBinding.bookshelfRvNovel
+            val first = recyclerView.findFisrtVisibleViewPosition()
+            if (first > 0) {
+                recyclerView.onInterceptScrollRv(toPosition = 0, precisePosition = first)
+            } else {
+                recyclerView.onInterceptScrollRv(precisePosition = first)
             }
         }
 
@@ -388,12 +388,27 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             }
         }
 
-        // 更多选项
-        mBinding.bookshelfToolbar.menu[0].doOnClickInterval {
-            // toast("此功能或许将在下个版本中完善....")
-
+        // Toolbar Menu
+        mBinding.bookshelfToolbar.setOnMenuItemClickListener { menuItem ->
+            logger(menuItem.itemId)
+            BaseEvent.getSIngleInstance().doOnInterval {
+                mBsVM.sendGetBookshelfInent(
+                    when(menuItem.itemId) {
+                        R.id.bookshelf_menu_sort_add -> "-datetime_modifier"
+                        R.id.bookshelf_menu_sort_update ->"-datetime_updated"
+                        R.id.bookshelf_menu_sort_readed -> "-datetime_browse"
+                        else -> return@doOnInterval
+                    }
+                )
+                launchDelay(BASE_ANIM_100L) {
+                    mBookshelfComicRvAdapter.submitData(PagingData.empty())
+                    onOutput()
+                }
+            }
+            true
         }
     }
+
 
     /**
      * ● 初始化观察者

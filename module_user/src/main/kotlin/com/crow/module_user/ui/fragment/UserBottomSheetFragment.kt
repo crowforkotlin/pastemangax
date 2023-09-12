@@ -66,7 +66,10 @@ class UserBottomSheetFragment : BaseMviBottomSheetDialogFragment<UserFragmentBin
         super.onStart()
 
         // 设置BottomSheet的 高度
-        dialog?.findViewById<View>(design_bottom_sheet)?.layoutParams!!.height = ViewGroup.LayoutParams.MATCH_PARENT
+        dialog?.findViewById<View>(design_bottom_sheet)?.apply {
+            layoutParams!!.height = ViewGroup.LayoutParams.MATCH_PARENT
+            layoutParams!!.width = ViewGroup.LayoutParams.MATCH_PARENT
+        }
     }
 
     override fun initView(bundle: Bundle?) {

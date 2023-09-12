@@ -19,7 +19,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/home_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             app:menu="@menu/home_appbar_menu"
             app:navigationIcon="@drawable/home_ic_user_24dp"
             app:title="@string/home_homepage"

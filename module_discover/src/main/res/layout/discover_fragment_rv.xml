@@ -5,9 +5,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/base_dp5"
-    android:layout_marginTop="@dimen/base_dp12_5"
+    android:layout_marginTop="@dimen/base_dp7_5"
     android:layout_marginEnd="@dimen/base_dp5"
-    android:layout_marginBottom="@dimen/base_dp12_5"
+    android:layout_marginBottom="@dimen/base_dp7_5"
     android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
@@ -15,12 +15,13 @@
         style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardElevation="1dp"
+        app:cardElevation="@dimen/base_dp1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@color/base_grey_400_40"
-        app:strokeWidth="1dp">
+        app:cardCornerRadius="@dimen/base_dp10"
+        app:strokeWidth="@dimen/base_dp1">
 
         <ImageView
             android:id="@+id/discover_rv_image"

@@ -18,14 +18,12 @@ import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
-import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
@@ -91,12 +89,11 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
         // 处理双击事件
         parentFragmentManager.setFragmentResultListener("onDoubleTap_Discover_Comic", this) { _, _ ->
-            BaseEvent.getSIngleInstance().doOnInterval {
-                if (mBinding.discoverComicRv.findFisrtVisibleViewPosition() > 0) {
-                    mBinding.discoverComicRv.onInterceptScrollRv(toPosition = 0, precisePosition = mBinding.discoverComicRv.mRvPos)
-                } else {
-                    mBinding.discoverComicRv.onInterceptScrollRv(precisePosition = mBinding.discoverComicRv.mRvPos)
-                }
+            val first = mBinding.discoverComicRv.findFisrtVisibleViewPosition()
+            if (first > 0) {
+                mBinding.discoverComicRv.onInterceptScrollRv(toPosition = 0, precisePosition = first)
+            } else {
+                mBinding.discoverComicRv.onInterceptScrollRv(precisePosition = first)
             }
         }
 

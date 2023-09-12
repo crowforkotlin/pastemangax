@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
+import com.crow.base.app.appContext
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
@@ -26,6 +27,8 @@ import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.onCollect
+import com.crow.base.tools.extensions.px2dp
+import com.crow.base.tools.extensions.px2sp
 import com.crow.base.tools.extensions.removeWhiteSpace
 import com.crow.base.tools.extensions.startActivity
 import com.crow.base.tools.extensions.toast
@@ -107,6 +110,8 @@ class BookComicFragment : BookFragment() {
         comicInfoPage.mTheme.forEach { theme ->
             mBinding.bookInfoThemeChip.addView(Chip(mContext).also {
                 it.text = theme.mName
+                it.textSize = appContext.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
+                it.chipStrokeWidth = appContext.px2dp(resources.getDimension(baseR.dimen.base_dp1))
                 it.isClickable = false
             })
         }

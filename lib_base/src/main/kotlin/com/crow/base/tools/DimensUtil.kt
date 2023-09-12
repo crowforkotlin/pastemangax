@@ -12,8 +12,15 @@ import java.io.PrintWriter
  */
 
 //需要创建的目录
+/*
 private val mDirs = arrayOf(
     "0", "720", "800", "960", "1024", "1080", "1220", "1280", "1440"
+)
+*/
+
+//需要创建的目录
+private val mDirs = arrayOf(
+    "0"
 )
 
 //最大生成多少dp 默认从0.5dp-450dp
@@ -52,7 +59,7 @@ private fun generateDimenXml(currentSize: Int) {
     val stringBuilder = StringBuilder()
     var value: Double
     val out: PrintWriter
-    val benchMarkSize = 1080.0 // 标准尺寸，改为设计图的尺寸，一般是360dp
+    val benchMarkSize = 360.0 // 标准尺寸，改为设计图的尺寸，一般是360dp
     val screenStr = "" + currentSize // 当前设备尺寸 dpvalues-wXXXdp中的XXX  设置生成dimens.xml的目录名
     try {
 
@@ -112,6 +119,33 @@ private fun generateDimenXml(currentSize: Int) {
             } else {
                 stringBuilder.append("\t<dimen name=\"base_sp").append(i).append("\">").append(i)
                     .append("sp</dimen>\r\n")
+            }
+
+            if (i == 6) {
+                if (currentSize / benchMarkSize == 1.0) {
+                    stringBuilder.append("""<dimen name="base_dp6_5">6.5sp</dimen>""")
+                } else {
+                    if (currentSize != 0) {
+                        stringBuilder.append("\t<dimen name=\"base_sp6_5" + "\">").append(value * 1.5)
+                            .append("sp</dimen>\r\n")
+                    } else {
+                        stringBuilder.append("\t<dimen name=\"base_sp6_5" + "\">").append(6.5)
+                            .append("sp</dimen>\r\n")
+                    }
+                }
+            } else {
+                if (currentSize / benchMarkSize == 1.0) {
+                    stringBuilder.append("\t<dimen name=\"base_sp").append(i + 1).append("_5")
+                        .append("\">").append(i + 1.5).append("sp</dimen>\r\n")
+                } else {
+                    if (currentSize != 0) {
+                        stringBuilder.append("\t<dimen name=\"base_sp").append(i + 1).append("_5")
+                            .append("\">").append(value * (i + 1.5)).append("sp</dimen>\r\n")
+                    } else {
+                        stringBuilder.append("\t<dimen name=\"base_sp").append(i + 1).append("_5")
+                            .append("\">").append(i + 1.5).append("sp</dimen>\r\n")
+                    }
+                }
             }
         }
 
