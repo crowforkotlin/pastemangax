@@ -93,7 +93,7 @@ val networkModule = module {
             // 动态请求地址
             .addInterceptor { chain ->
                 val request = chain.request()
-                chain.proceed(request.newBuilder().url(BaseStrings.URL.CopyManga.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()).build())
+                chain.proceed(request.newBuilder().url(BaseStrings.URL.COPYMANGA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()).build())
             }
 
             // 动态添加请求头
@@ -123,7 +123,7 @@ val networkModule = module {
      */
     single(named_CopyMangaX) {
         Retrofit.Builder()
-            .baseUrl(BaseStrings.URL.CopyManga)
+            .baseUrl(BaseStrings.URL.COPYMANGA)
             .client(get(named_CopyMangaX))
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
                 .addConverterFactory(MoshiConverterFactory.create(baseMoshi))

@@ -97,7 +97,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
             }
         }
 
-        // 设置容器Fragment的回调监听r
+        // 设置容器Fragment的回调监听
         parentFragmentManager.setFragmentResultListener(COMIC, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 1) {
                 mBinding.discoverComicRefresh.autoRefreshAnimationOnly()

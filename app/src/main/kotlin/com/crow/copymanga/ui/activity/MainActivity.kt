@@ -27,7 +27,6 @@ import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.base.ui.viewmodel.doOnError
-import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.copymanga.R
 import com.crow.copymanga.databinding.AppActivityMainBinding
@@ -99,27 +98,25 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
 
         mContainerVM.mAppConfig.onCollect(this) { appConfig ->
 
-            if (appConfig == null) return@onCollect
+            if (appConfig != null) {
 
-            BaseStrings.URL.CopyManga = appConfig.mSite
-            BaseUser.CURRENT_ROUTE = appConfig.mRoute
+                // 设置站点和TOKEN
+                BaseStrings.URL.COPYMANGA = appConfig.mSite
+                BaseUser.CURRENT_ROUTE = appConfig.mRoute
 
-            if (appConfig.mAppFirstInit) mContainerVM.input(MainIntent.GetDynamicSite())
+                // 第一次初始化则获取动态站点
+                if (appConfig.mAppFirstInit) mContainerVM.input(MainIntent.GetDynamicSite())
 
-            WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = (!isDarkMode())
+                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = (!isDarkMode())
+            }
         }
 
         mContainerVM.onOutput { intent ->
             when (intent) {
                 is MainIntent.GetUpdateInfo -> {
                     intent.mBaseViewState
-                        .doOnLoading {
-                            showLoadingAnim { dialog ->
-                                dialog.applyWindow(dimAmount = 0.3f)
-                            }
-                        }
-                        .doOnError { _, _ -> dismissLoadingAnim { toast(getString(com.crow.module_main.R.string.main_update_error)) }}
-                        .doOnResult { dismissLoadingAnim { doUpdateChecker(savedInstanceState, intent.appUpdateResp!!) } }
+                        .doOnError { _, _ -> toast(getString(com.crow.module_main.R.string.main_update_error)) }
+                        .doOnResult { doUpdateChecker(savedInstanceState, intent.appUpdateResp!!) }
                 }
             }
         }

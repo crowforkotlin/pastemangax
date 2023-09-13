@@ -21,14 +21,14 @@ data class AppConfigEntity(
 
     /** ● 站点 */
     @Json(name = "Site")
-    val mSite: String = BaseStrings.URL.CopyManga,
+    val mSite: String = BaseStrings.URL.COPYMANGA,
 
     /** ● 路线 "0", "1" */
     @Json(name = "Route")
     val mRoute: String = BaseUser.CURRENT_ROUTE,
 
 
-) {
+    ) {
     companion object {
 
         private var mAppConfigEntity: AppConfigEntity? =null

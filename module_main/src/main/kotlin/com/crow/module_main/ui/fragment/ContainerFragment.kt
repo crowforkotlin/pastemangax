@@ -95,7 +95,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                     intent.mBaseViewState
                         .doOnErrorInCoroutine { _, _ -> mContainerVM.saveAppConfig() }
                         .doOnResultInCoroutine {
-                            BaseStrings.URL.CopyManga = Base64.decode(intent.siteResp!!.mSiteList!!.first()!!.mEncodeSite, Base64.DEFAULT).decodeToString()
+                            BaseStrings.URL.COPYMANGA = Base64.decode(intent.siteResp!!.mSiteList!!.first()!!.mEncodeSite, Base64.DEFAULT).decodeToString()
                             mContainerVM.saveAppConfig()
                         }
                 }
@@ -107,7 +107,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         // 适配器 初始化 （设置Adapter、预加载页数）
-        mBinding.mainViewPager.offscreenPageLimit = 3
+        mBinding.mainViewPager.offscreenPageLimit = 1
         mBinding.mainViewPager.isUserInputEnabled = false
         mBinding.mainViewPager.adapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
     }

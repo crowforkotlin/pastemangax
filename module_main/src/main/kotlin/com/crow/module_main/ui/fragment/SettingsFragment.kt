@@ -206,7 +206,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                                     mSiteDialogBinding?.settingsSiteDynamicRadioGroup?.addView(MaterialRadioButton(mContext).also { button ->
 
                                         // 站点链接 和 解码站点链接相同
-                                        if((BaseStrings.URL.CopyManga == decodeSite)) {
+                                        if((BaseStrings.URL.COPYMANGA == decodeSite)) {
 
                                             button.isChecked = true
 
@@ -233,7 +233,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                                         button.setOnCheckedChangeListener { buttonView, isChecked ->
                                             if (isChecked) {
                                                 mSiteDialogBinding!!.settingsSiteDynamicRadioGroup.forEach { childView -> if (buttonView.id != (childView as MaterialRadioButton).id) childView.isChecked = false }
-                                                BaseStrings.URL.CopyManga = buttonView.tag.toString()
+                                                BaseStrings.URL.COPYMANGA = buttonView.tag.toString()
                                                 mContainerVM.saveAppConfig()
                                                 mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
                                             }
