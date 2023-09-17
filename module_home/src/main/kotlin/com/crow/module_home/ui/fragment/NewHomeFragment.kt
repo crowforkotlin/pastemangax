@@ -30,6 +30,7 @@ import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.navigateIconClickGap
@@ -38,6 +39,8 @@ import com.crow.base.tools.extensions.toast
 import com.crow.base.tools.extensions.withLifecycle
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
+import com.crow.base.ui.view.event.BaseEventEntity
+import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
@@ -45,7 +48,6 @@ import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeFragmentNewBinding
 import com.crow.module_home.databinding.HomeFragmentSearchViewBinding
 import com.crow.module_home.model.intent.HomeIntent
-import com.crow.module_home.ui.adapter.NewHomeBannerRvAdapter
 import com.crow.module_home.ui.adapter.NewHomeComicRvAdapter
 import com.crow.module_home.ui.adapter.NewHomeVpAdapter
 import com.crow.module_home.ui.compose.Banner
@@ -55,7 +57,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.koin.android.ext.android.get
@@ -82,7 +83,6 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      */
     private val mHomeVM by sharedViewModel<HomeViewModel>()
 
-
     /**
      * ● 推荐 “换一批” 刷新按钮
      *
@@ -106,13 +106,6 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             mOnTopic = { }
         )
     }
-
-    /**
-     * ● Banner 轮播图
-     *
-     * ● 2023-09-17 01:26:42 周日 上午
-     */
-    private val mBannerRvAdapter by lazy { NewHomeBannerRvAdapter { pathword -> navigateBookComicInfo(pathword) } }
 
     /**
      * ● 全局 Event 事件
@@ -175,7 +168,11 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         )
     }
 
-    /** ● 加载主页数据 */
+    /**
+     * ● 加载主页数据
+     *
+     * ● 2023-09-17 19:40:26 周日 下午
+     */
     private fun doLoadHomePage() {
 
         if (mBaseEvent.getBoolean("HOME_FRAGMENT_LOAD_HOME_PAGE") == true) return
@@ -190,31 +187,34 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         // Banner 不可见 谈出
         if (mBinding.homeComposeBanner.isGone) mBinding.homeComposeBanner.animateFadeIn()
 
-        onPageRvChaned()
-    }
-
-    private fun onPageRvChaned() {
+        // 启动协程 加载Rv界面
         viewLifecycleOwner.lifecycleScope.launch {
 
+            // 等待Compose 界面 Complete
             async {
                 mBinding.homeComposeBanner.setContent {
-                    Banner(banners = mHomeVM.getSnapshotBanner().toList()) { }
+                    Banner(banners = mHomeVM.getSnapshotBanner()) { banner ->
+                        mBaseEvent.doOnInterval {
+                            navigateBookComicInfo(banner.mComic?.mPathWord ?: return@doOnInterval)
+                        }
+                    }
                 }
                 yield()
             }.await()
 
-            finishRefresh()
+            // 结束刷新
+            mBinding.homeRefresh.finishRefresh()
 
-            mDataRvAdapter.doNotify(mHomeVM.getSnapshotHomeData(), 50L)
+            // HomeData 界面处理
+            mDataRvAdapter.submitList(mHomeVM.getSnapshotHomeData(), 50L)
         }
     }
 
-    suspend fun finishRefresh() {
-        mBinding.homeRefresh.finishRefresh()
-        delay(BASE_ANIM_200L shl 2)
-    }
-
-    /** ● 导航至设置Fragment */
+    /**
+     * ● 导航至设置Fragment
+     *
+     * ● 2023-09-17 19:42:43 周日 下午
+     */
     private fun navigateSettings() {
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
@@ -222,7 +222,11 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         )
     }
 
-    /** ● 初始化SearchView */
+    /**
+     * ● 初始化SearchView
+     *
+     * ● 2023-09-17 19:43:02 周日 下午
+     */
     @SuppressLint("PrivateResource")
     private fun initSearchView() {
         if (mBaseEvent.getBoolean("HOME_FRAGMENT_INIT_SEARCH_VIEW") == true) return
@@ -232,7 +236,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             val searchComicFragment = SearchComicFragment.newInstance(mBinding.homeSearchView) { navigateBookComicInfo(it) }   // 实例化SearchComicFragment
             val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.homeSearchView) { navigateBookNovelInfo(it) }     // 实例化SearchNovelFragment
 
-            val bgColor: Int; val tintColor: Int;
+            val bgColor: Int; val tintColor: Int
 //            val statusBarDrawable: Drawable?
             if (isDarkMode()) {
                 bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
@@ -276,10 +280,18 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         }
     }
 
-    /** ● 获取ViewBinding */
+    /**
+     * ● 获取ViewBinding
+     *
+     * ● 2023-09-17 19:42:53 周日 下午
+     */
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentNewBinding.inflate(inflater)
 
-    /** ● Lifecycle Start */
+    /**
+     * ● Lifecycle Start
+     *
+     * ● 2023-09-17 19:43:10 周日 下午
+     */
     override fun onStart() {
         super.onStart()
         mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -288,7 +300,11 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         }
     }
 
-    /** ● Lifecycle Stop */
+    /**
+     * ● Lifecycle Stop
+     *
+     * ● 2023-09-17 19:43:17 周日 下午
+     */
     override fun onStop() {
         super.onStop()
         mBaseEvent.remove(SEARCH_TAG)
@@ -302,9 +318,12 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         parentFragmentManager.clearFragmentResultListener(HOME)
         mBaseEvent.remove("HOME_FRAGMENT_INIT_SEARCH_VIEW")
     }
-    
 
-    /** ● 初始化数据 */
+    /**
+     * ● 初始化数据
+     *
+     * ● 2023-09-17 19:43:24 周日 下午
+     */
     override fun initData(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             mBaseEvent.remove("HOME_FRAGMENT_LOAD_HOME_PAGE")
@@ -318,7 +337,11 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         mBinding.homeRefresh.autoRefreshAnimationOnly()
     }
 
-    /** ● 初始化视图  */
+    /**
+     * ● 初始化视图
+     *
+     * ● 2023-09-17 19:43:32 周日 下午
+     */
     override fun initView(savedInstanceState: Bundle?) {
 
         // 内存重启后隐藏SearchView
@@ -357,12 +380,15 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             }
         }
 
-        // 初始化Banner
+        // 初始化Banner 高度
         mBinding.homeComposeBanner.layoutParams.height = (resources.displayMetrics.widthPixels / 1.875 + 0.5).toInt()
     }
 
-
-    /** ● 初始化监听器 */
+    /**
+     * ● 初始化监听器
+     *
+     * ● 2023-09-17 19:43:48 周日 下午
+     */
     override fun initListener() {
 
         // 设置容器Fragment的回调监听
@@ -409,12 +435,23 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
 
         // 刷新
         mBinding.homeRefresh.setOnRefreshListener {
-            mBaseEvent.remove("HOME_FRAGMENT_LOAD_HOME_PAGE")
-            mHomeVM.input(HomeIntent.GetHomePage())
+            mBaseEvent.doOnInterval(object : BaseIEventIntervalExt<BaseEvent> {
+                override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) {
+                    mBaseEvent.remove("HOME_FRAGMENT_LOAD_HOME_PAGE")
+                    mHomeVM.input(HomeIntent.GetHomePage())
+                }
+                override fun onIntervalFailure(gapTime: Long) {
+                    it.finishRefresh()
+                }
+            })
         }
     }
 
-    /** ● 初始化监听器 */
+    /**
+     * ● 初始化监听器
+     *
+     * ● 2023-09-17 19:43:53 周日 下午
+     */
     override fun initObserver(saveInstanceState: Bundle?) {
 
         mHomeVM.onOutput { intent ->

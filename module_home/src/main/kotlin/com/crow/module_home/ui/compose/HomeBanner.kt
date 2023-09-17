@@ -69,7 +69,7 @@ fun Banner(
     click: (Banner) -> Unit,
 ) {
     val pageCount = banners.size
-    val pageStart = Int.MAX_VALUE / 2
+    val pageStart = Int.MAX_VALUE shr 1
     val pageStateBanner = rememberPagerState(initialPage = pageStart) { Int.MAX_VALUE }
     var pageIsDragging by remember { mutableStateOf(false) }
     Box(modifier = modifier.fillMaxWidth()) {
@@ -228,7 +228,7 @@ fun BannerItem(
 }
 
 @Composable
-fun DrawOutlineText(
+private fun DrawOutlineText(
     text: String,
     textMaxLine: Int = Int.MAX_VALUE,
     textMinLine: Int = 1,
@@ -274,7 +274,6 @@ private fun getOutlineFillTextStyle(): TextStyle {
     )
 }
 
-
 private infix fun Int.floorMod(other: Int): Int = when (other) {
     0 -> this
     else -> this - floorDiv(other) * other
@@ -286,7 +285,7 @@ private fun pageMapper(startPage: Int, pageCount: Int, index: Int): Int {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BanneIndicator(
+private fun BanneIndicator(
     pagerState: PagerState,
     dotWidth: Dp,
     dotHeight: Dp,
@@ -295,7 +294,6 @@ fun BanneIndicator(
     pageStart: Int,
     modifier: Modifier = Modifier
 ) {
-
     val inactiveColor = Color.Gray.copy(alpha = 0.5F)
     val activeColor = Color.Black
     val dotSpacingPx = (LocalDensity.current.run { dotSpacing.roundToPx() })

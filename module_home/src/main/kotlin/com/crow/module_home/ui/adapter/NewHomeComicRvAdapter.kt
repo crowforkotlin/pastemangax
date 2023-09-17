@@ -10,8 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
@@ -38,15 +36,13 @@ import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: module_home/src/main/kotlin/com/crow/module_home/ui/adapter
- * @Time: 2023/4/3 2:50
+ * @Time: 2023/9/16 2:50
  * @Author: CrowForKotlin
- * @Description: HomeBookAdapter
+ * @Description: HomeFragment Rv Adapter
  * @formatter:on
  **************************/
 
@@ -56,6 +52,11 @@ class NewHomeComicRvAdapter(
     private val mOnTopic: (String) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    /**
+     * ● 静态区
+     *
+     * ● 2023-09-17 19:33:07 周日 下午
+     */
     companion object {
         const val HEADER = 0
         const val REFRESH = 1
@@ -68,83 +69,26 @@ class NewHomeComicRvAdapter(
         const val FINISH: Byte = 7
         const val RANK: Byte = 8
     }
-    enum class Type(val POSIITON: Int) {
-        REC(2), HOT(5), NEW(7), FINISH(9), RANK(11), TOPIC(13)
-    }
 
     /**
-     * ● Diff 回调
+     * ● HomeData
      *
-     * ● 2023-09-02 20:06:41 周六 下午
+     * ● 2023-09-17 19:35:13 周日 下午
      */
-    private val mDiffCallback: DiffUtil.ItemCallback<Any> = object : DiffUtil.ItemCallback<Any>() {
-        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-            return oldItem == newItem
-        }
-
-        override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-            return true
-        }
-    }
-
-    /**
-     * ● 异步 Differ 实例
-     *
-     * ● 2023-09-02 20:06:53 周六 下午
-     */
-    private val mDiffer = AsyncListDiffer(this, mDiffCallback)
-
-
-    private fun getItem(@IntRange(from = 0) position: Int) = mData[position]
-
-    suspend fun submitList(contents: MutableList<Any>) = suspendCoroutine {
-        mDiffer.submitList(contents) {
-            it.resume(Unit)
-        }
-    }
-
     private var mData: MutableList<Any> = mutableListOf()
 
+    /**
+     * ● Coroutine lock
+     *
+     * ● 2023-09-17 19:35:50 周日 下午
+     */
     private val mMutex = Mutex()
 
-    suspend fun doNotify(newDataResult: MutableList<Any>, duration: Long) {
-        mMutex.withLock {
-            val isCountSame = itemCount == newDataResult.size
-            if (isCountSame) mData = newDataResult
-            else if (itemCount != 0) {
-                notifyItemRangeRemoved(0, itemCount)
-                mData.clear()
-                delay(BASE_ANIM_200L)
-            }
-            newDataResult.forEachIndexed { index, data ->
-                if (!isCountSame) {
-                    mData.add(data)
-                    notifyItemInserted(index)
-                } else {
-                    notifyItemChanged(index)
-                }
-                delay(duration)
-            }
-        }
-    }
-
     /**
-     * ● 刷新
+     * ● Home Header
      *
-     * ● 2023-09-17 18:57:22 周日 下午
+     * ● 2023-09-17 19:36:05 周日 下午
      */
-    suspend fun onRefreshSubmitList(homeData: MutableList<Any>, duration: Long) {
-        mMutex.withLock {
-            if (itemCount == 0) return
-            repeat(3) {
-                val index = it + 1
-                mData[index] = homeData[index]
-                notifyItemChanged(index)
-                delay(duration)
-            }
-        }
-    }
-
     inner class HomeComicHeaderVH(val binding: HomeFragmentComicRvHeaderBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun onBind(item: HomeHeader) {
@@ -152,7 +96,13 @@ class NewHomeComicRvAdapter(
             binding.homeComicButtonTitle.icon = ContextCompat.getDrawable(binding.root.context, item.mResource)
         }
     }
-    inner class HomeComicBodyVH(binding: HomeFragmentComicRvBodyBinding, isTopic: Boolean) : BaseGlideLoadingViewHolder<HomeFragmentComicRvBodyBinding>(binding) {
+
+    /**
+     * ● Home Comic Card
+     *
+     * ● 2023-09-17 19:36:15 周日 下午
+     */
+    inner class HomeComicBodyVH(binding: HomeFragmentComicRvBodyBinding) : BaseGlideLoadingViewHolder<HomeFragmentComicRvBodyBinding>(binding) {
         init {
             // 漫画卡片高度
             binding.homeComicRvImage.layoutParams.height = appComicCardHeight
@@ -231,7 +181,7 @@ class NewHomeComicRvAdapter(
                     if (dataSource == com.bumptech.glide.load.DataSource.REMOTE) {
                         binding.homeComicRvLoading.isInvisible = true
                         binding.homeComicRvProgressText.isInvisible = true
-                        DrawableCrossFadeTransition(com.crow.base.tools.extensions.BASE_ANIM_200L.toInt(), true)
+                        DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                     } else {
                         binding.homeComicRvLoading.isInvisible = true
                         binding.homeComicRvProgressText.isInvisible = true
@@ -262,6 +212,12 @@ class NewHomeComicRvAdapter(
         }
 
     }
+
+    /**
+     * ● Home Refresh Button For Recommand Comic
+     *
+     * ● 2023-09-17 19:36:24 周日 下午
+     */
     inner class HomeComicRecRefreshVH(val binding: HomeFragmentComicRvRecRefreshBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun onBind() {
@@ -269,8 +225,18 @@ class NewHomeComicRvAdapter(
         }
     }
 
+    /**
+     * ● HomeData Size
+     *
+     * ● 2023-09-17 19:36:46 周日 下午
+     */
     override fun getItemCount(): Int = mData.size
 
+    /**
+     * ● Reuse ViewHolder
+     *
+     * ● 2023-09-17 19:36:57 周日 下午
+     */
     override fun onBindViewHolder(vh: RecyclerView.ViewHolder, pos: Int) {
         val item = getItem(pos)
         when(vh) {
@@ -280,6 +246,11 @@ class NewHomeComicRvAdapter(
         }
     }
 
+    /**
+     * ● Set different content depending on the ViewType
+     *
+     * ● 2023-09-17 19:37:21 周日 下午
+     */
     override fun getItemViewType(position: Int): Int {
         return when(getItem(position)) {
             is HomeHeader -> HEADER
@@ -289,13 +260,68 @@ class NewHomeComicRvAdapter(
         }
     }
 
+    /**
+     * ● Create ViewHolder
+     *
+     * ● 2023-09-17 19:38:15 周日 下午
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             HEADER -> HomeComicHeaderVH(HomeFragmentComicRvHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            BODY -> HomeComicBodyVH(HomeFragmentComicRvBodyBinding.inflate(LayoutInflater.from(parent.context), parent, false), false)
-            TOPIC -> HomeComicBodyVH(HomeFragmentComicRvBodyBinding.inflate(LayoutInflater.from(parent.context), parent, false), true)
+            BODY -> HomeComicBodyVH(HomeFragmentComicRvBodyBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            TOPIC -> HomeComicBodyVH(HomeFragmentComicRvBodyBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             REFRESH -> HomeComicRecRefreshVH(HomeFragmentComicRvRecRefreshBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> error("unknow view type!")
+        }
+    }
+
+    /**
+     * ● Get home data
+     *
+     * ● 2023-09-17 19:38:26 周日 下午
+     */
+    private fun getItem(@IntRange(from = 0) position: Int) = mData[position]
+
+    /**
+     * ● Submit homeData to rv
+     *
+     * ● 2023-09-17 19:38:37 周日 下午
+     */
+    suspend fun submitList(homeData: MutableList<Any>, duration: Long) {
+        mMutex.withLock {
+            val isCountSame = itemCount == homeData.size
+            if (isCountSame) mData = homeData
+            else if (itemCount != 0) {
+                notifyItemRangeRemoved(0, itemCount)
+                mData.clear()
+                delay(BASE_ANIM_200L)
+            }
+            homeData.forEachIndexed { index, data ->
+                if (!isCountSame) {
+                    mData.add(data)
+                    notifyItemInserted(index)
+                } else {
+                    notifyItemChanged(index)
+                }
+                delay(duration)
+            }
+        }
+    }
+
+    /**
+     * ● Refresh
+     *
+     * ● 2023-09-17 18:57:22 周日 下午
+     */
+    suspend fun onRefreshSubmitList(homeData: MutableList<Any>, duration: Long) {
+        mMutex.withLock {
+            if (itemCount == 0) return
+            repeat(3) {
+                val index = it + 1
+                mData[index] = homeData[index]
+                notifyItemChanged(index)
+                delay(duration)
+            }
         }
     }
 }
