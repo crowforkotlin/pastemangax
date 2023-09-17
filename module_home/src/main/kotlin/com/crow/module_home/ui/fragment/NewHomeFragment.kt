@@ -359,18 +359,6 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
 
         // 初始化Banner
         mBinding.homeComposeBanner.layoutParams.height = (resources.displayMetrics.widthPixels / 1.875 + 0.5).toInt()
-//        val dp20 = resources.getDimensionPixelSize(baseR.dimen.base_dp20)
-//        mBinding.homeBannerRv.layoutParams.height = (resources.displayMetrics.widthPixels / 1.875 + 0.5).toInt()
-//        mBinding.homeBannerRv.addPageTransformer(ScaleInTransformer())
-//            .setPageMargin(dp20, resources.getDimensionPixelSize(baseR.dimen.base_dp10))
-//            .setIndicator(
-//                IndicatorView(mBinding.homeBannerRv.context)
-//                    .setIndicatorColor(Color.DKGRAY)
-//                    .setIndicatorSelectorColor(Color.WHITE)
-//                    .setIndicatorStyle(IndicatorView.IndicatorStyle.INDICATOR_BEZIER)
-//                    .also{ it.setPadding(0, 0, 0, dp20) }
-//            )
-//        mBinding.homeBannerRv.adapter = mBannerRvAdapter
     }
 
 
@@ -441,23 +429,11 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                                 if (mBinding.homeTipsError.isGone)  toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
                             }
                         }
-                        .doOnResult {
-                            doLoadHomePage()
-                        }
+                        .doOnResult { doLoadHomePage() }
                         .doOnError { _, _ ->
                             if (mDataRvAdapter.itemCount == 0) {
 
                                 // Banner 不可见
-/*
-                                mBinding.homeBannerRv.animateFadeOut().withEndAction {
-
-                                    // Banner 消失
-                                    mBinding.homeBannerRv.isGone = true
-
-                                    // 错误提示淡入
-                                    mBinding.homeTipsError.animateFadeIn()
-                                }
-*/
                                 if (mBinding.homeComposeBanner.isVisible) {
 
                                     // Banner GONE
@@ -494,9 +470,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                         .doOnResult {
 
                             viewLifecycleOwner.lifecycleScope.launch {
-                                async {
-                                    mDataRvAdapter.onRefreshSubmitList(mHomeVM.getSnapshotHomeData(), 50L)
-                                }.await()
+                                mDataRvAdapter.onRefreshSubmitList(mHomeVM.getSnapshotHomeData(), 50L)
 
                                 mRecRefresh?.isEnabled = true
                             }
