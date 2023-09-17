@@ -194,7 +194,7 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
     private fun getNovelChapter(intent: BookIntent.GetNovelChapter) {
         flowResult(intent, repository.getNovelChapter(intent.pathword)) { value ->
             if (value.mCode == HttpURLConnection.HTTP_OK) {
-                val novelChapterResp = value.mResults as NovelChapterResp
+                val novelChapterResp = toTypeEntity<NovelChapterResp>(value.mResults)
                 intent.copy(novelChapter = novelChapterResp)
             } else {
                 intent.copy(invalidResp = value.mMessage)

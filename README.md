@@ -22,7 +22,10 @@
     - **🔷在今后或许会新增一些新技术、扩展接口及功能模块**
 
 - ### **❓问题或方案参考及开源贡献**
-    - **✅[开源库Tachiyomi](https://github.com/tachiyomiorg/tachiyomi)**
+    - **✅[copymanga - Author : fumiama](https://github.com/fumiama/copymanga)**
+    - **✅[CopyMangaJava - Author : shizheng233](https://github.com/shizheng233/CopyMangaJava)**
+    - **✅[Tachiyomi - Author : tachiyomiorg](https://github.com/tachiyomiorg/tachiyomi)**
+    - **✅[Kotatsu - Author : KotatsuApp](https://github.com/KotatsuApp/Kotatsu)**
     - **✅[自定义可缩放RecyclerView By Custom LayoutManager（已弃用、这计算原理过于复杂且参考代码可读性糟糕）](https://ekibun.github.io/ekibook/2020/03/19/scalablelayoutmanager/)**
     - **✅[自定义可缩放RecyclerView By Canvas（缺陷多、1.1.0前版本都是该实现）](https://github.com/AhaochGan/GalleryView)**
     - **✅[LoadingButton内存泄露（已修复）](https://github.com/leandroBorgesFerreira/LoadingButtonAndroid/issues/144#issuecomment-585668460)**

@@ -1,5 +1,3 @@
-import AppConfigs.namespace
-
 plugins {
     // Android 应用程序插件
     id(Plugins.android_application)
@@ -24,7 +22,6 @@ android {
         // 开启 ViewBinding
         viewBinding = true
     })
-
 
     // 应用程序的默认配置信息
     defaultConfig {
@@ -151,9 +148,6 @@ android {
 
 
 }
-
-
-kotlin { jvmToolchain(11) }
 
 dependencies {
 

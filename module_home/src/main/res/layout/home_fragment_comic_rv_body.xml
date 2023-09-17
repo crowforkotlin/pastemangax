@@ -2,18 +2,18 @@
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/base_dp5"
     android:layout_marginEnd="@dimen/base_dp5"
-    android:layout_marginBottom="@dimen/base_dp25"
+    android:layout_marginBottom="@dimen/base_dp7_5"
     android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/home_book_card_view"
         style="@style/Widget.Material3.CardView.Filled"
         app:cardCornerRadius="@dimen/base_dp10"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/base_dp1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +44,7 @@
 
         <ImageView
             android:id="@+id/home_comic_rv_image"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/home_comic"
             android:foreground="@drawable/base_bg_item_ripper"

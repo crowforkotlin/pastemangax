@@ -12,12 +12,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
+import com.crow.base.copymanga.appComicCardHeight
 import com.crow.base.copymanga.entity.IBookAdapterColor
 import com.crow.base.copymanga.formatValue
-import com.crow.base.copymanga.getComicCardHeight
-import com.crow.base.copymanga.getComicCardWidth
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
-import com.crow.base.copymanga.mSize10
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
@@ -44,10 +42,7 @@ class DiscoverComicAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : LoadingViewHolder {
         return LoadingViewHolder(DiscoverFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
 
-            val layoutParams = vh.binding.discoverRvImage.layoutParams
-            layoutParams.width = getComicCardWidth() - mSize10
-            layoutParams.height = getComicCardHeight()
-
+            vh.binding.discoverRvImage.layoutParams.height = appComicCardHeight
 
             vh.binding.discoverRvBookCard.doOnClickInterval {
                 mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)

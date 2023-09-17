@@ -32,6 +32,7 @@ import com.crow.module_discover.databinding.DiscoverFragmentComicBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.ui.adapter.DiscoverComicAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
+import kotlinx.coroutines.yield
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.qualifier.named
@@ -61,12 +62,12 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     /** ● 漫画适配器 */
     private lateinit var mDiscoverComicAdapter: DiscoverComicAdapter
 
-
     /** ● 收集状态 */
     fun onCollectState() {
         repeatOnLifecycle {
             mDiscoverVM.mDiscoverComicHomeFlowPager?.collect {
                 mDiscoverComicAdapter.submitData(it)
+                yield()
             }
         }
     }
@@ -174,7 +175,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                             }
                         }
                 }
-                else -> {}
             }
         }
     }

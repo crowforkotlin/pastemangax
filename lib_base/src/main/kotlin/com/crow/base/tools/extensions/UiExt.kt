@@ -84,7 +84,6 @@ fun View.animateFadeOutWithEndInVisible(duration: Long = BASE_ANIM_300L): ViewPr
     return animate().alpha(0f).setDuration(duration).withEndAction { isVisible = false }
 }
 
-
 suspend fun View.suspendAnimateFadeIn(duration: Long = BASE_ANIM_200L) = suspendCancellableCoroutine { continuation ->
     alpha = 0f
     visibility = View.VISIBLE
@@ -95,6 +94,16 @@ suspend fun View.suspendAnimateFadeOut(duration: Long = BASE_ANIM_300L) = suspen
     alpha = 1f
     visibility = View.VISIBLE
     animate().alpha(0f).setDuration(duration).also { it.withEndAction { continuation.resume(it) } }
+}
+
+//淡出
+fun View.animateCenterOut(duration: Long = BASE_ANIM_300L): ViewPropertyAnimator {
+    alpha = 1f
+    visibility = View.VISIBLE
+    return animate()
+        .scaleX(0f)
+        .scaleY(0f)
+        .setDuration(duration)
 }
 
 // 创建画笔

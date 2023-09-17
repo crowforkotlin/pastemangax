@@ -15,7 +15,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
  * @formatter:on
  *************************/
 
-class HomeVpAdapter(
+class NewHomeVpAdapter(
     private val fragmentList: MutableList<Fragment>,
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle

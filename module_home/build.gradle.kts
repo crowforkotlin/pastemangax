@@ -11,6 +11,9 @@ android {
     // 配置构建功能相关的选项
     buildFeatures {
 
+        // 开启 Compose
+        compose = true
+
         // 开启 ViewBinding
         viewBinding = true
     }
@@ -50,6 +53,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    // 配置Compose 选项
+    composeOptions {
+
+        // 设置 Kotlin Compose 编译器扩展的版本 （Important）
+        kotlinCompilerExtensionVersion = compose.versions.compiler.get()
+    }
+
     // 配置 Kotlin 编译器
     kotlinOptions {
 
@@ -65,4 +75,10 @@ dependencies {
     
     // 引入Base库
     implementation(project(mapOf("path" to ":lib_base")))
+
+    implementation(compose.coil)
+
+    implementation(compose.pager)
+
+    implementation(compose.pager.indicator)
 }

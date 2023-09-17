@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.crow.base.copymanga.appComicCardHeight
+import com.crow.base.copymanga.appComicCardWidth
 import com.crow.base.copymanga.entity.Fragments
-import com.crow.base.copymanga.getComicCardHeight
-import com.crow.base.copymanga.getComicCardWidth
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
@@ -244,8 +244,8 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         immersionPadding(mBinding.root)
 
         // 设置 漫画图的卡片 宽高
-        mBinding.bookInfoCardview.layoutParams.height = getComicCardHeight()
-        mBinding.bookInfoCardview.layoutParams.width = getComicCardWidth()
+        mBinding.bookInfoCardview.layoutParams.height = appComicCardHeight
+        mBinding.bookInfoCardview.layoutParams.width = appComicCardWidth
 
         // 设置刷新时不允许列表滚动
         mBinding.bookInfoRefresh.setDisableContentWhenRefresh(true)

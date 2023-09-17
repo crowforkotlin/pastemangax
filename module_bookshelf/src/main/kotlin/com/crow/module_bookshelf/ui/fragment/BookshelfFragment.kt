@@ -26,7 +26,6 @@ import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.logger
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
@@ -205,12 +204,21 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      *
      * ● 2023-07-07 21:55:12 周五 下午
      */
-    private fun onOutput() {
+    private fun onCollectState() {
+
         // 每个观察者需要一个单独的生命周期块，在同一个会导致第二个观察者失效 收集书架 漫画Pager状态
-        repeatOnLifecycle { mBsVM.mBookshelfComicFlowPager?.collect { data -> mBookshelfComicRvAdapter.submitData(data) } }
+        repeatOnLifecycle {
+            mBsVM.mBookshelfComicFlowPager?.collect { data ->
+                mBookshelfComicRvAdapter.submitData(data)
+            }
+        }
 
         // 收集书架 轻小说Pager状态
-        repeatOnLifecycle { mBsVM.mBookshelfNovelFlowPager?.collect { data -> mBookshelfNovelRvAdapter.submitData(data) } }
+        repeatOnLifecycle {
+            mBsVM.mBookshelfNovelFlowPager?.collect { data ->
+                mBookshelfNovelRvAdapter.submitData(data)
+            }
+       }
     }
 
     /**
@@ -301,9 +309,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         parentFragmentManager.setFragmentResultListener(BOOKSHELF, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 2) {
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
-                    launchDelay(BASE_ANIM_200L) { onOutput() }
+                    launchDelay(BASE_ANIM_200L) { onCollectState() }
                 } else {
-                    onOutput()
+                    onCollectState()
                 }
             }
         }
@@ -390,7 +398,6 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
         // Toolbar Menu
         mBinding.bookshelfToolbar.setOnMenuItemClickListener { menuItem ->
-            logger(menuItem.itemId)
             BaseEvent.getSIngleInstance().doOnInterval {
                 mBsVM.sendGetBookshelfInent(
                     when(menuItem.itemId) {
@@ -402,7 +409,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                 )
                 launchDelay(BASE_ANIM_100L) {
                     mBookshelfComicRvAdapter.submitData(PagingData.empty())
-                    onOutput()
+                    onCollectState()
                 }
             }
             true

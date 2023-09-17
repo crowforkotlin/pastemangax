@@ -101,14 +101,14 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         // 全屏
         immersionFullScreen(mWindowInsetsCompat)
 
-        // 沉浸式边距
-        immersionPadding(mBinding.root) { view, insets, _ ->
-            mBinding.comicToolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
-            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                leftMargin = insets.left
-                rightMargin = insets.right
+            // 沉浸式边距
+            immersionPadding(mBinding.root) { view, insets, _ ->
+                mBinding.comicToolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
+                view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                    leftMargin = insets.left
+                    rightMargin = insets.right
+                }
             }
-        }
 
         // 沉浸式状态栏和工具栏
         immersionBarStyle()
