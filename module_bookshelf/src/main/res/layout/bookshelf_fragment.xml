@@ -28,11 +28,7 @@
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/bookshelf_frame_rv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bookshelf_bar">
+            android:layout_height="match_parent">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
@@ -106,7 +102,7 @@
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
                 android:layout_height="match_parent">
 
-                <androidx.recyclerview.widget.RecyclerView
+                <com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
                     android:id="@+id/bookshelf_rv_comic"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -116,7 +112,7 @@
                     tools:listitem="@layout/bookshelf_fragment_rv"
                     tools:visibility="visible" />
 
-                <androidx.recyclerview.widget.RecyclerView
+                <com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
                     android:id="@+id/bookshelf_rv_novel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

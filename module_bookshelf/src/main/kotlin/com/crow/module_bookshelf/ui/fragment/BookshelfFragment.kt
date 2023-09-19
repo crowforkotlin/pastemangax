@@ -3,10 +3,10 @@ package com.crow.module_bookshelf.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.get
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.copymanga.BaseEventEnum
@@ -15,18 +15,22 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.processTokenError
+import com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
 import com.crow.base.tools.coroutine.launchDelay
+import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
-import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.doOnInterval
+import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
@@ -57,7 +61,7 @@ import com.crow.base.R as baseR
 class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
     companion object {
-        const val Bookshelf = "Bookshelf"
+        const val BOOKSHELF = "Bookshelf"
     }
 
     /**
@@ -200,12 +204,21 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      *
      * ● 2023-07-07 21:55:12 周五 下午
      */
-    private fun onOutput() {
+    private fun onCollectState() {
+
         // 每个观察者需要一个单独的生命周期块，在同一个会导致第二个观察者失效 收集书架 漫画Pager状态
-        repeatOnLifecycle { mBsVM.mBookshelfComicFlowPager?.collect { data -> mBookshelfComicRvAdapter.submitData(data) } }
+        repeatOnLifecycle {
+            mBsVM.mBookshelfComicFlowPager?.collect { data ->
+                mBookshelfComicRvAdapter.submitData(data)
+            }
+        }
 
         // 收集书架 轻小说Pager状态
-        repeatOnLifecycle { mBsVM.mBookshelfNovelFlowPager?.collect { data -> mBookshelfNovelRvAdapter.submitData(data) } }
+        repeatOnLifecycle {
+            mBsVM.mBookshelfNovelFlowPager?.collect { data ->
+                mBookshelfNovelRvAdapter.submitData(data)
+            }
+       }
     }
 
     /**
@@ -223,7 +236,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      */
     override fun onDestroyView() {
         super.onDestroyView()
-        parentFragmentManager.clearFragmentResultListener(Bookshelf)
+        parentFragmentManager.clearFragmentResultListener(BOOKSHELF)
     }
 
     /**
@@ -273,6 +286,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBinding.bookshelfRvNovel.adapter = mBookshelfNovelRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
     }
 
+
     /**
      * ● 初始化事件
      *
@@ -280,13 +294,24 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      */
     override fun initListener() {
 
+        // 处理双击事件
+        parentFragmentManager.setFragmentResultListener("onDoubleTap_Bookshelf", this) { _, _ ->
+            val recyclerView: BaseTapScrollRecyclerView = if (mBinding.bookshelfRvComic.isVisible) mBinding.bookshelfRvComic else mBinding.bookshelfRvNovel
+            val first = recyclerView.findFisrtVisibleViewPosition()
+            if (first > 0) {
+                recyclerView.onInterceptScrollRv(toPosition = 0, precisePosition = first)
+            } else {
+                recyclerView.onInterceptScrollRv(precisePosition = first)
+            }
+        }
+
         // 设置容器Fragment的共享结果回调
-        parentFragmentManager.setFragmentResultListener(Bookshelf, this) { _, bundle ->
+        parentFragmentManager.setFragmentResultListener(BOOKSHELF, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 2) {
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
-                    launchDelay(BASE_ANIM_200L) { onOutput() }
+                    launchDelay(BASE_ANIM_200L) { onCollectState() }
                 } else {
-                    onOutput()
+                    onCollectState()
                 }
             }
         }
@@ -371,18 +396,33 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             }
         }
 
-        // 更多选项
-        mBinding.bookshelfToolbar.menu[0].doOnClickInterval {
-            toast("此功能或许将在下个版本中完善....")
+        // Toolbar Menu
+        mBinding.bookshelfToolbar.setOnMenuItemClickListener { menuItem ->
+            BaseEvent.getSIngleInstance().doOnInterval {
+                mBsVM.sendGetBookshelfInent(
+                    when(menuItem.itemId) {
+                        R.id.bookshelf_menu_sort_add -> "-datetime_modifier"
+                        R.id.bookshelf_menu_sort_update ->"-datetime_updated"
+                        R.id.bookshelf_menu_sort_readed -> "-datetime_browse"
+                        else -> return@doOnInterval
+                    }
+                )
+                launchDelay(BASE_ANIM_100L) {
+                    mBookshelfComicRvAdapter.submitData(PagingData.empty())
+                    onCollectState()
+                }
+            }
+            true
         }
     }
+
 
     /**
      * ● 初始化观察者
      *
      * ● 2023-07-07 21:53:56 周五 下午
      */
-    override fun initObserver(savedInstanceState: Bundle?) {
+    override fun initObserver(saveInstanceState: Bundle?) {
 
         // 接收意图
         mBsVM.onOutput { intent ->

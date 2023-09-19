@@ -40,7 +40,6 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/base_dp10"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-
             tools:listitem="@layout/main_fragment_update_history_rv" />
 
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>

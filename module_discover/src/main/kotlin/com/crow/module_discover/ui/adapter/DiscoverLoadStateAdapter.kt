@@ -6,7 +6,7 @@ import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.crow.base.copymanga.getComicCardHeight
+import com.crow.base.copymanga.appComicCardHeight
 import com.crow.base.databinding.BasePagingFooterRetryBinding
 import com.crow.base.tools.extensions.doOnClickInterval
 
@@ -22,7 +22,7 @@ class DiscoverLoadStateAdapter(private val retry: () -> Unit) : LoadStateAdapter
 
     override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState): LoadStateViewHolder {
         return LoadStateViewHolder(BasePagingFooterRetryBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also {  vh ->
-            vh.rvBinding.root.layoutParams.height = getComicCardHeight() / 2
+            vh.rvBinding.root.layoutParams.height = appComicCardHeight / 2
             vh.rvBinding.baseLoadingRetry.doOnClickInterval { retry() }
         }
     }

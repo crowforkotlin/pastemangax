@@ -1,22 +1,21 @@
 package com.crow.module_bookshelf.model.resp
 
-
 import com.crow.module_bookshelf.model.resp.bookshelf_comic.BookshelfComicResults
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
+
+
 data class BookshelfComicResp(
 
-    @SerialName(value = "limit")
+    @Json(name =  "limit")
     val mLimit: Int,
 
-    @SerialName(value = "list")
+    @Json(name =  "list")
     val mList: List<BookshelfComicResults>,
 
-    @SerialName(value = "offset")
+    @Json(name =  "offset")
     val mOffset: Int,
 
-    @SerialName(value = "total")
+    @Json(name =  "total")
     val mTotal: Int,
 )

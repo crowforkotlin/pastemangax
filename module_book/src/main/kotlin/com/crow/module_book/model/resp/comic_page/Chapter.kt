@@ -1,66 +1,64 @@
 package com.crow.module_book.model.resp.comic_page
 
-import kotlinx.serialization.Polymorphic
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
+
 data class Chapter(
-    @SerialName(value = "comic_id")
+    @Json(name =  "comic_id")
     val mComicId: String,
 
-    @SerialName(value = "comic_path_word")
+    @Json(name =  "comic_path_word")
     val mComicPathWord: String,
 
-    @SerialName(value = "contents")
+    @Json(name =  "contents")
     var mContents: MutableList<Content>,
 
-    @SerialName(value = "count")
+    @Json(name =  "count")
     val mCount: Int,
 
-    @SerialName(value = "datetime_created")
+    @Json(name =  "datetime_created")
     val mDatetimeCreated: String,
 
-    @SerialName(value = "group_id")
-    val mGroupId: @Polymorphic Any?,
+    @Json(name =  "group_id")
+    val mGroupId: Any?,
 
-    @SerialName(value = "group_path_word")
+    @Json(name =  "group_path_word")
     val mGroupPathWord: String,
 
-    @SerialName(value = "img_type")
+    @Json(name =  "img_type")
     val mImageType: Int,
 
-    @SerialName(value = "index")
+    @Json(name =  "index")
     val mIndex: Int,
 
-    @SerialName(value = "is_long")
+    @Json(name =  "is_long")
     val mIsLong: Boolean,
 
-    @SerialName(value = "name")
+    @Json(name =  "name")
     val mName: String,
 
-    @SerialName(value = "news")
+    @Json(name =  "news")
     val mNews: String,
 
-    @SerialName(value = "next")
+    @Json(name =  "next")
     val mNext: String?,
 
-    @SerialName(value = "ordered")
+    @Json(name =  "ordered")
     val mOrdered: Int,
 
-    @SerialName(value = "prev")
+    @Json(name =  "prev")
     val mPrev: String?,
 
-    @SerialName(value = "size")
+    @Json(name =  "size")
     val mSize: Int,
 
-    @SerialName(value = "type")
+    @Json(name =  "type")
     val mType: Int,
 
-    @SerialName(value = "uuid")
+    @Json(name =  "uuid")
     val mUuid: String,
 
-    @SerialName(value = "words")
+    @Json(name =  "words")
     val mWords: List<Int>
 )
 

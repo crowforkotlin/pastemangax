@@ -41,6 +41,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
     }
 
     private var mSearchView: SearchView? = null
+
     private var mOnTap: ((pathword: String) -> Unit)? = null
 
     private val mHomeVM by viewModel<HomeViewModel>()
@@ -58,7 +59,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
             return
         }
 
-        if (mBaseEvent.getBoolean(HomeFragment.SEARCH_TAG) == true) return
+        if (mBaseEvent.getBoolean(NewHomeFragment.SEARCH_TAG) == true) return
         mHomeVM.input(HomeIntent.SearchComic(keyword, when(mBinding.homeSearchComicChipGroup.checkedChipId) {
             mBinding.homeSearchComicChipAll.id -> ""
             mBinding.homeSearchComicChipName.id -> "name"
@@ -66,7 +67,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
             mBinding.homeSearchComicChipLocal.id -> "local"
             else -> ""
         }))
-        mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, true)
+        mBaseEvent.setBoolean(NewHomeFragment.SEARCH_TAG, true)
         repeatOnLifecycle {
             mHomeVM.mComicSearchFlowPage?.onCollect(this) {
                 mComicRvAdapter.submitData(it)
@@ -115,15 +116,15 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
         }
     }
 
-    override fun initObserver(savedInstanceState: Bundle?) {
+    override fun initObserver(saveInstanceState: Bundle?) {
 
         mHomeVM.onOutput { intent ->
-            val mTag = mBaseEvent.getBoolean(HomeFragment.SEARCH_TAG) ?: false
+            val mTag = mBaseEvent.getBoolean(NewHomeFragment.SEARCH_TAG) ?: false
             when(intent) {
                 is HomeIntent.SearchComic -> {
                     intent.mBaseViewState
                         .doOnLoading { if(mTag) showLoadingAnim() }
-                        .doOnSuccess { mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, false) }
+                        .doOnSuccess { mBaseEvent.setBoolean(NewHomeFragment.SEARCH_TAG, false) }
                         .doOnError { _, _ ->
                             dismissLoadingAnim()
                             toast(getString(com.crow.base.R.string.BaseUnknowError))

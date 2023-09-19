@@ -7,10 +7,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/base_dp10"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="1dp"
+    app:cardCornerRadius="@dimen/base_dp20"
+    app:cardElevation="@dimen/base_dp1"
     app:strokeColor="@color/base_grey_400_40"
-    app:strokeWidth="1dp"
+    app:strokeWidth="@dimen/base_dp1"
     tools:layout_height="@dimen/base_dp192">
 
     <ImageView

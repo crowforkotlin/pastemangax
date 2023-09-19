@@ -1,17 +1,15 @@
 package com.crow.module_book.model.resp.novel_browser
 
+import com.squareup.moshi.Json
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class Browse(
-    @SerialName(value = "book_id")
+    @Json(name =  "book_id")
     val bookId: String,
-    @SerialName(value = "chapter_id")
+    @Json(name =  "chapter_id")
     val chapterId: String,
-    @SerialName(value = "chapter_name")
+    @Json(name =  "chapter_name")
     val chapterName: String,
-    @SerialName(value = "path_word")
+    @Json(name =  "path_word")
     val pathWord: String
 )

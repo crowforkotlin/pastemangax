@@ -1,26 +1,25 @@
 package com.crow.module_book.model.resp.novel_chapter
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
+
 data class NovelChapterResult (
-    @SerialName(value = "book_id")
+    @Json(name =  "book_id")
     val bookId: String,
-    @SerialName(value = "book_path_word")
+    @Json(name =  "book_path_word")
     val bookPathWord: String,
-    @SerialName(value = "count")
+    @Json(name =  "count")
     val count: Int,
-    @SerialName(value = "id")
+    @Json(name =  "id")
     val id: String,
-    @SerialName(value = "index")
+    @Json(name =  "index")
     val index: Int,
-    @SerialName(value = "name")
+    @Json(name =  "name")
     val name: String,
-    @SerialName(value = "next")
+    @Json(name =  "next")
     val next: String?,
-    @SerialName(value = "prev")
+    @Json(name =  "prev")
     val prev: String?,
-    @SerialName(value = "sort")
+    @Json(name =  "sort")
     val sort: Int
 )

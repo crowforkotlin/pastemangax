@@ -1,15 +1,13 @@
 package com.crow.module_book.model.resp.comic_page
 
+import com.squareup.moshi.Json
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class Restrict(
 
-    @SerialName(value = "display")
+    @Json(name =  "display")
     val display: String,
 
-    @SerialName(value = "value")
+    @Json(name =  "value")
     val value: Int
 )

@@ -1,15 +1,13 @@
 package com.crow.module_discover.model.resp.comic_home
 
+import com.squareup.moshi.Json
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class Theme(
 
-    @SerialName(value = "name")
+    @Json(name =  "name")
     val mName: String,
 
-    @SerialName(value = "path_word")
+    @Json(name =  "path_word")
     val mPathWord: String
 )

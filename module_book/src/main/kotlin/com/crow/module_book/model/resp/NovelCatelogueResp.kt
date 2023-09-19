@@ -1,23 +1,21 @@
 package com.crow.module_book.model.resp
 
-
 import com.crow.module_book.model.resp.novel_catelogue.Book
 import com.crow.module_book.model.resp.novel_catelogue.Volume
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
+
 data class NovelCatelogueResp(
-    @SerialName(value = "book")
+    @Json(name =  "book")
     val book: Book,
-    @SerialName(value = "is_lock")
+    @Json(name =  "is_lock")
     val isLock: Boolean,
-    @SerialName(value = "is_login")
+    @Json(name =  "is_login")
     val isLogin: Boolean,
-    @SerialName(value = "is_mobile_bind")
+    @Json(name =  "is_mobile_bind")
     val isMobileBind: Boolean,
-    @SerialName(value = "is_vip")
+    @Json(name =  "is_vip")
     val isVip: Boolean,
-    @SerialName(value = "volume")
+    @Json(name =  "volume")
     val volume: Volume
 )

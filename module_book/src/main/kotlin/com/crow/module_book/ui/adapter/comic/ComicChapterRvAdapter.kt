@@ -26,12 +26,14 @@ import kotlin.properties.Delegates
  **************************/
 
 class ComicChapterRvAdapter(
-    private var mComic: MutableList<ComicChapterResult> = mutableListOf(),
     private var mDoOnTapChapter: (ComicChapterResult) -> Unit
-) : RecyclerView.Adapter<ComicChapterRvAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<ComicChapterRvAdapter.ChapterVH>() {
+
+    inner class ChapterVH(rvBinding: BookFragmentChapterRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { val mButton = rvBinding.comicInfoRvChip }
+
 
     var mChapterName: String? = null
-
+    private var mComic: MutableList<ComicChapterResult> = mutableListOf()
     private var mBtSurfaceColor by Delegates.notNull<Int>()
     private var mBtTextColor by Delegates.notNull<Int>()
 
@@ -45,10 +47,10 @@ class ComicChapterRvAdapter(
         }
     }
 
-    inner class ViewHolder(rvBinding: BookFragmentChapterRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { val mButton = rvBinding.comicInfoRvChip }
+    fun getItem(position: Int) = mComic[position]
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(BookFragmentChapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterVH {
+        return ChapterVH(BookFragmentChapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
             vh.mButton.doOnClickInterval { mDoOnTapChapter(mComic[vh.absoluteAdapterPosition]) }
             vh.mButton.doOnLayout {
                 ToolTipsView.showToolTipsByLongClick(vh.mButton, it.measuredWidth shr 2)
@@ -58,9 +60,8 @@ class ComicChapterRvAdapter(
 
     override fun getItemCount(): Int = mComic.size
 
-    override fun onBindViewHolder(vh: ViewHolder, position: Int) {
-
-        val comic = mComic[position]
+    override fun onBindViewHolder(vh: ChapterVH, position: Int) {
+        val comic = getItem(position)
         vh.mButton.text = comic.name
         if (mChapterName != null && comic.name == mChapterName!!) {
             vh.mButton.setBackgroundColor(ContextCompat.getColor(vh.itemView.context, R.color.book_blue))
@@ -87,4 +88,5 @@ class ComicChapterRvAdapter(
             delay(delayMs)
         }
     }
+
 }

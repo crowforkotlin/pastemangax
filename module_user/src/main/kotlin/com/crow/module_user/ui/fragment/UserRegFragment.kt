@@ -35,16 +35,32 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  **************************/
 class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
 
-    // 共享用户VM
+    /**
+     * ● 共享用户VM
+     *
+     * ● 2023-09-07 23:19:24 周四 下午
+     */
     private val mUserVM by sharedViewModel<UserViewModel>()
 
-    // 是否注冊成功？
+    /**
+     * ● 是否注冊成功？
+     *
+     * ● 2023-09-07 23:19:30 周四 下午
+     */
     private var mIsRegSuccess = false
 
-    // 值是否相同？ true 返回 this false 返回 null
+    /**
+     * ● 字符串值是否相同？（用于校验密码） true 返回 this false 返回 null
+     *
+     * ● 2023-09-07 23:19:40 周四 下午
+     */
     private fun String?.getIsSame(target: String) : String? = if(this == target) this else null
 
-    // 反转登录按钮
+    /**
+     * ● 反转登录按钮
+     *
+     * ● 2023-09-07 23:20:17 周四 下午
+     */
     private fun doRevertRegButton() {
 
         // 停止动画
@@ -60,16 +76,36 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
         }
     }
 
-    // 返回
+    /**
+     * ● 返回界面
+     *
+     * ● 2023-09-07 23:20:25 周四 下午
+     */
     private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Reg.name)
+
+    /**
+     * ● 获取ViewBinding
+     *
+     * ● 2023-09-07 23:20:33 周四 下午
+     */
 
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentRegBinding.inflate(inflater)
 
+    /**
+     * ● Lifecycle OnStart
+     *
+     * ● 2023-09-07 23:20:41 周四 下午
+     */
     override fun onStart() {
         super.onStart()
         mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) { navigateUp() }
     }
 
+    /**
+     * ● 初始化视图
+     *
+     * ● 2023-09-07 23:20:51 周四 下午
+     */
     override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
@@ -79,6 +115,11 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
         mBinding.userReg.updateLifecycleObserver(viewLifecycleOwner.lifecycle)
     }
 
+    /**
+     * ● 初始化监听器
+     *
+     * ● 2023-09-07 23:21:07 周四 下午
+     */
     override fun initListener() {
 
         mBinding.userReg.doOnClickInterval {
@@ -95,6 +136,11 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
         }
     }
 
+    /**
+     * ● 初始化观察者
+     *
+     * ● 2023-09-07 23:21:15 周四 下午
+     */
     override fun initObserver(savedInstanceState: Bundle?) {
         mUserVM.onOutput { intent ->
             when(intent) {
@@ -118,7 +164,10 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
                                         mUserVM.getUsername(mBinding.userRegEditTextUsr.text.toString()) ?: return@doOnResult,
                                         mUserVM.getPassword(mBinding.userRegEditTextPwd.text.toString()) ?: return@doOnResult
                                     ))
-                                else dismissLoadingAnim { doRevertRegButton() }
+                                else dismissLoadingAnim {
+                                    toast(getString(R.string.user_reg_ok))
+                                    doRevertRegButton()
+                                }
                                 return@doOnResult
                             }
                             dismissLoadingAnim { doRevertRegButton() }
@@ -126,9 +175,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
                                 .onFailure { toast(intent.userResultErrorResp!!.mDetail, false) }
                                 .onSuccess { toast(it, false) }
                         }
-
                 }
-
                 is UserIntent.Login -> {
                     intent.mBaseViewState
                         .doOnSuccess { dismissLoadingAnim { doRevertRegButton() } }
@@ -139,10 +186,11 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
                             * OK：设置 mIsRegSuccess = true 用于标记
                             * Error：格式化返回的错误信息 并提示
                             * */
-                            if (intent.loginResultsOkResp != null) return@doOnResult
-                            runCatching { intent.userResultErrorResp!!.mDetail.removePrefix("Error: ") }
-                                .onFailure { toast(intent.userResultErrorResp!!.mDetail, false) }
-                                .onSuccess { toast(it, false) }
+                            if (intent.loginResultsOkResp == null) {
+                                runCatching { intent.userResultErrorResp!!.mDetail.removePrefix("Error: ") }
+                                    .onFailure { toast(intent.userResultErrorResp!!.mDetail, false) }
+                                    .onSuccess { toast(it, false) }
+                            }
                         }
                 }
             }

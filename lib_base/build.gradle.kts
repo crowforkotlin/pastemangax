@@ -115,16 +115,20 @@ dependencies {
     api(Dependencies.androidx_paging_common_ktx)
     api(Dependencies.androidx_core_splash_screen)
 
-    debugApi(Dependencies.glance)
+    api(Dependencies.androidx_preference_ktx)
+
+//    debugApi(Dependencies.glance)
     debugApi(Dependencies.leakcanary) // 不支持在MinSdk 24以下的设备运行
     testApi(Dependencies.junit_junit)
     androidTestApi(Dependencies.androidx_test_junit_ktx)
     androidTestApi(Dependencies.androidx_test_espresso)
 
-    /* Kotlin 协程 */
     api(Dependencies.kotlinx_coroutines)
-    api(Dependencies.kotlinx_datetime)
     api(Dependencies.kotlin_stdlib)
+
+    api(Dependencies.moshi)
+    api(Dependencies.moshi_kotlin)
+    api(Dependencies.retrofit_moshi)
 
     api(Dependencies.androidx_room_runtime)
     api(Dependencies.androidx_room_ktx)
@@ -135,7 +139,6 @@ dependencies {
     /* Github */
     api(Dependencies.retrofit)
 
-    api(Dependencies.kotlin_serialization)
 
     api(Dependencies.okhttp)
     api(Dependencies.okhttp_loggin)
@@ -163,6 +166,7 @@ dependencies {
     api(compose.material.core)
     api(compose.accompanist.themeadapter)
     api(compose.ui.tooling)
+    api(compose.ui.util)
     api(compose.material.icons)
     api(compose.accompanist.systemuicontroller)
 }

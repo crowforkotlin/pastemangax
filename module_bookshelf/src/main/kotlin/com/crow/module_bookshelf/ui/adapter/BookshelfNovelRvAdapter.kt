@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.crow.base.copymanga.getComicCardHeight
-import com.crow.base.copymanga.getComicCardWidth
+import com.crow.base.copymanga.appComicCardHeight
+import com.crow.base.copymanga.appComicCardWidth
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.copymanga.mSize10
 import com.crow.base.tools.extensions.BASE_ANIM_200L
@@ -40,8 +40,8 @@ class BookshelfNovelRvAdapter(
         return LoadingViewHolder(BookshelfFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent,false)).also { vh ->
 
             val layoutParams = vh.binding.bookshelfRvImage.layoutParams
-            layoutParams.width = getComicCardWidth() - mSize10
-            layoutParams.height = getComicCardHeight()
+            layoutParams.width = appComicCardWidth - mSize10
+            layoutParams.height = appComicCardHeight
 
             vh.binding.bookshelfRvImage.doOnClickInterval {
                 doOnTap(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)

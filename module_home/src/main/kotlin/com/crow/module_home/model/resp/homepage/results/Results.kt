@@ -7,6 +7,7 @@ import com.crow.module_home.model.resp.homepage.HotComic
 import com.crow.module_home.model.resp.homepage.NewComic
 import com.crow.module_home.model.resp.homepage.RankComics
 import com.crow.module_home.model.resp.homepage.Topices
+import com.squareup.moshi.Json
 
 /**
  * Results
@@ -23,36 +24,35 @@ import com.crow.module_home.model.resp.homepage.Topices
  * @constructor Create empty Results
  */
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
+
+
 data class Results(
 
-    @SerialName(value = "banners")
+    @Json(name =  "banners")
     val mBanners: List<Banner>,
 
-    @SerialName(value = "finishComics")
+    @Json(name =  "finishComics")
     val mFinishComicDatas: FinishComicDatas,
 
-    @SerialName(value = "hotComics")
+    @Json(name =  "hotComics")
     val mHotComics: List<HotComic>,
 
-    @SerialName(value = "newComics")
+    @Json(name =  "newComics")
     val mNewComics: List<NewComic>,
 
-    @SerialName(value = "rankDayComics")
+    @Json(name =  "rankDayComics")
     val mRankDayComics: ComicDatas<RankComics>,
 
-    @SerialName(value = "rankWeekComics")
+    @Json(name =  "rankWeekComics")
     val mRankWeekComics: ComicDatas<RankComics>,
 
-    @SerialName(value = "rankMonthComics")
+    @Json(name =  "rankMonthComics")
     val mRankMonthComics: ComicDatas<RankComics>,
 
-    @SerialName(value = "recComics")
+    @Json(name =  "recComics")
     val mRecComicsResult: ComicDatas<RecComicsResult>,
 
-    @SerialName(value = "topics")
+    @Json(name =  "topics")
     val mTopics: ComicDatas<Topices>,
 )

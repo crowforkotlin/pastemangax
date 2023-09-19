@@ -17,6 +17,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
@@ -75,9 +76,13 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 .load(item.mImageUrl)
                 .addListener(mAppGlideProgressFactory?.getRequestListener({
                     binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
-                    binding.comicRvRetry.isVisible = true
+                    binding.comicRvRetry.animateFadeIn()
+                    binding.comicRvLoading.animateFadeOut()
+                    binding.comicRvProgressText.animateFadeOut()
                     binding.comicRvRetry.doOnClickInterval(false) {
                         binding.comicRvRetry.animateFadeOut()
+                        binding.comicRvLoading.animateFadeIn()
+                        binding.comicRvProgressText.animateFadeIn()
                         onBind(item)
                     }
                     false

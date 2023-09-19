@@ -20,14 +20,14 @@ import org.koin.core.qualifier.named
 class BookComicCategories(private val mActivity: ComicActivity ,private val host: FragmentContainerView) {
 
     enum class Type(@IdRes val id: Int) {
-        STRIPT(R.string.book_comic_stript),
+//        STRIPT(R.string.book_comic_stript),
         CLASSIC(R.string.book_comic_classic)
     }
 
 
     fun apply(type: Type) {
         when (type) {
-            Type.STRIPT -> mActivity.supportFragmentManager.navigateByAdd(host.id, mActivity.get(named(Fragments.ComicStript.name)))
+//            Type.STRIPT -> mActivity.supportFragmentManager.navigateByAdd(host.id, mActivity.get(named(Fragments.ComicStript.name)))
             Type.CLASSIC -> mActivity.supportFragmentManager.navigateByAdd(host.id, mActivity.get(named(Fragments.ComicClassic.name)))
         }
     }

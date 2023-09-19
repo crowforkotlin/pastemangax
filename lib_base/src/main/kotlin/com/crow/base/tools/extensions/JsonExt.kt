@@ -1,12 +1,8 @@
 package com.crow.base.tools.extensions
 
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.SerializationStrategy
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
 /*************************
@@ -23,6 +19,7 @@ import org.json.JSONObject
  * @author lei , edit by crowforkotlin
  * @date 2021/11/4 3:58 下午
  */
+/*
 val baseJson = Json {
 
 //    classDiscriminator = "code"           // 多态序列化的类描述符属性的名称
@@ -53,10 +50,12 @@ val baseJson = Json {
     allowSpecialFloatingPointValues = false
 }
 
+*/
 /**
  * 使用 [json] 以及 [deserializer] 将 [String] 解析为 [T] 数据实体
  * 转换失败返回 `null`
- */
+ *//*
+
 inline fun <reified T> toTypeEntity(value: String?, json: Json = baseJson, deserializer: DeserializationStrategy<T>? = null): T? {
     return when {
         value.isNullOrBlank() -> null
@@ -65,10 +64,12 @@ inline fun <reified T> toTypeEntity(value: String?, json: Json = baseJson, deser
     }
 }
 
+*/
 /**
  * 使用 [json] 以及 [serializer] 将数据实体 [T] 转换为 [String]
  * > 转换失败返回 `""`
- */
+ *//*
+
 inline fun <reified T> toJson(value: T?, json: Json = baseJson, serializer: SerializationStrategy<T>? = null): String {
     return when {
         null == value -> ""
@@ -77,31 +78,29 @@ inline fun <reified T> toJson(value: T?, json: Json = baseJson, serializer: Seri
     }
 }
 
-/** 将 [JSONObject] 转换为 [RequestBody] 并返回 */
+*/
+/** 将 [JSONObject] 转换为 [RequestBody] 并返回 *//*
+
 fun JSONObject.toJsonRequestBody(): RequestBody {
     return toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 }
+*/
 
 /*
 * @Description: Moshi扩展
 * @author CrowForKotlin
 * @date 2021/11/4 3:58 下午
 * */
-/*
-val baseMoshi = Moshi.Builder().build()
+val baseMoshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-inline fun <reified T> String?.toTypeEntity(moshi: Moshi = baseMoshi): T? {
-    return moshi.adapter(T::class.java).fromJson(this ?: return null)
-}
 inline fun <reified T> toTypeEntity(value: Any?, moshi: Moshi = baseMoshi): T? {
     if (value == null) return null
-    return moshi.adapter(T::class.java).fromJsonValue(value)
+    return if (value is String) moshi.adapter(T::class.java).fromJson(value) else moshi.adapter(T::class.java).fromJsonValue(value)
 }
 
 inline fun <reified T> toJson(value: T & Any, moshi: Moshi = baseMoshi): String {
     return moshi.adapter(T::class.java).toJson(value)
 }
-*/
 
 /**
  * ● Gson 扩展

@@ -1,12 +1,10 @@
 package com.crow.module_book.model.resp.comic_page
 
+import com.squareup.moshi.Json
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class Content(
 
-    @SerialName(value = "url")
+    @Json(name =  "url")
     val mImageUrl: String,
 )

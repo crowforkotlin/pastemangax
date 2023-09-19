@@ -23,7 +23,7 @@ import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.BaseViewState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.JsonParseException
+import com.squareup.moshi.JsonDataException
 import java.text.DecimalFormat
 import java.util.Locale
 
@@ -57,15 +57,13 @@ fun String.getSpannableString(color: Int, start: Int, end: Int = length): Spanna
 }
 
 
-// 漫画卡片高度
-private val comic_card_height: Int by lazy {
+// 漫画卡片高度 和 宽度
+val appComicCardHeight: Int by lazy {
     val width = appContext.resources.displayMetrics.widthPixels
     val height = appContext.resources.displayMetrics.heightPixels
-    (width.toFloat() / (3 - width.toFloat() / height.toFloat())).toInt()
+    (width.toFloat() / (3.0 - width.toFloat() / height.toFloat())).toInt()
 }
-
-fun getComicCardHeight() = comic_card_height
-fun getComicCardWidth() = (comic_card_height / 1.25).toInt()
+val appComicCardWidth: Int by lazy { (appComicCardHeight / 1.25).toInt() }
 
 val mSize10 by lazy { appContext.px2dp(appContext.resources.getDimensionPixelSize(R.dimen.base_dp10).toFloat()).toInt() }
 
@@ -89,7 +87,7 @@ inline fun View.processTokenError(
     crossinline doOnCancel: (MaterialAlertDialogBuilder) -> Unit = { },
     crossinline doOnConfirm: (MaterialAlertDialogBuilder) -> Unit
 ) {
-    runCatching { toTypeEntity<BaseContentInvalidResp>(msg)?.mResults ?: throw JsonParseException("parse exception!") }
+    runCatching { toTypeEntity<BaseContentInvalidResp>(msg)?.mResults ?: throw JsonDataException("parse exception!") }
         .onSuccess {
             context.newMaterialDialog { dialog ->
                 dialog.setCancelable(false)

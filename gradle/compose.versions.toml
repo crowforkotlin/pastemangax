@@ -10,6 +10,8 @@ accompanist = "0.33.1-alpha"
 activity = "androidx.activity:activity-compose:1.7.2"
 bom = { group = "dev.chrisbanes.compose", name = "compose-bom", version.ref = "compose-bom" }
 foundation = { module = "androidx.compose.foundation:foundation" }
+pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist"}
+pager-indicator = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist"}
 animation = { module = "androidx.compose.animation:animation" }
 animation-graphics = { module = "androidx.compose.animation:animation-graphics" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
@@ -21,3 +23,5 @@ accompanist-webview = { module = "com.google.accompanist:accompanist-webview", v
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 accompanist-themeadapter = { module = "com.google.accompanist:accompanist-themeadapter-material3", version.ref = "accompanist" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
+coil = { module = "io.coil-kt:coil-compose", version = "2.4.0"}
+glide = { module = "com.github.bumptech.glide:compose", version = "1.0.0-alpha.6"}

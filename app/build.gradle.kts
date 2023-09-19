@@ -7,7 +7,6 @@ plugins {
 
     // 使用 Kotlin语言开发Android 插件
     kotlin(Plugins.kotlin_android)
-
 }
 
 kotlin { jvmToolchain(11) }
@@ -23,7 +22,6 @@ android {
         // 开启 ViewBinding
         viewBinding = true
     })
-
 
     // 应用程序的默认配置信息
     defaultConfig {
@@ -151,11 +149,11 @@ android {
 
 }
 
-
-kotlin { jvmToolchain(11) }
-
 dependencies {
 
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     // Glide编译器
     ksp(Dependencies.glide_compiler_ksp)
 

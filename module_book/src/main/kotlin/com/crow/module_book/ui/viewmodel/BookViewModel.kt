@@ -5,6 +5,7 @@ import com.crow.base.app.appContext
 import com.crow.base.tools.coroutine.baseCoroutineException
 import com.crow.base.tools.extensions.DBNameSpace
 import com.crow.base.tools.extensions.buildDatabase
+import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_book.R
 import com.crow.module_book.model.database.BookChapterDB
@@ -96,22 +97,21 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
      *
      * ● 2023-06-28 22:24:38 周三 下午
      */
-    fun updateBookChapterOnDB(bookName: String, chapterName: String, bookType: Int) {
+    fun updateBookChapterOnDB(chapter: BookChapterEntity) {
         viewModelScope.launch(Dispatchers.IO + baseCoroutineException) {
-            val bookChapterEntity = mChapterDBDao.find(bookName, bookType)
+            val bookChapterEntity = mChapterDBDao.find(chapter.mBookName, chapter.mChapterType)
             if (bookChapterEntity != null) {
-                mChapterDBDao.update(bookChapterEntity.copy(mChapterName = chapterName).also {
-                    _bookChapterEntity.value = it
-                })
+                val snapshot = bookChapterEntity.copy(
+                    mChapterName = chapter.mChapterName,
+                    mChapterUUID = chapter.mChapterUUID,
+                    mChapterPrevUUID = chapter.mChapterPrevUUID,
+                    mChapterNextUUID = chapter.mChapterNextUUID
+                )
+                mChapterDBDao.update(snapshot)
+                _bookChapterEntity.value = snapshot
             } else {
-                mChapterDBDao.insertAll(
-                    BookChapterEntity(
-                        mBookName = bookName,
-                        mChapterType = bookType,
-                        mChapterName = chapterName
-                    ).also {
-                        _bookChapterEntity.value = it
-                    })
+                mChapterDBDao.insertAll(chapter)
+                _bookChapterEntity.value = chapter
             }
         }
     }
@@ -168,8 +168,8 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
     private fun getComicChapter(intent: BookIntent.GetComicChapter) {
         flowResult(intent, repository.getComicChapter(intent.pathword, mChapterStartIndex, 100)) { value ->
             if (value.mCode == HttpURLConnection.HTTP_OK) {
-                val comicChapterPage = value.mResults as ComicChapterResp
-                intent.copy(comicChapter = comicChapterPage)
+                val mComicChapterPage = toTypeEntity<ComicChapterResp>(value.mResults)
+                intent.copy(comicChapter = mComicChapterPage)
             } else {
                 intent.copy(
                     invalidResp = appContext.getString(
@@ -193,7 +193,7 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
     private fun getNovelChapter(intent: BookIntent.GetNovelChapter) {
         flowResult(intent, repository.getNovelChapter(intent.pathword)) { value ->
             if (value.mCode == HttpURLConnection.HTTP_OK) {
-                val novelChapterResp = value.mResults as NovelChapterResp
+                val novelChapterResp = toTypeEntity<NovelChapterResp>(value.mResults)
                 intent.copy(novelChapter = novelChapterResp)
             } else {
                 intent.copy(invalidResp = value.mMessage)

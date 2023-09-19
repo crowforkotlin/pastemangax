@@ -10,4 +10,7 @@
 	<string name="bookshelf_edit">编辑</string>
 	<string name="bookshelf_up">向上</string>
 	<string name="bookshelf_down">向下</string>
+	<string name="bookshelf_sort_add_time"><b>按照加入书架时间排序</b></string>
+	<string name="bookshelf_sort_update_time"><b>按照更新时间排序</b></string>
+	<string name="bookshelf_sort_readed_time"><b>按照阅读时间排序</b></string>
 </resources>

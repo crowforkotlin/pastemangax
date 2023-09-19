@@ -5,17 +5,16 @@ import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.copymanga.glide.AppGlideProgressResponseBody
-import com.crow.base.tools.extensions.baseJson
-import com.crow.base.tools.extensions.ks.asConverterFactory
+import com.crow.base.tools.extensions.baseMoshi
 import com.crow.base.tools.network.FlowCallAdapterFactory
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 val networkModule = module {
@@ -54,7 +53,7 @@ val networkModule = module {
             .baseUrl("https://gitee.com/")
             .client(get())
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
-            .addConverterFactory(baseJson.asConverterFactory("application/json; charset=utf-8".toMediaType()))
+            .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
             .build()
     }
 
@@ -94,7 +93,7 @@ val networkModule = module {
             // 动态请求地址
             .addInterceptor { chain ->
                 val request = chain.request()
-                chain.proceed(request.newBuilder().url(BaseStrings.URL.CopyManga.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()).build())
+                chain.proceed(request.newBuilder().url(BaseStrings.URL.COPYMANGA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()).build())
             }
 
             // 动态添加请求头
@@ -124,10 +123,10 @@ val networkModule = module {
      */
     single(named_CopyMangaX) {
         Retrofit.Builder()
-            .baseUrl(BaseStrings.URL.CopyManga)
+            .baseUrl(BaseStrings.URL.COPYMANGA)
             .client(get(named_CopyMangaX))
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
-            .addConverterFactory(baseJson.asConverterFactory("application/json; charset=utf-8".toMediaType()))
+                .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
             .build()
     }
 }

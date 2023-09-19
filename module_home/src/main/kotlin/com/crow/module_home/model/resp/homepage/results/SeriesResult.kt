@@ -1,16 +1,15 @@
 package com.crow.module_home.model.resp.homepage.results
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
+
 data class SeriesResult(
-    @SerialName(value = "color")
+    @Json(name =  "color")
     val color: String,
 
-    @SerialName(value = "name")
+    @Json(name =  "name")
     val name: String,
 
-    @SerialName(value = "path_word")
+    @Json(name =  "path_word")
     val pathWord: String
 )

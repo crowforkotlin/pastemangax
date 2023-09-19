@@ -1,40 +1,58 @@
 package com.crow.base.ui.view.event
 
-import androidx.annotation.FloatRange
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import kotlin.math.absoluteValue
 
 
-// 事件基类
-open class BaseEvent private constructor(flagTime: Long) {
+/**
+ * @author : crowforkotlin
+ *
+ * ● 事件基类
+ *
+ * ● 2023-09-10 23:11:17 周日 下午
+ */
+open class BaseEvent private constructor() {
 
+    private var mFlagTime: Long = BASE_FLAG_TIME_500
     private var mFlagMap: MutableMap<String, Boolean>? = null
     private var mInitOnce: Boolean = false
     private var mLastClickGapTime: Long = 0L
     private var mCurrentTime: Long = 0L
-    var mCurrentFlagTime = flagTime
+    var mCurrentFlagTime = mFlagTime
         internal set
 
     companion object {
 
-        const val BASE_FLAG_TIME = 500L
+        const val BASE_FLAG_TIME_500 = 500L
+        const val BASE_FLAG_TIME_1000 = 1000L
 
         private var mBaseEvent: BaseEvent? = null
 
-        fun newInstance(flagTime: Long = BASE_FLAG_TIME) = BaseEvent(flagTime)
+        fun newInstance(initFlagTime: Long = BASE_FLAG_TIME_500): BaseEvent {
+            val baseEvent = BaseEvent()
+            baseEvent.mFlagTime = initFlagTime
+            return baseEvent
+        }
 
-        fun getSIngleInstance(flagTime: Long = BASE_FLAG_TIME): BaseEvent {
-            if (mBaseEvent == null) synchronized(this) { if (mBaseEvent == null) mBaseEvent = BaseEvent(flagTime) }
+        fun getSIngleInstance(): BaseEvent {
+            if (mBaseEvent == null) {
+                synchronized(this) {
+                    if (mBaseEvent == null) {
+                        mBaseEvent = BaseEvent()
+                    }
+                }
+            }
             return mBaseEvent!!
         }
     }
 
 
-    fun @receiver:FloatRange(from = 1.0, to = 2.0) Float.range() {
-        // TODO 1 = 0！
-    }
-
+    /**
+     * ● 处理事件间隔实现
+     *
+     * ● 2023-09-10 23:09:46 周日 下午
+     */
     internal fun <T> getIntervalResult(
         type: T,
         msg: String? = null,
@@ -50,6 +68,11 @@ open class BaseEvent private constructor(flagTime: Long) {
         }
     }
 
+    /**
+     * ● 处理事件间隔
+     *
+     * ● 2023-09-10 23:10:36 周日 下午
+     */
     internal fun <T> doOnIntervalResult(
         type: T,
         baseEvent: BaseEvent,
@@ -65,8 +88,7 @@ open class BaseEvent private constructor(flagTime: Long) {
         }
     }
 
-    internal fun getGapTime() =
-        (mCurrentFlagTime - (mCurrentTime - mLastClickGapTime)).absoluteValue
+    internal fun getGapTime() = (mCurrentFlagTime - (mCurrentTime - mLastClickGapTime)).absoluteValue
 
     // 事件限制仅一次初始化
     fun eventInitLimitOnce(runnable: Runnable): Unit? {

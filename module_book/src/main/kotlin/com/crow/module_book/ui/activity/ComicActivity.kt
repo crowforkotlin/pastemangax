@@ -28,11 +28,13 @@ import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.immersureFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
 import com.crow.base.tools.extensions.isDarkMode
+import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.activity.BaseMviActivity
+import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
-import com.crow.base.ui.viewmodel.doOnSuccess
+import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_book.databinding.BookActivityComicBinding
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.ui.fragment.comic.reader.BookClassicComicFragment
@@ -126,7 +128,14 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      *
      * ● 2023-07-08 01:06:02 周六 上午
      */
-    override fun initListener() { mGestureHelper =  GestureHelper(this, this) }
+    override fun initListener() {
+
+        mGestureHelper =  GestureHelper(this, this)
+
+        mBinding.comicToolbar.navigateIconClickGap {
+            finishActivity()
+        }
+    }
 
     /**
      * ● 初始化数据
@@ -180,7 +189,18 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                                 }
                                 showLoadingAnim() { dialog -> dialog.applyWindow(dimAmount = 0.3f, isFullScreen = true) }
                             }
-                            .doOnSuccess(::dismissLoadingAnim)
+                            .doOnError { _, _ ->
+                                toast(getString(baseR.string.BaseLoadingError))
+                                dismissLoadingAnim { finishActivity() }
+                            }
+                            .doOnResult {
+                                dismissLoadingAnim()
+                                val page = intent.comicpage
+                                if (page != null) {
+                                    mBinding.comicToolbar.title = page.mComic.mName
+                                    mBinding.comicToolbar.subtitle = page.mChapter.mName
+                                }
+                            }
                     }
                 }
             }

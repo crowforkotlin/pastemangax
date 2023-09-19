@@ -59,7 +59,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
             return
         }
 
-        if (mBaseEvent.getBoolean(HomeFragment.SEARCH_TAG) == true) return
+        if (mBaseEvent.getBoolean(NewHomeFragment.SEARCH_TAG) == true) return
 
         mHomeVM.input(HomeIntent.SearchNovel(keyword, when(mBinding.homeSearchNovelChipGroup.checkedChipId) {
             mBinding.homeSearchNovelChipAll.id -> ""
@@ -68,7 +68,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
             else -> ""
         }))
 
-        mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, true)
+        mBaseEvent.setBoolean(NewHomeFragment.SEARCH_TAG, true)
 
         repeatOnLifecycle {
 
@@ -110,10 +110,10 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
 
         mHomeVM.onOutput { intent ->
             if (intent is HomeIntent.SearchNovel) {
-                val mTag = mBaseEvent.getBoolean(HomeFragment.SEARCH_TAG) ?: false
+                val mTag = mBaseEvent.getBoolean(NewHomeFragment.SEARCH_TAG) ?: false
                 intent.mBaseViewState
                     .doOnLoading { if(mTag) showLoadingAnim() }
-                    .doOnSuccess { mBaseEvent.setBoolean(HomeFragment.SEARCH_TAG, false) }
+                    .doOnSuccess { mBaseEvent.setBoolean(NewHomeFragment.SEARCH_TAG, false) }
                     .doOnError { _, msg ->
                         dismissLoadingAnim()
                         msg?.logError()

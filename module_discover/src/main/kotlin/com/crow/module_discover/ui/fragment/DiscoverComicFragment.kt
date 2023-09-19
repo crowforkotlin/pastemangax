@@ -8,11 +8,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.entity.AppConfigEntity
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.coroutine.launchDelay
@@ -21,12 +18,12 @@ import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
-import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
@@ -35,6 +32,7 @@ import com.crow.module_discover.databinding.DiscoverFragmentComicBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.ui.adapter.DiscoverComicAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
+import kotlinx.coroutines.yield
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.qualifier.named
@@ -51,11 +49,14 @@ import com.crow.base.R as baseR
 class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
     companion object {
-        const val Comic = "Discover_Comic"
 
-        fun newInstance() = DiscoverComicFragment() }
 
-    /** ● (Activity级别) 发现VM */
+        const val COMIC = "Discover_Comic"
+
+        fun newInstance() = DiscoverComicFragment()
+    }
+
+    /** ● (Activity级别) 发现页VM */
     private val mDiscoverVM by sharedViewModel<DiscoverViewModel>()
 
     /** ● 漫画适配器 */
@@ -66,6 +67,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         repeatOnLifecycle {
             mDiscoverVM.mDiscoverComicHomeFlowPager?.collect {
                 mDiscoverComicAdapter.submitData(it)
+                yield()
             }
         }
     }
@@ -85,15 +87,19 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
     /** ● 初始化监听事件 */
     override fun initListener() {
-      /*  launchDelay(4000L) {
-            repeat(Int.MAX_VALUE) {
-                delay(20L)
-                "${mDiscoverComicAdapter.itemCount}".logMsg()
-                mBinding.discoverComicRv.scrollToPosition(mDiscoverComicAdapter.itemCount - 1)
+
+        // 处理双击事件
+        parentFragmentManager.setFragmentResultListener("onDoubleTap_Discover_Comic", this) { _, _ ->
+            val first = mBinding.discoverComicRv.findFisrtVisibleViewPosition()
+            if (first > 0) {
+                mBinding.discoverComicRv.onInterceptScrollRv(toPosition = 0, precisePosition = first)
+            } else {
+                mBinding.discoverComicRv.onInterceptScrollRv(precisePosition = first)
             }
-        }*/
-        // 设置容器Fragment的回调监听r
-        parentFragmentManager.setFragmentResultListener(Comic, this) { _, bundle ->
+        }
+
+        // 设置容器Fragment的回调监听
+        parentFragmentManager.setFragmentResultListener(COMIC, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 1) {
                 mBinding.discoverComicRefresh.autoRefreshAnimationOnly()
                 mBinding.discoverComicRefresh.finishRefresh((BASE_ANIM_300L.toInt() shl 1) or 0xFF)
@@ -112,17 +118,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
         // 更多选项 点击监听
         mBinding.discoverComicAppbar.discoverAppbarToolbar.menu[0].doOnClickInterval { toast("此功能或许将在下个版本中完善....") }
-
-        // 滑动监听
-        mBinding.discoverComicRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (AppConfigEntity.getInstance().mAppFirstInit)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    toast("${(recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()} / ${recyclerView.adapter?.itemCount}")
-                }
-            }
-        })
     }
 
     /** ● 初始化视图 */
@@ -152,9 +147,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     }
 
     /** ● 初始化观察者 */
-    override fun initObserver(savedInstanceState: Bundle?) {
-
-        val baseEvent = BaseEvent.newInstance()
+    override fun initObserver(saveInstanceState: Bundle?) {
 
         // 意图观察者
         mDiscoverVM.onOutput { intent ->
@@ -182,7 +175,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                             }
                         }
                 }
-                else -> {}
             }
         }
     }
@@ -199,6 +191,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         AppGlideProgressFactory.doReset()
-        parentFragmentManager.clearFragmentResultListener(Comic)
+        parentFragmentManager.clearFragmentResultListener(COMIC)
     }
 }

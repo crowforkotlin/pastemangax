@@ -12,11 +12,12 @@ import com.crow.base.copymanga.BaseUser
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncClear
 import com.crow.base.tools.extensions.asyncDecode
-import com.crow.base.tools.extensions.safeAs
+import com.crow.base.tools.extensions.dp2px
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_user.model.UserIntent
 import com.crow.module_user.model.resp.LoginResultsOkResp
+import com.crow.module_user.model.resp.UserResultErrorResp
 import com.crow.module_user.network.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,19 +62,21 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
         // 200代表 登录 请求成功
         flowResult(intent, repository.login(intent.username, intent.password)) { value ->
             if (value.mCode == HttpURLConnection.HTTP_OK) {
-                intent.copy(loginResultsOkResp = safeAs<LoginResultsOkResp>(value.mResults)?.also {
+                intent.copy(loginResultsOkResp = toTypeEntity<LoginResultsOkResp>(value.mResults)?.also {
                     mIconUrl = it.mIconUrl
                     _userInfo.emit(it)
                 })
             }
-            else intent.copy(userResultErrorResp = (safeAs(value.mResults) ?: return@flowResult intent))
+            else {
+                intent.copy(userResultErrorResp = (toTypeEntity<UserResultErrorResp>(value.mResults) ?: return@flowResult intent))
+            }
         }
     }
 
     private fun doReg(intent: UserIntent.Reg) {
         flowResult(intent, repository.reg(intent.username, intent.password)) { value ->
-            if (value.mCode == HttpURLConnection.HTTP_OK) intent.copy(regResultsOkResp = (safeAs(value.mResults) ?: return@flowResult intent))
-            else intent.copy(userResultErrorResp = (safeAs(value.mResults) ?: return@flowResult intent))
+            if (value.mCode == HttpURLConnection.HTTP_OK) intent.copy(regResultsOkResp = (toTypeEntity(value.mResults) ?: return@flowResult intent))
+            else intent.copy(userResultErrorResp = (toTypeEntity(value.mResults) ?: return@flowResult intent))
         }
     }
 
@@ -106,7 +109,7 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
             Glide.with(context)
                 .load(if (mIconUrl == null) baseR.drawable.base_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl))
                 .placeholder(baseR.drawable.base_icon_app)
-                .apply(RequestOptions().circleCrop().override(context.resources.getDimensionPixelSize(com.crow.base.R.dimen.base_dp36)))
+                .apply(RequestOptions().circleCrop().override(context.dp2px(48f).toInt()))
                 .into(object : CustomTarget<Drawable>() {
                     override fun onLoadCleared(placeholder: Drawable?) {}
                     override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { doOnReady(resource) }

@@ -1,7 +1,6 @@
 package com.crow.base.copymanga
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
 
 /**
@@ -13,15 +12,14 @@ import kotlinx.serialization.Serializable
  * @constructor Create empty Home page resp
  */
 
-@Serializable
 data class BaseResultResp<T>(
 
-    @SerialName(value = "code")
+    @Json(name =  "code")
     val mCode: Int,
 
-    @SerialName(value = "message")
+    @Json(name =  "message")
     val mMessage: String,
 
-    @SerialName(value = "results")
+    @Json(name =  "results")
     val mResults: T
 )

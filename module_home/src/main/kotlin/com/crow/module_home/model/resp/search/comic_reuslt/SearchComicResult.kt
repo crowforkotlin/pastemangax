@@ -1,7 +1,6 @@
 package com.crow.module_home.model.resp.search.comic_reuslt
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
 
 /**
@@ -17,27 +16,26 @@ import kotlinx.serialization.Serializable
  * @constructor Create empty Result
  */
 
-@Serializable
 data class SearchComicResult (
 
-    @SerialName(value = "alias")
+    @Json(name =  "alias")
     val mAlias: String?,
 
-    @SerialName(value = "author")
+    @Json(name =  "author")
     val mAuthor: List<Author>,
 
-    @SerialName(value = "cover")
+    @Json(name =  "cover")
     val mImageUrl: String,
 
-    @SerialName(value = "img_type")
+    @Json(name =  "img_type")
     val mImgType: Int?,
 
-    @SerialName(value = "name")
+    @Json(name =  "name")
     val mName: String,
 
-    @SerialName(value = "path_word")
+    @Json(name =  "path_word")
     val mPathWord: String,
 
-    @SerialName(value = "popular")
+    @Json(name =  "popular")
     val mPopular: Int
 )

@@ -2,28 +2,26 @@ package com.crow.module_bookshelf.model.resp.bookshelf_comic
 
 
 import com.crow.module_bookshelf.model.resp.bookshelf.LastBrowse
-import kotlinx.serialization.Polymorphic
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
+
 data class BookshelfComicResults(
 
-    @SerialName(value = "b_folder")
+    @Json(name =  "b_folder")
     val mBFolder: Boolean,
 
-    @SerialName(value = "comic")
+    @Json(name =  "comic")
     val mComic: Comic,
 
-    @SerialName(value = "folder_id")
-    val mFolderId: @Polymorphic Any?,
+    @Json(name =  "folder_id")
+    val mFolderId: Any?,
 
-    @SerialName(value = "last_browse")
+    @Json(name =  "last_browse")
     val mLastBrowse: LastBrowse?,
 
-    @SerialName(value = "name")
-    val mName: @Polymorphic Any?,
+    @Json(name =  "name")
+    val mName: Any?,
 
-    @SerialName(value = "uuid")
+    @Json(name =  "uuid")
     val mUuid: Int
 )

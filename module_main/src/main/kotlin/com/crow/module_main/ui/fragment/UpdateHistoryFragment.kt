@@ -47,13 +47,6 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
     private val mMainVM by viewModel<MainViewModel>()
 
     /**
-     * ● 更新历史记录 适配器
-     *
-     * ● 2023-06-21 00:51:39 周三 上午
-     */
-    private val mUpdateAdapter: UpdateHistoryAdapter by lazy { UpdateHistoryAdapter(mutableListOf()) }
-
-    /**
      * ● 返回
      *
      * ● 2023-06-21 00:12:29 周三 上午
@@ -79,8 +72,7 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
      */
     override fun onStart() {
         super.onStart()
-        mBackDispatcher =
-            requireActivity().onBackPressedDispatcher.addCallback(this) { navigateUp() }
+        mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) { navigateUp() }
     }
 
     /**
@@ -91,7 +83,6 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
     override fun initView(savedInstanceState: Bundle?) {
         immersionPadding(mBinding.updateAppbar, paddingNaviateBar = false)
         immersionPadding(mBinding.updateRv, paddingStatusBar = false)
-        mBinding.updateRv.adapter = mUpdateAdapter
     }
 
 
@@ -122,7 +113,7 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
      *
      * ● 2023-06-21 00:49:27 周三 上午
      */
-    override fun initObserver(savedInstanceState: Bundle?) {
+    override fun initObserver(saveInstanceState: Bundle?) {
 
         mMainVM.onOutput { intent ->
             when (intent) {
@@ -130,8 +121,8 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
                     intent.mBaseViewState
                         .doOnLoading { mBinding.updateRefresh.autoRefreshAnimationOnly() }
                         .doOnError { _, _ ->
-                            mBinding.updateTipsError.animateFadeIn()
                             if (mBinding.updateRv.isVisible) mBinding.updateRv.animateFadeOutWithEndInVisibility()
+                            mBinding.updateTipsError.animateFadeIn()
                             mBinding.updateRefresh.finishRefresh(BASE_ANIM_300L.toInt() shl 1)
                         }
                         .doOnSuccess { mBinding.updateRefresh.finishRefresh(BASE_ANIM_300L.toInt() shl 1) }
@@ -141,7 +132,8 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
                             if (mBinding.updateRv.isInvisible) mBinding.updateRv.animateFadeIn()
                             if (mBinding.updateTipsError.isVisible) mBinding.updateTipsError.animateFadeOutWithEndInVisible()
                             viewLifecycleOwner.lifecycleScope.launch {
-                                mUpdateAdapter.doNotify(intent.appUpdateResp, BASE_ANIM_100L / 5)
+                                mBinding.updateRv.adapter = UpdateHistoryAdapter()
+                                (mBinding.updateRv.adapter as UpdateHistoryAdapter).notifyInstet(intent.appUpdateResp.mUpdates, BASE_ANIM_100L)
                             }
                         }
                 }

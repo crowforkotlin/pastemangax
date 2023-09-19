@@ -2,8 +2,8 @@ package com.crow.module_home.model.resp.search
 
 
 import com.crow.module_home.model.resp.search.comic_reuslt.SearchComicResult
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
+
 
 /**
  * Comic search resp
@@ -14,18 +14,17 @@ import kotlinx.serialization.Serializable
  * @property mTotal 总数
  * @constructor Create empty Comic search resp
  */
-@Serializable
 data class SearchComicResp(
 
-    @SerialName(value = "limit")
+    @Json(name =  "limit")
     val mLimit: Int,
 
-    @SerialName(value = "list")
+    @Json(name =  "list")
     val mList: List<SearchComicResult>,
 
-    @SerialName(value = "offset")
+    @Json(name =  "offset")
     val mOffset: Int,
 
-    @SerialName(value = "total")
+    @Json(name =  "total")
     val mTotal: Int
 )

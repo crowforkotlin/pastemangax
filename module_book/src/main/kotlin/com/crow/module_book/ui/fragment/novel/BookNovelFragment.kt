@@ -33,6 +33,7 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_book.R
+import com.crow.module_book.model.entity.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.NovelChapterResp
@@ -52,8 +53,8 @@ class BookNovelFragment : BookFragment() {
      * ● 2023-06-24 23:45:12 周六 下午
      */
     init {
-        FlowBus.with<String>(BaseEventEnum.UpdateChapter.name).register(this) {
-            mBookVM.updateBookChapterOnDB(mBookVM.mNovelInfoPage?.mNovel?.mName ?: return@register, it, BookType.NOVEL)
+        FlowBus.with<BookChapterEntity>(BaseEventEnum.UpdateChapter.name).register(this) {
+            mBookVM.updateBookChapterOnDB(it)
         }
     }
 

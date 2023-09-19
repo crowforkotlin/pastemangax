@@ -16,10 +16,10 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/main_bottom_navigation"
+        style="@style/Base.Theme.BG"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        style="@style/Base.Theme.BG"
         app:elevation="5dp"
         app:labelVisibilityMode="selected"
         app:menu="@menu/main_container_bottom_menu" />

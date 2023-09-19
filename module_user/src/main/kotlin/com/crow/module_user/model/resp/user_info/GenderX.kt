@@ -1,14 +1,13 @@
 package com.crow.module_user.model.resp.user_info
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
+
 data class GenderX(
 
-    @SerialName(value = "display")
+    @Json(name =  "display")
     val mDisplay: String,
 
-    @SerialName(value = "value")
+    @Json(name =  "value")
     val mValue: Int
 )

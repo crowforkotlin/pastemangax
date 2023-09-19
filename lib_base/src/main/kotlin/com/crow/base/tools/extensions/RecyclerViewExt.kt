@@ -13,7 +13,7 @@ fun RecyclerView.findViewPosition(x: Float, y: Float): Int {
 
 fun RecyclerView.findFisrtVisibleViewPosition(): Int {
     var pos = -1
-    if ( layoutManager is LinearLayoutManager) {
+    if (layoutManager is LinearLayoutManager) {
         pos = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
     }
     return pos

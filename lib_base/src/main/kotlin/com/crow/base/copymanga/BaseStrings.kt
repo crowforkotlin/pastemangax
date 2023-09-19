@@ -10,7 +10,7 @@ object BaseStrings {
 
     object URL {
 
-        fun setCopyMangaUrl(tld: String) { CopyManga = "https://api.copymanga$tld" }
+        fun setCopyMangaUrl(tld: String) { COPYMANGA = "https://api.copymanga$tld" }
 
         // (Top-Level Domain，TLD)
         const val CopyManga_TLD_TV = ".tv"
@@ -21,7 +21,7 @@ object BaseStrings {
         const val Crow_QQGroup = "https://gitee.com/llzzppFlash/copy-manga/raw/main/qq_group"
 
         const val MangaFuna = "https://hi77-overseas.mangafuna.xyz/"
-        var CopyManga = "https://api.copymanga$CopyManga_TLD_TV"
+        var COPYMANGA = "https://api.copymanga$CopyManga_TLD_TV"
         const val Login = "/api/v3/login"
         const val Reg = "/api/v3/register"
 

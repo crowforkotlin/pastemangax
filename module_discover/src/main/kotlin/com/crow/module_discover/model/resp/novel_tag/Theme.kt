@@ -1,22 +1,18 @@
 package com.crow.module_discover.model.resp.novel_tag
 
+import com.squareup.moshi.Json
 
-import kotlinx.serialization.Polymorphic
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class Theme(
-    @SerialName(value = "color_h5")
-    val colorH5: @Polymorphic Any?,
-    @SerialName(value = "count")
+    @Json(name =  "color_h5")
+    val colorH5: Any?,
+    @Json(name =  "count")
     val count: Int,
-    @SerialName(value = "initials")
+    @Json(name =  "initials")
     val initials: Int,
-    @SerialName(value = "logo")
-    val logo: @Polymorphic Any?,
-    @SerialName(value = "name")
+    @Json(name =  "logo")
+    val logo: Any?,
+    @Json(name =  "name")
     val name: String,
-    @SerialName(value = "path_word")
+    @Json(name =  "path_word")
     val pathWord: String
 )

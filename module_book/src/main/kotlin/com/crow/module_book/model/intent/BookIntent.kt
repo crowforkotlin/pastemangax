@@ -2,10 +2,10 @@ package com.crow.module_book.model.intent
 
 import com.crow.base.copymanga.BaseNullableResultResp
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
-import com.crow.module_book.model.entity.comic.reader.ReaderContent
 import com.crow.module_book.model.resp.ComicBrowserResp
 import com.crow.module_book.model.resp.ComicChapterResp
 import com.crow.module_book.model.resp.ComicInfoResp
+import com.crow.module_book.model.resp.ComicPageResp
 import com.crow.module_book.model.resp.NovelBrowserResp
 import com.crow.module_book.model.resp.NovelCatelogueResp
 import com.crow.module_book.model.resp.NovelChapterResp
@@ -18,7 +18,7 @@ open class BookIntent : BaseMviIntent() {
 
     data class GetComicChapter(val pathword: String, val comicChapter: ComicChapterResp? = null, val invalidResp: String? = null) : BookIntent()
 
-    data class GetComicPage(val pathword: String, val uuid: String, val readerContent: ReaderContent? = null, val enableLoading: Boolean = false) : BookIntent()
+    data class GetComicPage(val pathword: String, val uuid: String, val comicpage: ComicPageResp? = null, val enableLoading: Boolean = false) : BookIntent()
 
     data class GetComicBrowserHistory(val pathword: String, val comicBrowser: ComicBrowserResp? = null) : BookIntent()
 

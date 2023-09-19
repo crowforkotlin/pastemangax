@@ -1,7 +1,6 @@
 package com.crow.module_home.model.resp.homepage.results
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
 
 /**
@@ -18,33 +17,32 @@ import kotlinx.serialization.Serializable
  * @constructor Create empty Hot comic result
  */
 
-@Serializable
 data class ComicResultX(
 
-    @SerialName(value = "name")
+    @Json(name =  "name")
     val mName: String,
 
-    @SerialName(value = "path_word")
+    @Json(name =  "path_word")
     val mPathWord: String,
 
-    @SerialName(value = "author")
+    @Json(name =  "author")
     val mAuthorResult: List<AuthorResult>,
 
-    @SerialName(value = "img_type")
+    @Json(name =  "img_type")
     val mImageType: Int,
 
-    @SerialName(value = "theme")
+    @Json(name =  "theme")
     val mTheme: List<ThemeResult>,
 
-    @SerialName(value = "cover")
+    @Json(name =  "cover")
     val mImageUrl: String,
 
-    @SerialName(value = "popular")
+    @Json(name =  "popular")
     val mPopular: Int,
 
-    @SerialName(value = "datetime_updated")
+    @Json(name =  "datetime_updated")
     val mDatetimeUpdated: String,
 
-    @SerialName(value = "last_chapter_name")
+    @Json(name =  "last_chapter_name")
     val mLastChapterName: String,
 )

@@ -29,7 +29,7 @@ class BookshelfViewModel(val repository: BookShelfRepository) : BaseMviViewModel
     var mBookshelfComicFlowPager : Flow<PagingData<BookshelfComicResults>>? = null
     var mBookshelfNovelFlowPager : Flow<PagingData<BookshelfNovelResults>>? = null
 
-    var mOrder = "-datetime_modifier"
+    private var mOrder = "-datetime_modifier"
 
     // 默认加载20页 第一次初始化加载的大小默认为 （PageSize * 3）这里也设置成20
     fun getBookshelfComic(intent: BookshelfIntent.GetBookshelfComic) {
@@ -60,6 +60,14 @@ class BookshelfViewModel(val repository: BookShelfRepository) : BaseMviViewModel
                 }
             }
         ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
+    }
+
+    fun sendGetBookshelfInent(order: String) {
+
+        mOrder = order
+
+        // 发送获取书架 “漫画” 的意图 需要动态收集书架状态才可
+        input(BookshelfIntent.GetBookshelfComic())
     }
 
     override fun dispatcher(intent: BookshelfIntent) {

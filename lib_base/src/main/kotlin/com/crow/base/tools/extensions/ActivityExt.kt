@@ -23,6 +23,6 @@ inline fun <reified T> Context.startActivity(lambda: Intent.() -> Unit) {
     startActivity(intent)
 }
 
-fun AppCompatActivity.repeatOnLifecycle(state: Lifecycle.State = Lifecycle.State.STARTED, lifecycleCallBack: LifecycleCallBack) {
-    lifecycleScope.launch { repeatOnLifecycle(state) { lifecycleCallBack.onLifeCycle(this) } }
+fun AppCompatActivity.repeatOnLifecycle(state: Lifecycle.State = Lifecycle.State.STARTED, lifecycleStateCallBack: LifecycleStateCallBack) {
+    lifecycleScope.launch { repeatOnLifecycle(state) { lifecycleStateCallBack.onLifeCycle(this) } }
 }

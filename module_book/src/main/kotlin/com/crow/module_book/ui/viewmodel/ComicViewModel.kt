@@ -6,6 +6,8 @@ import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.createCoroutineExceptionHandler
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
+import com.crow.module_book.model.entity.BookChapterEntity
+import com.crow.module_book.model.entity.BookType
 import com.crow.module_book.model.entity.comic.reader.ReaderContent
 import com.crow.module_book.model.entity.comic.reader.ReaderInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderState
@@ -109,14 +111,24 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         val result = flowResult(repository.getComicPage(intent.pathword, intent.uuid), intent) { value ->
             val readerContent = getReaderContent(value.mResults.mChapter)
             val _intent = if (isNext == null) {
-                intent.copy(readerContent = readerContent)
+                intent.copy(comicpage = value.mResults)
             } else {
-                intent.copy(readerContent = readerContent)
+                intent.copy(comicpage = value.mResults)
             }
             _mContent.value = readerContent
             _intent
         }
-        FlowBus.with<String>(BaseEventEnum.UpdateChapter.name).post(result.mResults.mChapter.mName)
+        val chapter = result.mResults.mChapter
+        FlowBus.with<BookChapterEntity>(BaseEventEnum.UpdateChapter.name).post(
+            BookChapterEntity(
+                mBookName = result.mResults.mComic.mName,
+                mChapterType = BookType.COMIC,
+                mChapterName = chapter.mName,
+                mChapterUUID = chapter.mUuid,
+                mChapterNextUUID = chapter.mNext,
+                mChapterPrevUUID = chapter.mPrev
+            )
+        )
     }
 
     /**

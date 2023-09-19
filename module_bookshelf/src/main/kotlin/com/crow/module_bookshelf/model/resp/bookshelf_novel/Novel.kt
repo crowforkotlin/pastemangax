@@ -2,46 +2,43 @@ package com.crow.module_bookshelf.model.resp.bookshelf_novel
 
 
 import com.crow.module_bookshelf.model.resp.bookshelf.Author
-import kotlinx.serialization.Polymorphic
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
 data class Novel(
 
-    @SerialName(value = "author")
+    @Json(name =  "author")
     val mAuthor: List<Author>,
 
-    @SerialName(value = "b_display")
+    @Json(name =  "b_display")
     val mBDisplay: Boolean,
 
-    @SerialName(value = "cover")
+    @Json(name =  "cover")
     val mCover: String,
 
-    @SerialName(value = "datetime_updated")
+    @Json(name =  "datetime_updated")
     val mDatetimeUpdated: String,
 
-    @SerialName(value = "last_chapter_id")
+    @Json(name =  "last_chapter_id")
     val mLastChapterId: String,
 
-    @SerialName(value = "last_chapter_name")
+    @Json(name =  "last_chapter_name")
     val mLastChapterName: String,
 
-    @SerialName(value = "name")
+    @Json(name =  "name")
     val mName: String,
 
-    @SerialName(value = "path_word")
+    @Json(name =  "path_word")
     val mPathWord: String,
 
-    @SerialName(value = "popular")
+    @Json(name =  "popular")
     val mPopular: Int,
 
-    @SerialName(value = "status")
+    @Json(name =  "status")
     val mStatus: Int,
 
-    @SerialName(value = "theme")
-    val mTheme: List<@Polymorphic Any>,
+    @Json(name =  "theme")
+    val mTheme: List<Any>,
 
-    @SerialName(value = "uuid")
+    @Json(name =  "uuid")
     val mUuid: String
 )

@@ -5,23 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-<!--
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
--->
-
-    <!-- Android 13版本适配，细化存储权限 -->
-<!--
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
--->
 
     <application
         android:name=".MainApplication"
@@ -52,14 +37,24 @@
             android:name="com.crow.module_book.ui.activity.ComicActivity"
             android:exported="true"
             android:theme="@style/Book.Theme.CopyManga" />
-
         <!--
                 <activity
                     android:name="com.crow.module_anime.ui.activity.AnimeActivity"
                     android:exported="true"
                     android:theme="@style/Anime.Theme.CopyManga" />
         -->
-
+        <!--
+        <activity
+            android:name=".ui.activity.TestActivity"
+            android:exported="true"
+            android:theme="@style/Base.Theme.Material3_Project"
+            android:windowSoftInputMode="adjustNothing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        -->
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="true"
@@ -69,7 +64,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

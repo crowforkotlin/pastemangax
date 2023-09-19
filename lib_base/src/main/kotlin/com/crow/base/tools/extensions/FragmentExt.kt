@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.withStateAtLeast
 import com.crow.base.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -22,17 +23,32 @@ import kotlinx.coroutines.launch
  * @Description: FragmentExt
  * @formatter:on
  **************************/
-fun interface LifecycleCallBack {
+fun interface LifecycleStateCallBack {
     suspend fun onLifeCycle(scope: CoroutineScope)
+}
+
+fun interface LifecycleState {
+    fun onLifeCycle(scope: CoroutineScope)
 }
 
 fun Fragment.repeatOnLifecycle(
     state: Lifecycle.State = Lifecycle.State.STARTED,
-    lifecycleCallBack: LifecycleCallBack,
+    lifecycleStateCallBack: LifecycleStateCallBack,
 ) {
     viewLifecycleOwner.lifecycleScope.launch {
         viewLifecycleOwner.repeatOnLifecycle(state) {
-            lifecycleCallBack.onLifeCycle(this)
+            lifecycleStateCallBack.onLifeCycle(this)
+        }
+    }
+}
+
+fun Fragment.withLifecycle(
+    state: Lifecycle.State = Lifecycle.State.STARTED,
+    lifecycleState: LifecycleState,
+) {
+    viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.withStateAtLeast(state) {
+            lifecycleState.onLifeCycle(this)
         }
     }
 }

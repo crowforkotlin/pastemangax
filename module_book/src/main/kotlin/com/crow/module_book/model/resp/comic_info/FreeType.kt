@@ -1,13 +1,12 @@
 package com.crow.module_book.model.resp.comic_info
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
 
-@Serializable
+
 data class FreeType(
-    @SerialName(value = "display")
+    @Json(name =  "display")
     val mDisplay: String,
 
-    @SerialName(value = "value")
+    @Json(name =  "value")
     val mValue: Int
 )

@@ -1,22 +1,19 @@
 package com.crow.module_discover.model.resp
 
-
 import com.crow.module_discover.model.resp.novel_home.DiscoverNovelHomeResult
+import com.squareup.moshi.Json
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class DiscoverNovelHomeResp(
-    @SerialName(value = "limit")
+    @Json(name =  "limit")
     val mLimit: Int,
 
-    @SerialName(value = "list")
+    @Json(name =  "list")
     val mList: List<DiscoverNovelHomeResult>,
 
-    @SerialName(value = "offset")
+    @Json(name =  "offset")
     val mOffset: Int,
 
-    @SerialName(value = "total")
+    @Json(name =  "total")
     val mTotal: Int
 )
