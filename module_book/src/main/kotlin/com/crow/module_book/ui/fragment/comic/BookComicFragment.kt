@@ -1,7 +1,9 @@
 package com.crow.module_book.ui.fragment.comic
 
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
@@ -36,6 +38,7 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_book.R
+import com.crow.module_book.model.entity.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.ComicChapterResp
@@ -58,8 +61,8 @@ class BookComicFragment : BookFragment() {
      * ● 2023-06-24 23:45:12 周六 下午
      */
     init {
-        FlowBus.with<String>(BaseEventEnum.UpdateChapter.name).register(this) {
-            mBookVM.updateBookChapterOnDB(mBookVM.mComicInfoPage?.mComic?.mName ?: return@register, it, BookType.COMIC)
+        FlowBus.with<BookChapterEntity>(BaseEventEnum.UpdateChapter.name).register(this) { chapterEntity ->
+            mBookVM.updateBookChapterOnDB(chapterEntity)
         }
     }
 
@@ -77,7 +80,10 @@ class BookComicFragment : BookFragment() {
      */
     private fun showComicInfoPage() {
         val comicInfoPage = mBookVM.mComicInfoPage?.mComic ?: return
+
+        // 在DB中查找已读章节
         mBookVM.findReadedBookChapterOnDB(comicInfoPage.mName, BookType.COMIC)
+
         mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(comicInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppGlideProgressFactory.getProgressString(percentage) }
 
         Glide.with(this)
@@ -221,7 +227,11 @@ class BookComicFragment : BookFragment() {
                 putExtra(ComicViewModel.UUID, comic.uuid)
                 putExtra(BaseStrings.PATH_WORD, comic.comicPathWord)
             }
-            requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            if (Build.VERSION.SDK_INT >= 34) {
+                requireActivity().overrideActivityTransition(AppCompatActivity.OVERRIDE_TRANSITION_CLOSE, android.R.anim.fade_in, android.R.anim.fade_out)
+            } else {
+                requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            }
             if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mComicChapterRvAdapter?.mChapterName = comic.name
         }
 
@@ -234,8 +244,8 @@ class BookComicFragment : BookFragment() {
      *
      * ● 2023-06-15 23:07:45 周四 下午
      */
-    override fun initObserver(savedInstanceState: Bundle?) {
-        super.initObserver(savedInstanceState)
+    override fun initObserver(saveInstanceState: Bundle?) {
+        super.initObserver(saveInstanceState)
 
         mBookVM.bookChapterEntity.onCollect(this) { chapter ->
             if (mBaseEvent.getBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED) == null && chapter != null) {
@@ -274,6 +284,7 @@ class BookComicFragment : BookFragment() {
     override fun initListener() {
         super.initListener()
 
+        // 卡片
         mBinding.bookInfoCardview.doOnClickInterval {
             navigateImage(get<Fragment>(named(Fragments.Image.name)).also {
                 it.arguments = bundleOf(
@@ -283,6 +294,7 @@ class BookComicFragment : BookFragment() {
             })
         }
 
+        // 添加到书架
         mBinding.bookInfoAddToBookshelf.doOnClickInterval{
             if (BaseUser.CURRENT_USER_TOKEN.isEmpty()) {
                 toast(getString(R.string.book_add_invalid))
@@ -290,6 +302,34 @@ class BookComicFragment : BookFragment() {
             }
             mBookVM.input(BookIntent.AddComicToBookshelf(mBookVM.mUuid ?: return@doOnClickInterval, if (mBinding.bookInfoAddToBookshelf.text == getString(R.string.book_comic_add_to_bookshelf)) 1 else 0))
         }
+
+        // 阅读
+        mBinding.bookInfoReadnow.doOnClickInterval {
+            if ((mComicChapterRvAdapter ?: return@doOnClickInterval).itemCount == 0) return@doOnClickInterval
+            val chapter = mBookVM.bookChapterEntity.value
+            if (chapter == null) {
+                val adapterChapter = mComicChapterRvAdapter!!.getItem(0)
+                startComicActivity(adapterChapter.prev, adapterChapter.next, adapterChapter.uuid, adapterChapter.comicPathWord, adapterChapter.name)
+            } else {
+                val pathword = mBookVM.mComicInfoPage?.mComic?.mPathWord ?: return@doOnClickInterval
+                startComicActivity(chapter.mChapterPrevUUID, chapter.mChapterNextUUID, chapter.mChapterUUID, pathword, chapter.mChapterName)
+            }
+        }
+    }
+
+    private fun startComicActivity(prev: String?, next: String?, uuid: String, pathword: String, chapterName: String) {
+        mContext.startActivity<ComicActivity> {
+            putExtra(ComicViewModel.PREV_UUID, prev)
+            putExtra(ComicViewModel.NEXT_UUID, next)
+            putExtra(ComicViewModel.UUID, uuid)
+            putExtra(BaseStrings.PATH_WORD, pathword)
+        }
+        if (Build.VERSION.SDK_INT >= 34) {
+            requireActivity().overrideActivityTransition(AppCompatActivity.OVERRIDE_TRANSITION_CLOSE, android.R.anim.fade_in, android.R.anim.fade_out)
+        } else {
+            requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        }
+        if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mComicChapterRvAdapter?.mChapterName = chapterName
     }
 
     /**

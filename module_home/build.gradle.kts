@@ -76,9 +76,9 @@ dependencies {
     // 引入Base库
     implementation(project(mapOf("path" to ":lib_base")))
 
-    implementation(compose.coil)
+    // Glide Compose Alpha Version
+    implementation(compose.glide)
 
+    // pager for compose
     implementation(compose.pager)
-
-    implementation(compose.pager.indicator)
 }

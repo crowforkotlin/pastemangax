@@ -31,4 +31,5 @@ object Versions {
     const val gson_version = "2.10.1"
     const val media3_version = "1.0.1"
     const val room_version = "2.5.1"
+    const val preference_version = "1.2.1"
 }

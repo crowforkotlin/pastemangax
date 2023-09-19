@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Base.Theme.BG"
@@ -14,21 +15,23 @@
 
     <ImageView
         android:id="@+id/settings_rv_icon"
-        android:layout_width="@dimen/base_dp24"
-        android:layout_height="@dimen/base_dp24"
+        android:layout_width="@dimen/base_dp20"
+        tools:src="@drawable/main_ic_personalise_24dp"
+        android:layout_height="@dimen/base_dp20"
         android:layout_gravity="center"
         app:tint="@color/base_color_asc" />
 
     <TextView
         android:id="@+id/settings_rv_text"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/base_dp48"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/base_dp20"
         android:gravity="center_vertical"
         android:maxLines="2"
-        android:textSize="@dimen/base_sp18"
+        android:textColor="@color/base_color_asc"
+        android:textSize="@dimen/base_sp16"
         android:textStyle="bold"
-        tools:text="@string/BaseTodoTextView" />
+        tools:text="个性化" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

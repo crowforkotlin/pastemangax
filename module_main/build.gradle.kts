@@ -72,5 +72,6 @@ dependencies {
     api(project(mapOf("path" to ":module_book")))
     api(project(mapOf("path" to ":module_user")))
 
+
     // api(project(mapOf("path" to ":module_anime")))
 }

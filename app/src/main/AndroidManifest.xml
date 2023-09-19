@@ -43,9 +43,6 @@
                     android:exported="true"
                     android:theme="@style/Anime.Theme.CopyManga" />
         -->
-        <activity
-            android:name=".ui.activity.TestActivity"
-            android:exported="false" />
         <!--
         <activity
             android:name=".ui.activity.TestActivity"

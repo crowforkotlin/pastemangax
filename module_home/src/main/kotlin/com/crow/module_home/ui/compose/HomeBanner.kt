@@ -37,7 +37,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -52,7 +51,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.core.content.ContextCompat
-import coil.compose.AsyncImage
+import com.bumptech.glide.integration.compose.CrossFade
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.crow.base.R.color.base_grey_500_75
 import com.crow.module_home.model.resp.homepage.Banner
 import kotlinx.coroutines.delay
@@ -140,7 +141,7 @@ fun Banner(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalGlideComposeApi::class)
 @Composable
 fun BannerItem(
     banner: Banner,
@@ -194,11 +195,11 @@ fun BannerItem(
                 indication = rememberRipple(true, color = Color(ContextCompat.getColor(LocalContext.current, base_grey_500_75)))
             )
     ) {
-        AsyncImage(
+        GlideImage(
             model = banner.mImgUrl,
             contentDescription = null,
+            transition = CrossFade.Companion,
             contentScale = ContentScale.Crop,
-            placeholder = ColorPainter(MaterialTheme.colorScheme.surface),
             modifier = Modifier
                 .matchParentSize()
                 .drawWithContent {
@@ -207,6 +208,21 @@ fun BannerItem(
                 }
         )
 
+
+/*        AsyncImage(
+            model = banner.mImgUrl, ,
+            contentDescription = null,
+
+            contentScale = ContentScale.Crop,
+            placeholder = ColorPainter(MaterialTheme.colorScheme.surface),
+            modifier = Modifier
+                .matchParentSize()
+                .drawWithContent {
+                    drawContent()
+                    drawRect(brush = Brush.verticalGradient(colors))
+                }
+        )*/
+
         DrawOutlineText(
             text = banner.mBrief,
             textMaxLine = 3,
@@ -214,10 +230,11 @@ fun BannerItem(
                 .wrapContentSize()
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 18.dp, start = 16.dp, end = 16.dp),
-            outlineStokeTextStyle = getOutlineStokeTextStyle().copy(
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp
-            ),
+            outlineStokeTextStyle = getOutlineStokeTextStyle()
+                .copy(
+                    textAlign = TextAlign.Center,
+                    fontSize = 16.sp
+                 ),
             outlineFillTextStyle = getOutlineFillTextStyle()
                 .copy(
                     textAlign = TextAlign.Center,

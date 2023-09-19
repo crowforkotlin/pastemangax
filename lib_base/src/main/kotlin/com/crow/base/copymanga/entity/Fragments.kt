@@ -22,6 +22,6 @@ enum class Fragments {
     Image,
     Styleable,
     UpdateHistory,
-    ComicStript,
-    ComicClassic
+    ComicClassic,
+//    ComicStript,
 }

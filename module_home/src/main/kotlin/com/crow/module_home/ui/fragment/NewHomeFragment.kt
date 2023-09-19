@@ -216,9 +216,10 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      * ● 2023-09-17 19:42:43 周日 下午
      */
     private fun navigateSettings() {
+        val name = Fragments.Settings.name
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
-            get(named(Fragments.Settings.name)), Fragments.Settings.name, Fragments.Settings.name
+            get(named(name)), name, name
         )
     }
 
