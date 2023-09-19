@@ -34,7 +34,7 @@
 #### 浅色模式
 <table>
 	<tr>
-		<td align="center"><img src="docs/images/1.2.2_home_light.jpg"></td>
+		<td align="center"><img src="docs/images/1.2.4_home_light.jpg"></td>
 		<td align="center"><img src="docs/images/1.2.2_home_comic_light.jpg"></td>
 		<td align="center"><img src="docs/images/1.2.2_home_bookshelf_light.jpg"></td>
 	</tr>
@@ -60,7 +60,7 @@
 #### 深色模式
 <table>
 	<tr>
-		<td align="center"><img src="docs/images/1.2.3_home_dark.jpg"></td>
+		<td align="center"><img src="docs/images/1.2.4_home_dark.jpg"></td>
 		<td align="center"><img src="docs/images/1.2.3_home_comic_dark.jpg"></td>
 		<td align="center"><img src="docs/images/1.2.3_home_bookshelf_dark.jpg"></td>
 	</tr>
