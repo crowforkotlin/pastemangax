@@ -106,17 +106,20 @@ class UserBottomSheetFragment : BaseMviBottomSheetDialogFragment<UserFragmentBin
         // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {
 
+            // 防止空指针异常 很大概率和内存重启有关
+            val binding = runCatching { mBinding }.getOrNull() ?: return@onCollect
+
             // 初始化 Icon链接 设置用户名 退出可见 修改适配器数据
-            mUserVM.doLoadIcon(mContext, false) { resource ->  mBinding.userIcon.setImageDrawable(resource) }
+            mUserVM.doLoadIcon(mContext, false) { resource ->  binding.userIcon.setImageDrawable(resource) }
 
             // 数据空 则退出
             if (it == null) return@onCollect
 
             // 设置昵称
-            mBinding.userName.text = getString(R.string.user_nickname, it.mNickname)
+            binding.userName.text = getString(R.string.user_nickname, it.mNickname)
 
             // 退出按钮可见
-            mBinding.userExit.visibility = View.VISIBLE
+            binding.userExit.visibility = View.VISIBLE
 
             // 移除适配器首位数据 默认是 登录
             mAdapterData.removeFirst()
