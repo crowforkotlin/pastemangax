@@ -7,4 +7,13 @@
 		<item name="iconTint">@color/base_white</item>
 	</style>
 
+	<style name="App.Theme.CopyManga.Splash" parent="Theme.SplashScreen">
+
+		<!-- 指定App原来的主题，当SplashScreen结束时主题就能被复原，从而不影响APP的主题外观 -->
+		<item name="postSplashScreenTheme">@style/App.Theme.CopyManga</item>
+
+		<!-- SplashIcon -->
+		<item name="windowSplashScreenAnimatedIcon">@mipmap/app_ic_launcher</item>
+	</style>
+
 </resources>

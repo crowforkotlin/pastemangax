@@ -14,8 +14,8 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
 import com.crow.base.copymanga.appComicCardHeight
 import com.crow.base.copymanga.appComicCardWidth
+import com.crow.base.copymanga.appDp10
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
-import com.crow.base.copymanga.mSize10
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
@@ -42,7 +42,7 @@ class BookshelfComicRvAdapter(
         return LoadingViewHolder(BookshelfFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent,false)).also { vh ->
 
             val layoutParams = vh.binding.bookshelfRvImage.layoutParams
-            layoutParams.width = appComicCardWidth - mSize10
+            layoutParams.width = appComicCardWidth - appDp10
             layoutParams.height = appComicCardHeight
 
             vh.binding.bookshelfRvImage.doOnClickInterval {

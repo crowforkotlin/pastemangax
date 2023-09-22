@@ -20,6 +20,7 @@ import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.appIsDarkMode
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.baseCoroutineException
@@ -32,7 +33,6 @@ import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.toast
@@ -236,40 +236,29 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             val binding = HomeFragmentSearchViewBinding.inflate(layoutInflater).also { mSearchBinding = it }                                                                 // 获取SearchViewBinding
             val searchComicFragment = SearchComicFragment.newInstance(mBinding.homeSearchView) { navigateBookComicInfo(it) }   // 实例化SearchComicFragment
             val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.homeSearchView) { navigateBookNovelInfo(it) }     // 实例化SearchNovelFragment
-
             val bgColor: Int; val tintColor: Int
-//            val statusBarDrawable: Drawable?
-            if (isDarkMode()) {
+            if (appIsDarkMode) {
                 bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
                 tintColor = ContextCompat.getColor(mContext, android.R.color.white)
-//                statusBarDrawable = AppCompatResources.getDrawable(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
             } else {
                 bgColor = ContextCompat.getColor(mContext, android.R.color.white)
                 tintColor = ContextCompat.getColor(mContext, android.R.color.black)
-//                statusBarDrawable = AppCompatResources.getDrawable(mContext, baseR.color.base_white)
             }
-            toolbar.setNavigationIcon(baseR.drawable.base_ic_back_24dp)                                                                             // 设置SearchView toolbar导航图标
+            toolbar.setNavigationIcon(baseR.drawable.base_ic_back_24dp)  // 设置SearchView toolbar导航图标
             toolbar.navigationIcon?.setTint(tintColor)
-            toolbar.setBackgroundColor(bgColor)                                                                                                                    // 设置SearchView toolbar背景色白，沉浸式
+            toolbar.setBackgroundColor(bgColor)                                               // 设置SearchView toolbar背景色白，沉浸式
             binding.homeSearchVp.setBackgroundColor(bgColor)
-            setStatusBarSpacerEnabled(false)                                                                                                                          // 关闭状态栏空格间距
-
-            // 添加一个自定义 View设置其高度为StatubarHeight实现沉浸式效果
-            /*addHeaderView(View(mContext).also { view->
-                view.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mContext.getStatusBarHeight())
-                view.foreground = statusBarDrawable
-            })*/
-
-            addView(binding.root)                                                                                                         // 添加SearcViewBinding 视图内容
+            setStatusBarSpacerEnabled(false)                                                       // 关闭状态栏空格间距
+            addView(binding.root)                                                                          // 添加SearcViewBinding 视图内容
             binding.homeSearchVp.adapter = NewHomeVpAdapter(mutableListOf(searchComicFragment, searchNovelFragment), childFragmentManager, viewLifecycleOwner.lifecycle)  // 创建适配器
-            binding.homeSearchVp.offscreenPageLimit = 2                                                                     // 设置预加载2页
+            binding.homeSearchVp.offscreenPageLimit = 2                              // 设置预加载2页
             TabLayoutMediator(binding.homeSearchTablayout, binding.homeSearchVp) { tab, pos ->
                 when(pos) {
                     0 -> { tab.text = getString(R.string.home_comic) }
                     1 -> { tab.text = getString(R.string.home_novel) }
                 }
             }.attach()      // 关联VP和TabLayout
-            editText.setOnEditorActionListener { _, _, event->                                                                  // 监听EditText 通知对应VP对应页发送意图
+            editText.setOnEditorActionListener { _, _, event->                          // 监听EditText 通知对应VP对应页发送意图
                 if (event?.action == MotionEvent.ACTION_DOWN) {
                     when(binding.homeSearchVp.currentItem) {
                         0 -> searchComicFragment.doInputSearchComicIntent()

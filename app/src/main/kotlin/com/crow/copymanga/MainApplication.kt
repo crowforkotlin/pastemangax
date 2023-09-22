@@ -1,8 +1,10 @@
 package com.crow.copymanga
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crow.base.app.BaseApp
+import com.crow.base.copymanga.appIsDarkMode
 import com.crow.copymanga.model.di.factoryModule
 import com.crow.copymanga.model.di.fragmentModule
 import com.crow.copymanga.model.di.networkModule
@@ -27,6 +29,7 @@ class MainApplication : BaseApp() {
     override fun onCreate() {
         super.onCreate()
 
+        AppCompatDelegate.setDefaultNightMode(if(appIsDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
 
         startKoin {
             fragmentFactory()

@@ -7,7 +7,6 @@ import com.crow.base.app.appContext
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
-import com.crow.base.copymanga.updateLifecycleObserver
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getNavigationBarHeight
 import com.crow.base.tools.extensions.getStatusBarHeight
@@ -22,12 +21,13 @@ import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_user.R
 import com.crow.module_user.databinding.UserFragmentLoginBinding
 import com.crow.module_user.model.UserIntent
+import com.crow.module_user.ui.tools.updateLifecycleObserver
 import com.crow.module_user.ui.viewmodel.UserViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import com.crow.base.R as baseR
 
 
-class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding>(){
+class UserLoginFragment() : BaseMviFragment<UserFragmentLoginBinding>(){
 
     constructor(iUserLoginSuccessCallback: IUserLoginSuccessCallback) : this() { mLoginSuccessCallback = iUserLoginSuccessCallback }
 
@@ -106,7 +106,7 @@ class UserLoginFragment constructor() : BaseMviFragment<UserFragmentLoginBinding
     }
 
     /** 初始化视图 */
-    override fun initView(bundle: Bundle?) {
+    override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())

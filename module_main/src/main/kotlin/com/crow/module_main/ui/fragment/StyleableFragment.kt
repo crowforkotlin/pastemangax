@@ -2,12 +2,14 @@ package com.crow.module_main.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.updateLayoutParams
+import com.crow.base.copymanga.appIsDarkMode
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.popSyncWithClear
@@ -64,8 +66,13 @@ class StyleableFragment : BaseMviFragment<MainFragmentStyleableBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
-        immersionPadding(mBinding.root)
-
+        immersionPadding(mBinding.root) { view, insets, _ ->
+            mBinding.root.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+            }
+        }
     }
 
     override fun initListener() {
@@ -77,7 +84,7 @@ class StyleableFragment : BaseMviFragment<MainFragmentStyleableBinding>() {
             if (it == null) return@onCollect
 
             if (mStyableAdapter == null) {
-                mStyableAdapter = StyleableAdapter(getStyleableEntitys(isDarkMode())) { pos, isSwitch ->
+                mStyableAdapter = StyleableAdapter(getStyleableEntitys(appIsDarkMode)) { pos, isSwitch ->
                     if (pos == 0) {
                         showLoadingAnim()
                         val darkMode = if (isSwitch) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO

@@ -15,10 +15,10 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.setPadding
 import com.bumptech.glide.Glide
+import com.crow.base.copymanga.appIsDarkMode
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.popAsyncWithClear
@@ -58,11 +58,11 @@ class UserIconFragment : BaseMviFragment<UserFragmentIconBinding>() {
         super.onDestroyView()
 
         // 恢复状态栏亮色 同时 置空（防止泄漏...?）
-        mWindowInsets?.isAppearanceLightStatusBars = !isDarkMode()
+        mWindowInsets?.isAppearanceLightStatusBars = !appIsDarkMode
         mWindowInsets = null
     }
 
-    override fun initObserver(savedInstanceState: Bundle?) {
+    override fun initObserver(saveInstanceState: Bundle?) {
 
         // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {
