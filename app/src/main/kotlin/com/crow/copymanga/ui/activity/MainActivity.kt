@@ -7,10 +7,10 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.appIsDarkMode
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.tools.extensions.navigateByAdd
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.ui.activity.BaseMviActivity
@@ -79,7 +79,7 @@ class MainActivity : BaseMviActivity<AppActivityMainBinding>()  {
                 // 第一次初始化则获取动态站点
                 if (appConfig.mAppFirstInit) mContainerVM.input(MainIntent.GetDynamicSite())
 
-                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = (!isDarkMode())
+                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = (!appIsDarkMode)
             }
         }
     }

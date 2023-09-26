@@ -38,7 +38,7 @@ class BookClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
      *
      * ● 2023-09-04 21:56:28 周一 下午
      */
-    private var mComicRvAdapter: ComicClassicRvAdapter? = ComicClassicRvAdapter { reader ->
+    private val mComicRvAdapter: ComicClassicRvAdapter = ComicClassicRvAdapter { reader ->
         val isUUIDEmpty = reader.mUUID.isNullOrEmpty()
         val message = when {
             reader.mIsNext && isUUIDEmpty -> getString(R.string.book_no_next)
@@ -49,8 +49,6 @@ class BookClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
             return@ComicClassicRvAdapter toast(message ?: getString(baseR.string.BaseError, "uuid is null !"))
         }
         mComicVM.input(BookIntent.GetComicPage(mComicVM.mPathword, reader.mUUID, enableLoading = true))
-        /*mBinding.comicRv.animateFadeOutWithEndInVisibility().withEndAction {
-        }*/
     }
 
     /**
@@ -96,11 +94,6 @@ class BookClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
         mBinding.comicRv.stopScroll()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mComicRvAdapter = null
-    }
-
     override fun initObserver(saveInstanceState: Bundle?) {
 
         mComicVM.mContent.onCollect(this) { reader ->
@@ -114,7 +107,7 @@ class BookClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
         // wait util complete
         async {
-            mComicRvAdapter?.submitList(processedReaderPages(readerContent))
+            mComicRvAdapter.submitList(processedReaderPages(readerContent))
             yield()
         }.await()
 

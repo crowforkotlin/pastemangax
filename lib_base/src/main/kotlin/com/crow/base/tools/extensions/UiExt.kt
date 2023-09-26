@@ -12,7 +12,6 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewPropertyAnimator
 import androidx.annotation.ColorInt
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.crow.base.app.appContext
@@ -189,8 +188,6 @@ fun Canvas.doOnCanvas(iBaseUiCanvasEvent: IBaseUiCanvasEvent) {
     iBaseUiCanvasEvent.doOnCanvas(this)
     restore()       // 恢复状态，确保后续绘制操作在一个干净的画布状态下进行，避免之前的绘制操作对后续的绘制操作产生影响）
 }
-
-fun isDarkMode() = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
 /**
  * Copy from Kotatsu

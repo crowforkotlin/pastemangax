@@ -11,13 +11,13 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_back"
         style="@style/Base.Theme.Button.Icon.Back"
-        android:layout_width="@dimen/base_dp48"
-        android:layout_height="@dimen/base_dp48"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
         android:contentDescription="@string/BaseAppName"
         app:icon="@drawable/base_ic_back_24dp"
-        app:iconSize="@dimen/base_dp24"
+        app:iconSize="@dimen/base_dp17_5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="DuplicateSpeakableTextCheck" />
@@ -27,33 +27,33 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
-        android:layout_marginEnd="@dimen/base_dp5"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:ellipsize="end"
-        android:gravity="center"
+        android:gravity="start"
         android:maxLines="2"
-        android:textSize="@dimen/base_sp20"
+        android:textSize="@dimen/base_sp18"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/book_info_back"
-        app:layout_constraintEnd_toStartOf="@+id/book_info_setting"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_back"
         app:layout_constraintTop_toTopOf="@+id/book_info_back"
         tools:text="@string/BaseTodoTextView" />
 
+<!--
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_setting"
-        app:iconSize="@dimen/base_dp24"
+        app:iconSize="@dimen/base_dp18"
         style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="@dimen/base_dp48"
-        android:layout_height="@dimen/base_dp48"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/base_dp10"
         android:layout_marginEnd="@dimen/base_dp10"
         android:contentDescription="@string/BaseAppName"
-        android:minWidth="@dimen/base_dp48"
-        android:minHeight="@dimen/base_dp48"
         app:icon="@drawable/base_ic_settings_24dp"
         app:iconTint="@color/base_color_asc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+-->
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/book_info_cardview"

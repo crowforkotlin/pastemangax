@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.appContext
+import com.crow.base.copymanga.appIsDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.isDarkMode
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_book.R
 import com.crow.module_book.databinding.BookFragmentChapterRvBinding
@@ -36,7 +36,7 @@ class NovelChapterRvAdapter(
     private var mBtTextColor by Delegates.notNull<Int>()
 
     init {
-        if (isDarkMode()) {
+        if (appIsDarkMode) {
             mBtSurfaceColor = ContextCompat.getColor(appContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
             mBtTextColor = ContextCompat.getColor(appContext, R.color.book_button_bg_white)
         } else {

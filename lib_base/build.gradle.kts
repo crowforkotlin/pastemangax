@@ -151,8 +151,6 @@ dependencies {
     api(Dependencies.glide_integration) { exclude(group = "glide-parent") }
     ksp(Dependencies.glide_compiler_ksp)
 
-    api(Dependencies.zguop_banner)
-    api(Dependencies.tencent_bugly)
     api(Dependencies.loading_button)
     api(Dependencies.luksiege_picture_selector)
     api(Dependencies.luksiege_ucrop)

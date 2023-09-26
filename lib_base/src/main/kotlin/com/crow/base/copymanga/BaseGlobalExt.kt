@@ -1,21 +1,17 @@
 package com.crow.base.copymanga
 
-import android.content.Context
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.setPadding
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import br.com.simplepass.loadingbutton.customViews.ProgressButton
 import com.crow.base.R
 import com.crow.base.app.appContext
+import com.crow.base.tools.extensions.SpNameSpace
+import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.showSnackBar
@@ -56,7 +52,6 @@ fun String.getSpannableString(color: Int, start: Int, end: Int = length): Spanna
     return SpannableString(this).also { it.setSpan(ForegroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE) }
 }
 
-
 // 漫画卡片高度 和 宽度
 val appComicCardHeight: Int by lazy {
     val width = appContext.resources.displayMetrics.widthPixels
@@ -64,29 +59,15 @@ val appComicCardHeight: Int by lazy {
     (width.toFloat() / (3.0 - width.toFloat() / height.toFloat())).toInt()
 }
 val appComicCardWidth: Int by lazy { (appComicCardHeight / 1.25).toInt() }
+val appDp10 by lazy { appContext.px2dp(appContext.resources.getDimensionPixelSize(R.dimen.base_dp10).toFloat()).toInt() }
+var appIsDarkMode = SpNameSpace.CATALOG_NIGHT_MODE.getSharedPreferences().getBoolean(SpNameSpace.Key.ENABLE_DARK, false)
 
-val mSize10 by lazy { appContext.px2dp(appContext.resources.getDimensionPixelSize(R.dimen.base_dp10).toFloat()).toInt() }
-
-// Fix Memory Leak
-fun ProgressButton.updateLifecycleObserver(lifecycle: Lifecycle?) {
-    getContext().removeLifecycleObserver(this) // to fix the leak.
-    lifecycle?.addObserver(this) // to fix leaking after the fragment's view is destroyed.
-}
-
-// Fix Memory Leak
-private fun Context.removeLifecycleObserver(observer: LifecycleObserver) {
-    when (this) {
-        is LifecycleOwner -> lifecycle.removeObserver(observer)
-        is ContextThemeWrapper -> baseContext.removeLifecycleObserver(observer)
-        is androidx.appcompat.view.ContextThemeWrapper -> baseContext.removeLifecycleObserver(observer)
-    }
-}
-
-inline fun View.processTokenError(
-    code: Int, msg: String?,
-    crossinline doOnCancel: (MaterialAlertDialogBuilder) -> Unit = { },
-    crossinline doOnConfirm: (MaterialAlertDialogBuilder) -> Unit
-) {
+/**
+ * ● 处理Token 错误
+ *
+ * ● 2023-09-22 22:57:48 周五 下午
+ */
+inline fun View.processTokenError(code: Int, msg: String?, crossinline doOnCancel: (MaterialAlertDialogBuilder) -> Unit = { }, crossinline doOnConfirm: (MaterialAlertDialogBuilder) -> Unit) {
     runCatching { toTypeEntity<BaseContentInvalidResp>(msg)?.mResults ?: throw JsonDataException("parse exception!") }
         .onSuccess {
             context.newMaterialDialog { dialog ->
@@ -108,3 +89,5 @@ inline fun View.processTokenError(
             else toast(appContext.getString(R.string.BaseUnknowError))
         }
 }
+
+
