@@ -12,7 +12,6 @@
         android:id="@+id/discover_appbar_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/discover_appbar_menu"
         app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold"
         tools:title="@string/discover_comic" />
 

@@ -27,8 +27,9 @@ interface DiscoverService {
     fun getComicHome(
         @Query("offset") start: Int,
         @Query("limit") limit: Int,
-        @Query("ordering") order: String = "-datetime_updated",
-        @Query("theme") theme: String = "",
+        @Query("ordering") order: String,
+        @Query("theme") theme: String,
+        @Query("top") region: String,
     ): Flow<BaseResultResp<DiscoverComicHomeResp>>
 
     @GET(BaseStrings.URL.DiscoverNovelTag)

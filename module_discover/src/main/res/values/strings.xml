@@ -2,6 +2,10 @@
 	<string name="discover_novel">轻小说</string>
 	<string name="discover_comic">漫画</string>
 	<string name="discover_comic_count">%d / %d</string>
-	<string name="discover_update_time">更新时间</string>
-	<string name="discover_hot">热度</string>
+	<string name="discover_update_time"><b>更新时间</b></string>
+	<string name="discover_hot"><b>热度</b></string>
+	<string name="discover_tag"><b>类别</b></string>
+	<string name="discover_location"><b>地区</b></string>
+	<string name="discover_all">全部</string>
+	<string name="discover_subtitle"><b>%s-%s</b></string>
 </resources>

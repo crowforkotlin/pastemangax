@@ -12,7 +12,7 @@ class DiscoverRepository(val service: DiscoverService) {
 
     fun getComicTag() = service.getComicTag()
 
-    fun getComicHome(start: Int, limit: Int, order: String, theme: String = "") = service.getComicHome(start, limit, order, theme)
+    fun getComicHome(start: Int, limit: Int, order: String, theme: String, region: String) = service.getComicHome(start, limit, order = order, theme = theme, region = region)
 
     fun getNovelTag() = service.getNovelTag()
 
