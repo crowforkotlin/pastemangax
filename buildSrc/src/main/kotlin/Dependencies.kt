@@ -169,7 +169,7 @@ object Dependencies {
     /** leakcanary 内存泄漏检查工具
     * - Github : [https://github.com/square/leakcanary]
     */
-    const val leakcanary = "com.squareup.leakcanary:leakcanary-android:2.9.1"
+    const val leakcanary = "com.squareup.leakcanary:leakcanary-android:2.12"
 
 
     /** Glance database 分析

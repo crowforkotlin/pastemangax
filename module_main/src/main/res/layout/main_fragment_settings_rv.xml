@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Base.Theme.BG"
     android:layout_width="match_parent"
@@ -13,13 +11,12 @@
     android:paddingEnd="@dimen/base_dp10"
     android:paddingBottom="@dimen/base_dp15">
 
-    <ImageView
+    <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/settings_rv_icon"
         android:layout_width="@dimen/base_dp20"
-        tools:src="@drawable/main_ic_personalise_24dp"
+        tools:src="@drawable/main_ic_resolution_24dp"
         android:layout_height="@dimen/base_dp20"
-        android:layout_gravity="center"
-        app:tint="@color/base_color_asc" />
+        android:layout_gravity="center" />
 
     <TextView
         android:id="@+id/settings_rv_text"

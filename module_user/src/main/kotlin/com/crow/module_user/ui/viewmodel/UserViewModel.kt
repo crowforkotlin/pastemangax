@@ -8,7 +8,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncClear
 import com.crow.base.tools.extensions.asyncDecode
@@ -19,6 +19,7 @@ import com.crow.module_user.model.UserIntent
 import com.crow.module_user.model.resp.LoginResultsOkResp
 import com.crow.module_user.model.resp.UserResultErrorResp
 import com.crow.module_user.network.UserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -46,7 +47,7 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
 
     init {
         // 初始化 用户信息
-        viewModelScope.launch { _userInfo.emit((toTypeEntity<LoginResultsOkResp>(DataStoreAgent.DATA_USER.asyncDecode())).also { mIconUrl = it?.mIconUrl }) }
+        viewModelScope.launch(Dispatchers.IO) { _userInfo.emit((toTypeEntity<LoginResultsOkResp>(DataStoreAgent.DATA_USER.asyncDecode())).also { mIconUrl = it?.mIconUrl }) }
     }
 
     override fun dispatcher(intent: UserIntent) {
@@ -91,7 +92,7 @@ class UserViewModel(private val repository: UserRepository) : BaseMviViewModel<U
     fun doClearUserInfo() {
         viewModelScope.launch {
             DataStoreAgent.DATA_USER.asyncClear()
-            BaseUser.CURRENT_USER_TOKEN = ""
+            BaseUserConfig.CURRENT_USER_TOKEN = ""
             mIconUrl = null
             _userInfo.emit(null)
         }

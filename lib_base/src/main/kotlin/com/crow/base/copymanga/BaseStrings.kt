@@ -3,6 +3,7 @@ package com.crow.base.copymanga
 object BaseStrings {
 
     const val PATH_WORD = "pathword"
+    const val NAME = "name"
     const val IMAGE_URL = "image_url"
     const val ID = "id"
     const val ENABLE_DELAY = "enable_delay"
@@ -29,6 +30,7 @@ object BaseStrings {
         const val ComicChapter = "/api/v3/comic/{pathword}/group/default/chapters?_update=true"
         const val ComicPage = "/api/v3/comic/{pathword}/chapter2/{uuid}?platform=3&_update=true"
         const val ComicBrowserHistory = "/api/v3/comic2/{pathword}/query?platform=3&_update=true"
+        const val ComicHistory = "/api/v3/member/browse/comics?platform=3&_update=true"
         const val ComicAddToBookshelf = "/api/v3/member/collect/comic"
         const val ComicSearch = "/api/v3/search/comic"
 

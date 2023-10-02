@@ -95,7 +95,7 @@ fun FragmentTransaction.setSlideAnimation() = setCustomAnimations(
 )
 
 fun FragmentTransaction.setCenterAnimWithFadeOut() =
-    setCustomAnimations(R.anim.base_anim_center_in, anim.fade_out, 0, R.anim.base_anim_center_out)
+    setCustomAnimations(R.anim.base_anim_center_in, R.anim.base_anim_center_out, R.anim.base_anim_center_in, R.anim.base_anim_center_out)
 
 fun FragmentTransaction.setFadeInAnimOutWithCenter() =
     setCustomAnimations(anim.fade_in, anim.fade_out, R.anim.base_anim_center_in, R.anim.base_anim_center_out)
@@ -158,6 +158,17 @@ inline fun FragmentManager.navigateToWithBackStack(
         .addToBackStack(backStackName)
         .add(id, addedTarget, tag)
         .hide(hideTarget)
+        .commit()
+}
+
+inline fun FragmentManager.navigate(
+    @IdRes id: Int,
+    fragment: Fragment,
+    tag: String? = null,
+    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.setFadeAnimation() },
+) {
+    transaction(beginTransaction())
+        .replace(id, fragment, tag)
         .commit()
 }
 

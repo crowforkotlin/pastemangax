@@ -1,9 +1,9 @@
 
 package com.crow.base.copymanga.entity
 
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.appConfigDataStore
 import com.crow.base.tools.extensions.asyncDecode
@@ -25,7 +25,15 @@ data class AppConfigEntity(
 
     /** ● 路线 "0", "1" */
     @Json(name = "Route")
-    val mRoute: String = BaseUser.CURRENT_ROUTE,
+    val mRoute: String = BaseUserConfig.CURRENT_ROUTE,
+
+    /**
+     * ● 分辨率 800、1200、1500
+     *
+     * ● 2023-10-02 23:36:24 周一 下午
+     */
+    @Json(name = "Resolution")
+    val mResolution: Int = BaseUserConfig.RESOLUTION
 ) {
     companion object {
 
@@ -37,15 +45,15 @@ data class AppConfigEntity(
 
         suspend fun saveAppConfig(appConfigEntity: AppConfigEntity) {
             mAppConfigEntity = appConfigEntity
-            appContext.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(appConfigEntity))
+            app.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(appConfigEntity))
         }
 
         suspend fun readAppConfig(): AppConfigEntity? {
-            return  toTypeEntity<AppConfigEntity>(appContext.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG)).also { mAppConfigEntity = it }
+            return  toTypeEntity<AppConfigEntity>(app.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG)).also { mAppConfigEntity = it }
         }
 
         fun readAppConfigSync(): AppConfigEntity? {
-            return toTypeEntity<AppConfigEntity>(appContext.appConfigDataStore.decode(DataStoreAgent.APP_CONFIG)).also { mAppConfigEntity = it }
+            return toTypeEntity<AppConfigEntity>(app.appConfigDataStore.decode(DataStoreAgent.APP_CONFIG)).also { mAppConfigEntity = it }
         }
     }
 }

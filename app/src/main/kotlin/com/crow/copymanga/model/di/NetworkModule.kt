@@ -2,7 +2,7 @@ package com.crow.copymanga.model.di
 
 import androidx.multidex.BuildConfig
 import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.copymanga.glide.AppGlideProgressResponseBody
 import com.crow.base.tools.extensions.baseMoshi
@@ -101,8 +101,8 @@ val networkModule = module {
                 chain.proceed(chain.request().newBuilder()
                     .addHeader("User-Agent", "Kotlin/1.8.20 (kotlin:io)")
                     .addHeader("Platform", "1")
-                    .addHeader("Authorization","Token ${BaseUser.CURRENT_USER_TOKEN}")
-                    .addHeader("region", BaseUser.CURRENT_ROUTE)
+                    .addHeader("Authorization","Token ${BaseUserConfig.CURRENT_USER_TOKEN}")
+                    .addHeader("region", BaseUserConfig.CURRENT_ROUTE)
                     .build()
                 )
             })

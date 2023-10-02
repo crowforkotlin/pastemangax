@@ -2,7 +2,7 @@ package com.crow.base.tools.extensions
 
 import android.content.pm.PackageManager
 import android.os.Build
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -17,9 +17,9 @@ fun isLatestVersion(current: Long = getCurrentVersionCode(), latest: Long): Bool
 
 fun getCurrentVersionCode(): Long {
     val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        appContext.packageManager.getPackageInfo(appContext.packageName, PackageManager.PackageInfoFlags.of(0))
+        app.packageManager.getPackageInfo(app.packageName, PackageManager.PackageInfoFlags.of(0))
     } else {
-        appContext.packageManager.getPackageInfo(appContext.packageName, 0)
+        app.packageManager.getPackageInfo(app.packageName, 0)
     }
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
         packageInfo.longVersionCode
@@ -30,9 +30,9 @@ fun getCurrentVersionCode(): Long {
 
 fun getCurrentVersionName(): String {
     val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        appContext.packageManager.getPackageInfo(appContext.packageName, PackageManager.PackageInfoFlags.of(0))
+        app.packageManager.getPackageInfo(app.packageName, PackageManager.PackageInfoFlags.of(0))
     } else {
-        appContext.packageManager.getPackageInfo(appContext.packageName, 0)
+        app.packageManager.getPackageInfo(app.packageName, 0)
     }
     return packageInfo.versionName
 }

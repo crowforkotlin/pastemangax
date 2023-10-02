@@ -3,7 +3,7 @@ package com.crow.base.ui.viewmodel.mvi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.crow.base.R
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.tools.extensions.logger
 import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.base.ui.viewmodel.BaseViewState.Error
@@ -68,7 +68,7 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
             flow
                 .onStart { emitValueMoreoverDelayAfter(intent.also { it.mBaseViewState = Loading }) }
                 .onCompletion { emitValueMoreoverDelayAfter(intent.also { it.mBaseViewState = Success }) }
-                .catch { catch -> emitValueMoreoverDelayAfter(intent.also { it.mBaseViewState = Error(if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, msg = catch.message ?: appContext.getString(R.string.BaseUnknowError)) })}
+                .catch { catch -> emitValueMoreoverDelayAfter(intent.also { it.mBaseViewState = Error(if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, msg = catch.message ?: app.getString(R.string.BaseUnknowError)) })}
                 .collect { emitValueMoreoverDelayAfter(result.onResult(it).also { event -> event.mBaseViewState = Result }) }
         }
     }
@@ -84,7 +84,7 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
                 .onStart { trySendIntent(intent, Loading) }
                 .onCompletion { catch -> trySendIntent(intent, Success) { if (catch != null && !continuation.isCompleted) continuation.resumeWithException(catch) } }
                 .catch { catch ->
-                    trySendIntent(intent, Error (if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT , catch.message ?: appContext.getString(R.string.BaseUnknowError))) {
+                    trySendIntent(intent, Error (if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT , catch.message ?: app.getString(R.string.BaseUnknowError))) {
                         if (!continuation.isCompleted) continuation.resumeWithException(catch)
                     }
                 }

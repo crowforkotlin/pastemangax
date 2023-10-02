@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.IntRange
+import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -15,11 +16,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
+import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.logger
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.module_book.databinding.BookActivityComicRvBinding
@@ -64,7 +67,6 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
      */
     private val mDiffer = AsyncListDiffer(this, mDiffCallback)
 
-    private var mIsFirstInit: Boolean = true
 
     inner class BodyViewHolder(binding: BookActivityComicRvBinding) : BaseGlideLoadingViewHolder<BookActivityComicRvBinding>(binding) {
         fun onBind(position: Int) {
@@ -73,18 +75,28 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
             binding.comicRvLoading.isVisible = true
             binding.comicRvProgressText.isVisible = true
             binding.comicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
-            binding.comicRvRetry.isVisible = false
+            binding.comicRvRetry.isGone = true
             mAppGlideProgressFactory?.doRemoveListener()?.doClean()
             mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
                 binding.comicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
             }
 
+
+            val imageUrl = when {
+                item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${BaseUserConfig.RESOLUTION}x.")
+                item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${BaseUserConfig.RESOLUTION}x.")
+                item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${BaseUserConfig.RESOLUTION}x.")
+                else -> item.mImageUrl
+            }
+            logger(imageUrl)
             Glide.with(itemView.context)
-                .load(item.mImageUrl)
+                .load(imageUrl)
                 .addListener(mAppGlideProgressFactory?.getRequestListener(
                         failure = {
-
+                            binding.comicRvRetry.alpha = 1f
                             binding.comicRvRetry.isVisible = true
+                            binding.comicRvLoading.isInvisible = true
+                            binding.comicRvProgressText.isInvisible = true
                             binding.comicRvRetry.doOnClickInterval(false) {
                                 binding.comicRvRetry.animateFadeOut().withEndAction {
                                     onBind(position)
@@ -108,7 +120,6 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
                         binding.comicRvProgressText.isInvisible = true
                         NoTransition()
                     }
-                    mIsFirstInit = false
                     transition
                 })
                 .into(binding.comicRvImageView)

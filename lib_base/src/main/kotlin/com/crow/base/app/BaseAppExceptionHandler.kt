@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.crow.base.tools.extensions.logError
 import com.crow.base.tools.extensions.toJson
+import com.crow.base.ui.activity.CrashActivity
 import kotlin.system.exitProcess
 
 
@@ -17,13 +18,12 @@ import kotlin.system.exitProcess
 class BaseAppExceptionHandler private constructor(
     private val mApplicationContext: Context,
     private val mDefaultHandler: Thread.UncaughtExceptionHandler,
-    private val mActivityToBeLaunched: Class<*>,
 ) : Thread.UncaughtExceptionHandler {
 
     override fun uncaughtException(thread: Thread, throwable: Throwable) {
         runCatching {
             throwable.stackTraceToString().logError()
-            launchActivity(mApplicationContext, mActivityToBeLaunched, throwable)
+            launchActivity(mApplicationContext, CrashActivity::class.java, throwable)
             exitProcess(0)
         }
             .onSuccess { "Caught Global Exception !!!".logError() }
@@ -34,12 +34,11 @@ class BaseAppExceptionHandler private constructor(
 
         private const val INTENT_EXTRA = "Throwable"
 
-        fun initialize(applicationContext: Context, activityToBeLaunched: Class<*>) {
+        fun initialize(applicationContext: Context) {
             Thread.setDefaultUncaughtExceptionHandler(
                 BaseAppExceptionHandler(
                     applicationContext,
                     Thread.getDefaultUncaughtExceptionHandler() as Thread.UncaughtExceptionHandler,
-                    activityToBeLaunched
                 )
             )
         }

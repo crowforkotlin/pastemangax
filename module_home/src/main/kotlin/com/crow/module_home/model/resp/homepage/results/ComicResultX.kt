@@ -41,7 +41,7 @@ data class ComicResultX(
     val mPopular: Int,
 
     @Json(name =  "datetime_updated")
-    val mDatetimeUpdated: String,
+    val mDatetimeUpdated: String?,
 
     @Json(name =  "last_chapter_name")
     val mLastChapterName: String,

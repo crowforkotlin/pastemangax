@@ -13,7 +13,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
@@ -25,17 +25,18 @@ import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
-import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2sp
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_discover.R
+import com.crow.module_discover.databinding.DiscoverComicMoreLayoutBinding
 import com.crow.module_discover.databinding.DiscoverFragmentComicBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.model.resp.comic_tag.Theme
@@ -83,11 +84,11 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
      */
     private var mToolbarSubtitle: TextView? = null
 
-    private var  mSubtitlePrefix: String by Delegates.observable(appContext.getString(R.string.discover_all)) { _, _, new ->
+    private var  mSubtitlePrefix: String by Delegates.observable(app.getString(R.string.discover_all)) { _, _, new ->
         mBinding.discoverComicAppbar.discoverAppbarToolbar.subtitle = getString(R.string.discover_subtitle, new, mSubtitleSuffix)
     }
 
-    private var  mSubtitleSuffix: String by Delegates.observable(appContext.getString(R.string.discover_all)) { _, _, new ->
+    private var  mSubtitleSuffix: String by Delegates.observable(app.getString(R.string.discover_all)) { _, _, new ->
         mBinding.discoverComicAppbar.discoverAppbarToolbar.subtitle = getString(R.string.discover_subtitle, mSubtitlePrefix, new)
     }
 
@@ -104,12 +105,17 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     override fun getViewBinding(inflater: LayoutInflater) = DiscoverFragmentComicBinding.inflate(inflater)
 
     /** ● 导航至漫画页 */
-    private fun navigateBookComicInfo(pathword: String) {
+    private fun navigateBookComicInfo(name: String, pathword: String) {
+        val tag = Fragments.BookComicInfo.name
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
-        requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
-            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
-            get<Fragment>(named(Fragments.BookComicInfo.name)).also { it.arguments = bundle }, Fragments.BookComicInfo.name, Fragments.BookComicInfo.name
+        bundle.putSerializable(BaseStrings.NAME, name)
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(
+            id = baseR.id.app_main_fcv,
+            hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
+            tag = tag,
+            backStackName = tag
         )
     }
 
@@ -164,6 +170,32 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                     // 地区
                     toolbar.menu[1].doOnClickInterval { onSelectMenu(R.string.discover_location) }
 
+                    // 更新时间
+
+                    val instance = BaseEvent.getSIngleInstance()
+                    toolbar.menu[2].doOnClickInterval {
+                        if (instance.getBoolean("DISCOVER_COMIC_FRAGMENT_UPDATE_ORDER") == true) {
+                            instance.setBoolean("DISCOVER_COMIC_FRAGMENT_UPDATE_ORDER", false)
+                            mVM.setOrder("-datetime_updated")
+                        } else {
+                            instance.setBoolean("DISCOVER_COMIC_FRAGMENT_UPDATE_ORDER", true)
+                            mVM.setOrder("datetime_updated")
+                        }
+                        updateComic()
+                    }
+
+                    // 热度
+                    toolbar.menu[3].doOnClickInterval {
+                        if (instance.getBoolean("DISCOVER_COMIC_FRAGMENT_POPULAR_ORDER") == true) {
+                            instance.setBoolean("DISCOVER_COMIC_FRAGMENT_POPULAR_ORDER", false)
+                            mVM.setOrder("-popular")
+                        } else {
+                            instance.setBoolean("DISCOVER_COMIC_FRAGMENT_POPULAR_ORDER", true)
+                            mVM.setOrder("popular")
+                        }
+                        updateComic()
+                    }
+
                     if (toolbar.subtitle.isNullOrEmpty()) {
                         mSubtitlePrefix = getString(R.string.discover_all)
                     }
@@ -200,7 +232,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         }
         mBinding.discoverComicRv.stopScroll()
 
-        val binding = com.crow.module_discover.databinding.DiscoverFragmentComicMoreBinding.inflate(layoutInflater)
+        val binding = DiscoverComicMoreLayoutBinding.inflate(layoutInflater)
         val chipTextSize = mContext.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
         var job: Job? = null
         val dialog = mContext.newMaterialDialog {
@@ -257,14 +289,11 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     /** ● 初始化视图 */
     override fun initView(savedInstanceState: Bundle?) {
 
-        // 设置 内边距属性 实现沉浸式效果
-        immersionPadding(mBinding.discoverComicAppbar.root, paddingNaviateBar = false)
-
         // 设置Title
         mBinding.discoverComicAppbar.discoverAppbarToolbar.title = getString(R.string.discover_comic)
 
         // 初始化 发现页 漫画适配器
-        mDiscoverComicAdapter = DiscoverComicAdapter { navigateBookComicInfo(it.mPathWord) }
+        mDiscoverComicAdapter = DiscoverComicAdapter { navigateBookComicInfo(it.mName, it.mPathWord) }
 
         // 设置适配器
         mBinding.discoverComicRv.adapter = mDiscoverComicAdapter.withLoadStateFooter(BaseLoadStateAdapter { mDiscoverComicAdapter.retry() })
@@ -334,6 +363,8 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         super.onDestroyView()
         AppGlideProgressFactory.doReset()
         parentFragmentManager.clearFragmentResultListener(COMIC)
+        BaseEvent.getSIngleInstance().remove("DISCOVER_COMIC_FRAGMENT_POPULAR_ORDER")
+        BaseEvent.getSIngleInstance().remove("DISCOVER_COMIC_FRAGMENT_UPDATE_ORDER")
         mToolbarSubtitle = null
     }
 }

@@ -36,7 +36,7 @@ data class ComicInfoResult(
     val mCover: String,
 
     @Json(name =  "datetime_updated")
-    val mDatetimeUpdated: String,
+    val mDatetimeUpdated: String?,
 
     @Json(name =  "females")
     val mFemales: List<JsonNull>,

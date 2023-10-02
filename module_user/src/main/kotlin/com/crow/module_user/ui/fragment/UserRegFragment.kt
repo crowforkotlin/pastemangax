@@ -3,9 +3,9 @@ package com.crow.module_user.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.copymanga.BaseEventEnum
-import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getNavigationBarHeight
@@ -149,7 +149,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
                         .doOnLoading { showLoadingAnim() }
                         .doOnError { _, msg ->
                             dismissLoadingAnim { doRevertRegButton() }
-                            toast(msg ?: appContext.getString(
+                            toast(msg ?: app.getString(
                                 com.crow.base.R.string.BaseUnknowError))
                         }
                         .doOnResult {
@@ -159,7 +159,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
                             * */
                             if (intent.regResultsOkResp != null) {
                                 mIsRegSuccess = true
-                                if (BaseUser.CURRENT_USER_TOKEN.isEmpty())
+                                if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty())
                                     mUserVM.input(UserIntent.Login(
                                         mUserVM.getUsername(mBinding.userRegEditTextUsr.text.toString()) ?: return@doOnResult,
                                         mUserVM.getPassword(mBinding.userRegEditTextPwd.text.toString()) ?: return@doOnResult
@@ -179,7 +179,7 @@ class UserRegFragment : BaseMviFragment<UserFragmentRegBinding>() {
                 is UserIntent.Login -> {
                     intent.mBaseViewState
                         .doOnSuccess { dismissLoadingAnim { doRevertRegButton() } }
-                        .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: appContext.getString(
+                        .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: app.getString(
                             com.crow.base.R.string.BaseUnknowError)) }
                         .doOnResult {
                             /* 两个结果 OK 和 Error

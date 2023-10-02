@@ -12,7 +12,7 @@ data class DiscoverNovelHomeResult (
     val mImageUrl: String,
 
     @Json(name =  "datetime_updated")
-    val mDatetimeUpdated: String,
+    val mDatetimeUpdated: String?,
 
     @Json(name =  "name")
     val mName: String,

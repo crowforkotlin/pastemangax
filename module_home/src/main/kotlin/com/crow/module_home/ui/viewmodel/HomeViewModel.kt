@@ -5,7 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_home.R
 import com.crow.module_home.model.entity.HomeHeader
@@ -59,16 +59,16 @@ class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<H
             mBanners.clear()
             mNewHomeDatas.clear()
             mBanners.addAll(value.mResults.mBanners.filter { banner -> banner.mType <= 2 }.toMutableList())
-            mNewHomeDatas.add(HomeHeader(R.drawable.home_ic_recommed_24dp, appContext.getString(R.string.home_recommend_comic)))
+            mNewHomeDatas.add(HomeHeader(R.drawable.home_ic_recommed_24dp, app.getString(R.string.home_recommend_comic)))
             mNewHomeDatas.addAll(value.mResults.mRecComicsResult.mResult.toMutableList())
             mNewHomeDatas.add(Unit)
-            mNewHomeDatas.add(HomeHeader(R.drawable.home_ic_new_24dp, appContext.getString(R.string.home_hot_comic)))
+            mNewHomeDatas.add(HomeHeader(R.drawable.home_ic_new_24dp, app.getString(R.string.home_hot_comic)))
             mNewHomeDatas.addAll(value.mResults.mHotComics.toMutableList())
-            mNewHomeDatas.add(HomeHeader(R.drawable.home_ic_new_24dp, appContext.getString(R.string.home_new_comic)))
+            mNewHomeDatas.add(HomeHeader(R.drawable.home_ic_new_24dp, app.getString(R.string.home_new_comic)))
             mNewHomeDatas.addAll(value.mResults.mNewComics.toMutableList())
-            mNewHomeDatas.add(HomeHeader(R.drawable.home_ic_finish_24dp, appContext.getString(R.string.home_commit_finish)))
+            mNewHomeDatas.add(HomeHeader(R.drawable.home_ic_finish_24dp, app.getString(R.string.home_commit_finish)))
             mNewHomeDatas.addAll(value.mResults.mFinishComicDatas.mResult.toMutableList())
-            mNewHomeDatas.add(HomeHeader(R.drawable.home_ic_finish_24dp, appContext.getString(R.string.home_topic_comic)))
+            mNewHomeDatas.add(HomeHeader(R.drawable.home_ic_finish_24dp, app.getString(R.string.home_topic_comic)))
             value.mResults.mTopics.mResult.forEach { mNewHomeDatas.add(it) }
             intent.copy(homePageData = value)
         }

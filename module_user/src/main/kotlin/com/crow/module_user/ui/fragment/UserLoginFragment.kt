@@ -3,7 +3,7 @@ package com.crow.module_user.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
@@ -84,7 +84,7 @@ class UserLoginFragment() : BaseMviFragment<UserFragmentLoginBinding>(){
                     intent.mBaseViewState
                         .doOnLoading { showLoadingAnim() }
                         .doOnSuccess { dismissLoadingAnim { doRevertLoginButton() } }
-                        .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: appContext.getString(baseR.string.BaseUnknowError)) }
+                        .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: app.getString(baseR.string.BaseUnknowError)) }
                         .doOnResult {
                             /* 两个结果 OK 和 Error
                             * OK：设置 mIsLoginSuccess = true 用于标记

@@ -20,7 +20,7 @@ data class NovelInfoResult(
     val mCover: String,
 
     @Json(name =  "datetime_updated")
-    val mDatetimeUpdated: String,
+    val mDatetimeUpdated: String?,
 
     @Json(name =  "last_chapter")
     val mLastChapter: LastChapter,

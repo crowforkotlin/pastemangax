@@ -1,7 +1,7 @@
 package com.crow.module_book.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.createCoroutineExceptionHandler
@@ -85,7 +85,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      *
      * ● 2023-09-04 01:33:44 周一 上午
      */
-    var mOrientation = appContext.resources.configuration.orientation
+    var mOrientation = app.resources.configuration.orientation
 
     /**
      * ● 通过检查意图的类型并执行相应的代码来处理意图

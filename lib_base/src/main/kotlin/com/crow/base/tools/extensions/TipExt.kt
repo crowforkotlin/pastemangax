@@ -2,10 +2,11 @@
 
 package com.crow.base.tools.extensions
 
+import android.content.Context
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.google.android.material.snackbar.Snackbar
 import com.orhanobut.logger.Logger
 
@@ -81,10 +82,10 @@ private var mToast: Toast? = null
 private var mToastHide: Boolean = false
 
 /* String Toast */
-fun toast(msg: String, isShort: Boolean = true) {
+fun toast(msg: String, isShort: Boolean = true, context: Context = app.applicationContext) {
     if (mToastHide) return
     mToast?.cancel()
-    mToast = Toast.makeText(appContext, msg, if (isShort) Toast.LENGTH_SHORT else Toast.LENGTH_LONG)
+    mToast = Toast.makeText(context, msg, if (isShort) Toast.LENGTH_SHORT else Toast.LENGTH_LONG)
     mToast?.show()
 }
 
@@ -92,7 +93,7 @@ fun toast(msg: String, isShort: Boolean = true) {
 fun toast(charSequence: CharSequence, isShort: Boolean = true) {
     if (mToastHide) return
     mToast?.cancel()
-    mToast = Toast.makeText(appContext, charSequence, if (isShort) Toast.LENGTH_SHORT else Toast.LENGTH_LONG)
+    mToast = Toast.makeText(app.applicationContext, charSequence, if (isShort) Toast.LENGTH_SHORT else Toast.LENGTH_LONG)
     mToast?.show()
 }
 

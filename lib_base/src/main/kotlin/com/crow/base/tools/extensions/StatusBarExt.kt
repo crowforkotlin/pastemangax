@@ -18,7 +18,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsCompat.Type.InsetsType
 import androidx.core.view.WindowInsetsControllerCompat
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 
 
 /*************************
@@ -46,13 +46,13 @@ fun Activity.setStatusBarIsDark(isDark: Boolean = true) {
 /** 获取顶部状态栏高度 */
 fun Context.getStatusBarHeight() : Int{
     val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-    return if (resourceId > 0) appContext.resources.getDimensionPixelSize(resourceId) else 0
+    return if (resourceId > 0) app.resources.getDimensionPixelSize(resourceId) else 0
 }
 
 /** 获取底部导航栏高度 */
 fun Context.getNavigationBarHeight() : Int{
     val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
-    return if (resourceId > 0) appContext.resources.getDimensionPixelSize(resourceId) else 0
+    return if (resourceId > 0) app.resources.getDimensionPixelSize(resourceId) else 0
 }
 
 /** 隐藏 [状态栏、导航栏、系统栏]*/

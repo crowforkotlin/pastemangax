@@ -48,7 +48,7 @@ import kotlinx.coroutines.sync.withLock
 
 class NewHomeComicRvAdapter(
     private val mOnRefresh: (MaterialButton) -> Unit,
-    private val mOnClick: (String) -> Unit,
+    private val mOnClick: (name: String, pathword: String) -> Unit,
     private val mOnTopic: (String) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -144,16 +144,16 @@ class NewHomeComicRvAdapter(
         private fun onClick(item: Any) {
             when (item) {
                 is RecComicsResult -> {
-                    mOnClick(item.mComic.mPathWord)
+                    mOnClick(item.mComic.mName, item.mComic.mPathWord)
                 }
                 is HotComic -> {
-                    mOnClick(item.mComic.mPathWord)
+                    mOnClick(item.mComic.mName, item.mComic.mPathWord)
                 }
                 is NewComic -> {
-                    mOnClick(item.mComic.mPathWord)
+                    mOnClick(item.mComic.mName, item.mComic.mPathWord)
                 }
                 is FinishComic -> {
-                    mOnClick(item.mPathWord)
+                    mOnClick(item.mName, item.mPathWord)
                 }
                 is Topices -> {
                     mOnTopic(item.mPathWord)

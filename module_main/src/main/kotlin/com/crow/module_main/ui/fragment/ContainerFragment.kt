@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.launchDelay
@@ -109,7 +109,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
 
             // 初始化 用户Tokne
-            BaseUser.CURRENT_USER_TOKEN = it?.mToken ?: return@onCollect
+            BaseUserConfig.CURRENT_USER_TOKEN = it?.mToken ?: return@onCollect
         }
 
         // 观察ContainerVM
@@ -135,8 +135,11 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     /** ● 初始化视图 */
     override fun initView(savedInstanceState: Bundle?) {
 
+        // 设置 内边距属性 实现沉浸式效果
+        immersionRoot()
+
         // 适配器 初始化 （设置Adapter、预加载页数）
-        mBinding.mainViewPager.offscreenPageLimit = 1
+        mBinding.mainViewPager.offscreenPageLimit = 3
         mBinding.mainViewPager.isUserInputEnabled = false
         mBinding.mainViewPager.adapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
     }

@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.setPadding
 import com.crow.base.R
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.tools.extensions.newMaterialDialog
@@ -54,12 +54,12 @@ fun String.getSpannableString(color: Int, start: Int, end: Int = length): Spanna
 
 // 漫画卡片高度 和 宽度
 val appComicCardHeight: Int by lazy {
-    val width = appContext.resources.displayMetrics.widthPixels
-    val height = appContext.resources.displayMetrics.heightPixels
+    val width = app.resources.displayMetrics.widthPixels
+    val height = app.resources.displayMetrics.heightPixels
     (width.toFloat() / (3.0 - width.toFloat() / height.toFloat())).toInt()
 }
 val appComicCardWidth: Int by lazy { (appComicCardHeight / 1.25).toInt() }
-val appDp10 by lazy { appContext.px2dp(appContext.resources.getDimensionPixelSize(R.dimen.base_dp10).toFloat()).toInt() }
+val appDp10 by lazy { app.px2dp(app.resources.getDimensionPixelSize(R.dimen.base_dp10).toFloat()).toInt() }
 var appIsDarkMode = SpNameSpace.CATALOG_NIGHT_MODE.getSharedPreferences().getBoolean(SpNameSpace.Key.ENABLE_DARK, false)
 
 /**
@@ -85,8 +85,8 @@ inline fun View.processTokenError(code: Int, msg: String?, crossinline doOnCance
             }
         }
         .onFailure {
-            if (code == BaseViewState.Error.UNKNOW_HOST) this.showSnackBar(msg ?: appContext.getString(R.string.BaseLoadingError))
-            else toast(appContext.getString(R.string.BaseUnknowError))
+            if (code == BaseViewState.Error.UNKNOW_HOST) this.showSnackBar(msg ?: app.getString(R.string.BaseLoadingError))
+            else toast(app.getString(R.string.BaseUnknowError))
         }
 }
 

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.processTokenError
 import com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
@@ -25,7 +25,6 @@ import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
-import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
@@ -128,7 +127,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         }
 
         // Token为空不处理 Token错误校验
-        else if (BaseUser.CURRENT_USER_TOKEN.isEmpty()) {
+        else if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty()) {
             if (isResumed) toast(getString(R.string.bookshelf_identity_expired))
             return
         }
@@ -141,12 +140,13 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                 parentFragmentManager.setFragmentResult(BaseEventEnum.ClearUserInfo.name, arguments ?: Bundle())
             },
             doOnConfirm = {
+                val tag = Fragments.Login.name
                 requireParentFragment().parentFragmentManager.navigateToWithBackStack(
-                    baseR.id.app_main_fcv,
-                    requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
-                    get(named(Fragments.Login.name)),
-                    Fragments.Login.name,
-                    Fragments.Login.name
+                    id = baseR.id.app_main_fcv,
+                    hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+                    addedTarget = get(named(tag)),
+                    tag = tag,
+                    backStackName = tag
                 )
                 parentFragmentManager.setFragmentResult(BaseEventEnum.ClearUserInfo.name, arguments ?: Bundle())
             }
@@ -189,13 +189,16 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      *
      * ● 2023-07-07 21:51:20 周五 下午
      */
-    private fun navigate(tag: String, pathword: String) {
+    private fun navigate(tag: String, name: String, pathword: String) {
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
+        bundle.putSerializable(BaseStrings.NAME, name)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(
-            baseR.id.app_main_fcv,
-            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
-            get<Fragment>(named(tag)).also { it.arguments = bundle }, tag, tag
+            id = baseR.id.app_main_fcv,
+            hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            addedTarget= get<Fragment>(named(tag)).also { it.arguments = bundle },
+            tag = tag,
+            backStackName = tag
         )
     }
 
@@ -261,15 +264,12 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      */
     override fun initView(savedInstanceState: Bundle?) {
 
-        // 设置 内边距属性 实现沉浸式效果
-        immersionPadding(mBinding.bookshelfToolbar, paddingNaviateBar = false)
-
         // 设置刷新时不允许列表滚动
         mBinding.bookshelfRefresh.setDisableContentWhenRefresh(true)
 
         // 初始化适配器
-        mBookshelfComicRvAdapter = BookshelfComicRvAdapter { navigate(Fragments.BookComicInfo.name, it.mComic.mPathWord) }
-        mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter { navigate(Fragments.BookNovelInfo.name, it.mNovel.mPathWord) }
+        mBookshelfComicRvAdapter = BookshelfComicRvAdapter { navigate(Fragments.BookComicInfo.name, it.mComic.mName, it.mComic.mPathWord) }
+        mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter { navigate(Fragments.BookNovelInfo.name, it.mNovel.mName, it.mNovel.mPathWord) }
 
         // 设置加载动画独占1行，卡片3行
         (mBinding.bookshelfRvComic.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -353,7 +353,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
         // 按钮组 点击事件 （漫画、轻小说）
         mBinding.bookshelfButtonGropu.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (BaseUser.CURRENT_USER_TOKEN.isEmpty()) toast(getString(R.string.bookshelf_identity_expired))
+            if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty()) toast(getString(R.string.bookshelf_identity_expired))
             when (checkedId) {
                 R.id.bookshelf_comic -> {                                                              // 点击漫画
                     if (isChecked) {                                                                        // 选中

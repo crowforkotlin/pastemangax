@@ -10,6 +10,10 @@
 	<string name="main_settings_style" translatable="false">个性化</string>
 	<string name="main_settings_site" translatable="false">站点设置（节点）</string>
 	<string name="main_settings_proxy" translatable="false">代理设置（路线）</string>
+	<string name="main_settings_resolution" translatable="false">分辨率</string>
+
+	<string name="main_resolution_tips" translatable="false">默认分辨率为1500！ 如果漫画加载较慢 可以选择分辨率为800！</string>
+	<string name="main_resolution_title" translatable="false">漫画分辨率</string>
 
 	<string name="main_proxy_title" translatable="false">路线设置</string>
 	<string name="main_proxy_tips" translatable="false">接口API访问均是海外，图片CDN可能会变化，请谨慎使用</string>
@@ -35,4 +39,5 @@
     <string name="main_save_local" translatable="false">保存到本地</string>
     <string name="main_dark_mode" translatable="false">黑夜模式</string>
 
+	<string name="main_history" translatable="false">历史记录</string>
 </resources>
