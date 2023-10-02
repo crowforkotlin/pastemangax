@@ -10,6 +10,7 @@ import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_main.model.intent.MainIntent
 import com.crow.module_main.network.ContainerRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class MainViewModel(val repository: ContainerRepository) : BaseMviViewModel<Main
     var mIsRestarted: Boolean = false
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _mAppConfig.value = AppConfigEntity.readAppConfig() ?: AppConfigEntity(true)
         }
     }
