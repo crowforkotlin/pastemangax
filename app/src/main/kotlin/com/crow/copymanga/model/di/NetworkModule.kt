@@ -99,7 +99,7 @@ val networkModule = module {
             // 动态添加请求头
             .addInterceptor(Interceptor { chain: Interceptor.Chain ->
                 chain.proceed(chain.request().newBuilder()
-                    .addHeader("User-Agent", "Kotlin/1.8.20 (kotlin:io)")
+                    .addHeader("User-Agent", "Kotlin/1.9.10 (kotlin:io)")
                     .addHeader("Platform", "1")
                     .addHeader("Authorization","Token ${BaseUserConfig.CURRENT_USER_TOKEN}")
                     .addHeader("region", BaseUserConfig.CURRENT_ROUTE)
@@ -126,7 +126,7 @@ val networkModule = module {
             .baseUrl(BaseStrings.URL.COPYMANGA)
             .client(get(named_CopyMangaX))
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
-                .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
+            .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
             .build()
     }
 }

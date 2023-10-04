@@ -75,14 +75,14 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      *
      * ● 2023-07-07 21:49:53 周五 下午
      */
-    private lateinit var mBookshelfComicRvAdapter: BookshelfComicRvAdapter
+    private val mBookshelfComicRvAdapter by lazy { BookshelfComicRvAdapter { navigate(Fragments.BookComicInfo.name, it.mComic.mName, it.mComic.mPathWord) } }
 
     /**
      * ● Bookshelf Novel适配器
      *
      * ● 2023-07-07 21:50:00 周五 下午
      */
-    private lateinit var mBookshelfNovelRvAdapter: BookshelfNovelRvAdapter
+    private val mBookshelfNovelRvAdapter by lazy { BookshelfNovelRvAdapter { navigate(Fragments.BookNovelInfo.name, it.mNovel.mName, it.mNovel.mPathWord) } }
 
     /**
      * ● 漫画计数
@@ -224,6 +224,36 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
        }
     }
 
+
+    private fun initNovelRvAdapter() {
+
+        // 初始化适配器
+        mBinding.bookshelfRvNovel.adapter = mBookshelfNovelRvAdapter
+
+        // 设置加载动画独占1行，卡片3行
+        (mBinding.bookshelfRvNovel.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int) = if (position == mBookshelfNovelRvAdapter.itemCount && mBookshelfNovelRvAdapter.itemCount > 0) 3 else 1
+        }
+
+        // 添加Footer
+        mBinding.bookshelfRvNovel.adapter = mBookshelfNovelRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfNovelRvAdapter.retry() })
+    }
+
+
+    private fun initComicRvAdapter() {
+
+        // 初始化适配器
+        mBinding.bookshelfRvComic.adapter = mBookshelfComicRvAdapter
+
+        // 设置加载动画独占1行，卡片3行
+        (mBinding.bookshelfRvComic.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int) = if (position == mBookshelfComicRvAdapter.itemCount && mBookshelfComicRvAdapter.itemCount > 0) 3 else 1
+        }
+
+        // 添加Footer
+        mBinding.bookshelfRvComic.adapter = mBookshelfComicRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
+    }
+
     /**
      * ● 获取ViewBinding
      *
@@ -267,23 +297,10 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         // 设置刷新时不允许列表滚动
         mBinding.bookshelfRefresh.setDisableContentWhenRefresh(true)
 
-        // 初始化适配器
-        mBookshelfComicRvAdapter = BookshelfComicRvAdapter { navigate(Fragments.BookComicInfo.name, it.mComic.mName, it.mComic.mPathWord) }
-        mBookshelfNovelRvAdapter = BookshelfNovelRvAdapter { navigate(Fragments.BookNovelInfo.name, it.mNovel.mName, it.mNovel.mPathWord) }
-
-        // 设置加载动画独占1行，卡片3行
-        (mBinding.bookshelfRvComic.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int) =
-                    if (position == mBookshelfComicRvAdapter.itemCount && mBookshelfComicRvAdapter.itemCount > 0) 3 else 1
-            }
-        (mBinding.bookshelfRvNovel.layoutManager as GridLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int) =
-                    if (position == mBookshelfNovelRvAdapter.itemCount && mBookshelfNovelRvAdapter.itemCount > 0) 3 else 1
-            }
-
-        // 设置适配器
-        mBinding.bookshelfRvComic.adapter = mBookshelfComicRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
-        mBinding.bookshelfRvNovel.adapter = mBookshelfNovelRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mBookshelfComicRvAdapter.retry() })
+        when(mBinding.bookshelfButtonGropu.checkedButtonId) {
+            R.id.bookshelf_comic ->initComicRvAdapter()
+            R.id.bookshelf_novel -> initNovelRvAdapter()
+        }
     }
 
 
@@ -355,8 +372,10 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBinding.bookshelfButtonGropu.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty()) toast(getString(R.string.bookshelf_identity_expired))
             when (checkedId) {
-                R.id.bookshelf_comic -> {                                                              // 点击漫画
-                    if (isChecked) {                                                                        // 选中
+
+                R.id.bookshelf_comic -> {
+                    if (isChecked) {
+                        if(mBinding.bookshelfRvComic.adapter == null) { initComicRvAdapter() }
                         if (mBookshelfComicRvAdapter.itemCount == 0) {               // 漫画适配器个数为空
                             mBinding.bookshelfTipsEmpty.animateFadeIn()               // “空书架” 淡入
                             mBinding.bookshelfRvComic.visibility = View.INVISIBLE   // 漫画适配器隐藏
@@ -371,14 +390,14 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                         mBinding.bookshelfRvComic.animateFadeIn()                                                                                                    // 漫画适配器淡入 动画结束时显示
 
                         if (mBinding.bookshelfCount.isVisible) mBinding.bookshelfCount.animateFadeOut()                                           // 漫画总数 可见则淡出
-                        mBinding.bookshelfCount.text =
-                            getString(R.string.bookshelf_comic_count, mComicCount ?: 0)  // 设置漫画总数文本
+                        mBinding.bookshelfCount.text = getString(R.string.bookshelf_comic_count, mComicCount ?: 0)  // 设置漫画总数文本
                         mBinding.bookshelfCount.animateFadeIn()                                                                                                       // 漫画总数 淡入， 这里淡出淡入数位了一个过渡效果
                     }
                 }
 
                 R.id.bookshelf_novel -> {  // 逻辑如上 反着来
                     if (isChecked) {
+                        if(mBinding.bookshelfRvNovel.adapter == null) { initNovelRvAdapter() }
                         if (mBookshelfNovelRvAdapter.itemCount == 0) {
                             mBinding.bookshelfTipsEmpty.animateFadeIn()
                             mBinding.bookshelfRvComic.visibility = View.INVISIBLE

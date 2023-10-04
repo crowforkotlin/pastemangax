@@ -4,7 +4,8 @@ import com.crow.module_book.network.ComicService
 import com.crow.module_bookshelf.network.BookShelfService
 import com.crow.module_discover.network.DiscoverService
 import com.crow.module_home.network.HomeService
-import com.crow.module_main.network.ContainerService
+import com.crow.module_main.network.AppService
+import com.crow.module_main.network.MainService
 import com.crow.module_user.network.UserService
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -21,7 +22,8 @@ import retrofit2.Retrofit
 
 val servicesModule = module {
     val name = named("CopyMangaX")
-    single { get<Retrofit>().create(ContainerService::class.java) }
+    single { get<Retrofit>().create(AppService::class.java) }
+    single { get<Retrofit>(name).create(MainService::class.java) }
     single { get<Retrofit>(name).create(HomeService::class.java) }
     single { get<Retrofit>(name).create(ComicService::class.java) }
     single { get<Retrofit>(name).create(UserService::class.java) }

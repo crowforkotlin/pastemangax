@@ -253,6 +253,7 @@ class BookComicFragment : BookFragment() {
             if (mBaseEvent.getBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED) == null && chapter != null) {
                 mComicChapterRvAdapter?.mChapterName = chapter.mChapterName
                 mComicChapterRvAdapter?.notifyItemRangeChanged(0, mComicChapterRvAdapter?.itemCount ?: return@onCollect)
+                toast(getString(R.string.book_readed_chapter, chapter.mChapterName))
             }
         }
 
@@ -269,6 +270,7 @@ class BookComicFragment : BookFragment() {
                                 mComicChapterRvAdapter!!.mChapterName = mBrowse?.chapterName ?: return@doOnResult
                                 mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, true)
                                 mComicChapterRvAdapter!!.notifyItemRangeChanged(0, mComicChapterRvAdapter!!.itemCount)
+                                toast(getString(R.string.book_readed_chapter, mComicChapterRvAdapter?.mChapterName))
                             }
                          }
                 }

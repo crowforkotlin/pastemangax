@@ -33,7 +33,6 @@
             android:scaleType="centerCrop"
             tools:layout_height="@dimen/base_dp168"
             tools:layout_width="@dimen/base_dp120"
-            tools:src="@drawable/base_steve"
             tools:visibility="invisible" />
 
         <com.google.android.material.progressindicator.CircularProgressIndicator

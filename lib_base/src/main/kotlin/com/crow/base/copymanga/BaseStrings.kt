@@ -37,6 +37,7 @@ object BaseStrings {
         const val NovelInfo = "/api/v3/book/{pathword}?_update=true"
         const val NovelChapter = "/api/v3/book/{pathword}/volumes"
         const val NovelBrowserHistory = "/api/v3/book/{pathword}/query"
+        const val NovelHistory = "/api/v3/member/browse/books?platform=3&_update=true"
         const val NovelCatelogue = "/api/v3/book/{pathword}/volume/1847?_update=true"
         const val NovelAddToBookshelf = "/api/v3/member/collect/book"
         const val NovelSearch = "/api/v3/search/books"

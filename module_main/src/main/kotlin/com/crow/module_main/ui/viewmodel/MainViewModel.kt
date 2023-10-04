@@ -8,8 +8,8 @@ import com.crow.base.copymanga.entity.AppConfigEntity
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
-import com.crow.module_main.model.intent.MainIntent
-import com.crow.module_main.network.ContainerRepository
+import com.crow.module_main.model.intent.AppIntent
+import com.crow.module_main.network.AppRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +25,7 @@ import kotlin.coroutines.resume
  * @Description: ContainerViewModel
  * @formatter:on
  **************************/
-class MainViewModel(val repository: ContainerRepository) : BaseMviViewModel<MainIntent>() {
+class MainViewModel(val repository: AppRepository) : BaseMviViewModel<AppIntent>() {
 
     /** ● app配置 设置粘性状态 （内部访问）*/
     private var _mAppConfig = MutableStateFlow<AppConfigEntity?>(null)
@@ -59,23 +59,23 @@ class MainViewModel(val repository: ContainerRepository) : BaseMviViewModel<Main
         }
     }
 
-    private fun getUpdateInfo(intent: MainIntent.GetUpdateInfo) {
+    private fun getUpdateInfo(intent: AppIntent.GetUpdateInfo) {
         flowResult(intent, repository.getUpdateInfo()) { value -> intent.copy(appUpdateResp = value) }
     }
 
-    private fun getQQGropu(intent: MainIntent.GetQQGroup) {
+    private fun getQQGropu(intent: AppIntent.GetQQGroup) {
         flowResult(intent, repository.getQQGroup()) { value -> intent.copy(link = value.string()) }
     }
 
-    private fun getSite(intent: MainIntent.GetDynamicSite) {
+    private fun getSite(intent: AppIntent.GetDynamicSite) {
         flowResult(intent, repository.getSite()) { value -> intent.copy(siteResp = value) }
     }
 
-    override fun dispatcher(intent: MainIntent) {
+    override fun dispatcher(intent: AppIntent) {
         when(intent) {
-            is MainIntent.GetUpdateInfo -> getUpdateInfo(intent)
-            is MainIntent.GetQQGroup -> getQQGropu(intent)
-            is MainIntent.GetDynamicSite -> getSite(intent)
+            is AppIntent.GetUpdateInfo -> getUpdateInfo(intent)
+            is AppIntent.GetQQGroup -> getQQGropu(intent)
+            is AppIntent.GetDynamicSite -> getSite(intent)
         }
     }
 }

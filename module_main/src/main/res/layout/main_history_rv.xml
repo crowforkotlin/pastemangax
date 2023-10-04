@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/base_dp5"
     android:layout_marginTop="@dimen/base_dp7_5"
+    android:foreground="@drawable/base_bg_item_ripper"
     android:layout_marginEnd="@dimen/base_dp5"
     android:layout_marginBottom="@dimen/base_dp7_5"
     android:orientation="vertical">
@@ -13,11 +14,13 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/discover_rv_book_card"
         style="@style/Widget.Material3.CardView.Filled"
-        android:layout_width="148dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/base_dp10"
         app:cardCornerRadius="@dimen/base_dp10"
         app:cardElevation="@dimen/base_dp1"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/materialDivider"
         app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@color/base_grey_400_40"
         app:strokeWidth="@dimen/base_dp1">
@@ -25,15 +28,12 @@
         <ImageView
             android:id="@+id/discover_rv_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
+            android:layout_height="match_parent"
             android:contentDescription="@string/BaseTodoTextView"
-            android:foreground="@drawable/base_bg_item_ripper"
             android:scaleType="centerCrop"
+            tools:ignore="ImageContrastCheck"
             tools:layout_height="@dimen/base_dp168"
-            tools:layout_width="@dimen/base_dp120"
-            tools:src="@drawable/base_steve"
-            tools:visibility="invisible" />
+            tools:layout_width="@dimen/base_dp120" />
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/discover_loading"
@@ -62,19 +62,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/base_dp2_5"
         android:ellipsize="end"
         android:gravity="center|start"
-        android:maxLines="2"
-        android:minLines="2"
-        android:paddingStart="@dimen/base_dp10"
-        android:paddingEnd="@dimen/base_dp10"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
+        android:maxLines="1"
         android:textSize="@dimen/base_sp11"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/discover_rv_book_card"
         app:layout_constraintTop_toTopOf="@+id/discover_rv_book_card"
-        tools:text="书名:xxxx" />
+        tools:text="书名:  xxxx" />
 
     <TextView
         android:id="@+id/discover_rv_author"
@@ -85,16 +83,15 @@
         android:gravity="center|start"
         android:maxLines="1"
         android:minLines="1"
-        android:paddingStart="@dimen/base_dp10"
-        android:paddingEnd="@dimen/base_dp10"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:textSize="@dimen/base_sp10"
         android:textStyle="bold"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/discover_rv_book_card"
         app:layout_constraintTop_toBottomOf="@+id/discover_rv_name"
-        tools:text="作者：Crow"
-        tools:visibility="visible" />
+        tools:text="作者：Crow" />
 
     <TextView
         android:id="@+id/discover_rv_hot"
@@ -105,8 +102,9 @@
         android:gravity="center|start"
         android:maxLines="1"
         android:minLines="1"
-        android:paddingStart="@dimen/base_dp10"
-        android:paddingEnd="@dimen/base_dp10"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:textSize="@dimen/base_sp10"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -119,8 +117,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingStart="@dimen/base_dp10"
-        android:paddingEnd="@dimen/base_dp10"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:ellipsize="end"
         android:gravity="center|start"
         android:maxLines="1"
@@ -131,5 +130,51 @@
         app:layout_constraintStart_toEndOf="@+id/discover_rv_book_card"
         app:layout_constraintTop_toBottomOf="@+id/discover_rv_hot"
         tools:text="时间：2044年" />
+
+    <TextView
+        android:id="@+id/discover_rv_readed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
+        android:ellipsize="end"
+        android:gravity="center|start"
+        android:maxLines="1"
+        android:minLines="1"
+        android:textSize="@dimen/base_sp10"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/discover_rv_book_card"
+        app:layout_constraintTop_toBottomOf="@+id/discover_rv_time"
+        tools:text="已阅读至：第9章" />
+
+    <TextView
+        android:id="@+id/discover_rv_lastest"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
+        android:ellipsize="end"
+        android:gravity="center|start"
+        android:maxLines="1"
+        android:minLines="1"
+        android:textSize="@dimen/base_sp10"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/discover_rv_book_card"
+        app:layout_constraintTop_toBottomOf="@+id/discover_rv_readed"
+        tools:text="最新一章：第18话" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/materialDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/base_dp1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_marginBottom="@dimen/base_dp20" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

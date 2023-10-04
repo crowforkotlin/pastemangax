@@ -40,7 +40,7 @@ import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentContainerBinding
 import com.crow.module_main.databinding.MainUpdateLayoutBinding
 import com.crow.module_main.databinding.MainUpdateUrlLayoutBinding
-import com.crow.module_main.model.intent.MainIntent
+import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.model.resp.MainAppUpdateResp
 import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
@@ -115,7 +115,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 观察ContainerVM
         mContainerVM.onOutput { intent ->
             when(intent) {
-                is MainIntent.GetDynamicSite -> {
+                is AppIntent.GetDynamicSite -> {
                     intent.mBaseViewState
                         .doOnErrorInCoroutine { _, _ -> mContainerVM.saveAppConfig() }
                         .doOnResultInCoroutine {
@@ -123,7 +123,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                             mContainerVM.saveAppConfig()
                         }
                 }
-                is MainIntent.GetUpdateInfo -> {
+                is AppIntent.GetUpdateInfo -> {
                     intent.mBaseViewState
                         .doOnError { _, _ -> toast(getString(R.string.main_update_error)) }
                         .doOnResult { doUpdateChecker(saveInstanceState, intent.appUpdateResp!!) }
@@ -167,7 +167,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mContainerVM.input(MainIntent.GetUpdateInfo())
+        mContainerVM.input(AppIntent.GetUpdateInfo())
     }
 
     /**

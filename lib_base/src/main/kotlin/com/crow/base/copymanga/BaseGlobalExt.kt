@@ -6,7 +6,9 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.setPadding
 import com.crow.base.R
 import com.crow.base.app.app
@@ -19,6 +21,7 @@ import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.BaseViewState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.divider.MaterialDivider
 import com.squareup.moshi.JsonDataException
 import java.text.DecimalFormat
 import java.util.Locale
@@ -72,13 +75,23 @@ inline fun View.processTokenError(code: Int, msg: String?, crossinline doOnCance
         .onSuccess {
             context.newMaterialDialog { dialog ->
                 dialog.setCancelable(false)
-                dialog.setView(TextView(context).also {  textView ->
-                    textView.text = context.getString(R.string.BaseTokenError)
-                    textView.textSize = 18f
-                    textView.setPadding(context.resources.getDimensionPixelSize(R.dimen.base_dp20))
-                    textView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                    textView.gravity = Gravity.CENTER or Gravity.CENTER_VERTICAL
-                })
+                val linear = LinearLayoutCompat(context)
+                val divider = MaterialDivider(context)
+                val textView = TextView(context)
+                val dp10 = resources.getDimensionPixelSize(R.dimen.base_dp10)
+                linear.layoutParams = LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                linear.orientation = LinearLayoutCompat.VERTICAL
+                divider.layoutParams = LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, context.px2dp(resources.getDimensionPixelSize(R.dimen.base_dp1).toFloat()).toInt()).also {
+                    it.setMargins(0, dp10, 0, 0)
+                }
+                textView.text = context.getString(R.string.BaseTokenError)
+                textView.textSize = 18f
+                textView.setPadding(context.resources.getDimensionPixelSize(R.dimen.base_dp20))
+                textView.typeface = Typeface.DEFAULT_BOLD
+                textView.gravity = Gravity.CENTER or Gravity.CENTER_VERTICAL
+                linear.addView(divider)
+                linear.addView(textView)
+                dialog.setView(linear)
                 dialog.setTitle(context.getString(R.string.BaseTips))
                 dialog.setPositiveButton(context.getString(R.string.BaseConfirm)) { _, _ -> doOnConfirm(dialog) }
                 dialog.setNegativeButton(context.getString(R.string.BaseCancel)) { _, _ -> doOnCancel(dialog) }

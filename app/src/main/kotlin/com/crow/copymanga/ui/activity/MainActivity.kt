@@ -16,7 +16,7 @@ import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.ui.activity.BaseMviActivity
-import com.crow.module_main.model.intent.MainIntent
+import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import org.koin.android.ext.android.get
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
@@ -84,7 +84,7 @@ class MainActivity : BaseMviActivity<ViewBinding>()  {
                 BaseUserConfig.RESOLUTION = appConfig.mResolution
 
                 // 第一次初始化则获取动态站点
-                if (appConfig.mAppFirstInit) mContainerVM.input(MainIntent.GetDynamicSite())
+                if (appConfig.mAppFirstInit) mContainerVM.input(AppIntent.GetDynamicSite())
 
                 WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = (!appIsDarkMode)
             }
