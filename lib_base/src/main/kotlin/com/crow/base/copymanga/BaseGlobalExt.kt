@@ -12,6 +12,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.setPadding
 import com.crow.base.R
 import com.crow.base.app.app
+import com.crow.base.copymanga.resp.BaseContentInvalidResp
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.tools.extensions.newMaterialDialog

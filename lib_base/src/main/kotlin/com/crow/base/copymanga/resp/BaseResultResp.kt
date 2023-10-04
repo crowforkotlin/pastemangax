@@ -1,4 +1,4 @@
-package com.crow.base.copymanga
+package com.crow.base.copymanga.resp
 
 import com.squareup.moshi.Json
 

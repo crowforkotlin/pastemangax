@@ -1,7 +1,7 @@
 package com.crow.module_bookshelf.network
 
-import com.crow.base.copymanga.BaseResultResp
 import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.resp.BaseResultResp
 import com.crow.module_bookshelf.model.resp.BookshelfComicResp
 import com.crow.module_bookshelf.model.resp.BookshelfNovelResp
 import kotlinx.coroutines.flow.Flow

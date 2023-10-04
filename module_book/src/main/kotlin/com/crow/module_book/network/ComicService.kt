@@ -1,9 +1,9 @@
 package com.crow.module_book.network
 
-import com.crow.base.copymanga.BaseNullableResultResp
-import com.crow.base.copymanga.BaseResultResp
 import com.crow.base.copymanga.BaseStrings.PATH_WORD
 import com.crow.base.copymanga.BaseStrings.URL
+import com.crow.base.copymanga.resp.BaseNullableResultResp
+import com.crow.base.copymanga.resp.BaseResultResp
 import com.crow.module_book.model.resp.ComicBrowserResp
 import com.crow.module_book.model.resp.ComicInfoResp
 import com.crow.module_book.model.resp.ComicPageResp
@@ -11,7 +11,6 @@ import com.crow.module_book.model.resp.NovelBrowserResp
 import com.crow.module_book.model.resp.NovelCatelogueResp
 import com.crow.module_book.model.resp.NovelInfoResp
 import kotlinx.coroutines.flow.Flow
-
 import okhttp3.ResponseBody
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

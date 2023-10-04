@@ -1,6 +1,6 @@
 package com.crow.module_book.model.intent
 
-import com.crow.base.copymanga.BaseNullableResultResp
+import com.crow.base.copymanga.resp.BaseNullableResultResp
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
 import com.crow.module_book.model.resp.ComicBrowserResp
 import com.crow.module_book.model.resp.ComicChapterResp
