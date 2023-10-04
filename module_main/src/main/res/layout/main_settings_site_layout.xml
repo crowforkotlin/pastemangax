@@ -66,13 +66,15 @@
 
             <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/settings_site_static_radio_one"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="@string/main_site_one" />
 
             <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/settings_site_static_radio_two"
-                android:layout_width="wrap_content"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/main_site_two" />
 

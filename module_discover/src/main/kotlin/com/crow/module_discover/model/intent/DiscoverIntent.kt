@@ -14,9 +14,13 @@ import com.crow.module_discover.model.resp.DiscoverNovelTagResp
  * @Description: DiscoverIntent
  * @formatter:on
  **************************/
-open class DiscoverIntent private constructor(): BaseMviIntent() {
+open class DiscoverIntent private constructor() : BaseMviIntent() {
 
-    data class GetComicTag(val comicTagResp: DiscoverComicTagResp? = null) : DiscoverIntent()
+    data class GetComicTag(
+        val showDialog: Boolean = false,
+        val type: Int? = null,
+        val comicTagResp: DiscoverComicTagResp? = null
+    ) : DiscoverIntent()
 
     data class GetComicHome(val comicHomeResp: DiscoverComicHomeResp? = null) : DiscoverIntent()
 

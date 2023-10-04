@@ -124,8 +124,7 @@ class BookClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
             mUUID = prevUUID,
             mInfo = prevInfo,
             mIsNext = false
-        )
-        )
+        ))
         pages.add(ReaderPrevNextInfo(
             mUUID = nextUUID,
             mInfo = nextInfo,

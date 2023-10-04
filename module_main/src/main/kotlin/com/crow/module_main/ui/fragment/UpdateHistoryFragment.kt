@@ -23,7 +23,7 @@ import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_main.databinding.MainFragmentUpdateHistoryBinding
-import com.crow.module_main.model.intent.MainIntent
+import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.ui.adapter.UpdateHistoryAdapter
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
@@ -92,7 +92,7 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
      * ● 2023-06-21 00:47:23 周三 上午
      */
     override fun initData(savedInstanceState: Bundle?) {
-        mMainVM.input(MainIntent.GetUpdateInfo())
+        mMainVM.input(AppIntent.GetUpdateInfo())
     }
 
     /**
@@ -104,7 +104,7 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
         mBinding.updateToolbar.navigateIconClickGap { navigateUp() }
 
         mBinding.updateRefresh.setOnRefreshListener {
-            mMainVM.input(MainIntent.GetUpdateInfo())
+            mMainVM.input(AppIntent.GetUpdateInfo())
         }
     }
 
@@ -117,7 +117,7 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
 
         mMainVM.onOutput { intent ->
             when (intent) {
-                is MainIntent.GetUpdateInfo -> {
+                is AppIntent.GetUpdateInfo -> {
                     intent.mBaseViewState
                         .doOnLoading { mBinding.updateRefresh.autoRefreshAnimationOnly() }
                         .doOnError { _, _ ->

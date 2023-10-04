@@ -36,8 +36,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/book_info_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_back"
-        app:layout_constraintTop_toTopOf="@+id/book_info_back"
-        tools:text="@string/BaseTodoTextView" />
+        app:layout_constraintTop_toTopOf="@+id/book_info_back" />
 
 <!--
     <com.google.android.material.button.MaterialButton
@@ -62,12 +61,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
-        android:visibility="invisible"
-        app:cardElevation="1dp"
+        app:cardElevation="@dimen/base_dp1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/book_info_back"
         app:strokeColor="@color/base_grey_400_40"
-        app:strokeWidth="1dp">
+        app:strokeWidth="@dimen/base_dp1">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/book_info_loading"
@@ -106,6 +104,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:textSize="@dimen/base_sp12_5"
         android:ellipsize="end"
         android:maxLines="1"
@@ -119,8 +118,9 @@
         android:id="@+id/book_info_author"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/base_dp10"
         android:textSize="@dimen/base_sp12_5"
+        android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
         android:ellipsize="end"
         android:maxLines="2"
@@ -136,6 +136,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
         android:ellipsize="end"
         android:maxLines="1"
@@ -150,6 +151,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
         android:textSize="@dimen/base_sp12_5"
         android:ellipsize="end"
@@ -166,6 +168,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
         android:ellipsize="end"
         android:maxLines="1"
@@ -178,14 +181,13 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_add_to_bookshelf"
         style="@style/Base.Theme.Button.Icon.Tint.Text"
-        android:layout_width="@dimen/base_dp74"
-        android:layout_height="@dimen/base_dp74"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:iconSize="@dimen/base_dp24"
         android:layout_weight="0.25"
         android:text="@string/book_comic_add_to_bookshelf"
         android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
-        android:visibility="invisible"
         app:icon="@drawable/book_ic_add_to_bookshelf_24dp"
         app:iconGravity="top"
         app:layout_constraintEnd_toStartOf="@+id/book_info_download"
@@ -195,15 +197,14 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_download"
-        android:layout_width="@dimen/base_dp74"
-        android:layout_height="@dimen/base_dp74"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         style="@style/Base.Theme.Button.Icon.Tint.Text"
         android:layout_marginTop="@dimen/base_dp10"
         android:minWidth="@dimen/base_dp48"
         android:minHeight="@dimen/base_dp48"
         android:text="@string/BookComicDownLoad"
         android:textStyle="bold"
-        android:visibility="invisible"
         app:icon="@drawable/base_ic_download_24dp"
         app:iconSize="@dimen/base_dp24"
         app:iconGravity="top"
@@ -215,8 +216,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_readnow"
-        android:layout_width="@dimen/base_dp74"
-        android:layout_height="@dimen/base_dp74"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         style="@style/Base.Theme.Button.Icon.Tint.Text"
         app:iconSize="@dimen/base_dp24"
         android:minWidth="@dimen/base_dp48"
@@ -224,7 +225,6 @@
         android:text="@string/BookComicReadNow"
         android:textStyle="bold"
         android:textSize="@dimen/base_sp12_5"
-        android:visibility="invisible"
         app:icon="@drawable/book_ic_readnow_24dp"
         app:iconGravity="top"
         app:layout_constraintEnd_toEndOf="parent"
@@ -309,14 +309,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/base_dp10"
                     android:background="@android:color/transparent"
+                    android:layout_marginStart="@dimen/base_dp5"
                     app:tabIndicatorFullWidth="true"
+                    android:layout_marginEnd="@dimen/base_dp5"
+                    app:tabMode="scrollable"
                     android:contentDescription="@string/BaseAppName"
                     app:tabTextAppearance="@style/Book.Tablayout.TextAppearance"
                     android:visibility="gone"
-                    tools:visibility="visible" >
-
-
-                </com.google.android.material.tabs.TabLayout>
+                    tools:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/book_info_rv_chapter"

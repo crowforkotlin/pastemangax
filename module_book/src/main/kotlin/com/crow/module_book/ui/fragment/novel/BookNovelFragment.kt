@@ -16,7 +16,7 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
 import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.formatValue
 import com.crow.base.copymanga.getSpannableString
@@ -38,7 +38,7 @@ import com.crow.module_book.model.entity.BookType
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.NovelChapterResp
 import com.crow.module_book.model.resp.comic_info.Status
-import com.crow.module_book.ui.adapter.NovelChapterRvAdapter
+import com.crow.module_book.ui.adapter.novel.NovelChapterRvAdapter
 import com.crow.module_book.ui.fragment.BookFragment
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
@@ -107,7 +107,6 @@ class BookNovelFragment : BookFragment() {
             })
         }
         mBinding.bookInfoCardview.animateFadeIn()
-        buttonGroupFadeIn()
     }
 
     /**
@@ -154,7 +153,7 @@ class BookNovelFragment : BookFragment() {
      */
     override fun onInitData() {
 
-        if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mBookVM.input(BookIntent.GetNovelBrowserHistory(mPathword))
+        if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) mBookVM.input(BookIntent.GetNovelBrowserHistory(mPathword))
 
         if (mBookVM.mNovelInfoPage == null) mBookVM.input(BookIntent.GetNovelInfoPage(mPathword))
     }
@@ -189,7 +188,13 @@ class BookNovelFragment : BookFragment() {
      *
      * ● 2023-06-24 23:45:01 周六 下午
      */
-    override fun onRefresh() { mBookVM.input(BookIntent.GetNovelChapter(mPathword)) }
+    override fun onRefresh() {
+
+        if (mBookVM.mNovelInfoPage == null) {
+            mBookVM.input(BookIntent.GetNovelInfoPage(mPathword))
+        }
+        mBookVM.input(BookIntent.GetNovelChapter(mPathword))
+    }
 
     /**
      * ● 初始化视图
@@ -266,7 +271,8 @@ class BookNovelFragment : BookFragment() {
         }
 
         mBinding.bookInfoAddToBookshelf.doOnClickInterval{
-            if (BaseUser.CURRENT_USER_TOKEN.isEmpty()) {
+            if (mBookVM.mNovelInfoPage == null) return@doOnClickInterval
+            if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty()) {
                 toast(getString(R.string.book_add_invalid))
                 return@doOnClickInterval
             }

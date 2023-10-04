@@ -2,13 +2,13 @@ package com.crow.module_main.network
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
- * @Path: module_main/src/main/kotlin/com/crow/module_main/network
- * @Time: 2023/3/13 23:36
+ * @Package: com.crow.module_main.network
+ * @Time: 2023/10/4 14:32
  * @Author: CrowForKotlin
- * @Description: ContainerRepository
+ * @Description: AppRepository
  * @formatter:on
  **************************/
-class ContainerRepository(private val service: ContainerService) {
+class AppRepository(val service: AppService) {
 
     fun getUpdateInfo() = service.getUpdateInfo()
 

@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.viewbinding.ViewBinding
+import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
 import com.crow.base.ui.viewmodel.mvi.BaseMviSuspendResult
@@ -70,5 +72,19 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
         super.onDestroy()
         mBackDispatcher?.remove()
         mBackDispatcher = null
+    }
+
+    protected fun immersionRoot() {
+        // 设置 内边距属性 实现沉浸式效果
+        immersionPadding(mBinding.root) { view, insets, _ ->
+            mBinding.root.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+            }
+        }
     }
 }

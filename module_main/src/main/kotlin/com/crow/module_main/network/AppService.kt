@@ -16,7 +16,7 @@ import retrofit2.http.Url
  * @Description: ContainerService
  * @formatter:on
  **************************/
-interface ContainerService {
+interface AppService {
 
     @GET
     fun getUpdateInfo(@Url url: String = BaseStrings.URL.Crow_UpdateInfo): Flow<MainAppUpdateResp>

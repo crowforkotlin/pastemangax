@@ -6,13 +6,11 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -32,7 +30,6 @@ import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
-import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.toast
@@ -102,7 +99,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                 mRecRefresh = button
                 mHomeVM.input(HomeIntent.GetRecPageByRefresh())
             },
-            mOnClick = { pathword -> navigateBookComicInfo(pathword) },
+            mOnClick = { name, pathword -> navigateBookComicInfo(name, pathword) },
             mOnTopic = { }
         )
     }
@@ -112,7 +109,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      *
      * ● 2023-09-17 01:28:34 周日 上午
      */
-    private val mBaseEvent = BaseEvent.getSIngleInstance()
+    private val mBaseEvent by lazy { BaseEvent.getSIngleInstance() }
 
     /**
      * ● 漫画搜索碎片
@@ -143,13 +140,20 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      *
      * ● 2023-06-16 22:18:11 周五 下午
      */
-    private fun navigateBookComicInfo(pathword: String) {
+    private fun navigateBookComicInfo(name: String, pathword: String) {
         val tag = Fragments.BookComicInfo.name
         val bundle = Bundle()
         bundle.putString(BaseStrings.PATH_WORD, pathword)
-        requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
-            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
-            get<Fragment>(named(tag)).also { it.arguments = bundle }, tag, tag)
+        bundle.putString(BaseStrings.NAME, name)
+        requireParentFragment()
+            .parentFragmentManager
+            .navigateToWithBackStack(
+                id = baseR.id.app_main_fcv,
+                hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+                addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
+                tag = tag,
+                backStackName = tag
+            )
     }
 
     /**
@@ -157,14 +161,17 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      *
      * ● 2023-06-16 22:17:57 周五 下午
      */
-    private fun navigateBookNovelInfo(pathword: String) {
+    private fun navigateBookNovelInfo(name: String, pathword: String) {
         val tag = Fragments.BookNovelInfo.name
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
+        bundle.putSerializable(BaseStrings.NAME, name)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(
-            com.crow.base.R.id.app_main_fcv,
-            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
-            get<Fragment>(named(tag)).also { it.arguments = bundle }, tag, tag
+            id = baseR.id.app_main_fcv,
+            hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
+            tag = tag,
+            backStackName = tag
         )
     }
 
@@ -195,7 +202,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                 mBinding.homeComposeBanner.setContent {
                     Banner(banners = mHomeVM.getSnapshotBanner()) { banner ->
                         mBaseEvent.doOnInterval {
-                            navigateBookComicInfo(banner.mComic?.mPathWord ?: return@doOnInterval)
+                            navigateBookComicInfo(banner.mBrief, banner.mComic?.mPathWord ?: return@doOnInterval)
                         }
                     }
                 }
@@ -234,8 +241,8 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         mBaseEvent.setBoolean("HOME_FRAGMENT_INIT_SEARCH_VIEW", true)
         mBinding.homeSearchView.apply {
             val binding = HomeFragmentSearchViewBinding.inflate(layoutInflater).also { mSearchBinding = it }                                                                 // 获取SearchViewBinding
-            val searchComicFragment = SearchComicFragment.newInstance(mBinding.homeSearchView) { navigateBookComicInfo(it) }   // 实例化SearchComicFragment
-            val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.homeSearchView) { navigateBookNovelInfo(it) }     // 实例化SearchNovelFragment
+            val searchComicFragment = SearchComicFragment.newInstance(mBinding.homeSearchView) { name, pathword ->  navigateBookComicInfo(name, pathword) }   // 实例化SearchComicFragment
+            val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.homeSearchView) { name, pathword -> navigateBookNovelInfo(name, pathword) }     // 实例化SearchNovelFragment
             val bgColor: Int; val tintColor: Int
             if (appIsDarkMode) {
                 bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
@@ -338,15 +345,6 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         if (savedInstanceState != null) {
             withLifecycle(state = Lifecycle.State.RESUMED) {
                 mBinding.homeSearchView.hide()
-            }
-        }
-
-        // 设置 内边距属性 实现沉浸式效果
-        immersionPadding(mBinding.root) { view, insets, _ ->
-            mBinding.root.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
-            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                leftMargin = insets.left
-                rightMargin = insets.right
             }
         }
 

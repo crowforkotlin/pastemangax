@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.R
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_user.databinding.UserFragmentRvBinding
 import com.crow.module_user.databinding.UserFragmentRvBinding.inflate
@@ -38,12 +38,12 @@ class UserRvAdapter(
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
         if (position == 0) {
             vh.rvBinding.userRvImage.doOnLayout {
-                it.layoutParams.height = appContext.resources.getDimensionPixelSize(R.dimen.base_dp64)
-                it.layoutParams.width = appContext.resources.getDimensionPixelSize(R.dimen.base_dp64)
+                it.layoutParams.height = app.resources.getDimensionPixelSize(R.dimen.base_dp64)
+                it.layoutParams.width = app.resources.getDimensionPixelSize(R.dimen.base_dp64)
             }
         }
         val data = datas[position]
-        vh.rvBinding.userRvImage.setImageDrawable(ContextCompat.getDrawable(appContext, data.first))
+        vh.rvBinding.userRvImage.setImageDrawable(ContextCompat.getDrawable(app, data.first))
         vh.rvBinding.userRvText.text = data.second
     }
 

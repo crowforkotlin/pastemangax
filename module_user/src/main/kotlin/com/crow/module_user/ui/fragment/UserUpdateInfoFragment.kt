@@ -9,7 +9,6 @@ import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.processTokenError
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.popSyncWithClear
@@ -68,7 +67,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
     override fun initView(bundle: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
-        immersionPadding(mBinding.root)
+        immersionRoot()
 
     }
 

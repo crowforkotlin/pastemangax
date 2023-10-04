@@ -2,12 +2,18 @@ package com.crow.module_discover.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.core.view.get
+import androidx.core.view.isEmpty
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import com.crow.base.app.app
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
@@ -19,23 +25,32 @@ import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
-import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
+import com.crow.base.tools.extensions.newMaterialDialog
+import com.crow.base.tools.extensions.px2sp
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_discover.R
+import com.crow.module_discover.databinding.DiscoverComicMoreLayoutBinding
 import com.crow.module_discover.databinding.DiscoverFragmentComicBinding
 import com.crow.module_discover.model.intent.DiscoverIntent
+import com.crow.module_discover.model.resp.comic_tag.Theme
+import com.crow.module_discover.model.resp.comic_tag.Top
 import com.crow.module_discover.ui.adapter.DiscoverComicAdapter
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
-import kotlinx.coroutines.yield
+import com.google.android.material.chip.Chip
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.qualifier.named
+import kotlin.properties.Delegates
 import com.crow.base.R as baseR
 
 /*************************
@@ -57,17 +72,31 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     }
 
     /** ● (Activity级别) 发现页VM */
-    private val mDiscoverVM by sharedViewModel<DiscoverViewModel>()
+    private val mVM by sharedViewModel<DiscoverViewModel>()
 
     /** ● 漫画适配器 */
     private lateinit var mDiscoverComicAdapter: DiscoverComicAdapter
 
+    /**
+     * ● subtitle textview
+     *
+     * ● 2023-10-01 21:59:31 周日 下午
+     */
+    private var mToolbarSubtitle: TextView? = null
+
+    private var  mSubtitlePrefix: String by Delegates.observable(app.getString(R.string.discover_all)) { _, _, new ->
+        mBinding.discoverComicAppbar.discoverAppbarToolbar.subtitle = getString(R.string.discover_subtitle, new, mSubtitleSuffix)
+    }
+
+    private var  mSubtitleSuffix: String by Delegates.observable(app.getString(R.string.discover_all)) { _, _, new ->
+        mBinding.discoverComicAppbar.discoverAppbarToolbar.subtitle = getString(R.string.discover_subtitle, mSubtitlePrefix, new)
+    }
+
     /** ● 收集状态 */
     fun onCollectState() {
         repeatOnLifecycle {
-            mDiscoverVM.mDiscoverComicHomeFlowPager?.collect {
+            mVM.mDiscoverComicHomeFlowPager?.collect {
                 mDiscoverComicAdapter.submitData(it)
-                yield()
             }
         }
     }
@@ -76,12 +105,17 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     override fun getViewBinding(inflater: LayoutInflater) = DiscoverFragmentComicBinding.inflate(inflater)
 
     /** ● 导航至漫画页 */
-    private fun navigateBookComicInfo(pathword: String) {
+    private fun navigateBookComicInfo(name: String, pathword: String) {
+        val tag = Fragments.BookComicInfo.name
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
-        requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
-            requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
-            get<Fragment>(named(Fragments.BookComicInfo.name)).also { it.arguments = bundle }, Fragments.BookComicInfo.name, Fragments.BookComicInfo.name
+        bundle.putSerializable(BaseStrings.NAME, name)
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(
+            id = baseR.id.app_main_fcv,
+            hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
+            tag = tag,
+            backStackName = tag
         )
     }
 
@@ -116,21 +150,150 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         // 刷新监听
         mBinding.discoverComicRefresh.setOnRefreshListener { mDiscoverComicAdapter.refresh() }
 
-        // 更多选项 点击监听
-        mBinding.discoverComicAppbar.discoverAppbarToolbar.menu[0].doOnClickInterval { toast("此功能或许将在下个版本中完善....") }
+        // 漫画加载状态监听
+        mDiscoverComicAdapter.addLoadStateListener {
+            if(it.source.refresh is LoadState.NotLoading) {
+
+                val toolbar = mBinding.discoverComicAppbar.discoverAppbarToolbar
+
+                if (toolbar.menu.isEmpty()) {
+
+                    // 先清空
+                    toolbar.menu.clear()
+
+                    // 加载布局
+                    toolbar.inflateMenu(R.menu.discover_appbar_menu)
+
+                    // 类别
+                    toolbar.menu[0].doOnClickInterval { onSelectMenu(R.string.discover_tag) }
+
+                    // 地区
+                    toolbar.menu[1].doOnClickInterval { onSelectMenu(R.string.discover_location) }
+
+                    // 更新时间
+
+                    val instance = BaseEvent.getSIngleInstance()
+                    toolbar.menu[2].doOnClickInterval {
+                        if (instance.getBoolean("DISCOVER_COMIC_FRAGMENT_UPDATE_ORDER") == true) {
+                            instance.setBoolean("DISCOVER_COMIC_FRAGMENT_UPDATE_ORDER", false)
+                            mVM.setOrder("-datetime_updated")
+                        } else {
+                            instance.setBoolean("DISCOVER_COMIC_FRAGMENT_UPDATE_ORDER", true)
+                            mVM.setOrder("datetime_updated")
+                        }
+                        updateComic()
+                    }
+
+                    // 热度
+                    toolbar.menu[3].doOnClickInterval {
+                        if (instance.getBoolean("DISCOVER_COMIC_FRAGMENT_POPULAR_ORDER") == true) {
+                            instance.setBoolean("DISCOVER_COMIC_FRAGMENT_POPULAR_ORDER", false)
+                            mVM.setOrder("-popular")
+                        } else {
+                            instance.setBoolean("DISCOVER_COMIC_FRAGMENT_POPULAR_ORDER", true)
+                            mVM.setOrder("popular")
+                        }
+                        updateComic()
+                    }
+
+                    if (toolbar.subtitle.isNullOrEmpty()) {
+                        mSubtitlePrefix = getString(R.string.discover_all)
+                    }
+
+                    // subtitle textview
+                    mToolbarSubtitle = toolbar::class.java.superclass.getDeclaredField("mSubtitleTextView").run {
+                        isAccessible = true
+                        get(toolbar) as TextView
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * ● 更新漫画
+     *
+     * ● 2023-10-01 22:30:53 周日 下午
+     */
+    private fun updateComic() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            mDiscoverComicAdapter.submitData(PagingData.empty())
+            mVM.input(DiscoverIntent.GetComicHome())
+            onCollectState()
+        }
+    }
+
+
+    private fun onSelectMenu(type: Int) {
+
+        if (mVM.mComicTagResp == null) {
+            mVM.input(DiscoverIntent.GetComicTag(showDialog = true, type = type))
+            return
+        }
+        mBinding.discoverComicRv.stopScroll()
+
+        val binding = DiscoverComicMoreLayoutBinding.inflate(layoutInflater)
+        val chipTextSize = mContext.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
+        var job: Job? = null
+        val dialog = mContext.newMaterialDialog {
+            it.setTitle(getString(type))
+            it.setView(binding.root)
+            it.setOnDismissListener { job?.cancel() }
+        }
+        when(type) {
+            R.string.discover_tag -> {
+                job = viewLifecycleOwner.lifecycleScope.launch {
+                    var theme  = mVM.mComicTagResp!!.theme.toMutableList()
+                    if (theme.size > 25) { theme = theme.subList(0, 25) }
+                    theme.add(0, Theme(null, 0, 0, null, getString(R.string.discover_all), ""))
+                    theme.forEach {
+                        val chip = Chip(mContext)
+                        chip.text = it.mName
+                        chip.textSize = chipTextSize
+                        chip.doOnClickInterval { _ ->
+                            dialog.cancel()
+                            mSubtitlePrefix = it.mName
+                            mToolbarSubtitle?.animateFadeIn()
+                            mVM.setTheme(it.mPathWord)
+                            updateComic()
+                        }
+                        binding.moreChipGroup.addView(chip)
+                        delay(16L)
+                    }
+                }
+            }
+            R.string.discover_location ->{
+                job = viewLifecycleOwner.lifecycleScope.launch {
+                    var top = mVM.mComicTagResp!!.top.toMutableList()
+                    if (top.size > 25) { top = top.subList(0, 25) }
+                    top.add(0, Top(getString(R.string.discover_all), ""))
+                    top.forEach {
+                        val chip = Chip(mContext)
+                        chip.textSize = chipTextSize
+                        chip.text = it.mName
+                        chip.doOnClickInterval { _ ->
+                            dialog.cancel()
+                            mSubtitleSuffix = it.mName
+                            mToolbarSubtitle?.animateFadeIn()
+                            mVM.setRegion(it.mPathWord)
+                            updateComic()
+                        }
+                        binding.moreChipGroup.addView(chip)
+                    }
+                }
+            }
+            else -> error("Unknow menu type!")
+        }
     }
 
     /** ● 初始化视图 */
     override fun initView(savedInstanceState: Bundle?) {
 
-        // 设置 内边距属性 实现沉浸式效果
-        immersionPadding(mBinding.discoverComicAppbar.root, paddingNaviateBar = false)
-
         // 设置Title
         mBinding.discoverComicAppbar.discoverAppbarToolbar.title = getString(R.string.discover_comic)
 
         // 初始化 发现页 漫画适配器
-        mDiscoverComicAdapter = DiscoverComicAdapter { navigateBookComicInfo(it.mPathWord) }
+        mDiscoverComicAdapter = DiscoverComicAdapter { navigateBookComicInfo(it.mName, it.mPathWord) }
 
         // 设置适配器
         mBinding.discoverComicRv.adapter = mDiscoverComicAdapter.withLoadStateFooter(BaseLoadStateAdapter { mDiscoverComicAdapter.retry() })
@@ -150,7 +313,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     override fun initObserver(saveInstanceState: Bundle?) {
 
         // 意图观察者
-        mDiscoverVM.onOutput { intent ->
+        mVM.onOutput { intent ->
             when(intent) {
                 is DiscoverIntent.GetComicHome -> {
                     intent.mBaseViewState
@@ -175,6 +338,13 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                             }
                         }
                 }
+                is DiscoverIntent.GetComicTag -> {
+                    if (intent.showDialog) {
+                        intent.mBaseViewState
+                            .doOnError { _, _ -> toast(getString(baseR.string.BaseLoadingError)) }
+                            .doOnResult { onSelectMenu(intent.type ?: return@doOnResult) }
+                    }
+                }
             }
         }
     }
@@ -182,9 +352,10 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     /** ● Lifecycle onCreate */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (mDiscoverVM.mComicHomeData != null) return
-        mDiscoverVM.input(DiscoverIntent.GetComicTag())     // 获取标签
-        mDiscoverVM.input(DiscoverIntent.GetComicHome())    // 获取发现主页
+        if (mVM.mTotals != 0) return
+
+        mVM.input(DiscoverIntent.GetComicTag()) // 获取标签
+        mVM.input(DiscoverIntent.GetComicHome())    // 获取发现主页
     }
 
     /** ● Lifecycle onDestroyView */
@@ -192,5 +363,8 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         super.onDestroyView()
         AppGlideProgressFactory.doReset()
         parentFragmentManager.clearFragmentResultListener(COMIC)
+        BaseEvent.getSIngleInstance().remove("DISCOVER_COMIC_FRAGMENT_POPULAR_ORDER")
+        BaseEvent.getSIngleInstance().remove("DISCOVER_COMIC_FRAGMENT_UPDATE_ORDER")
+        mToolbarSubtitle = null
     }
 }

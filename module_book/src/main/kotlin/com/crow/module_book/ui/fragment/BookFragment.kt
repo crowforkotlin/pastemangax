@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.appComicCardHeight
 import com.crow.base.copymanga.appComicCardWidth
 import com.crow.base.copymanga.entity.Fragments
@@ -24,7 +25,6 @@ import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
-import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_book.R
@@ -62,7 +62,16 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
 
     /** ● 漫画点击实体 */
     protected val mPathword: String by lazy {
-        arguments?.getString("pathword") ?: run {
+        arguments?.getString(BaseStrings.PATH_WORD) ?: run {
+            toast(getString(baseR.string.BaseUnknowError))
+            navigateUp()
+            ""
+        }
+    }
+
+    /** ● 漫画点击实体 */
+    protected val mName: String by lazy {
+        arguments?.getString(BaseStrings.NAME) ?: run {
             toast(getString(baseR.string.BaseUnknowError))
             navigateUp()
             ""
@@ -117,18 +126,13 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     protected fun doOnBookPageIntent(intent: BookIntent, onResult: Runnable) {
         intent.mBaseViewState
             // 执行加载动画
-            .doOnLoading {
-                showLoadingAnim { dialog ->
-                    dialog.applyWindow(dimAmount = 0.3f)
-                }
-            }
+//            .doOnLoading {}
 
             // 发生错误 取消动画 退出界面 提示
             .doOnError { _, _ ->
-                dismissLoadingAnim {
-                    toast(getString(baseR.string.BaseLoadingError))
-                    navigateUp()
-                }
+//                dismissLoadingAnim {}
+                toast(getString(baseR.string.BaseLoadingError))
+//                navigateUp()
             }
 
             // 显示书页内容 根据意图类型 再次发送获取章节意图的请求
@@ -219,15 +223,6 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         mBinding.bookInfoAddToBookshelf.text = getString(R.string.book_comic_remove_from_bookshelf)
     }
 
-    /**
-     * ● 按钮组整体淡入
-     */
-    protected fun buttonGroupFadeIn() {
-        mBinding.bookInfoAddToBookshelf.animateFadeIn()
-        mBinding.bookInfoDownload.animateFadeIn()
-        mBinding.bookInfoReadnow.animateFadeIn()
-    }
-
     /** ● 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = BookFragmentBinding.inflate(inflater)
 
@@ -249,6 +244,16 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
 
         // 设置刷新时不允许列表滚动
         mBinding.bookInfoRefresh.setDisableContentWhenRefresh(true)
+
+        val more = ". . ."
+        mBinding.bookInfoName.text = mName
+        mBinding.bookInfoDesc.text =  more
+        mBinding.bookInfoStatus.text = getString(R.string.BookComicStatus, more)
+        mBinding.bookInfoAuthor.text = getString(R.string.BookComicAuthor, more)
+        mBinding.bookInfoHot.text = getString(R.string.BookComicHot, more)
+        mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, more)
+        mBinding.bookInfoNewChapter.text = getString(R.string.BookComicNewChapter, more)
+
     }
 
     /** ● 处理章节结果

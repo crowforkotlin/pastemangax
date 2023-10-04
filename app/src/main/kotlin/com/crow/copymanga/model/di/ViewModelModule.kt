@@ -5,6 +5,7 @@ import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.crow.module_bookshelf.ui.viewmodel.BookshelfViewModel
 import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
 import com.crow.module_home.ui.viewmodel.HomeViewModel
+import com.crow.module_main.ui.viewmodel.HistoryViewModel
 import com.crow.module_main.ui.viewmodel.ImageViewModel
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import com.crow.module_user.ui.viewmodel.UserInfoViewModel
@@ -32,5 +33,6 @@ val viewModelModule = module {
     viewModel { ComicViewModel(get()) }
     viewModel { UserInfoViewModel() }
     viewModel { ImageViewModel() }
+    viewModel { HistoryViewModel(get()) }
     // viewModel { AnimeViewModel(get()) }
 }

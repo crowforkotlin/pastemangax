@@ -34,14 +34,26 @@
         app:layout_constraintStart_toStartOf="@+id/settings_proxy_tips"
         app:layout_constraintTop_toBottomOf="@+id/settings_proxy_tips" />
 
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/mainMaterialdivider2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/base_dp1"
+        android:layout_marginTop="@dimen/base_dp10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_proxy_title" />
+
     <RadioGroup
         android:id="@+id/settings_proxy_radio_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/base_dp20"
+        android:layout_marginTop="11dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_proxy_title">
+        app:layout_constraintTop_toBottomOf="@+id/mainMaterialdivider2"
+        app:layout_constraintVertical_bias="0">
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/settings_proxy_domestic_route"
@@ -53,7 +65,7 @@
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/settings_proxy_overseas_route"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_proxy_overseas_route"
             android:textSize="@dimen/base_sp12"

@@ -18,7 +18,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.crow.base.R
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -52,14 +52,14 @@ object DBNameSpace {
     const val app = "preference.chapter.db"
 }
 
-val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(appContext.getString(R.string.BaseAppName))
+val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(app.getString(R.string.BaseAppName))
 val Context.appConfigDataStore: DataStore<Preferences> by preferencesDataStore(
-    appContext.getString(
+    app.getString(
         R.string.BaseAppName
     ).plus(DataStoreAgent.APP_CONFIG.name)
 )
 val Context.appBookDataStore: DataStore<Preferences> by preferencesDataStore(
-    appContext.getString(R.string.BaseAppName).plus(DataStoreAgent.DATA_BOOK.name)
+    app.getString(R.string.BaseAppName).plus(DataStoreAgent.DATA_BOOK.name)
 )
 
 suspend fun DataStore<Preferences>.getIntData(name: String) =
@@ -106,33 +106,33 @@ fun <T> DataStore<Preferences>.encode(key: Preferences.Key<T>, value: T) {
 }
 
 suspend fun <T> Preferences.Key<T>.asyncEncode(value: T) {
-    appContext.appDataStore.edit { it[this] = value }
+    app.appDataStore.edit { it[this] = value }
 }
 
 suspend fun <T> Preferences.Key<T>.asyncClear() {
-    appContext.appDataStore.edit { it.clear() }
+    app.appDataStore.edit { it.clear() }
 }
 
 suspend fun <T> Preferences.Key<T>.asyncDecode(): T? {
-    return appContext.appDataStore.data.map { it[this] }.firstOrNull()
+    return app.appDataStore.data.map { it[this] }.firstOrNull()
 }
 
 fun <T> Preferences.Key<T>.encode(value: T) {
-    runBlocking { appContext.appDataStore.edit { it[this@encode] = value } }
+    runBlocking { app.appDataStore.edit { it[this@encode] = value } }
 }
 
 fun <T> Preferences.Key<T>.decode(): T? {
-    return runBlocking { appContext.appDataStore.data.map { it[this@decode] }.firstOrNull() }
+    return runBlocking { app.appDataStore.data.map { it[this@decode] }.firstOrNull() }
 }
 
 fun <T> Preferences.Key<T>.clear() {
-    runBlocking { appContext.appDataStore.edit { it.clear() } }
+    runBlocking { app.appDataStore.edit { it.clear() } }
 }
 
 fun String.getSharedPreferences(): SharedPreferences {
-    return appContext.getSharedPreferences(this, Context.MODE_PRIVATE)
+    return app.getSharedPreferences(this, Context.MODE_PRIVATE)
 }
 
 inline fun <reified T : RoomDatabase> buildDatabase(dbName: String): T {
-    return Room.databaseBuilder(appContext, T::class.java, dbName).fallbackToDestructiveMigration().build()
+    return Room.databaseBuilder(app, T::class.java, dbName).fallbackToDestructiveMigration().build()
 }

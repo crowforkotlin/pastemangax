@@ -8,17 +8,18 @@
 
 [![Join Our QQ Group 闲聊 OR 技术交流](https://img.shields.io/badge/QQ%20Group-749015160-blue?style=for-the-badge&logo=tencent-qq&logoColor=white)](https://jq.qq.com/?_wv=1027&k=XIMjBxZW)
 
+[![Github All Releases](https://img.shields.io/github/downloads/crowforkotlin/CopyMangaX/total.svg)]()
+
 - ### **🔶前言**
     - **🔷项目介绍**
         - **🟠项目采用 <u>多模块</u> 和 <u>MVI框架</u> 开发**
-        - **🟠此项目非常注重代码质量、重构估计有十次左右了 从最初的MVC --> MVVM --> MVI 都是借鉴了自己以前的项目去实现**
+        - **🟠此项目非常注重代码质量、重构有十次左右了 从最初的MVC --> MVVM --> MVI 都是借鉴了自己以前的项目去实现**
 
 - ### **🔶关于项目**
-    - **🔷[预览最新的功能](https://www.mubucm.com/doc/7dmuZK6gvPP)**
     - **🔷[Dev分支可预览最新的开发进度](https://github.com/CrowForKotlin/CopyManga_Crow/tree/dev)**
     - **🔷[Main分支今后只会当发布新版本时才推送更新](https://github.com/CrowForKotlin/CopyManga_Crow/tree/main)**
-    - **🔷App的Icon几乎都是作者二改、V1.1.0开始重新二次设计了APP的Icon（基于官方ICON二改）**
-    - **🔷目前仅一人开发，有意向的开发者可联系我参与该项目的贡献**
+    - **🔷App的所有Icon几乎都是作者二改、V1.1.0二次设计、V1.2.5三次设计**
+    - **🔷目前仅一人开发，欢迎Pull Request**
     - **🔷在今后或许会新增一些新技术、扩展接口及功能模块**
 
 - ### **❓问题或方案参考及开源贡献**

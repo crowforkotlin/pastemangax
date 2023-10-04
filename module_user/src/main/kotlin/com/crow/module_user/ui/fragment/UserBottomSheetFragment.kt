@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.R.id.app_main_fcv
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.copymanga.BaseEventEnum
-import com.crow.base.copymanga.BaseUser
+import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -48,17 +48,28 @@ class UserBottomSheetFragment : BaseMviBottomSheetDialogFragment<UserFragmentBin
 
     // 用户适配器数据
     private val mAdapterData = mutableListOf (
-        R.drawable.user_ic_usr_24dp to appContext.getString(R.string.user_login),
-        R.drawable.user_ic_reg_24dp to appContext.getString(R.string.user_reg),
-        R.drawable.user_ic_history_24dp to appContext.getString(R.string.user_browsing_history),
-        baseR.drawable.base_ic_download_24dp to appContext.getString(R.string.user_download),
-        R.drawable.user_ic_about_24dp to appContext.getString(R.string.user_about),
-        R.drawable.user_ic_update_24dp to appContext.getString(R.string.user_check_update),
-        R.drawable.user_ic_update_history_24dp to appContext.getString(R.string.user_update_history_title)
+        R.drawable.user_ic_usr_24dp to app.getString(R.string.user_login),
+        R.drawable.user_ic_reg_24dp to app.getString(R.string.user_reg),
+        R.drawable.user_ic_history_24dp to app.getString(R.string.user_browsing_history),
+        baseR.drawable.base_ic_download_24dp to app.getString(R.string.user_download),
+        R.drawable.user_ic_about_24dp to app.getString(R.string.user_about),
+        R.drawable.user_ic_update_24dp to app.getString(R.string.user_check_update),
+        R.drawable.user_ic_update_history_24dp to app.getString(R.string.user_update_history_title)
     )
 
     // 用户适配器
     private lateinit var mUserRvAdapter: UserRvAdapter
+
+    private fun navigate(tag: String) {
+        val parentFragment = parentFragmentManager.findFragmentByTag(Fragments.Container.name)!!
+        parentFragmentManager.navigateToWithBackStack(
+            id = app_main_fcv,
+            hideTarget = parentFragment,
+            addedTarget = get(named(tag)),
+            tag = tag,
+            backStackName = tag
+        )
+    }
 
     override fun getViewBinding(inflater: LayoutInflater) = UserFragmentBinding.inflate(inflater)
 
@@ -78,22 +89,15 @@ class UserBottomSheetFragment : BaseMviBottomSheetDialogFragment<UserFragmentBin
 
             // 根据 位置 做对应的逻辑处理
             dismissAllowingStateLoss()
-            val parentFragment = parentFragmentManager.findFragmentByTag(Fragments.Container.name)!!
             when (pos) {
                 // 登录 ＆ 个人信息
-                0 -> {
-                    if (content == getString(R.string.user_info))
-                        parentFragmentManager.navigateToWithBackStack<UserUpdateInfoFragment>(app_main_fcv, parentFragment, null, Fragments.UserInfo.name, Fragments.UserInfo.name)
-                    else
-                        parentFragmentManager.navigateToWithBackStack<UserLoginFragment>(app_main_fcv, parentFragment, null, Fragments.Login.name, Fragments.Login.name)
-
-                }
-                1 -> parentFragmentManager.navigateToWithBackStack<UserRegFragment>(app_main_fcv, parentFragment, null, Fragments.Reg.name, Fragments.Reg.name)
-                2 -> toast(getString(baseR.string.BaseStillInDevelopment))
+                0 -> if (content == getString(R.string.user_info)) navigate(Fragments.UserInfo.name) else navigate(Fragments.Login.name)
+                1 -> navigate(Fragments.Reg.name)
+                2 -> navigate(Fragments.History.name)
                 3 -> toast(getString(baseR.string.BaseStillInDevelopment))
-                4 -> parentFragmentManager.navigateToWithBackStack(app_main_fcv, parentFragment, get(named(Fragments.About.name)), Fragments.About.name, Fragments.About.name)
+                4 -> navigate(Fragments.About.name)
                 5 -> FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).post(lifecycleScope, Unit)
-                6 -> parentFragmentManager.navigateToWithBackStack(app_main_fcv, parentFragment, get(named(Fragments.UpdateHistory.name)), Fragments.UpdateHistory.name, Fragments.UpdateHistory.name)
+                6 -> navigate(Fragments.UpdateHistory.name)
             }
         }
 
@@ -140,7 +144,7 @@ class UserBottomSheetFragment : BaseMviBottomSheetDialogFragment<UserFragmentBin
             // 导航至头像Fragment Token不为空则跳转
             parentFragmentManager.navigateToWithBackStack<UserIconFragment>(
                 app_main_fcv, this,
-                bundleOf("iconUrl" to if (BaseUser.CURRENT_USER_TOKEN.isNotEmpty()) mUserVM.mIconUrl else null),
+                bundleOf("iconUrl" to if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) mUserVM.mIconUrl else null),
                 Fragments.Icon.name, Fragments.Icon.name
             )
         }

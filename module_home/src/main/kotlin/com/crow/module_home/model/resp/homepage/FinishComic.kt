@@ -44,5 +44,5 @@ data class FinishComic(
     val mPopular: Int,
 
     @Json(name =  "datetime_updated")
-    val mDatetimeUpdated: String,
+    val mDatetimeUpdated: String?,
 )

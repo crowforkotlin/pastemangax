@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.databinding.BaseTextviewBinding
 
 /*************************
@@ -23,7 +23,7 @@ class ToolTipsView(context: Context, layoutInflater: LayoutInflater) {
 
         private var mToolTipsView: ToolTipsView? = null
         private fun getToolTipsView(): ToolTipsView {
-            mToolTipsView = mToolTipsView ?: ToolTipsView(appContext, LayoutInflater.from(appContext))
+            mToolTipsView = mToolTipsView ?: ToolTipsView(app, LayoutInflater.from(app))
             return mToolTipsView!!
         }
 

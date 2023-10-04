@@ -32,7 +32,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
 
     companion object {
-        fun newInstance( mSearchView: SearchView,  mOnTap: (pathword: String) ->Unit): SearchNovelFragment {
+        fun newInstance( mSearchView: SearchView,  mOnTap: (name: String, pathword: String) ->Unit): SearchNovelFragment {
             val searchNovelFragment = SearchNovelFragment()
             searchNovelFragment.mSearchView = mSearchView
             searchNovelFragment.mOnTap = mOnTap
@@ -42,13 +42,13 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
 
     private var mSearchView: SearchView? = null
 
-    private var mOnTap: ((pathword: String) -> Unit)? = null
+    private var mOnTap: ((name: String, pathword: String) -> Unit)? = null
 
     private val mHomeVM by viewModel<HomeViewModel>()
 
     private val mBaseEvent = BaseEvent.getSIngleInstance()
 
-    private var mNovelRvAdapter = SearchNovelRvAdapter { mOnTap?.invoke(it.mPathWord) }
+    private var mNovelRvAdapter = SearchNovelRvAdapter { mOnTap?.invoke(it.mName, it.mPathWord) }
 
     fun doInputSearchNovelIntent() {
 

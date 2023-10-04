@@ -12,7 +12,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -50,7 +50,7 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
         } else {
             toast(getString(R.string.main_permission_tips))
             if (!shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE) || !shouldShowRequestPermissionRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).also { it.data = Uri.parse("package:${appContext.packageName}") })
+                startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).also { it.data = Uri.parse("package:${app.packageName}") })
             }
         }
     }

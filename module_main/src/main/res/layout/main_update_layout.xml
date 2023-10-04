@@ -36,16 +36,28 @@
 		app:layout_constraintTop_toBottomOf="@+id/main_update_title"
 		tools:text="更新日期：2023年4月18日" />
 
+	<com.google.android.material.divider.MaterialDivider
+		android:id="@+id/materialDivider"
+		android:layout_width="match_parent"
+		android:layout_marginTop="@dimen/base_dp10"
+		android:layout_height="@dimen/base_dp1"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/main_update_time" />
+
 	<androidx.core.widget.NestedScrollView
 		android:id="@+id/main_update_scrollview"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_margin="@dimen/base_dp10"
 		android:maxHeight="@dimen/base_dp200"
+		android:layout_marginTop="@dimen/base_dp20"
+		android:layout_marginBottom="@dimen/base_dp10"
+		android:layout_marginStart="@dimen/base_dp10"
+		android:layout_marginEnd="@dimen/base_dp10"
 		app:layout_constraintBottom_toTopOf="@+id/main_update_go"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/main_update_time">
+		app:layout_constraintTop_toBottomOf="@+id/materialDivider">
 
 		<TextView
 			android:id="@+id/main_update_text"
@@ -54,7 +66,7 @@
 			android:minLines="2"
 			android:gravity="center_vertical"
 			android:autoLink="web"
-			android:textSize="@dimen/base_sp16"
+			android:textSize="@dimen/base_sp14"
 			android:textStyle="bold"
 			tools:text="@string/BaseTodoTextView" />
 

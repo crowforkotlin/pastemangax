@@ -1,7 +1,7 @@
 package com.crow.module_book.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.crow.base.app.appContext
+import com.crow.base.app.app
 import com.crow.base.tools.coroutine.baseCoroutineException
 import com.crow.base.tools.extensions.DBNameSpace
 import com.crow.base.tools.extensions.buildDatabase
@@ -172,7 +172,7 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
                 intent.copy(comicChapter = mComicChapterPage)
             } else {
                 intent.copy(
-                    invalidResp = appContext.getString(
+                    invalidResp = app.getString(
                         R.string.BookComicRequestThrottled,
                         Regex("\\d+").find(value.mMessage)?.value ?: "0"
                     )

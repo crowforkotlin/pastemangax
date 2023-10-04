@@ -262,10 +262,13 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         val fragment = supportFragmentManager.fragments.firstOrNull()
         if (fragment is BookClassicComicFragment) {
             val rv = ((fragment.view as ComicFrameLayout)[0] as ComicRecyclerView)
-            (rv.findChildViewUnder(ev.x, ev.y) as FrameLayout).forEach {
-                if (fragment.isRemoving) return hasToolbar
-                if(it is MaterialButton) {
-                    hasButton = hasGlobalPoint(it, ev.rawX.toInt(), ev.rawY.toInt())
+            val childView = rv.findChildViewUnder(ev.x, ev.y)
+            if(childView is FrameLayout) {
+                childView.forEach {
+                    if (fragment.isRemoving) return hasToolbar
+                    if(it is MaterialButton) {
+                        hasButton = hasGlobalPoint(it, ev.rawX.toInt(), ev.rawY.toInt())
+                    }
                 }
             }
         }

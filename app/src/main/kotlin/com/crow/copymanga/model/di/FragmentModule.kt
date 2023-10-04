@@ -7,6 +7,7 @@ import com.crow.module_book.ui.fragment.comic.reader.BookClassicComicFragment
 import com.crow.module_book.ui.fragment.novel.BookNovelFragment
 import com.crow.module_main.ui.fragment.AboutAuthorFragment
 import com.crow.module_main.ui.fragment.ContainerFragment
+import com.crow.module_main.ui.fragment.HistoryFragment
 import com.crow.module_main.ui.fragment.ImageFragment
 import com.crow.module_main.ui.fragment.SettingsFragment
 import com.crow.module_main.ui.fragment.StyleableFragment
@@ -44,5 +45,6 @@ val fragmentModule = module {
     fragment<Fragment>(named(Fragments.Styleable.name)) { StyleableFragment() }
     fragment<Fragment>(named(Fragments.UpdateHistory.name)) { UpdateHistoryFragment() }
     fragment<Fragment>(named(Fragments.ComicClassic.name)) { BookClassicComicFragment() }
+    fragment<Fragment>(named(Fragments.History.name)) { HistoryFragment() }
 //    fragment<Fragment>(named(Fragments.ComicStript.name)) { BookStriptComicFragment() }
 }
