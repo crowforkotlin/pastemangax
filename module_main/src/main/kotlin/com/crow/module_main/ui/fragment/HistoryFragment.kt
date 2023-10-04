@@ -154,6 +154,9 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
                 }
             }
         })
+
+        // 返回
+        mBinding.topbar.navigateIconClickGap { navigateUp() }
     }
 
     /**
