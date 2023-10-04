@@ -1,7 +1,7 @@
 package com.crow.module_user.network
 
 import android.util.Base64
-import com.crow.base.copymanga.BaseResultResp
+import com.crow.base.copymanga.resp.BaseResultResp
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncEncode
 import com.crow.base.tools.extensions.toJson

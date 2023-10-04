@@ -1,42 +1,69 @@
+# CopyMangaX
+-keep  class com.crow.base.copymanga.entity.AppConfigEntity { *; }
+-keepclassmembers  class com.crow.base.copymanga.resp.** { *; }
+-keepclassmembers  class com.crow.module_anime.model.resp.** { *; }
+-keepclassmembers  class com.crow.module_book.model.resp.** { *; }
+-keepclassmembers  class com.crow.module_book.model** { *; }
+-keepclassmembers  class com.crow.module_bookshelf.model.** { *; }
+-keepclassmembers  class com.crow.module_discover.model.resp.** { *; }
+-keepclassmembers  class com.crow.module_discover.model.bean.** { *; }
+-keepclassmembers  class com.crow.module_home.model.** { *; }
+-keepclassmembers  class com.crow.module_home.model.** { *; }
+-keepclassmembers  class com.crow.module_main.model.entity.** { *; }
+-keepclassmembers  class com.crow.module_main.model.resp.** { *; }
+-keepclassmembers  class com.crow.module_user.model.resp.** { *; }
+-keepclassmembers class android.widget.Toolbar {
+    private android.widget.TextView mSubtitleTextView;
+}
+-keepclassmembers class android.support.v7.widget.Toolbar {
+    private android.widget.TextView mSubtitleTextView;
+ }
+-keepclassmembers class androidx.appcompat.widget.Toolbar {
+    private android.widget.TextView mSubtitleTextView;
+ }
+
+
+
+
 #----------------------Android通用-----------------
 
-# 避免混淆Android基本组件，下面是兼容性比较高的规则
--keep public class * extends android.app.Activity
--keep public class * extends android.app.Fragment
--keep public class * extends android.app.Application
--keep public class * extends android.app.Service
--keep public class * extends android.content.BroadcastReceiver
--keep public class * extends android.content.ContentProvider
--keep public class * extends android.app.backup.BackupAgentHelper
--keep public class * extends android.preference.Preference
--keep public class * extends android.view.View
-
-# 保留support下的所有类及其内部类
--keep class android.support.** {*;}
--keep interface android.support.** {*;}
--keep public class * extends android.support.v4.**
--keep public class * extends android.support.v7.**
--keep public class * extends android.support.annotation.**
--dontwarn android.support.**
-
-# 保留androidx下的所有类及其内部类
--keep class androidx.** {*;}
--keep public class * extends androidx.**
--keep interface androidx.** {*;}
--keep class com.google.android.material.** {*;}
--dontwarn androidx.**
--dontwarn com.google.android.material.**
--dontnote com.google.android.material.**
-
-# 保持Activity中与View相关方法不被混淆
--keepclassmembers class * extends android.app.Activity{
-        public void *(android.view.View);
-}
-
-# 避免混淆所有native的方法,涉及到C、C++
--keepclasseswithmembernames class * {
-        native <methods>;
-}
+## 避免混淆Android基本组件，下面是兼容性比较高的规则
+#-keep public class * extends android.app.Activity
+#-keep public class * extends android.app.Fragment
+#-keep public class * extends android.app.Application
+#-keep public class * extends android.app.Service
+#-keep public class * extends android.content.BroadcastReceiver
+#-keep public class * extends android.content.ContentProvider
+#-keep public class * extends android.app.backup.BackupAgentHelper
+#-keep public class * extends android.preference.Preference
+#-keep public class * extends android.view.View
+#
+## 保留support下的所有类及其内部类
+#-keep class android.support.** {*;}
+#-keep interface android.support.** {*;}
+#-keep public class * extends android.support.v4.**
+#-keep public class * extends android.support.v7.**
+#-keep public class * extends android.support.annotation.**
+#-dontwarn android.support.**
+#
+## 保留androidx下的所有类及其内部类
+#-keep class androidx.** {*;}
+#-keep public class * extends androidx.**
+#-keep interface androidx.** {*;}
+#-keep class com.google.android.material.** {*;}
+#-dontwarn androidx.**
+#-dontwarn com.google.android.material.**
+#-dontnote com.google.android.material.**
+#
+## 保持Activity中与View相关方法不被混淆
+#-keepclassmembers class * extends android.app.Activity{
+#        public void *(android.view.View);
+#}
+#
+## 避免混淆所有native的方法,涉及到C、C++
+#-keepclasseswithmembernames class * {
+#        native <methods>;
+#}
 
 # 避免混淆自定义控件类的get/set方法和构造函数
 -keep public class * extends android.view.View{
@@ -75,13 +102,13 @@
 }
 
 # 资源ID不被混淆
--keep class **.R$* {*;}
+#-keep class **.R$* {*;}
 
 # 回调函数事件不能混淆
--keepclassmembers class * {
-        void *(**On*Event);
-        void *(**On*Listener);
-}
+#-keepclassmembers class * {
+#        void *(**On*Event);
+#        void *(**On*Listener);
+#}
 
 # 使用GSON、fastjson等框架时，所写的JSON对象类不混淆，否则无法将JSON解析成对应的对象
 -keepclassmembers class * {
@@ -111,30 +138,31 @@
 }
 
 #kotlin 相关
--dontwarn kotlin.**
--keep class kotlin.** { *; }
--keep interface kotlin.** { *; }
--keepclassmembers class kotlin.Metadata {
-    public <methods>;
-}
--keepclasseswithmembers @kotlin.Metadata class * { *; }
--keepclassmembers class **.WhenMappings {
-    <fields>;
-}
--assumenosideeffects class kotlin.jvm.internal.Intrinsics {
-    static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
-}
+#-dontwarn kotlin.**
+#-keep class kotlin.** { *; }
+#-keep interface kotlin.** { *; }
+#-keepclassmembers class kotlin.Metadata {
+#    public <methods>;
+#}
+-keep class kotlin.Metadata
+#-keepclasseswithmembers @kotlin.Metadata class * { *; }
+#-keepclassmembers class **.WhenMappings {
+#    <fields>;
+#}
+#-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+#    static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
+#}
+#
+#-keep class kotlinx.** { *; }
+#-keep interface kotlinx.** { *; }
+#-dontwarn kotlinx.**
+#-dontnote kotlinx.serialization.*
+#
+#-keep class org.jetbrains.** { *; }
+#-keep interface org.jetbrains.** { *; }
+#-dontwarn org.jetbrains.**
 
--keep class kotlinx.** { *; }
--keep interface kotlinx.** { *; }
--dontwarn kotlinx.**
--dontnote kotlinx.serialization.*
-
--keep class org.jetbrains.** { *; }
--keep interface org.jetbrains.** { *; }
--dontwarn org.jetbrains.**
-
-
+-keep class kotlinx.coroutines.**
 
 # ==================glide start===================
 -keep public class * implements com.bumptech.glide.module.GlideModule

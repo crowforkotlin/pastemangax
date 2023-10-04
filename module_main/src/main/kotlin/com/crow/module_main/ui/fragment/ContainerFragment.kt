@@ -33,6 +33,7 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnErrorInCoroutine
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnResultInCoroutine
+import com.crow.module_anime.ui.fragment.AnimeFragment
 import com.crow.module_bookshelf.ui.fragment.BookshelfFragment
 import com.crow.module_discover.ui.fragment.DiscoverComicFragment
 import com.crow.module_home.ui.fragment.NewHomeFragment
@@ -70,7 +71,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private val mUserVM by sharedViewModel<UserViewModel>()
 
     /** ● 碎片集 */
-    private val mFragmentList by lazy { mutableListOf<Fragment>(NewHomeFragment(), DiscoverComicFragment(), BookshelfFragment()) }
+    private val mFragmentList by lazy { mutableListOf<Fragment>(NewHomeFragment(), DiscoverComicFragment(), BookshelfFragment(), AnimeFragment()) }
 
     /**
      * ● 手势检测
@@ -221,6 +222,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                 R.id.main_menu_homepage -> doSwitchFragment(0)
                 R.id.main_menu_discovery_comic -> doSwitchFragment(1)
                 R.id.main_menu_bookshelf -> doSwitchFragment(2)
+                R.id.main_menu_anime -> doSwitchFragment(3)
                 // R.id.main_menu_discovery_novel -> doSwitchFragment(2)
             }
             true

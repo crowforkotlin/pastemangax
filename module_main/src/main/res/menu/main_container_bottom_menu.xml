@@ -27,4 +27,11 @@
 		android:icon="@drawable/main_ic_bookshelf_24dp"
 		android:title="@string/bookshelf_name"
 		app:showAsAction="ifRoom" />
+
+	<item
+		android:id="@+id/main_menu_anime"
+		android:icon="@drawable/anime_icon_24dp"
+		android:title="@string/anime_name"
+		app:showAsAction="ifRoom" />
+
 </menu>

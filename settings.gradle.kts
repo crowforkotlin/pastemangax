@@ -25,4 +25,4 @@ dependencyResolutionManagement {
         maven { setUrl("https://jitpack.io") }
     }
 }
-// include(":module_anime")
+include(":module_anime")
