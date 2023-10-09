@@ -75,7 +75,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     private val mVM by sharedViewModel<DiscoverViewModel>()
 
     /** ● 漫画适配器 */
-    private lateinit var mDiscoverComicAdapter: DiscoverComicAdapter
+    private lateinit var mAdapter: DiscoverComicAdapter
 
     /**
      * ● subtitle textview
@@ -84,11 +84,11 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
      */
     private var mToolbarSubtitle: TextView? = null
 
-    private var  mSubtitlePrefix: String by Delegates.observable(app.getString(R.string.discover_all)) { _, _, new ->
+    private var  mSubtitlePrefix: String by Delegates.observable(app.getString(baseR.string.base_all)) { _, _, new ->
         mBinding.discoverComicAppbar.discoverAppbarToolbar.subtitle = getString(R.string.discover_subtitle, new, mSubtitleSuffix)
     }
 
-    private var  mSubtitleSuffix: String by Delegates.observable(app.getString(R.string.discover_all)) { _, _, new ->
+    private var  mSubtitleSuffix: String by Delegates.observable(app.getString(baseR.string.base_all)) { _, _, new ->
         mBinding.discoverComicAppbar.discoverAppbarToolbar.subtitle = getString(R.string.discover_subtitle, mSubtitlePrefix, new)
     }
 
@@ -100,7 +100,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         }
         repeatOnLifecycle {
             mVM.mDiscoverComicHomeFlowPager?.collect {
-                mDiscoverComicAdapter.submitData(it)
+                mAdapter.submitData(it)
             }
         }
     }
@@ -128,19 +128,19 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
         // 处理双击事件
         parentFragmentManager.setFragmentResultListener("onDoubleTap_Discover_Comic", this) { _, _ ->
-            val first = mBinding.discoverComicRv.findFisrtVisibleViewPosition()
+            val first = mBinding.list.findFisrtVisibleViewPosition()
             if (first > 0) {
-                mBinding.discoverComicRv.onInterceptScrollRv(toPosition = 0, precisePosition = first)
+                mBinding.list.onInterceptScrollRv(toPosition = 0, precisePosition = first)
             } else {
-                mBinding.discoverComicRv.onInterceptScrollRv(precisePosition = first)
+                mBinding.list.onInterceptScrollRv(precisePosition = first)
             }
         }
 
         // 设置容器Fragment的回调监听
         parentFragmentManager.setFragmentResultListener(COMIC, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 1) {
-                mBinding.discoverComicRefresh.autoRefreshAnimationOnly()
-                mBinding.discoverComicRefresh.finishRefresh((BASE_ANIM_300L.toInt() shl 1) or 0xFF)
+                mBinding.refresh.autoRefreshAnimationOnly()
+                mBinding.refresh.finishRefresh((BASE_ANIM_300L.toInt() shl 1) or 0xFF)
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
                     launchDelay(BASE_ANIM_200L) { onCollectState() }
                 } else {
@@ -150,10 +150,10 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         }
 
         // 刷新监听
-        mBinding.discoverComicRefresh.setOnRefreshListener { mDiscoverComicAdapter.refresh() }
+        mBinding.refresh.setOnRefreshListener { mAdapter.refresh() }
 
         // 漫画加载状态监听
-        mDiscoverComicAdapter.addLoadStateListener {
+        mAdapter.addLoadStateListener {
             if(it.source.refresh is LoadState.NotLoading) {
 
                 val toolbar = mBinding.discoverComicAppbar.discoverAppbarToolbar
@@ -199,7 +199,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                     }
 
                     if (toolbar.subtitle.isNullOrEmpty()) {
-                        mSubtitlePrefix = getString(R.string.discover_all)
+                        mSubtitlePrefix = getString(baseR.string.base_all)
                     }
 
                     // subtitle textview
@@ -219,7 +219,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
      */
     private fun updateComic() {
         viewLifecycleOwner.lifecycleScope.launch {
-            mDiscoverComicAdapter.submitData(PagingData.empty())
+            mAdapter.submitData(PagingData.empty())
             mVM.input(DiscoverIntent.GetComicHome())
             onCollectState()
         }
@@ -232,7 +232,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
             mVM.input(DiscoverIntent.GetComicTag(showDialog = true, type = type))
             return
         }
-        mBinding.discoverComicRv.stopScroll()
+        mBinding.list.stopScroll()
 
         val binding = DiscoverComicMoreLayoutBinding.inflate(layoutInflater)
         val chipTextSize = mContext.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
@@ -247,7 +247,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                 job = viewLifecycleOwner.lifecycleScope.launch {
                     var theme  = mVM.mComicTagResp!!.theme.toMutableList()
                     if (theme.size > 25) { theme = theme.subList(0, 25) }
-                    theme.add(0, Theme(null, 0, 0, null, getString(R.string.discover_all), ""))
+                    theme.add(0, Theme(null, 0, 0, null, getString(baseR.string.base_all), ""))
                     theme.forEach {
                         val chip = Chip(mContext)
                         chip.text = it.mName
@@ -268,7 +268,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                 job = viewLifecycleOwner.lifecycleScope.launch {
                     var top = mVM.mComicTagResp!!.top.toMutableList()
                     if (top.size > 25) { top = top.subList(0, 25) }
-                    top.add(0, Top(getString(R.string.discover_all), ""))
+                    top.add(0, Top(getString(baseR.string.base_all), ""))
                     top.forEach {
                         val chip = Chip(mContext)
                         chip.textSize = chipTextSize
@@ -295,16 +295,16 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         mBinding.discoverComicAppbar.discoverAppbarToolbar.title = getString(R.string.discover_comic)
 
         // 初始化 发现页 漫画适配器
-        mDiscoverComicAdapter = DiscoverComicAdapter { navigateBookComicInfo(it.mName, it.mPathWord) }
+        mAdapter = DiscoverComicAdapter { navigateBookComicInfo(it.mName, it.mPathWord) }
 
         // 设置适配器
-        mBinding.discoverComicRv.adapter = mDiscoverComicAdapter.withLoadStateFooter(BaseLoadStateAdapter { mDiscoverComicAdapter.retry() })
+        mBinding.list.adapter = mAdapter.withLoadStateFooter(BaseLoadStateAdapter { mAdapter.retry() })
 
         // 设置加载动画独占1行，漫画卡片3行
-        (mBinding.discoverComicRv.layoutManager as GridLayoutManager).apply {
+        (mBinding.list.layoutManager as GridLayoutManager).apply {
             spanSizeLookup = object : SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return if (position == mDiscoverComicAdapter.itemCount  && mDiscoverComicAdapter.itemCount > 0) 3
+                    return if (position == mAdapter.itemCount  && mAdapter.itemCount > 0) 3
                     else 1
                 }
             }
@@ -318,31 +318,31 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         mVM.onOutput { intent ->
             when(intent) {
                 is DiscoverIntent.GetComicHome -> {
-                    intent.mBaseViewState
-                        .doOnSuccess { if (mBinding.discoverComicRefresh.isRefreshing) mBinding.discoverComicRefresh.finishRefresh() }
+                    intent.mViewState
+                        .doOnSuccess { if (mBinding.refresh.isRefreshing) mBinding.refresh.finishRefresh() }
                         .doOnError { _, _ ->
-                            if (mDiscoverComicAdapter.itemCount == 0) {
+                            if (mAdapter.itemCount == 0) {
 
                                 // 错误提示淡入
-                                mBinding.discoverComicTipsError.animateFadeIn()
+                                mBinding.tipsError.animateFadeIn()
 
                                 // 发现页 “漫画” 淡出
-                                mBinding.discoverComicRv.animateFadeOutWithEndInVisibility()
+                                mBinding.list.animateFadeOutWithEndInVisibility()
                             }
 
-                            if (mBinding.discoverComicTipsError.isGone) toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+                            if (mBinding.tipsError.isGone) toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
                         }
                         .doOnResult {
                             // 错误提示 可见
-                            if (mBinding.discoverComicTipsError.isVisible) {
-                                mBinding.discoverComicTipsError.isVisible = false
-                                mBinding.discoverComicRv.animateFadeIn()
+                            if (mBinding.tipsError.isVisible) {
+                                mBinding.tipsError.isVisible = false
+                                mBinding.list.animateFadeIn()
                             }
                         }
                 }
                 is DiscoverIntent.GetComicTag -> {
                     if (intent.showDialog) {
-                        intent.mBaseViewState
+                        intent.mViewState
                             .doOnError { _, _ -> toast(getString(baseR.string.BaseLoadingError)) }
                             .doOnResult { onSelectMenu(intent.type ?: return@doOnResult) }
                     }

@@ -2,4 +2,5 @@
 
     <string name="anime_name">番剧</string>
     <string name="anime_search">搜索番剧</string>
+    <string name="anime_year"><b>年份</b></string>
 </resources>

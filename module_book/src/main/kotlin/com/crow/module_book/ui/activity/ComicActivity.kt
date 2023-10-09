@@ -181,7 +181,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
             when(intent) {
                 is BookIntent.GetComicPage -> {
                     if (intent.enableLoading) {
-                        intent.mBaseViewState
+                        intent.mViewState
                             .doOnLoading{
                                 if (!mIsNeedLoading) {
                                     mIsNeedLoading = true

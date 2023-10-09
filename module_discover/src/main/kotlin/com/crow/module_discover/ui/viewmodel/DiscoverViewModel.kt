@@ -33,9 +33,11 @@ class DiscoverViewModel(val repository: DiscoverRepository) : BaseMviViewModel<D
 
     // 暴露的 发现漫画主页流
     var mDiscoverComicHomeFlowPager: Flow<PagingData<DiscoverComicHomeResult>>? = null
+        private set
 
     // 暴露的 发现轻小说主页流
     var mDiscoverNovelHomeFlowPager: Flow<PagingData<DiscoverNovelHomeResult>>? = null
+        private set
 
     // 漫画标签数据
     var mComicTagResp: DiscoverComicTagResp? = null

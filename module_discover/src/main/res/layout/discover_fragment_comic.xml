@@ -11,7 +11,7 @@
         layout="@layout/discover_fragment_appbar" />
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/discover_comic_refresh"
+        android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
@@ -21,7 +21,7 @@
             android:layout_height="match_parent" />
 
         <com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
-            android:id="@+id/discover_comic_rv"
+            android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
@@ -32,7 +32,7 @@
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
     <TextView
-        android:id="@+id/discover_comic_tips_error"
+        android:id="@+id/tips_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"

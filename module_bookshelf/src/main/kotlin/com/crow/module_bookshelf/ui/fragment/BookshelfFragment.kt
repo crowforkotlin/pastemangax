@@ -446,7 +446,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mVM.onOutput { intent ->
             when (intent) {
                 is BookshelfIntent.GetBookshelfComic -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnSuccess { if (mBinding.bookshelfRefresh.isRefreshing) mBinding.bookshelfRefresh.finishRefresh() }
                         .doOnError { code, msg ->
 
@@ -473,7 +473,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                 }
 
                 is BookshelfIntent.GetBookshelfNovel -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnSuccess { if (mBinding.bookshelfRefresh.isRefreshing) mBinding.bookshelfRefresh.finishRefresh() }
                         .doOnError { code, msg ->
 

@@ -123,7 +123,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mContainerVM.onOutput { intent ->
             when(intent) {
                 is AppIntent.GetDynamicSite -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnErrorInCoroutine { _, _ -> mContainerVM.saveAppConfig() }
                         .doOnResultInCoroutine {
                             BaseStrings.URL.COPYMANGA = Base64.decode(intent.siteResp!!.mSiteList!!.first()!!.mEncodeSite, Base64.DEFAULT).decodeToString()
@@ -131,7 +131,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                         }
                 }
                 is AppIntent.GetUpdateInfo -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnError { _, _ -> toast(getString(R.string.main_update_error)) }
                         .doOnResult { doUpdateChecker(saveInstanceState, intent.appUpdateResp!!) }
                 }
@@ -242,9 +242,12 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                     if (mEvent.getBoolean(mFragmentList[mBinding.mainViewPager.currentItem].hashCode().toString()) == true) return
                     else mEvent.setBoolean(mFragmentList[mBinding.mainViewPager.currentItem].hashCode().toString(), true)
                     val bundle = bundleOf(BaseStrings.ID to mBinding.mainViewPager.currentItem, BaseStrings.ENABLE_DELAY to false)
-                    childFragmentManager.setFragmentResult(NewHomeFragment.HOME, bundle)
-                    childFragmentManager.setFragmentResult(DiscoverComicFragment.COMIC, bundle)
-                    childFragmentManager.setFragmentResult(BookshelfFragment.BOOKSHELF, bundle)
+                    when(mBinding.mainViewPager.currentItem) {
+                        0 -> childFragmentManager.setFragmentResult(NewHomeFragment.HOME, bundle)
+                        1 -> childFragmentManager.setFragmentResult(DiscoverComicFragment.COMIC, bundle)
+                        2 -> childFragmentManager.setFragmentResult(BookshelfFragment.BOOKSHELF, bundle)
+                        3 -> childFragmentManager.setFragmentResult(AnimeFragment.ANIME, bundle)
+                    }
                 }
             }
         })

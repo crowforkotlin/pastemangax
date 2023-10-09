@@ -181,7 +181,7 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
         mVM.onOutput { intent ->
             when(intent) {
                 is MainIntent.GetComicHistory -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnError { code, msg ->
                             mBinding.root.processTokenError(code, msg) {
                                 val tag = Fragments.Login.name

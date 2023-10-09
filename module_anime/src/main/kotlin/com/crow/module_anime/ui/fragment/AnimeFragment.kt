@@ -2,11 +2,47 @@ package com.crow.module_anime.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.media3.common.util.UnstableApi
+import android.widget.TextView
+import androidx.core.view.get
+import androidx.core.view.isEmpty
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.recyclerview.widget.GridLayoutManager
+import com.crow.base.app.app
+import com.crow.base.copymanga.BaseLoadStateAdapter
+import com.crow.base.copymanga.BaseStrings
+import com.crow.base.tools.coroutine.launchDelay
+import com.crow.base.tools.extensions.BASE_ANIM_200L
+import com.crow.base.tools.extensions.BASE_ANIM_300L
+import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.newMaterialDialog
+import com.crow.base.tools.extensions.px2sp
+import com.crow.base.tools.extensions.repeatOnLifecycle
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.event.BaseEvent
+import com.crow.base.ui.viewmodel.doOnError
+import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.base.ui.viewmodel.doOnSuccess
+import com.crow.module_anime.R
+import com.crow.module_anime.databinding.AnimeDiscoverMoreLayoutBinding
 import com.crow.module_anime.databinding.AnimeFragmentBinding
+import com.crow.module_anime.model.AnimeIntent
+import com.crow.module_anime.ui.adapter.AnimeDiscoverPageAdapter
 import com.crow.module_anime.ui.viewmodel.AnimeViewModel
+import com.google.android.material.chip.Chip
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Calendar
+import kotlin.properties.Delegates
+import com.crow.base.R as baseR
 
 /*
     private val mPlayer by lazy { ExoPlayer.Builder(mContext).build() }
@@ -27,14 +63,264 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 * * */
 
-@UnstableApi
 class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
-    private val mVM by lazy { viewModel<AnimeViewModel>()  }
+    /**
+     * ● Static Area
+     *
+     * ● 2023-10-10 01:01:13 周二 上午
+     */
+    companion object { const val ANIME = "ANIME" }
 
+    /**
+     * ● Anime ViewModel
+     *
+     * ● 2023-10-10 01:01:05 周二 上午
+     */
+    private val mVM by viewModel<AnimeViewModel>()
+
+    /**
+     * ● Discover Page Rv Adapter
+     *
+     * ● 2023-10-10 01:00:55 周二 上午
+     */
+    private val mAdapter by lazy {
+        AnimeDiscoverPageAdapter {
+
+        }
+    }
+
+    /**
+     * ● subtitle textview
+     *
+     * ● 2023-10-01 21:59:31 周日 下午
+     */
+    private var mToolbarSubtitle: TextView? = null
+    /**
+     * ● 子标题
+     *
+     * ● 2023-10-10 02:20:34 周二 上午
+     */
+    private var  mSubtitle: String by Delegates.observable(app.getString(baseR.string.base_all)) { _, _, new ->
+        mBinding.topbar.subtitle = new
+    }
+
+    /**
+     * ● 获取VB
+     *
+     * ● 2023-10-10 01:01:31 周二 上午
+     */
     override fun getViewBinding(inflater: LayoutInflater) = AnimeFragmentBinding.inflate(layoutInflater)
 
+    /**
+     * ● 初始化视图
+     *
+     * ● 2023-10-10 01:01:42 周二 上午
+     */
     override fun initView(savedInstanceState: Bundle?) {
 
+        // 初始化RV适配器
+        mBinding.list.adapter = mAdapter
+
+        // 设置加载动画独占1行，漫画卡片3行
+        (mBinding.list.layoutManager as GridLayoutManager).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return if (position == mAdapter.itemCount  && mAdapter.itemCount > 0) 3
+                    else 1
+                }
+            }
+        }
+
+        // 设置适配器
+        mBinding.list.adapter = mAdapter.withLoadStateFooter(BaseLoadStateAdapter { mAdapter.retry() })
+    }
+
+    /**
+     * ● 初始化监听器
+     *
+     * ● 2023-10-10 01:01:55 周二 上午
+     */
+    override fun initListener() {
+
+        // 设置容器Fragment的回调监听
+        parentFragmentManager.setFragmentResultListener(ANIME, this) { _, bundle ->
+            if (bundle.getInt(BaseStrings.ID) == 3) {
+                mBinding.refresh.autoRefreshAnimationOnly()
+                mBinding.refresh.finishRefresh((BASE_ANIM_300L.toInt() shl 1) or 0xFF)
+                if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
+                    launchDelay(BASE_ANIM_200L) { onCollectState() }
+                } else {
+                    onCollectState()
+                }
+            }
+        }
+
+        // 刷新监听
+        mBinding.refresh.setOnRefreshListener { mAdapter.refresh() }
+
+        // 漫画加载状态监听
+        mAdapter.addLoadStateListener {
+            if(it.source.refresh is LoadState.NotLoading) {
+
+                val toolbar = mBinding.topbar
+
+                if (toolbar.menu.isEmpty()) {
+
+                    // 先清空
+                    toolbar.menu.clear()
+
+                    // 加载布局
+                    toolbar.inflateMenu(com.crow.module_anime.R.menu.anime_menu)
+
+                    // 年份
+                    toolbar.menu[0].doOnClickInterval { onSelectMenu(com.crow.module_anime.R.string.anime_year) }
+
+                    // 类别
+                    toolbar.menu[1].doOnClickInterval { onSelectMenu(R.string.anime_search) }
+
+                    // 更新时间
+
+                    val instance = BaseEvent.getSIngleInstance()
+                    toolbar.menu[2].doOnClickInterval {
+                        if (instance.getBoolean("ANIME_FRAGMENT_UPDATE_ORDER") == true) {
+                            instance.setBoolean("ANIME_FRAGMENT_UPDATE_ORDER", false)
+                            mVM.setOrder("-datetime_updated")
+                        } else {
+                            instance.setBoolean("ANIME_FRAGMENT_UPDATE_ORDER", true)
+                            mVM.setOrder("datetime_updated")
+                        }
+                        updateAnime()
+                    }
+
+                    // 热度
+                    toolbar.menu[3].doOnClickInterval {
+                        if (instance.getBoolean("ANIME_FRAGMENT_POPULAR_ORDER") == true) {
+                            instance.setBoolean("ANIME_FRAGMENT_POPULAR_ORDER", false)
+                            mVM.setOrder("-popular")
+                        } else {
+                            instance.setBoolean("ANIME_FRAGMENT_POPULAR_ORDER", true)
+                            mVM.setOrder("popular")
+                        }
+                        updateAnime()
+                    }
+
+                    if (toolbar.subtitle.isNullOrEmpty()) {
+                        mSubtitle = getString(baseR.string.base_all)
+                    }
+
+                    // subtitle textview
+                    mToolbarSubtitle = toolbar::class.java.superclass.getDeclaredField("mSubtitleTextView").run {
+                        isAccessible = true
+                        get(toolbar) as TextView
+                    }
+                }
+            }
+        }
+    }
+
+    override fun initObserver(saveInstanceState: Bundle?) {
+
+        mVM.onOutput { intent ->
+            when(intent) {
+                is AnimeIntent.DiscoverPageIntent -> {
+                    intent.mViewState
+                        .doOnSuccess { if (mBinding.refresh.isRefreshing) mBinding.refresh.finishRefresh() }
+                        .doOnError { _, _ ->
+                            if (mAdapter.itemCount == 0) {
+
+                                // 错误提示淡入
+                                mBinding.tipsError.animateFadeIn()
+
+                                // 发现页 “漫画” 淡出
+                                mBinding.list.animateFadeOutWithEndInVisibility()
+                            }
+
+                            if (mBinding.tipsError.isGone) toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+                        }
+                        .doOnResult {
+                            // 错误提示 可见
+                            if (mBinding.tipsError.isVisible) {
+                                mBinding.tipsError.isVisible = false
+                                mBinding.list.animateFadeIn()
+                            }
+                        }
+                }
+            }
+        }
+    }
+
+    /**
+     * ● Flow 收集状态
+     *
+     * ● 2023-10-10 01:32:20 周二 上午
+     */
+    private fun onCollectState() {
+        if (mVM.mDiscoverPageFlow == null) {
+            mVM.input(AnimeIntent.DiscoverPageIntent())
+        }
+
+        repeatOnLifecycle {
+            mVM.mDiscoverPageFlow?.collect {
+                mAdapter.submitData(it)
+            }
+        }
+    }
+
+    /**
+     * ● 更新漫画
+     *
+     * ● 2023-10-10 01:32:34 周二 上午
+     */
+    private fun updateAnime() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            mAdapter.submitData(PagingData.empty())
+            mVM.input(AnimeIntent.DiscoverPageIntent())
+            onCollectState()
+        }
+    }
+    private fun onSelectMenu(type: Int) {
+
+        mBinding.list.stopScroll()
+
+        val binding = AnimeDiscoverMoreLayoutBinding.inflate(layoutInflater)
+        val chipTextSize = mContext.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
+        var job: Job? = null
+        val dialog = mContext.newMaterialDialog {
+            it.setTitle(getString(type))
+            it.setView(binding.root)
+            it.setOnDismissListener { job?.cancel() }
+        }
+        when(type) {
+            R.string.anime_year -> {
+                job = viewLifecycleOwner.lifecycleScope.launch {
+                    val year = Calendar.getInstance().get(Calendar.YEAR)
+                    repeat(22) {
+                        val newYear = when (it) {
+                            0 -> getString(baseR.string.base_all)
+                            1 -> year
+                            else -> year - (it - 1)
+                        }
+                        val chip = Chip(mContext)
+                        chip.text = newYear.toString()
+                        chip.textSize = chipTextSize
+                        chip.doOnClickInterval { _ ->
+                            dialog.cancel()
+                            mSubtitle = newYear.toString()
+                            mToolbarSubtitle?.animateFadeIn()
+                            mVM.setYear(if (newYear.toString() == getString(baseR.string.base_all)) "" else newYear.toString()))
+                            updateAnime()
+                        }
+                        binding.moreChipGroup.addView(chip)
+                        delay(16L)
+                    }
+                }
+            }
+            R.string.anime_search ->{
+                job = viewLifecycleOwner.lifecycleScope.launch {
+                }
+            }
+            else -> error("Unknow menu type!")
+        }
     }
 }

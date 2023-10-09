@@ -1,5 +1,6 @@
 package com.crow.copymanga.model.di
 
+import com.crow.module_anime.ui.viewmodel.AnimeViewModel
 import com.crow.module_book.ui.viewmodel.BookViewModel
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.crow.module_bookshelf.ui.viewmodel.BookshelfViewModel
@@ -34,5 +35,5 @@ val viewModelModule = module {
     viewModel { UserInfoViewModel() }
     viewModel { ImageViewModel() }
     viewModel { HistoryViewModel(get()) }
-    // viewModel { AnimeViewModel(get()) }
+    viewModel { AnimeViewModel(get()) }
 }

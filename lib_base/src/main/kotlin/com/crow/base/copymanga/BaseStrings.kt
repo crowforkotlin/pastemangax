@@ -55,7 +55,7 @@ object BaseStrings {
         const val DiscoverNovelHome = "/api/v3/books?free_type=1&_update=true"
 
 
-        const val HotManga = "https://mapi.hotmangasf.com"
+        const val HotManga = "https://www.relamanhua.com"
 
         const val HotManga_AnimePage = "/api/v3/cartoons?free_type=1"
 

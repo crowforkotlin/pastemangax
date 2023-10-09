@@ -101,7 +101,7 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
         mDiscoverVM.onOutput { intent ->
             when(intent) {
                 is DiscoverIntent.GetNovelHome -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnError { code, msg ->
 
                             // 解析地址失败 且 Resumed的状态才提示

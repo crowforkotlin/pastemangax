@@ -7,30 +7,38 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        tools:context="com.crow.module_discover.ui.fragment.DiscoverComicFragment"
+        tools:theme="@style/Anime.Theme.HotManga">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/anime_topbar"
+            android:id="@+id/topbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold"
-            app:menu="@menu/anime_menu"
+            tools:menu="@menu/anime_menu"
             app:title="@string/anime_name" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/discover_comic_refresh"
+        android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
+        <com.scwang.smart.refresh.header.MaterialHeader
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
-            android:id="@+id/anime_list"
+            android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="3"
+            tools:listitem="@layout/anime_fragment_rv"
             tools:itemCount="6" />
 
 <!--
@@ -46,7 +54,7 @@
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
     <TextView
-        android:id="@+id/anime_tips_error"
+        android:id="@+id/tips_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -55,11 +63,5 @@
         android:textStyle="bold"
         android:visibility="gone"
         tools:visibility="visible" />
-
-    <com.scwang.smart.refresh.header.MaterialHeader
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_anchor="@+id/discover_comic_refresh"
-        app:layout_anchorGravity="center" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -124,7 +124,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
      * @param onResult 交给子类处理View
      */
     protected fun doOnBookPageIntent(intent: BookIntent, onResult: Runnable) {
-        intent.mBaseViewState
+        intent.mViewState
             // 执行加载动画
 //            .doOnLoading {}
 
@@ -150,7 +150,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
      * @param intent 意图
      */
     protected fun<T> doOnBookPageChapterIntent(intent: BookIntent) {
-        intent.mBaseViewState
+        intent.mViewState
             .doOnError { _, _ ->
                 if (mBinding.bookInfoRvChapter.adapter?.itemCount == 0) {
                     if (mBinding.bookInfoLinearChapter.isVisible) mBinding.bookInfoLinearChapter.animateFadeOutWithEndInVisibility()

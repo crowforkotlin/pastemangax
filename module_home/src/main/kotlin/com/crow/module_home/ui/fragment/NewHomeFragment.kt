@@ -383,7 +383,6 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         parentFragmentManager.setFragmentResultListener(HOME, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 0) {
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
-
                     launchDelay(BASE_ANIM_200L) { mHomeVM.input(HomeIntent.GetHomePage()) }
                 }
                 else mHomeVM.input(HomeIntent.GetHomePage())
@@ -447,7 +446,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
 
                 // （获取主页）（根据 刷新事件 来决定是否启用加载动画） 正常加载数据、反馈View
                 is HomeIntent.GetHomePage -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnSuccess {
                             if (mBinding.homeRefresh.isRefreshing) {
                                 mBinding.homeRefresh.finishRefresh(BASE_ANIM_300L.toInt())
@@ -487,7 +486,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
 
                 // （刷新获取）不启用 加载动画 正常加载数据 -> 反馈View
                 is HomeIntent.GetRecPageByRefresh -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnError { _, _ ->
                             toast(getString(baseR.string.BaseLoadingError))
                             mRecRefresh?.isEnabled = true

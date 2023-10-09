@@ -118,7 +118,7 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
         mMainVM.onOutput { intent ->
             when (intent) {
                 is AppIntent.GetUpdateInfo -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnLoading { mBinding.updateRefresh.autoRefreshAnimationOnly() }
                         .doOnError { _, _ ->
                             if (mBinding.updateRv.isVisible) mBinding.updateRv.animateFadeOutWithEndInVisibility()
