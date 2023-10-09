@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit
 val networkModule = module {
 
     val named_CopyMangaX = named("CopyMangaX")
+    val named_HotMangaX = named("HotMangaX")
     val named_ProgressGlide = named("ProgressGlide")
 
     /**
@@ -32,7 +33,6 @@ val networkModule = module {
                 interceptor.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
                 else HttpLoggingInterceptor.Level.NONE
             })
-
             .sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())
             .hostnameVerifier(SSLSocketClient.hostnameVerifier)
             .pingInterval(10, TimeUnit.SECONDS)
@@ -98,6 +98,7 @@ val networkModule = module {
 
             // 动态添加请求头
             .addInterceptor(Interceptor { chain: Interceptor.Chain ->
+
                 chain.proceed(chain.request().newBuilder()
                     .addHeader("User-Agent", "Kotlin/1.9.10 (kotlin:io)")
                     .addHeader("Platform", "1")
@@ -124,6 +125,19 @@ val networkModule = module {
     single(named_CopyMangaX) {
         Retrofit.Builder()
             .baseUrl(BaseStrings.URL.COPYMANGA)
+            .client(get(named_CopyMangaX))
+            .addCallAdapterFactory(FlowCallAdapterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
+            .build()
+    }
+
+    /**
+     * ● CopyMangaX 站点 By Retrofit
+     * ● 2023-06-16 21:43:36 周五 下午
+     */
+    single(named_HotMangaX) {
+        Retrofit.Builder()
+            .baseUrl(BaseStrings.URL.HotManga)
             .client(get(named_CopyMangaX))
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(baseMoshi))

@@ -493,10 +493,8 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                             mRecRefresh?.isEnabled = true
                         }
                         .doOnResult {
-
                             viewLifecycleOwner.lifecycleScope.launch {
                                 mDataRvAdapter.onRefreshSubmitList(mHomeVM.getSnapshotHomeData(), 50L)
-
                                 mRecRefresh?.isEnabled = true
                             }
                         }

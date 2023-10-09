@@ -1,5 +1,8 @@
 package com.crow.module_main.network
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
+
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
  * @Package: com.crow.module_main.network
@@ -10,9 +13,9 @@ package com.crow.module_main.network
  **************************/
 class AppRepository(val service: AppService) {
 
-    fun getUpdateInfo() = service.getUpdateInfo()
+    fun getUpdateInfo() = service.getUpdateInfo().flowOn(Dispatchers.IO)
 
-    fun getQQGroup() = service.getQQGroup()
+    fun getQQGroup() = service.getQQGroup().flowOn(Dispatchers.IO)
 
-    fun getSite() = service.getSite()
+    fun getSite() = service.getSite().flowOn(Dispatchers.IO)
 }

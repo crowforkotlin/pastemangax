@@ -94,6 +94,10 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
     /** ● 收集状态 */
     fun onCollectState() {
+        if (mVM.mTotals == 0 && mVM.mDiscoverComicHomeFlowPager == null) {
+            mVM.input(DiscoverIntent.GetComicTag()) // 获取标签
+            mVM.input(DiscoverIntent.GetComicHome())    // 获取发现主页
+        }
         repeatOnLifecycle {
             mVM.mDiscoverComicHomeFlowPager?.collect {
                 mDiscoverComicAdapter.submitData(it)
@@ -138,9 +142,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                 mBinding.discoverComicRefresh.autoRefreshAnimationOnly()
                 mBinding.discoverComicRefresh.finishRefresh((BASE_ANIM_300L.toInt() shl 1) or 0xFF)
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
-                    launchDelay(BASE_ANIM_200L) {
-                        onCollectState()
-                    }
+                    launchDelay(BASE_ANIM_200L) { onCollectState() }
                 } else {
                     onCollectState()
                 }
@@ -347,15 +349,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                 }
             }
         }
-    }
-
-    /** ● Lifecycle onCreate */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (mVM.mTotals != 0) return
-
-        mVM.input(DiscoverIntent.GetComicTag()) // 获取标签
-        mVM.input(DiscoverIntent.GetComicHome())    // 获取发现主页
     }
 
     /** ● Lifecycle onDestroyView */

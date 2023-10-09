@@ -61,6 +61,12 @@ import org.koin.core.qualifier.named
  **************************/
 class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
+    init {
+        FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).register(this) {
+            mContainerVM.input(AppIntent.GetUpdateInfo())
+        }
+    }
+
     /** ● 碎片容器适配器 */
     private var mContainerAdapter: ContainerAdapter? = null
 
@@ -140,7 +146,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         immersionRoot()
 
         // 适配器 初始化 （设置Adapter、预加载页数）
-        mBinding.mainViewPager.offscreenPageLimit = 3
+        mBinding.mainViewPager.offscreenPageLimit = 2
         mBinding.mainViewPager.isUserInputEnabled = false
         mBinding.mainViewPager.adapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
     }

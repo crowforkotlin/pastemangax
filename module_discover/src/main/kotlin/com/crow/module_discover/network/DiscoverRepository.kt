@@ -1,5 +1,8 @@
 package com.crow.module_discover.network
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
+
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: module_discover/src/main/kotlin/com/crow/module_discover/network
@@ -10,7 +13,7 @@ package com.crow.module_discover.network
  **************************/
 class DiscoverRepository(val service: DiscoverService) {
 
-    fun getComicTag() = service.getComicTag()
+    fun getComicTag() = service.getComicTag().flowOn(Dispatchers.IO)
 
     fun getComicHome(
         start: Int,
@@ -18,10 +21,11 @@ class DiscoverRepository(val service: DiscoverService) {
         order: String,
         theme: String,
         region: String,
-    ) = service.getComicHome(start, limit, order = order, theme = theme, region = region)
+    ) = service.getComicHome(start, limit, order = order, theme = theme, region = region).flowOn(
+        Dispatchers.IO)
 
-    fun getNovelTag() = service.getNovelTag()
+    fun getNovelTag() = service.getNovelTag().flowOn(Dispatchers.IO)
 
     fun getNovelHome(start: Int, limit: Int, order: String, theme: String = "") =
-        service.getNovelHome(start, limit, order, theme)
+        service.getNovelHome(start, limit, order, theme).flowOn(Dispatchers.IO)
 }

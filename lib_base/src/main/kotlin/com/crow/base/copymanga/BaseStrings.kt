@@ -57,6 +57,8 @@ object BaseStrings {
 
         const val HotManga = "https://mapi.hotmangasf.com"
 
+        const val HotManga_AnimePage = "/api/v3/cartoons?free_type=1"
+
     }
 
 }

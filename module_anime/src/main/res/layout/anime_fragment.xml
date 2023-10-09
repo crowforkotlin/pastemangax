@@ -25,10 +25,6 @@
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <com.scwang.smart.refresh.header.MaterialHeader
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
         <com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
             android:id="@+id/anime_list"
             android:layout_width="match_parent"
@@ -36,6 +32,16 @@
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="3"
             tools:itemCount="6" />
+
+<!--
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/player_view"
+            app:animation_enabled="true"
+            app:use_controller="true"
+            app:resize_mode="fill"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"/>
+-->
 
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
@@ -49,5 +55,11 @@
         android:textStyle="bold"
         android:visibility="gone"
         tools:visibility="visible" />
+
+    <com.scwang.smart.refresh.header.MaterialHeader
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_anchor="@+id/discover_comic_refresh"
+        app:layout_anchorGravity="center" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
