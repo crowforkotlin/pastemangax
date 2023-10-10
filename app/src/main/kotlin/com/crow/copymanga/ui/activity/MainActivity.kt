@@ -62,7 +62,6 @@ class MainActivity : BaseMviActivity<ViewBinding>()  {
         setContentView(mBinding.root)
 
         if (savedInstanceState == null) {
-//            supportFragmentManager.navigateByAdd<ContainerFragment>(app_main_fcv, null, Fragments.Container.name)
             val container = Fragments.Container.name
             supportFragmentManager
                 .beginTransaction()

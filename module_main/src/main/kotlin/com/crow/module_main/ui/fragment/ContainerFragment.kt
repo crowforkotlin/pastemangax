@@ -45,6 +45,7 @@ import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.model.resp.MainAppUpdateResp
 import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
+import com.crow.module_main.ui.view.DepthPageTransformer
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import com.crow.module_user.ui.viewmodel.UserViewModel
 import org.koin.android.ext.android.get
@@ -87,7 +88,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private val mGestureDetector by lazy {
         GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
             override fun onDoubleTap(e: MotionEvent): Boolean {
-                when(mBinding.mainViewPager.currentItem) {
+                when(mBinding.viewPager.currentItem) {
                     1 -> childFragmentManager.setFragmentResult("onDoubleTap_Discover_Comic", arguments ?: bundleOf())
                     2 -> childFragmentManager.setFragmentResult("onDoubleTap_Bookshelf", arguments ?: bundleOf())
                 }
@@ -146,9 +147,10 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         immersionRoot()
 
         // 适配器 初始化 （设置Adapter、预加载页数）
-        mBinding.mainViewPager.offscreenPageLimit = 2
-        mBinding.mainViewPager.isUserInputEnabled = false
-        mBinding.mainViewPager.adapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
+        mBinding.viewPager.offscreenPageLimit = 1
+        mBinding.viewPager.isUserInputEnabled = false
+        mBinding.viewPager.setPageTransformer(DepthPageTransformer())
+        mBinding.viewPager.adapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
     }
 
     /**
@@ -210,10 +212,10 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             }
             if (bundle.getBoolean(BaseStrings.ENABLE_DELAY, false)) {
                 launchDelay(BASE_ANIM_200L) {
-                    childFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name,  bundleOf(BaseStrings.ID to mBinding.mainViewPager.currentItem))
+                     childFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name,  bundleOf(BaseStrings.ID to mBinding.viewPager.currentItem))
                 }
             } else {
-                childFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name,  bundleOf(BaseStrings.ID to mBinding.mainViewPager.currentItem))
+                 childFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name,  bundleOf(BaseStrings.ID to mBinding.viewPager.currentItem))
             }
         }
 
@@ -235,14 +237,14 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
 
         // VP 页面回调
-        mBinding.mainViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        mBinding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
-                    if (mEvent.getBoolean(mFragmentList[mBinding.mainViewPager.currentItem].hashCode().toString()) == true) return
-                    else mEvent.setBoolean(mFragmentList[mBinding.mainViewPager.currentItem].hashCode().toString(), true)
-                    val bundle = bundleOf(BaseStrings.ID to mBinding.mainViewPager.currentItem, BaseStrings.ENABLE_DELAY to false)
-                    when(mBinding.mainViewPager.currentItem) {
+                    if (mEvent.getBoolean(mFragmentList[mBinding.viewPager.currentItem].hashCode().toString()) == true) return
+                    else mEvent.setBoolean(mFragmentList[mBinding.viewPager.currentItem].hashCode().toString(), true)
+                    val bundle = bundleOf(BaseStrings.ID to mBinding.viewPager.currentItem, BaseStrings.ENABLE_DELAY to false)
+                    when(mBinding.viewPager.currentItem) {
                         0 -> childFragmentManager.setFragmentResult(NewHomeFragment.HOME, bundle)
                         1 -> childFragmentManager.setFragmentResult(DiscoverComicFragment.COMIC, bundle)
                         2 -> childFragmentManager.setFragmentResult(BookshelfFragment.BOOKSHELF, bundle)
@@ -278,12 +280,16 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             childFragmentManager.setFragmentResult(NewHomeFragment.HOME, bundle)
             childFragmentManager.setFragmentResult(DiscoverComicFragment.COMIC, bundle)
             childFragmentManager.setFragmentResult(BookshelfFragment.BOOKSHELF, bundle)
+            childFragmentManager.setFragmentResult(AnimeFragment.ANIME, bundle)
         }
     }
 
+
     /** ● 执行选择Fragment */
     private fun doSwitchFragment(position: Int) {
-        if (mBinding.mainViewPager.currentItem != position) mBinding.mainViewPager.setCurrentItem(position, true)
+        if (mBinding.viewPager.currentItem != position) {
+            mBinding.viewPager.currentItem = position
+        }
         saveItemPageID(position)
     }
 

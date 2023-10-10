@@ -9,7 +9,7 @@ import kotlin.math.pow
  * @author wupanjie
  * Use : setPageTransformer(StereoPagerTransformer(mContext.resources.displayMetrics.widthPixels.toFloat()))
  */
-class StereoPagerTransformer(private val pageWidth: Float) : ViewPager2.PageTransformer {
+class StereoPagerTransformer() : ViewPager2.PageTransformer {
 
     companion object {
         private const val MAX_ROTATE_Y = 90f
@@ -35,7 +35,7 @@ class StereoPagerTransformer(private val pageWidth: Float) : ViewPager2.PageTran
 
             // [-1,0]
             position <= 0 -> {
-                view.pivotX = pageWidth
+                view.pivotX = view.width.toFloat()
                 view.rotationY = -sInterpolator.getInterpolation(-position)
             }
 
