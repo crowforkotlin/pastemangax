@@ -7,6 +7,7 @@ import androidx.core.view.get
 import androidx.core.view.isEmpty
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -14,12 +15,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.app.app
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2sp
 import com.crow.base.tools.extensions.repeatOnLifecycle
@@ -39,31 +42,15 @@ import com.google.android.material.chip.Chip
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
 import java.util.Calendar
 import kotlin.properties.Delegates
 import com.crow.base.R as baseR
 
-/*
-    private val mPlayer by lazy { ExoPlayer.Builder(mContext).build() }
-
-    // 创建一个SimpleExoPlayer并设置到PlayerView
-    mBinding.playerView.player = mPlayer
-    mBinding.playerView.setControllerOnFullScreenModeChangedListener {
-
-    }
-    // 构建MediaItem
-    val uri = Uri.parse("https://vod77.fgjfghkkconsulting.xyz/videos/fb521050d6fe71edbfe197c6360c0102/hls/1080p/main.m3u8")
-    val mediaItem = MediaItem.fromUri(uri)
-
-
-    // 设置MediaItem到播放器并准备播放
-    mPlayer.setMediaItem(mediaItem)
-    mPlayer.prepare()
-
-* * */
-
 class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
+
 
     /**
      * ● Static Area
@@ -85,8 +72,8 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
      * ● 2023-10-10 01:00:55 周二 上午
      */
     private val mAdapter by lazy {
-        AnimeDiscoverPageAdapter {
-
+        AnimeDiscoverPageAdapter { anime ->
+            navigateAnimeInfoPage(anime.mPathWord, anime.mName)
         }
     }
 
@@ -96,6 +83,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
      * ● 2023-10-01 21:59:31 周日 下午
      */
     private var mToolbarSubtitle: TextView? = null
+
     /**
      * ● 子标题
      *
@@ -121,7 +109,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
         // 初始化RV适配器
         mBinding.list.adapter = mAdapter
-
+        
         // 设置加载动画独占1行，漫画卡片3行
         (mBinding.list.layoutManager as GridLayoutManager).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -171,10 +159,10 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     toolbar.menu.clear()
 
                     // 加载布局
-                    toolbar.inflateMenu(com.crow.module_anime.R.menu.anime_menu)
+                    toolbar.inflateMenu(R.menu.anime_menu)
 
                     // 年份
-                    toolbar.menu[0].doOnClickInterval { onSelectMenu(com.crow.module_anime.R.string.anime_year) }
+                    toolbar.menu[0].doOnClickInterval { onSelectMenu(R.string.anime_year) }
 
                     // 类别
                     toolbar.menu[1].doOnClickInterval { onSelectMenu(R.string.anime_search) }
@@ -279,6 +267,12 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
             onCollectState()
         }
     }
+
+    /**
+     * ● 选择菜单
+     *
+     * ● 2023-10-11 23:10:54 周三 下午
+     */
     private fun onSelectMenu(type: Int) {
 
         mBinding.list.stopScroll()
@@ -308,7 +302,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                             dialog.cancel()
                             mSubtitle = newYear.toString()
                             mToolbarSubtitle?.animateFadeIn()
-                            mVM.setYear(if (newYear.toString() == getString(baseR.string.base_all)) "" else newYear.toString()))
+                            mVM.setYear(if (newYear.toString() == getString(baseR.string.base_all)) "" else newYear.toString())
                             updateAnime()
                         }
                         binding.moreChipGroup.addView(chip)
@@ -322,5 +316,24 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
             }
             else -> error("Unknow menu type!")
         }
+    }
+
+    /**
+     * ● 导航至动漫信息页面
+     *
+     * ● 2023-10-11 23:13:38 周三 下午
+     */
+    private fun navigateAnimeInfoPage(pathword: String, name: String) {
+        val tag = Fragments.AnimeInfo.name
+        val bundle = Bundle()
+        bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
+        bundle.putSerializable(BaseStrings.NAME, name)
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(
+            id = baseR.id.app_main_fcv,
+            hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+            addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
+            tag = tag,
+            backStackName = tag
+        )
     }
 }

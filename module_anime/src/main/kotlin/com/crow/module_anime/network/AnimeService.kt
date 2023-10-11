@@ -3,12 +3,21 @@ package com.crow.module_anime.network
 import androidx.annotation.IntRange
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.resp.BaseResultResp
+import com.crow.module_anime.model.resp.chapter.AnimeChapterResp
 import com.crow.module_anime.model.resp.discover.DiscoverPageResp
+import com.crow.module_anime.model.resp.info.AnimeInfoResp
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface AnimeService {
+
+    @GET(BaseStrings.URL.HotManga_AnimeChapterList)
+    fun getAnimeChapterList(@Path(BaseStrings.PATH_WORD) pathword: String) : Flow<BaseResultResp<AnimeChapterResp>>
+
+    @GET(BaseStrings.URL.HotManga_AnimeInfoPage)
+    fun getAnimeInfo(@Path(BaseStrings.PATH_WORD) pathword: String) : Flow<BaseResultResp<AnimeInfoResp>>
 
     @GET(BaseStrings.URL.HotManga_AnimePage)
     fun getAnimHome(

@@ -77,11 +77,9 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
     protected fun immersionRoot() {
         // 设置 内边距属性 实现沉浸式效果
         immersionPadding(mBinding.root) { view, insets, _ ->
-            mBinding.root.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 topMargin = insets.top
                 bottomMargin = insets.bottom
-            }
-            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 rightMargin = insets.right
             }

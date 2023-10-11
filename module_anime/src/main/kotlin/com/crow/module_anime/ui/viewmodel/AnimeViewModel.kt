@@ -50,6 +50,20 @@ class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIn
     override fun dispatcher(intent: AnimeIntent) {
         when(intent) {
             is AnimeIntent.DiscoverPageIntent -> onDiscoverPageIntent(intent)
+            is AnimeIntent.PageInfoIntent -> onPageInfoIntent(intent)
+            is AnimeIntent.ChapterListIntent -> onChapterListIntent(intent)
+        }
+    }
+
+    private fun onChapterListIntent(intent: AnimeIntent.ChapterListIntent) {
+        flowResult(intent, repository.getAnimeChapterList(intent.pathword)) { resp ->
+            intent.copy(chapters = resp.mResults)
+        }
+    }
+
+    private fun onPageInfoIntent(intent: AnimeIntent.PageInfoIntent) {
+        flowResult(intent, repository.getAnimeInfoPage(intent.pathword)) { resp ->
+            intent.copy(info = resp.mResults)
         }
     }
 

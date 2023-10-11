@@ -2,6 +2,7 @@ package com.crow.copymanga.model.di
 
 import androidx.fragment.app.Fragment
 import com.crow.base.copymanga.entity.Fragments
+import com.crow.module_anime.ui.fragment.AnimeInfoFragment
 import com.crow.module_book.ui.fragment.comic.BookComicFragment
 import com.crow.module_book.ui.fragment.comic.reader.BookClassicComicFragment
 import com.crow.module_book.ui.fragment.novel.BookNovelFragment
@@ -46,5 +47,6 @@ val fragmentModule = module {
     fragment<Fragment>(named(Fragments.UpdateHistory.name)) { UpdateHistoryFragment() }
     fragment<Fragment>(named(Fragments.ComicClassic.name)) { BookClassicComicFragment() }
     fragment<Fragment>(named(Fragments.History.name)) { HistoryFragment() }
+    fragment<Fragment>(named(Fragments.AnimeInfo.name)) { AnimeInfoFragment() }
 //    fragment<Fragment>(named(Fragments.ComicStript.name)) { BookStriptComicFragment() }
 }

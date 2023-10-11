@@ -147,7 +147,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         immersionRoot()
 
         // 适配器 初始化 （设置Adapter、预加载页数）
-        mBinding.viewPager.offscreenPageLimit = 1
+        mBinding.viewPager.offscreenPageLimit = 4
         mBinding.viewPager.isUserInputEnabled = false
         mBinding.viewPager.setPageTransformer(DepthPageTransformer())
         mBinding.viewPager.adapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)

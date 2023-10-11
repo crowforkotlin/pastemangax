@@ -12,9 +12,8 @@ import kotlin.math.absoluteValue
  *
  * ● 2023-09-10 23:11:17 周日 下午
  */
-open class BaseEvent private constructor() {
+open class BaseEvent private constructor(val mFlagTime: Long) {
 
-    private var mFlagTime: Long = BASE_FLAG_TIME_500
     private var mFlagMap: MutableMap<String, Boolean>? = null
     private var mInitOnce: Boolean = false
     private var mLastClickGapTime: Long = 0L
@@ -30,8 +29,7 @@ open class BaseEvent private constructor() {
         private var mBaseEvent: BaseEvent? = null
 
         fun newInstance(initFlagTime: Long = BASE_FLAG_TIME_500): BaseEvent {
-            val baseEvent = BaseEvent()
-            baseEvent.mFlagTime = initFlagTime
+            val baseEvent = BaseEvent(initFlagTime)
             return baseEvent
         }
 
@@ -39,7 +37,7 @@ open class BaseEvent private constructor() {
             if (mBaseEvent == null) {
                 synchronized(this) {
                     if (mBaseEvent == null) {
-                        mBaseEvent = BaseEvent()
+                        mBaseEvent = BaseEvent(BASE_FLAG_TIME_500)
                     }
                 }
             }

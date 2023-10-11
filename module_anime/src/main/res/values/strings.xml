@@ -3,4 +3,11 @@
     <string name="anime_name">番剧</string>
     <string name="anime_search">搜索番剧</string>
     <string name="anime_year"><b>年份</b></string>
+    <string name="anime_hot">热度：%s</string>
+    <string name="anime_show_time">上映时间：%s</string>
+    <string name="anime_update_time">更新时间：%s</string>
+    <string name="anime_company">公司：%s</string>
+    <string name="anime_new_chapter">最新一章：%s</string>
+    <string name="anime_play_no_line">没有可选择的线路！</string>
+    <string name="anime_token_error">您需要登录番剧特定用户才可进行预览！</string>
 </resources>
