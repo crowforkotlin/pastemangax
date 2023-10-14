@@ -14,6 +14,7 @@
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/settings_rv_icon"
         android:layout_width="@dimen/base_dp20"
+        android:tint="@color/base_color_asc"
         tools:src="@drawable/main_ic_resolution_24dp"
         android:layout_height="@dimen/base_dp20"
         android:layout_gravity="center" />

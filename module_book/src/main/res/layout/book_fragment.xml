@@ -314,7 +314,7 @@
                     android:layout_marginEnd="@dimen/base_dp5"
                     app:tabMode="scrollable"
                     android:contentDescription="@string/BaseAppName"
-                    app:tabTextAppearance="@style/Book.Tablayout.TextAppearance"
+                    app:tabTextAppearance="@style/Base.Tablayout.TextAppearance"
                     android:visibility="gone"
                     tools:visibility="visible" />
 

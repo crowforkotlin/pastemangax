@@ -55,6 +55,7 @@
       <option name="composableFile" value="true" />
       <option name="previewFile" value="true" />
     </inspection_tool>
+    <inspection_tool class="PrivatePropertyName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="ProhibitJvmOverloadsOnConstructorsOfAnnotationClassesMigration" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="ProhibitRepeatedUseSiteTargetAnnotationsMigration" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="ProhibitTypeParametersForLocalVariablesMigration" enabled="true" level="ERROR" enabled_by_default="true" />

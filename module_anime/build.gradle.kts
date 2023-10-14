@@ -75,6 +75,7 @@ dependencies {
     implementation(project(mapOf("path" to ":lib_base")))
 
     implementation(Dependencies.media3_exoplayer)
+    implementation(Dependencies.media3_exoplayer_hls)
     implementation(Dependencies.media3_exoplayer_dash)
     implementation(Dependencies.media3_ui)
 }

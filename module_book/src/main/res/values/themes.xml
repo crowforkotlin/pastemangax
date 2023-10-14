@@ -5,8 +5,4 @@
 
 	<style name="Book.Theme.Chapter" parent="Widget.Material3.Button.ElevatedButton" />
 
-	<style name="Book.Tablayout.TextAppearance" parent="TextAppearance.Material3.LabelMedium">
-		<item name="android:textSize">@dimen/base_sp12</item>
-	</style>
-
 </resources>

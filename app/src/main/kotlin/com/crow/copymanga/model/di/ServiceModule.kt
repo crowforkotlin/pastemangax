@@ -1,5 +1,6 @@
 package com.crow.copymanga.model.di
 
+import com.crow.module_anime.network.AnimeService
 import com.crow.module_book.network.ComicService
 import com.crow.module_bookshelf.network.BookShelfService
 import com.crow.module_discover.network.DiscoverService
@@ -21,13 +22,14 @@ import retrofit2.Retrofit
  **************************/
 
 val servicesModule = module {
-    val name = named("CopyMangaX")
+    val named_CopyMangaX = named("CopyMangaX")
+    val named_HotMangaX = named("HotMangaX")
     single { get<Retrofit>().create(AppService::class.java) }
-    single { get<Retrofit>(name).create(MainService::class.java) }
-    single { get<Retrofit>(name).create(HomeService::class.java) }
-    single { get<Retrofit>(name).create(ComicService::class.java) }
-    single { get<Retrofit>(name).create(UserService::class.java) }
-    single { get<Retrofit>(name).create(BookShelfService::class.java) }
-    single { get<Retrofit>(name).create(DiscoverService::class.java) }
-    // single { get<Retrofit>().create(AnimeService::class.java) }
+    single { get<Retrofit>(named_CopyMangaX).create(MainService::class.java) }
+    single { get<Retrofit>(named_CopyMangaX).create(HomeService::class.java) }
+    single { get<Retrofit>(named_CopyMangaX).create(ComicService::class.java) }
+    single { get<Retrofit>(named_CopyMangaX).create(UserService::class.java) }
+    single { get<Retrofit>(named_CopyMangaX).create(BookShelfService::class.java) }
+    single { get<Retrofit>(named_CopyMangaX).create(DiscoverService::class.java) }
+    single { get<Retrofit>(named_HotMangaX).create(AnimeService::class.java) }
 }

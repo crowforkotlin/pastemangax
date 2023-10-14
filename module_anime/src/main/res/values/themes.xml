@@ -1,6 +1,6 @@
 <resources>
 	<!-- Base application theme. -->
-	<style name="Anime.Theme.CopyManga" parent="Theme.Material3.DayNight.NoActionBar">
+	<style name="Anime.Theme.HotManga" parent="Theme.Material3.DayNight.NoActionBar">
 	</style>
 
 </resources>

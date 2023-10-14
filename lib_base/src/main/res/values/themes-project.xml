@@ -19,4 +19,8 @@
         <item name="android:background">@color/base_bg</item>
     </style>
 
+    <style name="Base.Tablayout.TextAppearance" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textSize">@dimen/base_sp12</item>
+    </style>
+
 </resources>

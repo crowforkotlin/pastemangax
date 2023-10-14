@@ -114,7 +114,7 @@ class UserUpdateInfoFragment : BaseMviFragment<UserFragmentInfoBinding>() {
 
         mUserVM.onOutput { intent ->
             if (intent is UserIntent.GetUserUpdateInfo) {
-                intent.mBaseViewState
+                intent.mViewState
                     .doOnLoading { showLoadingAnim() }
                     .doOnError { code, msg ->
                         dismissLoadingAnim {

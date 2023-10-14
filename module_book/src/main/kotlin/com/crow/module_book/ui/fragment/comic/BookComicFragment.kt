@@ -129,7 +129,7 @@ class BookComicFragment : BookFragment() {
      * ● 2023-06-15 23:01:04 周四 下午
      */
     private fun processAddComicIntent(intent: BookIntent.AddComicToBookshelf) {
-        intent.mBaseViewState
+        intent.mViewState
             .doOnLoading { showLoadingAnim() }
             .doOnError { _, _ -> dismissLoadingAnim { toast(getString(baseR.string.BaseUnknowError)) } }
             .doOnResult {
@@ -263,7 +263,7 @@ class BookComicFragment : BookFragment() {
                 is BookIntent.GetComicInfoPage -> doOnBookPageIntent(intent) { showComicInfoPage() }
                 is BookIntent.AddComicToBookshelf -> processAddComicIntent(intent)
                 is BookIntent.GetComicBrowserHistory -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnResult {
                             intent.comicBrowser?.apply {
                                 if (mCollectId == null) setButtonAddToBookshelf() else setButtonRemoveFromBookshelf()

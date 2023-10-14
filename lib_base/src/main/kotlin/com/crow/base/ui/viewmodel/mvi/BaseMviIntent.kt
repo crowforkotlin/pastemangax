@@ -10,4 +10,4 @@ import com.crow.base.ui.viewmodel.BaseViewState
  * @Description: BaseMviEvent
  * @formatter:on
  **************************/
-open class BaseMviIntent(var mBaseViewState: BaseViewState = BaseViewState.Default)
+open class BaseMviIntent(var mViewState: BaseViewState = BaseViewState.Default)

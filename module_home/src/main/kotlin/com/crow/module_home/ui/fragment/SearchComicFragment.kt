@@ -122,7 +122,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
             val mTag = mBaseEvent.getBoolean(NewHomeFragment.SEARCH_TAG) ?: false
             when(intent) {
                 is HomeIntent.SearchComic -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnLoading { if(mTag) showLoadingAnim() }
                         .doOnSuccess { mBaseEvent.setBoolean(NewHomeFragment.SEARCH_TAG, false) }
                         .doOnError { _, _ ->

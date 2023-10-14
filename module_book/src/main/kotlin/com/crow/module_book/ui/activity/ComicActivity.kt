@@ -181,7 +181,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
             when(intent) {
                 is BookIntent.GetComicPage -> {
                     if (intent.enableLoading) {
-                        intent.mBaseViewState
+                        intent.mViewState
                             .doOnLoading{
                                 if (!mIsNeedLoading) {
                                     mIsNeedLoading = true
@@ -316,6 +316,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         TransitionManager.beginDelayedTransition(mBinding.root, transition)
         mBinding.comicToolbar.isGone = isHide
         mWindowInsetsCompat.isAppearanceLightStatusBars = !appIsDarkMode
+        mWindowInsetsCompat.isAppearanceLightNavigationBars = !appIsDarkMode
         if (isHide) {
             immersionFullScreen(mWindowInsetsCompat)
         } else {

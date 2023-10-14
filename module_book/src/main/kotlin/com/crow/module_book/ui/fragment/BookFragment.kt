@@ -17,7 +17,6 @@ import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
-import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.tools.extensions.showSnackBar
@@ -124,9 +123,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
      * @param onResult 交给子类处理View
      */
     protected fun doOnBookPageIntent(intent: BookIntent, onResult: Runnable) {
-        intent.mBaseViewState
-            // 执行加载动画
-//            .doOnLoading {}
+        intent.mViewState
 
             // 发生错误 取消动画 退出界面 提示
             .doOnError { _, _ ->
@@ -150,7 +147,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
      * @param intent 意图
      */
     protected fun<T> doOnBookPageChapterIntent(intent: BookIntent) {
-        intent.mBaseViewState
+        intent.mViewState
             .doOnError { _, _ ->
                 if (mBinding.bookInfoRvChapter.adapter?.itemCount == 0) {
                     if (mBinding.bookInfoLinearChapter.isVisible) mBinding.bookInfoLinearChapter.animateFadeOutWithEndInVisibility()
@@ -236,7 +233,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
-        immersionPadding(mBinding.root)
+        immersionRoot()
 
         // 设置 漫画图的卡片 宽高
         mBinding.bookInfoCardview.layoutParams.height = appComicCardHeight
@@ -253,7 +250,6 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         mBinding.bookInfoHot.text = getString(R.string.BookComicHot, more)
         mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, more)
         mBinding.bookInfoNewChapter.text = getString(R.string.BookComicNewChapter, more)
-
     }
 
     /** ● 处理章节结果

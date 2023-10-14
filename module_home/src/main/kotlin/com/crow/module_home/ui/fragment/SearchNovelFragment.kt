@@ -111,7 +111,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
         mHomeVM.onOutput { intent ->
             if (intent is HomeIntent.SearchNovel) {
                 val mTag = mBaseEvent.getBoolean(NewHomeFragment.SEARCH_TAG) ?: false
-                intent.mBaseViewState
+                intent.mViewState
                     .doOnLoading { if(mTag) showLoadingAnim() }
                     .doOnSuccess { mBaseEvent.setBoolean(NewHomeFragment.SEARCH_TAG, false) }
                     .doOnError { _, msg ->

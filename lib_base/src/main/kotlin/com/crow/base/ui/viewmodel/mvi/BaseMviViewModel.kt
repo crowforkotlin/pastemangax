@@ -66,10 +66,10 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
     fun <T> flowResult(intent: I, flow: Flow<T>, result: BaseMviFlowResult<I, T>) {
         viewModelScope.launch {
             flow
-                .onStart { emitValueMoreoverDelayAfter(intent.also { it.mBaseViewState = Loading }) }
-                .onCompletion { emitValueMoreoverDelayAfter(intent.also { it.mBaseViewState = Success }) }
-                .catch { catch -> emitValueMoreoverDelayAfter(intent.also { it.mBaseViewState = Error(if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, msg = catch.message ?: app.getString(R.string.BaseUnknowError)) })}
-                .collect { emitValueMoreoverDelayAfter(result.onResult(it).also { event -> event.mBaseViewState = Result }) }
+                .onStart { emitValueMoreoverDelayAfter(intent.also { it.mViewState = Loading }) }
+                .onCompletion { emitValueMoreoverDelayAfter(intent.also { it.mViewState = Success }) }
+                .catch { catch -> emitValueMoreoverDelayAfter(intent.also { it.mViewState = Error(if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, msg = catch.message ?: app.getString(R.string.BaseUnknowError)) })}
+                .collect { emitValueMoreoverDelayAfter(result.onResult(it).also { event -> event.mViewState = Result }) }
         }
     }
 
@@ -89,7 +89,7 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
                     }
                 }
                 .collect {
-                    if (intent != null) emitValueMoreoverDelayAfter(result.onResult(it).also { event -> event.mBaseViewState = Result })
+                    if (intent != null) emitValueMoreoverDelayAfter(result.onResult(it).also { event -> event.mViewState = Result })
                     if (!continuation.isCompleted) continuation.resume(it)
                 }
         }
@@ -97,7 +97,7 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
 
     private suspend inline fun trySendIntent(intent: I?, state: BaseViewState, endLogic: () -> Unit = {}): I? {
         if (intent != null) {
-            intent.mBaseViewState = state
+            intent.mViewState = state
             emitValueMoreoverDelayAfter(intent)
         }
         endLogic()
@@ -110,7 +110,7 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
     }
 
     inline fun toEmitValue(context: CoroutineContext = Dispatchers.Main, crossinline result: suspend () -> I) {
-        viewModelScope.launch(context) { _sharedFlow.emit(result().also { it.mBaseViewState = Result }) }
+        viewModelScope.launch(context) { _sharedFlow.emit(result().also { it.mViewState = Result }) }
     }
 
     inline fun launchJob(

@@ -81,7 +81,7 @@ class UserLoginFragment() : BaseMviFragment<UserFragmentLoginBinding>(){
 
                 // loading(加载动画) -> error(失败) 或 result(成功) -> success(取消动画)
                 is UserIntent.Login -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnLoading { showLoadingAnim() }
                         .doOnSuccess { dismissLoadingAnim { doRevertLoginButton() } }
                         .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: app.getString(baseR.string.BaseUnknowError)) }

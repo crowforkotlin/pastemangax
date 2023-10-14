@@ -19,6 +19,7 @@ import com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_200L
+import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
@@ -68,7 +69,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      *
      * ● 2023-07-01 20:26:12 周六 下午
      */
-    private val mBsVM by viewModel<BookshelfViewModel>()
+    private val mVM by viewModel<BookshelfViewModel>()
 
     /**
      * ● Bookshelf Comic适配器
@@ -209,16 +210,26 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      */
     private fun onCollectState() {
 
+        if (mVM.mBookshelfComicFlowPager == null && mVM.mBookshelfNovelFlowPager == null) {
+
+            // 发送获取书架 “漫画” 的意图 需要动态收集书架状态才可
+            mVM.input(BookshelfIntent.GetBookshelfComic())
+
+            // 发送获取书架 “轻小说” 的意图 需要动态收集书架状态才可
+            mVM.input(BookshelfIntent.GetBookshelfNovel())
+        }
+
+
         // 每个观察者需要一个单独的生命周期块，在同一个会导致第二个观察者失效 收集书架 漫画Pager状态
         repeatOnLifecycle {
-            mBsVM.mBookshelfComicFlowPager?.collect { data ->
+            mVM.mBookshelfComicFlowPager?.collect { data ->
                 mBookshelfComicRvAdapter.submitData(data)
             }
         }
 
         // 收集书架 轻小说Pager状态
         repeatOnLifecycle {
-            mBsVM.mBookshelfNovelFlowPager?.collect { data ->
+            mVM.mBookshelfNovelFlowPager?.collect { data ->
                 mBookshelfNovelRvAdapter.submitData(data)
             }
        }
@@ -273,21 +284,6 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     }
 
     /**
-     * ● Lifecycle onCreate
-     *
-     * ● 2023-07-07 21:54:21 周五 下午
-     */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // 发送获取书架 “漫画” 的意图 需要动态收集书架状态才可
-        mBsVM.input(BookshelfIntent.GetBookshelfComic())
-
-        // 发送获取书架 “轻小说” 的意图 需要动态收集书架状态才可
-        mBsVM.input(BookshelfIntent.GetBookshelfNovel())
-    }
-
-    /**
      * ● 初始化视图
      *
      * ● 2023-07-07 21:54:34 周五 下午
@@ -297,6 +293,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         // 设置刷新时不允许列表滚动
         mBinding.bookshelfRefresh.setDisableContentWhenRefresh(true)
 
+        // Init Rv Adapter
         when(mBinding.bookshelfButtonGropu.checkedButtonId) {
             R.id.bookshelf_comic ->initComicRvAdapter()
             R.id.bookshelf_novel -> initNovelRvAdapter()
@@ -325,6 +322,8 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         // 设置容器Fragment的共享结果回调
         parentFragmentManager.setFragmentResultListener(BOOKSHELF, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 2) {
+                mBinding.bookshelfRefresh.autoRefreshAnimationOnly()
+                mBinding.bookshelfRefresh.finishRefresh((BASE_ANIM_300L.toInt() shl 1) or 0xFF)
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
                     launchDelay(BASE_ANIM_200L) { onCollectState() }
                 } else {
@@ -418,7 +417,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         // Toolbar Menu
         mBinding.bookshelfToolbar.setOnMenuItemClickListener { menuItem ->
             BaseEvent.getSIngleInstance().doOnInterval {
-                mBsVM.sendGetBookshelfInent(
+                mVM.sendGetBookshelfInent(
                     when(menuItem.itemId) {
                         R.id.bookshelf_menu_sort_add -> "-datetime_modifier"
                         R.id.bookshelf_menu_sort_update ->"-datetime_updated"
@@ -444,10 +443,10 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     override fun initObserver(saveInstanceState: Bundle?) {
 
         // 接收意图
-        mBsVM.onOutput { intent ->
+        mVM.onOutput { intent ->
             when (intent) {
                 is BookshelfIntent.GetBookshelfComic -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnSuccess { if (mBinding.bookshelfRefresh.isRefreshing) mBinding.bookshelfRefresh.finishRefresh() }
                         .doOnError { code, msg ->
 
@@ -474,7 +473,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                 }
 
                 is BookshelfIntent.GetBookshelfNovel -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnSuccess { if (mBinding.bookshelfRefresh.isRefreshing) mBinding.bookshelfRefresh.finishRefresh() }
                         .doOnError { code, msg ->
 

@@ -8,9 +8,11 @@ import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.crow.base.copymanga.BaseEventEnum
@@ -22,11 +24,13 @@ import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.isLatestVersion
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
+import com.crow.base.tools.extensions.updatePadding
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
@@ -45,6 +49,7 @@ import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.model.resp.MainAppUpdateResp
 import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
+import com.crow.module_main.ui.view.DepthPageTransformer
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import com.crow.module_user.ui.viewmodel.UserViewModel
 import org.koin.android.ext.android.get
@@ -60,6 +65,12 @@ import org.koin.core.qualifier.named
  * @formatter:on
  **************************/
 class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
+
+    init {
+        FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).register(this) {
+            mContainerVM.input(AppIntent.GetUpdateInfo())
+        }
+    }
 
     /** ● 碎片容器适配器 */
     private var mContainerAdapter: ContainerAdapter? = null
@@ -81,7 +92,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private val mGestureDetector by lazy {
         GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
             override fun onDoubleTap(e: MotionEvent): Boolean {
-                when(mBinding.mainViewPager.currentItem) {
+                when(mBinding.viewPager.currentItem) {
                     1 -> childFragmentManager.setFragmentResult("onDoubleTap_Discover_Comic", arguments ?: bundleOf())
                     2 -> childFragmentManager.setFragmentResult("onDoubleTap_Bookshelf", arguments ?: bundleOf())
                 }
@@ -117,7 +128,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mContainerVM.onOutput { intent ->
             when(intent) {
                 is AppIntent.GetDynamicSite -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnErrorInCoroutine { _, _ -> mContainerVM.saveAppConfig() }
                         .doOnResultInCoroutine {
                             BaseStrings.URL.COPYMANGA = Base64.decode(intent.siteResp!!.mSiteList!!.first()!!.mEncodeSite, Base64.DEFAULT).decodeToString()
@@ -125,7 +136,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                         }
                 }
                 is AppIntent.GetUpdateInfo -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnError { _, _ -> toast(getString(R.string.main_update_error)) }
                         .doOnResult { doUpdateChecker(saveInstanceState, intent.appUpdateResp!!) }
                 }
@@ -136,13 +147,21 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     /** ● 初始化视图 */
     override fun initView(savedInstanceState: Bundle?) {
 
-        // 设置 内边距属性 实现沉浸式效果
-        immersionRoot()
+        // 沉浸式 VP BottomNavigation
+        immersionPadding(mBinding.root) { view, insets, _ ->
+            mBinding.viewPager.updatePadding(top = insets.top)
+            mBinding.bottomNavigation.updatePadding(bottom = insets.bottom)
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin= insets.right
+            }
+        }
 
         // 适配器 初始化 （设置Adapter、预加载页数）
-        mBinding.mainViewPager.offscreenPageLimit = 3
-        mBinding.mainViewPager.isUserInputEnabled = false
-        mBinding.mainViewPager.adapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
+        mBinding.viewPager.offscreenPageLimit = 4
+        mBinding.viewPager.isUserInputEnabled = false
+        mBinding.viewPager.setPageTransformer(DepthPageTransformer())
+        mBinding.viewPager.adapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
     }
 
     /**
@@ -204,10 +223,10 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             }
             if (bundle.getBoolean(BaseStrings.ENABLE_DELAY, false)) {
                 launchDelay(BASE_ANIM_200L) {
-                    childFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name,  bundleOf(BaseStrings.ID to mBinding.mainViewPager.currentItem))
+                     childFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name,  bundleOf(BaseStrings.ID to mBinding.viewPager.currentItem))
                 }
             } else {
-                childFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name,  bundleOf(BaseStrings.ID to mBinding.mainViewPager.currentItem))
+                 childFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name,  bundleOf(BaseStrings.ID to mBinding.viewPager.currentItem))
             }
         }
 
@@ -217,7 +236,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
 
         // 设置底部导航视图点击Item可见
-        mBinding.mainBottomNavigation.setOnItemSelectedListener { item ->
+        mBinding.bottomNavigation.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.main_menu_homepage -> doSwitchFragment(0)
                 R.id.main_menu_discovery_comic -> doSwitchFragment(1)
@@ -229,27 +248,30 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
 
         // VP 页面回调
-        mBinding.mainViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        mBinding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
-                    if (mEvent.getBoolean(mFragmentList[mBinding.mainViewPager.currentItem].hashCode().toString()) == true) return
-                    else mEvent.setBoolean(mFragmentList[mBinding.mainViewPager.currentItem].hashCode().toString(), true)
-                    val bundle = bundleOf(BaseStrings.ID to mBinding.mainViewPager.currentItem, BaseStrings.ENABLE_DELAY to false)
-                    childFragmentManager.setFragmentResult(NewHomeFragment.HOME, bundle)
-                    childFragmentManager.setFragmentResult(DiscoverComicFragment.COMIC, bundle)
-                    childFragmentManager.setFragmentResult(BookshelfFragment.BOOKSHELF, bundle)
+                    if (mEvent.getBoolean(mFragmentList[mBinding.viewPager.currentItem].hashCode().toString()) == true) return
+                    else mEvent.setBoolean(mFragmentList[mBinding.viewPager.currentItem].hashCode().toString(), true)
+                    val bundle = bundleOf(BaseStrings.ID to mBinding.viewPager.currentItem, BaseStrings.ENABLE_DELAY to false)
+                    when(mBinding.viewPager.currentItem) {
+                        0 -> childFragmentManager.setFragmentResult(NewHomeFragment.HOME, bundle)
+                        1 -> childFragmentManager.setFragmentResult(DiscoverComicFragment.COMIC, bundle)
+                        2 -> childFragmentManager.setFragmentResult(BookshelfFragment.BOOKSHELF, bundle)
+                        3 -> childFragmentManager.setFragmentResult(AnimeFragment.ANIME, bundle)
+                    }
                 }
             }
         })
 
         // Item onTouchEvent 漫画
-        mBinding.mainBottomNavigation.setItemOnTouchListener(R.id.main_menu_discovery_comic) { _, event ->
+        mBinding.bottomNavigation.setItemOnTouchListener(R.id.main_menu_discovery_comic) { _, event ->
             mGestureDetector.onTouchEvent(event)
         }
 
         // Item onTouchEvent 书架
-        mBinding.mainBottomNavigation.setItemOnTouchListener(R.id.main_menu_bookshelf) { _, event ->
+        mBinding.bottomNavigation.setItemOnTouchListener(R.id.main_menu_bookshelf) { _, event ->
             mGestureDetector.onTouchEvent(event)
         }
     }
@@ -269,12 +291,16 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             childFragmentManager.setFragmentResult(NewHomeFragment.HOME, bundle)
             childFragmentManager.setFragmentResult(DiscoverComicFragment.COMIC, bundle)
             childFragmentManager.setFragmentResult(BookshelfFragment.BOOKSHELF, bundle)
+            childFragmentManager.setFragmentResult(AnimeFragment.ANIME, bundle)
         }
     }
 
+
     /** ● 执行选择Fragment */
     private fun doSwitchFragment(position: Int) {
-        if (mBinding.mainViewPager.currentItem != position) mBinding.mainViewPager.setCurrentItem(position, true)
+        if (mBinding.viewPager.currentItem != position) {
+            mBinding.viewPager.currentItem = position
+        }
         saveItemPageID(position)
     }
 

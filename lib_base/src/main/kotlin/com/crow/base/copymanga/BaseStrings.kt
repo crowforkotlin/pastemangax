@@ -20,6 +20,7 @@ object BaseStrings {
         const val Crow_Site = "https://gitee.com/llzzppFlash/copy-manga/raw/main/site.json"
         const val Crow_UpdateInfo = "https://gitee.com/llzzppFlash/copy-manga/raw/main/update_info.json"
         const val Crow_QQGroup = "https://gitee.com/llzzppFlash/copy-manga/raw/main/qq_group"
+        const val Crow_HOTMANGA_TOKEN = "https://gitee.com/llzzppFlash/copy-manga/raw/main/RELA_TOKEN"
 
         const val MangaFuna = "https://hi77-overseas.mangafuna.xyz/"
         var COPYMANGA = "https://api.copymanga$CopyManga_TLD_TV"
@@ -27,9 +28,9 @@ object BaseStrings {
         const val Reg = "/api/v3/register"
 
         const val ComicInfo = "/api/v3/comic2/{pathword}?platform=3&_update=true"
-        const val ComicChapter = "/api/v3/comic/{pathword}/group/default/chapters?_update=true"
+        const val ComicChapter = "/api/v3/comic/{pathword}/group/default/chapters?_update=true" 
         const val ComicPage = "/api/v3/comic/{pathword}/chapter2/{uuid}?platform=3&_update=true"
-        const val ComicBrowserHistory = "/api/v3/comic2/{pathword}/query?platform=3&_update=true"
+        const val ComicBrowserHistory = "/api/v3/comic2/{$PATH_WORD}/query?platform=3&_update=true"
         const val ComicHistory = "/api/v3/member/browse/comics?platform=3&_update=true"
         const val ComicAddToBookshelf = "/api/v3/member/collect/comic"
         const val ComicSearch = "/api/v3/search/comic"
@@ -55,7 +56,11 @@ object BaseStrings {
         const val DiscoverNovelHome = "/api/v3/books?free_type=1&_update=true"
 
 
-        const val HotManga = "https://mapi.hotmangasf.com"
+        const val HotManga = "https://www.relamanhua.com"
+
+        const val HotManga_AnimePage = "/api/v3/cartoons?free_type=1"
+        const val HotManga_AnimeInfoPage = "/api/v3/cartoon2/{$PATH_WORD}"
+        const val HotManga_AnimeChapterList = "/api/v3/cartoon/{$PATH_WORD}/chapters2"
 
     }
 

@@ -7,7 +7,9 @@ import com.crow.base.tools.extensions.asyncEncode
 import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.module_user.model.resp.LoginResultsOkResp
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlin.random.Random
 
@@ -32,13 +34,13 @@ class UserRepository(val service: UserService) {
                     DataStoreAgent.DATA_USER.asyncEncode(toJson(resp))
                 }
             }
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
-    fun getUserUpdateInfo() = service.getUserUpdateInfo()
+    fun getUserUpdateInfo() = service.getUserUpdateInfo().flowOn(Dispatchers.IO)
 
-    fun getUserInfo() = service.getUserInfo()
+    fun getUserInfo() = service.getUserInfo().flowOn(Dispatchers.IO)
     fun reg(username: String, password: String): Flow<BaseResultResp<Any>> {
-        return service.reg(username, password)
+        return service.reg(username, password).flowOn(Dispatchers.IO)
     }
 }

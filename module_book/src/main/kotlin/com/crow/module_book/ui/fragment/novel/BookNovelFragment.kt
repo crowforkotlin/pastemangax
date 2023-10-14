@@ -115,7 +115,7 @@ class BookNovelFragment : BookFragment() {
      * ● 2023-06-15 22:57:55 周四 下午
      */
     private fun processAddNovelIntent(intent: BookIntent.AddNovelToBookshelf) {
-        intent.mBaseViewState
+        intent.mViewState
             .doOnLoading { showLoadingAnim() }
             .doOnError { _, _ -> dismissLoadingAnim { toast(getString(com.crow.base.R.string.BaseUnknowError)) } }
             .doOnResult {
@@ -237,7 +237,7 @@ class BookNovelFragment : BookFragment() {
                 is BookIntent.GetNovelInfoPage -> doOnBookPageIntent(intent) { showNovelInfoPage() }
                 is BookIntent.AddNovelToBookshelf -> { processAddNovelIntent(intent) }
                 is BookIntent.GetNovelBrowserHistory -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnResult {
                             intent.novelBrowser!!.apply {
                                 if (mCollect == null) setButtonAddToBookshelf() else setButtonRemoveFromBookshelf()

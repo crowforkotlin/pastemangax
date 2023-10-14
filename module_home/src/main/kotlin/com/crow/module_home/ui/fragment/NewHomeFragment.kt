@@ -59,6 +59,7 @@ import kotlinx.coroutines.yield
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.qualifier.named
+import kotlin.system.exitProcess
 import com.crow.base.R as baseR
 
 class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
@@ -181,7 +182,6 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      * ● 2023-09-17 19:40:26 周日 下午
      */
     private fun doLoadHomePage() {
-
         if (mBaseEvent.getBoolean("HOME_FRAGMENT_LOAD_HOME_PAGE") == true) return
         mBaseEvent.setBoolean("HOME_FRAGMENT_LOAD_HOME_PAGE", true)
 
@@ -291,9 +291,18 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      */
     override fun onStart() {
         super.onStart()
+        val baseEvent : BaseEvent = BaseEvent.newInstance(BaseEvent.BASE_FLAG_TIME_1000 shl 1)
         mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) {
             if (mBinding.homeSearchView.isShowing) mBinding.homeSearchView.hide()
-            else requireActivity().moveTaskToBack(true)
+            else {
+                baseEvent.doOnInterval(object : BaseIEventIntervalExt<BaseEvent>{
+                    override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) { toast(getString(R.string.home_exit_app)) }
+                    override fun onIntervalFailure(gapTime: Long) {
+                        requireActivity().finish()
+                        exitProcess(0)
+                    }
+                })
+            }
         }
     }
 
@@ -314,6 +323,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         mSearchBinding = null
         parentFragmentManager.clearFragmentResultListener(HOME)
         mBaseEvent.remove("HOME_FRAGMENT_INIT_SEARCH_VIEW")
+        mBaseEvent.remove("HOME_FRAGMENT_LOAD_HOME_PAGE")
     }
 
     /**
@@ -383,7 +393,6 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         parentFragmentManager.setFragmentResultListener(HOME, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 0) {
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
-
                     launchDelay(BASE_ANIM_200L) { mHomeVM.input(HomeIntent.GetHomePage()) }
                 }
                 else mHomeVM.input(HomeIntent.GetHomePage())
@@ -444,14 +453,15 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
 
         mHomeVM.onOutput { intent ->
             when (intent) {
-
                 // （获取主页）（根据 刷新事件 来决定是否启用加载动画） 正常加载数据、反馈View
                 is HomeIntent.GetHomePage -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnSuccess {
                             if (mBinding.homeRefresh.isRefreshing) {
                                 mBinding.homeRefresh.finishRefresh(BASE_ANIM_300L.toInt())
-                                if (mBinding.homeTipsError.isGone)  toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+                                if (mBinding.homeTipsError.isGone) {
+                                    toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+                                }
                             }
                         }
                         .doOnResult { doLoadHomePage() }
@@ -487,16 +497,14 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
 
                 // （刷新获取）不启用 加载动画 正常加载数据 -> 反馈View
                 is HomeIntent.GetRecPageByRefresh -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnError { _, _ ->
                             toast(getString(baseR.string.BaseLoadingError))
                             mRecRefresh?.isEnabled = true
                         }
                         .doOnResult {
-
                             viewLifecycleOwner.lifecycleScope.launch {
                                 mDataRvAdapter.onRefreshSubmitList(mHomeVM.getSnapshotHomeData(), 50L)
-
                                 mRecRefresh?.isEnabled = true
                             }
                         }
