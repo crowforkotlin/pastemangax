@@ -85,11 +85,11 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     private var mToolbarSubtitle: TextView? = null
 
     private var  mSubtitlePrefix: String by Delegates.observable(app.getString(baseR.string.base_all)) { _, _, new ->
-        mBinding.discoverComicAppbar.discoverAppbarToolbar.subtitle = getString(R.string.discover_subtitle, new, mSubtitleSuffix)
+        mBinding.topbar.subtitle = getString(R.string.discover_subtitle, new, mSubtitleSuffix)
     }
 
     private var  mSubtitleSuffix: String by Delegates.observable(app.getString(baseR.string.base_all)) { _, _, new ->
-        mBinding.discoverComicAppbar.discoverAppbarToolbar.subtitle = getString(R.string.discover_subtitle, mSubtitlePrefix, new)
+        mBinding.topbar.subtitle = getString(R.string.discover_subtitle, mSubtitlePrefix, new)
     }
 
     /** ● 收集状态 */
@@ -156,7 +156,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         mAdapter.addLoadStateListener {
             if(it.source.refresh is LoadState.NotLoading) {
 
-                val toolbar = mBinding.discoverComicAppbar.discoverAppbarToolbar
+                val toolbar = mBinding.topbar
 
                 if (toolbar.menu.isEmpty()) {
 
@@ -292,7 +292,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         // 设置Title
-        mBinding.discoverComicAppbar.discoverAppbarToolbar.title = getString(R.string.discover_comic)
+        mBinding.topbar.title = getString(R.string.discover_comic)
 
         // 初始化 发现页 漫画适配器
         mAdapter = DiscoverComicAdapter { navigateBookComicInfo(it.mName, it.mPathWord) }

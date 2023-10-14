@@ -316,6 +316,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         TransitionManager.beginDelayedTransition(mBinding.root, transition)
         mBinding.comicToolbar.isGone = isHide
         mWindowInsetsCompat.isAppearanceLightStatusBars = !appIsDarkMode
+        mWindowInsetsCompat.isAppearanceLightNavigationBars = !appIsDarkMode
         if (isHide) {
             immersionFullScreen(mWindowInsetsCompat)
         } else {

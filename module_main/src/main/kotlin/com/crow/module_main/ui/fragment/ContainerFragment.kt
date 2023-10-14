@@ -8,9 +8,11 @@ import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.crow.base.copymanga.BaseEventEnum
@@ -22,11 +24,13 @@ import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.isLatestVersion
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
+import com.crow.base.tools.extensions.updatePadding
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
@@ -143,8 +147,15 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     /** ● 初始化视图 */
     override fun initView(savedInstanceState: Bundle?) {
 
-        // 设置 内边距属性 实现沉浸式效果
-        immersionRoot()
+        // 沉浸式 VP BottomNavigation
+        immersionPadding(mBinding.root) { view, insets, _ ->
+            mBinding.viewPager.updatePadding(top = insets.top)
+            mBinding.bottomNavigation.updatePadding(bottom = insets.bottom)
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin= insets.right
+            }
+        }
 
         // 适配器 初始化 （设置Adapter、预加载页数）
         mBinding.viewPager.offscreenPageLimit = 4
@@ -225,7 +236,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
 
         // 设置底部导航视图点击Item可见
-        mBinding.mainBottomNavigation.setOnItemSelectedListener { item ->
+        mBinding.bottomNavigation.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.main_menu_homepage -> doSwitchFragment(0)
                 R.id.main_menu_discovery_comic -> doSwitchFragment(1)
@@ -255,12 +266,12 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         })
 
         // Item onTouchEvent 漫画
-        mBinding.mainBottomNavigation.setItemOnTouchListener(R.id.main_menu_discovery_comic) { _, event ->
+        mBinding.bottomNavigation.setItemOnTouchListener(R.id.main_menu_discovery_comic) { _, event ->
             mGestureDetector.onTouchEvent(event)
         }
 
         // Item onTouchEvent 书架
-        mBinding.mainBottomNavigation.setItemOnTouchListener(R.id.main_menu_bookshelf) { _, event ->
+        mBinding.bottomNavigation.setItemOnTouchListener(R.id.main_menu_bookshelf) { _, event ->
             mGestureDetector.onTouchEvent(event)
         }
     }

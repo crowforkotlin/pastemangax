@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewbinding.ViewBinding
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.repeatOnLifecycle
+import com.crow.base.tools.extensions.updatePadding
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
 import com.crow.base.ui.viewmodel.mvi.BaseMviSuspendResult
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
@@ -77,11 +78,10 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
     protected fun immersionRoot() {
         // 设置 内边距属性 实现沉浸式效果
         immersionPadding(mBinding.root) { view, insets, _ ->
+            view.updatePadding(top = insets.top, bottom = insets.bottom )
             view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                topMargin = insets.top
-                bottomMargin = insets.bottom
                 leftMargin = insets.left
-                rightMargin = insets.right
+                rightMargin= insets.right
             }
         }
     }

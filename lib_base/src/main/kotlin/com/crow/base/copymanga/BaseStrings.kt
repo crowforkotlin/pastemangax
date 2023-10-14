@@ -28,7 +28,7 @@ object BaseStrings {
         const val Reg = "/api/v3/register"
 
         const val ComicInfo = "/api/v3/comic2/{pathword}?platform=3&_update=true"
-        const val ComicChapter = "/api/v3/comic/{pathword}/group/default/chapters?_update=true"
+        const val ComicChapter = "/api/v3/comic/{pathword}/group/default/chapters?_update=true" 
         const val ComicPage = "/api/v3/comic/{pathword}/chapter2/{uuid}?platform=3&_update=true"
         const val ComicBrowserHistory = "/api/v3/comic2/{$PATH_WORD}/query?platform=3&_update=true"
         const val ComicHistory = "/api/v3/member/browse/comics?platform=3&_update=true"

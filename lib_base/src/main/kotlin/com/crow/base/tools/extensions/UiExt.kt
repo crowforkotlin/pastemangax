@@ -12,8 +12,10 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewPropertyAnimator
 import androidx.annotation.ColorInt
+import androidx.annotation.Px
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.view.setPadding
 import com.crow.base.app.app
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -212,4 +214,20 @@ fun View.measureDimension(desiredSize: Int, measureSpec: Int): Int {
         }
     }
     return result
+}
+
+
+/**
+ * Updates this view's padding. This version of the method allows using named parameters
+ * to just set one or more axes.
+ *
+ * @see View.setPadding
+ */
+public inline fun View.updatePadding(
+    @Px left: Int = paddingLeft,
+    @Px top: Int = paddingTop,
+    @Px right: Int = paddingRight,
+    @Px bottom: Int = paddingBottom
+) {
+    setPadding(left, top, right, bottom)
 }
