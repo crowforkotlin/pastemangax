@@ -38,6 +38,7 @@ object DataStoreAgent {
     val APP_CONFIG = stringPreferencesKey("app.config")
     val USER_CONFIG = stringPreferencesKey("user.config")
     val DATA_USER = stringPreferencesKey("data.user")
+    val DATA_USER_RELA = stringPreferencesKey("data.user.rela")
     val DATA_BOOK = stringPreferencesKey("data.book")
 }
 

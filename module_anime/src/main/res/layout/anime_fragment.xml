@@ -1,68 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     style="@style/Base.Theme.BG"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        tools:context="com.crow.module_discover.ui.fragment.DiscoverComicFragment"
-        tools:theme="@style/Anime.Theme.HotManga">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold"
-            tools:menu="@menu/anime_menu"
-            app:title="@string/anime_name" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+        app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold"
+        tools:menu="@menu/anime_menu"
+        app:title="@string/anime_name" />
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        android:layout_height="match_parent">
 
         <com.scwang.smart.refresh.header.MaterialHeader
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
-            android:id="@+id/list"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="3"
-            tools:listitem="@layout/anime_fragment_rv"
-            tools:itemCount="6" />
+            android:layout_height="match_parent" >
 
-<!--
-        <androidx.media3.ui.PlayerView
-            android:id="@+id/player_view"
-            app:animation_enabled="true"
-            app:use_controller="true"
-            app:resize_mode="fill"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"/>
--->
+            <com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="3"
+                tools:listitem="@layout/anime_fragment_rv"
+                tools:itemCount="6" />
+
+            <TextView
+                android:id="@+id/tips_error"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/BaseLoadingErrorNeedRefresh"
+                android:textSize="@dimen/base_sp16"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </FrameLayout>
 
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
-    <TextView
-        android:id="@+id/tips_error"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/BaseLoadingErrorNeedRefresh"
-        android:textSize="@dimen/base_sp16"
-        android:textStyle="bold"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

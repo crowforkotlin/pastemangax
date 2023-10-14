@@ -29,6 +29,8 @@ import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.px2sp
 import com.crow.base.tools.extensions.removeWhiteSpace
+import com.crow.base.tools.extensions.startActivity
+import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
@@ -37,7 +39,9 @@ import com.crow.module_anime.R
 import com.crow.module_anime.databinding.AnimeFragmentInfoBinding
 import com.crow.module_anime.model.AnimeIntent
 import com.crow.module_anime.model.resp.chapter.AnimeChapterResp
+import com.crow.module_anime.model.resp.chapter.AnimeChapterResult
 import com.crow.module_anime.model.resp.info.AnimeInfoResp
+import com.crow.module_anime.ui.activity.AnimeActivity
 import com.crow.module_anime.ui.adapter.AnimeChapterRvAdapter
 import com.crow.module_anime.ui.viewmodel.AnimeViewModel
 import com.google.android.material.chip.Chip
@@ -104,15 +108,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
                 toast(getString(R.string.anime_token_error))
                 return@AnimeChapterRvAdapter
             }
-            when(chapter.mLines.size) {
-                1 -> {
-                    val line = chapter.mLines.first()
-                }
-                0 ->toast(getString(R.string.anime_play_no_line))
-                else -> {
-
-                }
-            }
+            launchAnimeActivity(chapter)
         }
     }
 
@@ -284,4 +280,25 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      * ● 2023-10-11 23:27:17 周三 下午
      */
     private fun navigateUp() { parentFragmentManager.popSyncWithClear(Fragments.AnimeInfo.name) }
+
+    private fun launchAnimeActivity(chapter: AnimeChapterResult) {
+        when(chapter.mLines.size) {
+            0 ->toast(getString(R.string.anime_play_no_line))
+            1 -> {
+                mContext.startActivity<AnimeActivity> {
+                    putExtra(BaseStrings.NAME, chapter.mName)
+                    putExtra(BaseStrings.PATH_WORD, toJson(chapter.mLines))
+                    putExtra("UUID", chapter.mUUID)
+                }
+            }
+            else -> {
+                mContext.startActivity<AnimeActivity> {
+                    putExtra(BaseStrings.NAME, chapter.mName)
+                    putExtra(BaseStrings.PATH_WORD, toJson(chapter.mLines))
+                    putExtra(AnimeActivity.ANIME_CHAPTER_UUID, chapter.mUUID)
+                }
+            }
+        }
+
+    }
 }
