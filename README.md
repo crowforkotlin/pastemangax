@@ -11,7 +11,7 @@
 [![Github All Releases](https://img.shields.io/github/downloads/crowforkotlin/CopyMangaX/total.svg)]()
 
 - ### **🔶前言**
-    - **🟠项目仅用于学习 作者不对其中呈现的任何内容负责。**
+    - **🟠数据来源于拷贝漫画 作者不对其中呈现的任何内容负责。**
     - **🔷项目介绍**
         - **🟠项目采用 <u>多模块</u> 和 <u>MVI框架</u> 开发**
         - **🟠此项目非常注重代码质量、重构有十次左右了 从最初的MVC --> MVVM --> MVI 都是借鉴了自己以前的项目去实现**
