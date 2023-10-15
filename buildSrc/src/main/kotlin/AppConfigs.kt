@@ -72,13 +72,13 @@ object AppConfigs {
     const val target_sdk_version = 29
 
     // 应用版本号
-    const val version_code = 10
+    const val version_code = 11
 
     // 应用版本名
     const val version_name = "1.2.7"
 
     // jvm版本
-    const val jvm_target = "12"
+    const val jvm_target = "11"
 
     // Android 提供的默认测试工具
     const val test_instrumentation_runner = "androidx.test.runner.AndroidJUnitRunner"

@@ -12,6 +12,8 @@ plugins {
     // kotlin(Plugins.kotlin_serialization) version Versions.kotlin_version
 }
 
+kotlin { jvmToolchain(11) }
+
 android {
 
     // 配置构建功能相关的选项

@@ -10,6 +10,8 @@ plugins {
     kotlin(Plugins.kotlin_android)
 }
 
+kotlin { jvmToolchain(11) }
+
 android {
 
     // 标识应用程序命名空间 （应用商店上的唯一标识符）
@@ -45,7 +47,7 @@ android {
 
         ndk {
             // 设置支持的SO库架构 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
-            abiFilters.add("armeabi")
+            abiFilters += listOf("armeabi", "x86", "x86_64", "armeabi-v7a", "armeabi-v8a")
         }
     }
 
@@ -90,8 +92,6 @@ android {
         kotlinCompilerExtensionVersion = compose.versions.compiler.get()
     }
 }
-
-kotlin { jvmToolchain(11) }
 
 dependencies {
 
