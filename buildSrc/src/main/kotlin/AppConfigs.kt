@@ -75,10 +75,10 @@ object AppConfigs {
     const val version_code = 10
 
     // 应用版本名
-    const val version_name = "1.2.6"
+    const val version_name = "1.2.7"
 
     // jvm版本
-    const val jvm_target = "11"
+    const val jvm_target = "12"
 
     // Android 提供的默认测试工具
     const val test_instrumentation_runner = "androidx.test.runner.AndroidJUnitRunner"
@@ -97,6 +97,9 @@ object AppConfigs {
 
     // 开发版本
     const val flavor_dev = "dev"
+
+    // 内部版本
+    const val flavor_internal = "internal"
 
     // 设置代码源名称
     const val source_set_main = "main"

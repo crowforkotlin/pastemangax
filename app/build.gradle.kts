@@ -116,6 +116,19 @@ android {
         // 维度 抽象的概念，表示应用程序的不同版本
         flavorDimensions.add(AppConfigs.flavor_dimension)
 
+        // 内部版本
+        create(AppConfigs.flavor_internal) {
+            // 指定维度
+            dimension = AppConfigs.flavor_dimension
+
+            // 版本名后缀
+            versionNameSuffix = "_internal"
+
+            // 是否使用线上环境
+            buildConfigField("boolean", "IS_ONLINE_ENV", "true")
+
+        }
+
         // 正式线上版本
         create(AppConfigs.flavor_online) {
 
@@ -145,8 +158,6 @@ android {
             buildConfigField("boolean", "IS_ONLINE_ENV", "false")
         }
     }
-
-
 }
 
 dependencies {
