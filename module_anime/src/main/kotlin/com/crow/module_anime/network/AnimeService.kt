@@ -7,6 +7,7 @@ import com.crow.module_anime.model.req.RegReq
 import com.crow.module_anime.model.resp.chapter.AnimeChapterResp
 import com.crow.module_anime.model.resp.discover.DiscoverPageResp
 import com.crow.module_anime.model.resp.info.AnimeInfoResp
+import com.crow.module_anime.model.resp.video.AnimeVideoResp
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.Body
 import retrofit2.http.Field
@@ -44,4 +45,10 @@ interface AnimeService {
         @Field("source") source: String = "Offical",
         @Field("platform") platform: String= "1",
     ): Flow<BaseResultResp<Any>>
+
+    @GET(BaseStrings.URL.HotManga_AnimeVideo)
+    fun getVideo(
+        @Path(BaseStrings.PATH_WORD) pathword: String,
+        @Path("chapter_uuid") chapterUUID: String
+    ): Flow<BaseResultResp<AnimeVideoResp>>
 }

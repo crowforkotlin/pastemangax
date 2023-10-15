@@ -35,6 +35,7 @@ import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_anime.R
 import com.crow.module_anime.databinding.AnimeFragmentInfoBinding
 import com.crow.module_anime.model.AnimeIntent
@@ -76,7 +77,6 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
         }
     }
 
-
     /**
      * ● 漫画点击实体
      *
@@ -103,12 +103,12 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      * ● 2023-10-12 02:49:48 周四 上午
      */
     private val mAdapter by lazy {
-        AnimeChapterRvAdapter { chapter ->
+        AnimeChapterRvAdapter { pos, chapter ->
             if (BaseUserConfig.HOTMANGA_TOKEN.isEmpty()) {
                 toast(getString(R.string.anime_token_error))
                 return@AnimeChapterRvAdapter
             }
-            launchAnimeActivity(chapter)
+            launchAnimeActivity(pos, chapter)
         }
     }
 
@@ -191,6 +191,9 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
             when(intent) {
                 is AnimeIntent.PageInfoIntent -> {
                     intent.mViewState
+
+                        .doOnSuccess { if (mBinding.refresh.isRefreshing) mBinding.refresh.finishRefresh() }
+
                         // 发生错误 取消动画 退出界面 提示
                         .doOnError { _, _ -> toast(getString(baseR.string.BaseLoadingError)) }
 
@@ -264,6 +267,8 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
         mBinding.newChapter.text = getString(R.string.anime_new_chapter, anim.mLastChapter.mName)
         mBinding.title.text = anim.mName
         mBinding.desc.text = anim.mBrief.removeWhiteSpace()
+        mBinding.chipGroup.removeAllViews()
+
         anim.mTheme.forEach { theme ->
             mBinding.chipGroup.addView(Chip(mContext).also {
                 it.text = theme.mName
@@ -281,21 +286,16 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      */
     private fun navigateUp() { parentFragmentManager.popSyncWithClear(Fragments.AnimeInfo.name) }
 
-    private fun launchAnimeActivity(chapter: AnimeChapterResult) {
+    private fun launchAnimeActivity(pos: Int, chapter: AnimeChapterResult) {
+
         when(chapter.mLines.size) {
             0 ->toast(getString(R.string.anime_play_no_line))
-            1 -> {
-                mContext.startActivity<AnimeActivity> {
-                    putExtra(BaseStrings.NAME, chapter.mName)
-                    putExtra(BaseStrings.PATH_WORD, toJson(chapter.mLines))
-                    putExtra("UUID", chapter.mUUID)
-                }
-            }
             else -> {
                 mContext.startActivity<AnimeActivity> {
                     putExtra(BaseStrings.NAME, chapter.mName)
-                    putExtra(BaseStrings.PATH_WORD, toJson(chapter.mLines))
-                    putExtra(AnimeActivity.ANIME_CHAPTER_UUID, chapter.mUUID)
+                    putExtra(BaseStrings.PATH_WORD, mPathword)
+                    putExtra(AnimeActivity.ANIME_CHAPTER_UUIDS, toJson(mAdapter.getUUIDS()))
+                    putExtra(AnimeActivity.ANIME_CHAPTER_UUID_POSITION, pos)
                 }
             }
         }

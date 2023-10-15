@@ -18,6 +18,8 @@ import kotlin.random.Random
 
 class AnimeRepository(val service: AnimeService) {
 
+    fun getVideo(pathword: String, chapterUUID: String) = service.getVideo(pathword, chapterUUID)
+
     fun getAnimeChapterList(pathword: String) = service.getAnimeChapterList(pathword).flowOn(Dispatchers.IO)
 
     fun getAnimeInfoPage(pathword: String) = service.getAnimeInfo(pathword).flowOn(Dispatchers.IO)

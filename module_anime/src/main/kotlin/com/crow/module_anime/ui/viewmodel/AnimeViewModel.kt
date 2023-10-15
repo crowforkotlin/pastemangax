@@ -87,6 +87,13 @@ class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIn
             is AnimeIntent.ChapterListIntent -> onChapterListIntent(intent)
             is AnimeIntent.RegIntent -> onRegIntent(intent)
             is AnimeIntent.LoginIntent -> onLoginIntent(intent)
+            is AnimeIntent.AnimeVideoIntent -> onAnimeVideoIntent(intent)
+        }
+    }
+
+    private fun onAnimeVideoIntent(intent: AnimeIntent.AnimeVideoIntent) {
+        flowResult(intent, repository.getVideo(intent.pathword, intent.chapterUUID)) { value ->
+            intent.copy(video = value.mResults)
         }
     }
 

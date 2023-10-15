@@ -40,6 +40,7 @@
 
         <activity
             android:name="com.crow.module_anime.ui.activity.AnimeActivity"
+            android:screenOrientation="landscape"
             android:exported="true"
             android:theme="@style/Anime.Theme.HotManga" />
 

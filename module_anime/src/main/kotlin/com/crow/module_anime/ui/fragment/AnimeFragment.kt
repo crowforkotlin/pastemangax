@@ -24,7 +24,6 @@ import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.logger
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2sp
@@ -233,15 +232,14 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     override fun initObserver(saveInstanceState: Bundle?) {
 
         mVM.onOutput { intent ->
-
-            logger("State : ${intent.mViewState} \t $intent")
-
             when(intent) {
                 is AnimeIntent.DiscoverPageIntent -> {
                     intent.mViewState
                         .doOnSuccess {
                             if (mBinding.refresh.isRefreshing) mBinding.refresh.finishRefresh()
-                            if(!mVM.mIsLogin) mVM.mAccount?.apply { mVM.input(AnimeIntent.LoginIntent(mUsername, mPassword)) }
+                            if(!mVM.mIsLogin) {
+                                mVM.mAccount?.apply { mVM.input(AnimeIntent.LoginIntent(mUsername, mPassword)) }
+                            }
                         }
                         .doOnError { _, _ ->
                             if (mAdapter.itemCount == 0) {
@@ -280,15 +278,18 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                         .doOnSuccess { if (mTipDialog?.isShowing == false) mIsCancelTokenDialog = false }
                         .doOnResult {
                             if (BaseUserConfig.HOTMANGA_TOKEN.isNotEmpty()) {
-                                mTipDialog?.cancel()
+                                mTipDialog?.let{  dialog ->
+                                    dialog.cancel()
+                                    toast(getString(R.string.anime_token_ok))
+                                }
                                 mTipDialog = null
-                                toast(getString(R.string.anime_token_ok))
                             }
                         }
                 }
             }
         }
     }
+
 
     /**
      * ● 请求失败重试

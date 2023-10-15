@@ -252,9 +252,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/base_dp10"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:spanCount="3"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     tools:listitem="@layout/anime_fragment_chapter_rv" />
-<!--                    tools:listitem="@layout/book_fragment_chapter_rv"-->
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
