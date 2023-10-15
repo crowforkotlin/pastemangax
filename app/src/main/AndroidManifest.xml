@@ -37,12 +37,13 @@
             android:name="com.crow.module_book.ui.activity.ComicActivity"
             android:exported="true"
             android:theme="@style/Book.Theme.CopyManga" />
-        <!--
-                <activity
-                    android:name="com.crow.module_anime.ui.activity.AnimeActivity"
-                    android:exported="true"
-                    android:theme="@style/Anime.Theme.CopyManga" />
-        -->
+
+        <activity
+            android:name="com.crow.module_anime.ui.activity.AnimeActivity"
+            android:screenOrientation="landscape"
+            android:exported="true"
+            android:theme="@style/Anime.Theme.HotManga" />
+
         <!--
         <activity
             android:name=".ui.activity.TestActivity"
@@ -55,6 +56,7 @@
             </intent-filter>
         </activity>
         -->
+
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="true"

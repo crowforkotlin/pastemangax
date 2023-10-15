@@ -3,6 +3,7 @@ package com.crow.module_anime.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.get
 import androidx.core.view.isEmpty
 import androidx.core.view.isGone
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.app.app
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
+import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
@@ -35,6 +37,7 @@ import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_anime.R
 import com.crow.module_anime.databinding.AnimeDiscoverMoreLayoutBinding
 import com.crow.module_anime.databinding.AnimeFragmentBinding
+import com.crow.module_anime.databinding.AnimeTipsTokenLayoutBinding
 import com.crow.module_anime.model.AnimeIntent
 import com.crow.module_anime.ui.adapter.AnimeDiscoverPageAdapter
 import com.crow.module_anime.ui.viewmodel.AnimeViewModel
@@ -92,6 +95,20 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     private var  mSubtitle: String by Delegates.observable(app.getString(baseR.string.base_all)) { _, _, new ->
         mBinding.topbar.subtitle = new
     }
+
+    /**
+     * ● 提示窗口VB
+     *
+     * ● 2023-10-15 02:22:36 周日 上午
+     */
+    private var mTipDialog: AlertDialog? = null
+
+    /**
+     * ● 是否取消token提示窗口
+     *
+     * ● 2023-10-15 02:48:32 周日 上午
+     */
+    private var mIsCancelTokenDialog: Boolean = false
 
     /**
      * ● 获取VB
@@ -207,13 +224,23 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
         }
     }
 
+    /**
+     * ● 初始化观察者
+     *
+     * ● 2023-10-14 23:49:23 周六 下午
+     */
     override fun initObserver(saveInstanceState: Bundle?) {
 
         mVM.onOutput { intent ->
             when(intent) {
                 is AnimeIntent.DiscoverPageIntent -> {
                     intent.mViewState
-                        .doOnSuccess { if (mBinding.refresh.isRefreshing) mBinding.refresh.finishRefresh() }
+                        .doOnSuccess {
+                            if (mBinding.refresh.isRefreshing) mBinding.refresh.finishRefresh()
+                            if(!mVM.mIsLogin) {
+                                mVM.mAccount?.apply { mVM.input(AnimeIntent.LoginIntent(mUsername, mPassword)) }
+                            }
+                        }
                         .doOnError { _, _ ->
                             if (mAdapter.itemCount == 0) {
 
@@ -233,6 +260,50 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                                 mBinding.list.animateFadeIn()
                             }
                         }
+                }
+                is AnimeIntent.RegIntent -> {
+                    intent.mViewState
+                        .doOnError { _, _ -> onRetryError() }
+                        .doOnSuccess { if (mTipDialog?.isShowing == false) mIsCancelTokenDialog = false }
+                        .doOnResult {
+                            intent.failureResp?.let { onRetryError() }
+                            if (intent.user != null) {
+                                mVM.input(AnimeIntent.LoginIntent(intent.reg.mUsername, intent.reg.mPassword))
+                            }
+                        }
+                }
+                is AnimeIntent.LoginIntent -> {
+                    intent.mViewState
+                        .doOnError { _, _ -> onRetryError() }
+                        .doOnSuccess { if (mTipDialog?.isShowing == false) mIsCancelTokenDialog = false }
+                        .doOnResult {
+                            if (BaseUserConfig.HOTMANGA_TOKEN.isNotEmpty()) {
+                                mTipDialog?.let{  dialog ->
+                                    dialog.cancel()
+                                    toast(getString(R.string.anime_token_ok))
+                                }
+                                mTipDialog = null
+                            }
+                        }
+                }
+            }
+        }
+    }
+
+
+    /**
+     * ● 请求失败重试
+     *
+     * ● 2023-10-15 02:55:35 周日 上午
+     */
+    private fun onRetryError() {
+        if (mTipDialog?.isShowing == true) {
+            launchDelay(BaseEvent.BASE_FLAG_TIME_1000) {
+                if (mTipDialog?.isShowing == true) {
+                    mVM.input(AnimeIntent.RegIntent(mVM.genReg()))
+                    toast(getString(R.string.anime_token_retrying))
+                } else {
+                    toast(getString(R.string.anime_token_retry_tips))
                 }
             }
         }
@@ -324,6 +395,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
      * ● 2023-10-11 23:13:38 周三 下午
      */
     private fun navigateAnimeInfoPage(pathword: String, name: String) {
+
+        if(checkAccountState()) return
+
         val tag = Fragments.AnimeInfo.name
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
@@ -335,5 +409,30 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
             tag = tag,
             backStackName = tag
         )
+    }
+
+    /**
+     * ● 检查番剧账户状态
+     *
+     * ● 2023-10-14 23:50:46 周六 下午
+     */
+    private fun checkAccountState(): Boolean {
+        val tokenEmpty = BaseUserConfig.HOTMANGA_TOKEN.isEmpty()
+        if (tokenEmpty) {
+            if (mTipDialog == null) {
+                val binding= AnimeTipsTokenLayoutBinding.inflate(layoutInflater)
+                mTipDialog = mContext.newMaterialDialog { dialog ->
+                    dialog.setView(binding.root)
+                    dialog.setCancelable(false)
+                }
+                binding.close.doOnClickInterval {
+                    mIsCancelTokenDialog = true
+                    mTipDialog?.cancel()
+                }
+            }
+            else { mTipDialog?.show() }
+            if (!mIsCancelTokenDialog) { mVM.input(AnimeIntent.RegIntent(mVM.genReg())) }
+        }
+        return tokenEmpty
     }
 }

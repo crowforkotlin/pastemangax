@@ -1,5 +1,8 @@
 <resources>
 
+    <string name="anime_token_ok">初始化番剧用户成功！</string>
+    <string name="anime_token_retry_tips">初始化失败！请确保网络已连接！</string>
+    <string name="anime_token_retrying">初始化失败！正在重新尝试！请确保网络已连接！</string>
     <string name="anime_name">番剧</string>
     <string name="anime_search">搜索番剧</string>
     <string name="anime_year"><b>年份</b></string>
@@ -10,4 +13,5 @@
     <string name="anime_new_chapter">最新一章：%s</string>
     <string name="anime_play_no_line">没有可选择的线路！</string>
     <string name="anime_token_error">您需要登录番剧特定用户才可进行预览！</string>
+    <string name="anime_token_tips">正在为您的应用程序初始化番剧用户数据，这可能需要一些时间。请您耐心等待，这个过程只需要进行一次。\n\n① : 如果您清除应用数据会导致下次需要重新初始化番剧用户数据\n\n② : 在时候可能需要重新初始化番剧用户数据，请耐心配合！</string>
 </resources>

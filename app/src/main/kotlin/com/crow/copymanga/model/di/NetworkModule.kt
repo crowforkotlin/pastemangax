@@ -137,10 +137,11 @@ val networkModule = module {
                 chain.proceed(chain.request().newBuilder()
                     .addHeader("User-Agent", "Kotlin/1.9.10 (kotlin:io)")
                     .addHeader("Platform", "1")
-                    .addHeader("Authorization","Token ${BaseUserConfig.CURRENT_USER_TOKEN}")
+                    .addHeader("Authorization","Token ${BaseUserConfig.HOTMANGA_TOKEN}")
                     .addHeader("region", BaseUserConfig.CURRENT_ROUTE)
                     .build()
                 )
+
             })
             .sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())
             .hostnameVerifier(SSLSocketClient.hostnameVerifier)

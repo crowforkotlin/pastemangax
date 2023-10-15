@@ -58,9 +58,12 @@ object BaseStrings {
 
         const val HotManga = "https://www.relamanhua.com"
 
+        const val HotManga_Reg = "/api/v3/register"
+        const val HotManga_Login = "/api/v3/login"
         const val HotManga_AnimePage = "/api/v3/cartoons?free_type=1"
         const val HotManga_AnimeInfoPage = "/api/v3/cartoon2/{$PATH_WORD}"
         const val HotManga_AnimeChapterList = "/api/v3/cartoon/{$PATH_WORD}/chapters2"
+        const val HotManga_AnimeVideo = "/api/v3/cartoon/{$PATH_WORD}/chapter/{chapter_uuid}?platform=1"
 
     }
 
