@@ -70,23 +70,23 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
     inner class BodyViewHolder(binding: BookActivityComicRvBinding) : BaseGlideLoadingViewHolder<BookActivityComicRvBinding>(binding) {
         fun onBind(position: Int) {
             val item = getItem(position) as Content
-            if(binding.root.layoutParams.height == FrameLayout.LayoutParams.WRAP_CONTENT) binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
-            binding.comicRvLoading.isVisible = true
-            binding.comicRvProgressText.isVisible = true
-            binding.comicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
-            binding.comicRvRetry.isGone = true
-            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
-            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
-                binding.comicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
-            }
-
-
             val imageUrl = when {
                 item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${BaseUserConfig.RESOLUTION}x.")
                 item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${BaseUserConfig.RESOLUTION}x.")
                 item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${BaseUserConfig.RESOLUTION}x.")
                 else -> item.mImageUrl
             }
+            if(binding.root.layoutParams.height == FrameLayout.LayoutParams.WRAP_CONTENT) binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
+            binding.comicRvLoading.isVisible = true
+            binding.comicRvProgressText.isVisible = true
+            binding.comicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
+            binding.comicRvRetry.isGone = true
+            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ ->
+                binding.comicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+            }
+
+
             Glide.with(itemView.context)
                 .load(imageUrl)
                 .addListener(mAppGlideProgressFactory?.getRequestListener(
