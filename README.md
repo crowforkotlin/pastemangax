@@ -8,10 +8,10 @@
 
 [![Join Our QQ Group 闲聊 OR 技术交流](https://img.shields.io/badge/QQ%20Group-749015160-blue?style=for-the-badge&logo=tencent-qq&logoColor=white)](https://jq.qq.com/?_wv=1027&k=XIMjBxZW)
 
-[![Github All Releases](https://img.shields.io/github/downloads/crowforkotlin/CopyMangaX/total.svg)]()
 <p>
-    <img alt="ViewCount" src="https://views.whatilearened.today/views/github/crowforkotlin/CopyMangaX.svg">
-    <a href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.githubusercontent.com/crowforkotlin/a42aa7c271261ae05286bb17109da3b3/raw/clone.json&logo=github'></a>
+<img alt="Download" src="https://img.shields.io/github/downloads/crowforkotlin/CopyMangaX/total.svg"/>
+<img alt="ViewCount" src="https://views.whatilearened.today/views/github/crowforkotlin/CopyMangaX.svg"/>
+<a href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.githubusercontent.com/crowforkotlin/a42aa7c271261ae05286bb17109da3b3/raw/clone.json&logo=github'></a>
 </p>
 
 - ### **🔶前言**
