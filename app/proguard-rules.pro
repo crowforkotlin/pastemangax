@@ -13,6 +13,8 @@
 -keepclassmembers  class com.crow.module_main.model.resp.** { *; }
 -keepclassmembers  class com.crow.module_user.model.resp.** { *; }
 -keepclassmembers  class com.crow.module_anime.model.resp.** { *; }
+-keepclassmembers  class com.crow.module_anime.model.entity.** { *; }
+-keepclassmembers  class com.crow.module_anime.model.req.** { *; }
 -keepclassmembers class androidx.appcompat.widget.Toolbar {
     private android.widget.TextView mSubtitleTextView;
  }

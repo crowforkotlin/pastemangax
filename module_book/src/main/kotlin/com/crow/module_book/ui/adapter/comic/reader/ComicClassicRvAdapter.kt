@@ -8,6 +8,7 @@ import androidx.annotation.IntRange
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -70,57 +71,56 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
     inner class BodyViewHolder(binding: BookActivityComicRvBinding) : BaseGlideLoadingViewHolder<BookActivityComicRvBinding>(binding) {
         fun onBind(position: Int) {
             val item = getItem(position) as Content
-            if(binding.root.layoutParams.height == FrameLayout.LayoutParams.WRAP_CONTENT) binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
-            binding.comicRvLoading.isVisible = true
-            binding.comicRvProgressText.isVisible = true
-            binding.comicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
-            binding.comicRvRetry.isGone = true
-            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
-            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
-                binding.comicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
-            }
-
-
             val imageUrl = when {
                 item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${BaseUserConfig.RESOLUTION}x.")
                 item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${BaseUserConfig.RESOLUTION}x.")
                 item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${BaseUserConfig.RESOLUTION}x.")
                 else -> item.mImageUrl
             }
+
+
+            binding.loading.isVisible = true
+            binding.loadingText.isVisible = true
+            binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
+            binding.retry.isGone = true
+            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage) }
+            itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.MATCH_PARENT }
             Glide.with(itemView.context)
                 .load(imageUrl)
-                .addListener(mAppGlideProgressFactory?.getRequestListener(
+                .addListener(
+                    mAppGlideProgressFactory?.getRequestListener(
                         failure = {
-                            binding.comicRvRetry.alpha = 1f
-                            binding.comicRvRetry.isVisible = true
-                            binding.comicRvLoading.isInvisible = true
-                            binding.comicRvProgressText.isInvisible = true
-                            binding.comicRvRetry.doOnClickInterval(false) {
-                                binding.comicRvRetry.animateFadeOut().withEndAction {
+                            binding.retry.alpha = 1f
+                            binding.retry.isVisible = true
+                            binding.loading.isInvisible = true
+                            binding.loadingText.isInvisible = true
+                            binding.retry.doOnClickInterval(false) {
+                                binding.retry.animateFadeOut().withEndAction {
                                     onBind(position)
                                 }
                             }
                             false
                         },
                         ready = { _, _ ->
-                            binding.root.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
+                            itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
                             false
                          }
                     )
                 )
                 .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                     val transition = if (dataSource == DataSource.REMOTE) {
-                        binding.comicRvLoading.isInvisible = true
-                        binding.comicRvProgressText.isInvisible = true
+                        binding.loading.isInvisible = true
+                        binding.loadingText.isInvisible = true
                         DrawableCrossFadeTransition(300, true)
                     } else {
-                        binding.comicRvLoading.isInvisible = true
-                        binding.comicRvProgressText.isInvisible = true
+                        binding.loading.isInvisible = true
+                        binding.loadingText.isInvisible = true
                         NoTransition()
                     }
                     transition
                 })
-                .into(binding.comicRvImageView)
+                .into(binding.image)
         }
     }
 
@@ -164,8 +164,8 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
     override fun onViewRecycled(vh: RecyclerView.ViewHolder) {
         super.onViewRecycled(vh)
         when(vh) {
-            is BodyViewHolder -> { vh.binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT }
-            is IntentViewHolder -> { vh.binding.root.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT }
+            is BodyViewHolder -> { vh.itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = FrameLayout.LayoutParams.MATCH_PARENT } }
+            is IntentViewHolder -> { vh.itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = FrameLayout.LayoutParams.WRAP_CONTENT } }
         }
     }
 

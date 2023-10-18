@@ -69,17 +69,14 @@ val networkModule = module {
                 val appGlideProgressFactory = AppGlideProgressFactory.getGlideProgressFactory(request.url.toString())
                 if (appGlideProgressFactory == null) response
                 else {
-                    response.newBuilder().body(response.body?.let { AppGlideProgressResponseBody(request.url.toString(), appGlideProgressFactory.mOnProgressListener, it) }).build()
+                    var body = response.body
+                    body = if (body != null) AppGlideProgressResponseBody(request.url.toString(), appGlideProgressFactory.mOnProgressListener, body) else body
+                    response.newBuilder().body(body).build()
                 }
             }
             sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())
             hostnameVerifier(SSLSocketClient.hostnameVerifier)
-            pingInterval(10, TimeUnit.SECONDS)
-            connectTimeout(15, TimeUnit.SECONDS)
-            callTimeout(15, TimeUnit.SECONDS)
-            readTimeout(15, TimeUnit.SECONDS)
-            writeTimeout(15, TimeUnit.SECONDS)
-            retryOnConnectionFailure(false)
+            retryOnConnectionFailure(true)
         }.build()
     }
 
@@ -133,7 +130,6 @@ val networkModule = module {
 
             // 动态添加请求头
             .addInterceptor(Interceptor { chain: Interceptor.Chain ->
-
                 chain.proceed(chain.request().newBuilder()
                     .addHeader("User-Agent", "Kotlin/1.9.10 (kotlin:io)")
                     .addHeader("Platform", "1")
@@ -141,7 +137,6 @@ val networkModule = module {
                     .addHeader("region", BaseUserConfig.CURRENT_ROUTE)
                     .build()
                 )
-
             })
             .sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())
             .hostnameVerifier(SSLSocketClient.hostnameVerifier)
