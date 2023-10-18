@@ -63,26 +63,26 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         fun onBind(item: Content) {
 
-            binding.comicRvLoading.isVisible = true
-            binding.comicRvProgressText.isVisible = true
-            binding.comicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
-            binding.comicRvRetry.isVisible = false
+            binding.loading.isVisible = true
+            binding.loadingText.isVisible = true
+            binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
+            binding.retry.isVisible = false
             mAppGlideProgressFactory?.doRemoveListener()?.doClean()
             mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl!!) { _, _, percentage, _, _ ->
-                binding.comicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+                binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage)
             }
 
             Glide.with(itemView.context)
                 .load(item.mImageUrl)
                 .addListener(mAppGlideProgressFactory?.getRequestListener({
                     binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
-                    binding.comicRvRetry.animateFadeIn()
-                    binding.comicRvLoading.animateFadeOut()
-                    binding.comicRvProgressText.animateFadeOut()
-                    binding.comicRvRetry.doOnClickInterval(false) {
-                        binding.comicRvRetry.animateFadeOut()
-                        binding.comicRvLoading.animateFadeIn()
-                        binding.comicRvProgressText.animateFadeIn()
+                    binding.retry.animateFadeIn()
+                    binding.loading.animateFadeOut()
+                    binding.loadingText.animateFadeOut()
+                    binding.retry.doOnClickInterval(false) {
+                        binding.retry.animateFadeOut()
+                        binding.loading.animateFadeIn()
+                        binding.loadingText.animateFadeIn()
                         onBind(item)
                     }
                     false
@@ -92,18 +92,18 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 }))
                 .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                     val transition = if (dataSource == DataSource.REMOTE) {
-                        binding.comicRvLoading.isInvisible = true
-                        binding.comicRvProgressText.isInvisible = true
+                        binding.loading.isInvisible = true
+                        binding.loadingText.isInvisible = true
 
                         DrawableCrossFadeTransition(300, true)
                     } else {
-                        binding.comicRvLoading.isInvisible = true
-                        binding.comicRvProgressText.isInvisible = true
+                        binding.loading.isInvisible = true
+                        binding.loadingText.isInvisible = true
                         NoTransition()
                     }
                     transition
                 })
-                .into(binding.comicRvImageView)
+                .into(binding.image)
         }
     }
 
