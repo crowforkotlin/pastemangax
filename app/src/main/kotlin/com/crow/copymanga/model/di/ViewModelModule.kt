@@ -9,8 +9,8 @@ import com.crow.module_home.ui.viewmodel.HomeViewModel
 import com.crow.module_main.ui.viewmodel.HistoryViewModel
 import com.crow.module_main.ui.viewmodel.ImageViewModel
 import com.crow.module_main.ui.viewmodel.MainViewModel
-import com.crow.module_user.ui.viewmodel.UserInfoViewModel
-import com.crow.module_user.ui.viewmodel.UserViewModel
+import com.crow.module_mine.ui.viewmodel.MineInfoViewModel
+import com.crow.module_mine.ui.viewmodel.MineViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -30,9 +30,9 @@ val viewModelModule = module {
     viewModel { MainViewModel(get()) }
     viewModel { DiscoverViewModel(get()) }
     viewModel { BookViewModel(get()) }
-    viewModel { UserViewModel(get()) }
+    viewModel { MineViewModel(get()) }
     viewModel { ComicViewModel(get()) }
-    viewModel { UserInfoViewModel() }
+    viewModel { MineInfoViewModel() }
     viewModel { ImageViewModel() }
     viewModel { HistoryViewModel(get()) }
     viewModel { AnimeViewModel(get()) }

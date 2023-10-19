@@ -6,7 +6,7 @@ include(":module_main")
 include(":module_discover")
 include(":module_bookshelf")
 include(":module_book")
-include(":module_user")
+include(":module_mine")
 
 dependencyResolutionManagement {
 
