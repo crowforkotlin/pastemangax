@@ -11,7 +11,7 @@
 <p>
 <img alt="Download" src="https://img.shields.io/github/downloads/crowforkotlin/CopyMangaX/total.svg"/>
 <img alt="ViewCount" src="https://views.whatilearened.today/views/github/crowforkotlin/CopyMangaX.svg"/>
-<a href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.githubusercontent.com/crowforkotlin/a42aa7c271261ae05286bb17109da3b3/raw/clone.json&logo=github'></a>
+<a href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.githubusercontent.com/crowforkotlin/c3900c9ea4958acfa71973b8ea6bc91a/raw/clone.json&logo=github'></a>
 </p>
 
 - ### **🔶前言**
