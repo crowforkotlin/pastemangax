@@ -10,8 +10,8 @@ import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncDecode
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
-import com.crow.module_anime.model.AnimeIntent
 import com.crow.module_anime.model.entity.AccountEntity
+import com.crow.module_anime.model.intent.AnimeIntent
 import com.crow.module_anime.model.req.RegReq
 import com.crow.module_anime.model.resp.discover.DiscoverPageResult
 import com.crow.module_anime.model.resp.login.UserLoginResp

@@ -22,7 +22,7 @@ object AppConfigs {
 
     const val module_book_namespace = "com.crow.module_book"
 
-    const val module_user_namespace = "com.crow.module_user"
+    const val module_mine_namespace = "com.crow.module_mine"
 
     const val module_anime_namespace = "com.crow.module_anime"
 
@@ -50,8 +50,8 @@ object AppConfigs {
     // novel 资源前缀
     const val book_resource_prefix = "book"
 
-    // module_user资源前缀
-    const val user_resource_prefix = "user"
+    // module_mine资源前缀
+    const val mine_resource_prefix = "mine"
 
     // Anime资源前缀
     const val anime_resource_prefix = "anime"

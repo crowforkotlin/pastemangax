@@ -7,7 +7,7 @@ import com.crow.module_discover.network.DiscoverService
 import com.crow.module_home.network.HomeService
 import com.crow.module_main.network.AppService
 import com.crow.module_main.network.MainService
-import com.crow.module_user.network.UserService
+import com.crow.module_mine.network.MineService
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -28,7 +28,7 @@ val servicesModule = module {
     single { get<Retrofit>(named_CopyMangaX).create(MainService::class.java) }
     single { get<Retrofit>(named_CopyMangaX).create(HomeService::class.java) }
     single { get<Retrofit>(named_CopyMangaX).create(ComicService::class.java) }
-    single { get<Retrofit>(named_CopyMangaX).create(UserService::class.java) }
+    single { get<Retrofit>(named_CopyMangaX).create(MineService::class.java) }
     single { get<Retrofit>(named_CopyMangaX).create(BookShelfService::class.java) }
     single { get<Retrofit>(named_CopyMangaX).create(DiscoverService::class.java) }
     single { get<Retrofit>(named_HotMangaX).create(AnimeService::class.java) }

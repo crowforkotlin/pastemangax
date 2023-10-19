@@ -11,7 +11,7 @@
 -keepclassmembers  class com.crow.module_home.model.** { *; }
 -keepclassmembers  class com.crow.module_main.model.entity.** { *; }
 -keepclassmembers  class com.crow.module_main.model.resp.** { *; }
--keepclassmembers  class com.crow.module_user.model.resp.** { *; }
+-keepclassmembers  class com.crow.module_mine.model.resp.** { *; }
 -keepclassmembers  class com.crow.module_anime.model.resp.** { *; }
 -keepclassmembers  class com.crow.module_anime.model.entity.** { *; }
 -keepclassmembers  class com.crow.module_anime.model.req.** { *; }

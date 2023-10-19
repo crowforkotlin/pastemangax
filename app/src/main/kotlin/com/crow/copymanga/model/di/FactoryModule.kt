@@ -7,7 +7,7 @@ import com.crow.module_discover.network.DiscoverRepository
 import com.crow.module_home.network.HomeRepository
 import com.crow.module_main.network.AppRepository
 import com.crow.module_main.network.MainRepository
-import com.crow.module_user.network.UserRepository
+import com.crow.module_mine.network.MineRepository
 import org.koin.dsl.module
 
 /*************************
@@ -24,7 +24,7 @@ val factoryModule = module {
     factory { AppRepository(get()) }
     factory { MainRepository(get()) }
     factory { BookRepository(get()) }
-    factory { UserRepository(get()) }
+    factory { MineRepository(get()) }
     factory { BookShelfRepository(get()) }
     factory { DiscoverRepository(get()) }
      factory { AnimeRepository(get()) }

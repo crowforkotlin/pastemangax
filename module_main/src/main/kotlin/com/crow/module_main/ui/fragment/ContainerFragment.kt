@@ -51,7 +51,7 @@ import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
 import com.crow.module_main.ui.view.DepthPageTransformer
 import com.crow.module_main.ui.viewmodel.MainViewModel
-import com.crow.module_user.ui.viewmodel.UserViewModel
+import com.crow.module_mine.ui.viewmodel.MineViewModel
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.qualifier.named
@@ -79,7 +79,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private val mContainerVM by sharedViewModel<MainViewModel>()
 
     /** ● （Activity级别）用户VM */
-    private val mUserVM by sharedViewModel<UserViewModel>()
+    private val mUserVM by sharedViewModel<MineViewModel>()
 
     /** ● 碎片集 */
     private val mFragmentList by lazy { mutableListOf<Fragment>(NewHomeFragment(), DiscoverComicFragment(), BookshelfFragment(), AnimeFragment()) }

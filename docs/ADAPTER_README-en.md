@@ -2,6 +2,8 @@
 
 <br/>
 
+- ### ⚠️This does not apply to long images, such as those that are wide x high Y1000+ or even larger
+- 
 - ### 🟠**Why do you need to set the default state in advance in on Bind View Holder?**
     - 🟢**ReferToThePicture**
     - ![微信图片_20230509231616](https://github.com/CrowForKotlin/CopyManga_Crow/assets/60876546/8eeff185-252d-4f5f-9c76-02b380ba6cdd)

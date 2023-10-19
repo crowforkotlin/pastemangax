@@ -23,7 +23,7 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_anime.databinding.AnimeActivityBinding
-import com.crow.module_anime.model.AnimeIntent
+import com.crow.module_anime.model.intent.AnimeIntent
 import com.crow.module_anime.model.resp.video.AnimeVideoResp
 import com.crow.module_anime.ui.helper.GestureHelper
 import com.crow.module_anime.ui.viewmodel.AnimeViewModel

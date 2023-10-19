@@ -30,7 +30,7 @@
             <option value="$PROJECT_DIR$/module_discover" />
             <option value="$PROJECT_DIR$/module_home" />
             <option value="$PROJECT_DIR$/module_main" />
-            <option value="$PROJECT_DIR$/module_user" />
+            <option value="$PROJECT_DIR$/module_mine" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

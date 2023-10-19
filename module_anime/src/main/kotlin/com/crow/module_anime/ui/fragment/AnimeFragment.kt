@@ -38,7 +38,7 @@ import com.crow.module_anime.R
 import com.crow.module_anime.databinding.AnimeDiscoverMoreLayoutBinding
 import com.crow.module_anime.databinding.AnimeFragmentBinding
 import com.crow.module_anime.databinding.AnimeTipsTokenLayoutBinding
-import com.crow.module_anime.model.AnimeIntent
+import com.crow.module_anime.model.intent.AnimeIntent
 import com.crow.module_anime.ui.adapter.AnimeDiscoverPageAdapter
 import com.crow.module_anime.ui.viewmodel.AnimeViewModel
 import com.google.android.material.chip.Chip

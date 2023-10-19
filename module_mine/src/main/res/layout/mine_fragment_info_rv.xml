@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+	<TextView
+		android:id="@+id/user_info_rv_text"
+		style="@style/Widget.Material3.Button.IconButton"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="@dimen/base_dp10"
+		android:drawablePadding="@dimen/base_dp10"
+		android:gravity="start|center_vertical"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@+id/user_info_rv_edit"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:drawableStartCompat="@drawable/user_ic_exit_24dp"
+		tools:text="@string/mine_gender" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/user_info_rv_edit"
+		style="@style/Widget.Material3.Button.IconButton"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:gravity="start"
+		android:visibility="gone"
+		app:icon="@drawable/base_ic_edit_24dp"
+		app:iconGravity="end"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="@+id/user_info_rv_text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

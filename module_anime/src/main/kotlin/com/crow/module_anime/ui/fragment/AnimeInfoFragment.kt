@@ -38,7 +38,7 @@ import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_anime.R
 import com.crow.module_anime.databinding.AnimeFragmentInfoBinding
-import com.crow.module_anime.model.AnimeIntent
+import com.crow.module_anime.model.intent.AnimeIntent
 import com.crow.module_anime.model.resp.chapter.AnimeChapterResp
 import com.crow.module_anime.model.resp.chapter.AnimeChapterResult
 import com.crow.module_anime.model.resp.info.AnimeInfoResp

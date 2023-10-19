@@ -2,6 +2,8 @@
 
 <br/>
 
+- ### ⚠️This does not apply to long images, such as those that are wide x high Y1000+ or even larger
+
 - ### 🟠为什么在onBindViewHolder中需要先提前设置默认状态？
     - 🟢**参考如图**
     - ![微信图片_20230509231616](https://github.com/CrowForKotlin/CopyManga_Crow/assets/60876546/8eeff185-252d-4f5f-9c76-02b380ba6cdd)
