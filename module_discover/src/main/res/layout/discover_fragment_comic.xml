@@ -40,7 +40,7 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="3"
-                tools:itemCount="12"
+            tools:itemCount="12"
             tools:listitem="@layout/discover_fragment_rv" />
 
             <TextView

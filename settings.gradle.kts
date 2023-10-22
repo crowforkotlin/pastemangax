@@ -11,9 +11,8 @@ include(":module_mine")
 dependencyResolutionManagement {
 
     versionCatalogs {
-        create("compose") {
-            from(files("gradle/compose.versions.toml"))
-        }
+        create("compose") { from(files("gradle/compose.versions.toml")) }
+        create("app") { from(files("gradle/app.versions.toml") )}
     }
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
