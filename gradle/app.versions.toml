@@ -95,6 +95,41 @@ androidx-room-paging-rxjava2 = "2.6.0"
 androidx-room-paging-rxjava3 = "2.6.0"
 androidx-room-paging-guava  = "2.6.0"
 
+androidx-constraintlayout = "2.1.4"
+androidx-constraintlayout-core = "2.1.4"
+androidx-constraintlayout-solver = "2.1.4"
+
+androidx-material = "1.11.0-beta01"
+
+androidx-palette = "1.0.0"
+androidx-palette-ktx = "1.0.0"
+
+androidx-datastore = "1.1.0-alpha05"
+androidx-datastore-rxjava2 = "1.1.0-alpha05"
+androidx-datastore-rxjava3 = "1.1.0-alpha05"
+androidx-datastore-android = "1.1.0-alpha05"
+androidx-datastore-core = "1.1.0-alpha05"
+androidx-datastore-jvm = "1.1.0-alpha05"
+androidx-datastore-preferences = "1.1.0-alpha05"
+androidx-datastore-preferences-android = "1.1.0-alpha05"
+androidx-datastore-preferences-core = "1.1.0-alpha05"
+androidx-datastore-preferences-core-jvm = "1.1.0-alpha05"
+androidx-datastore-preferences-rxjava2 = "1.1.0-alpha05"
+androidx-datastore-preferences-rxjava3 = "1.1.0-alpha05"
+androidx-datastore-preferences-core-okio = "1.1.0-alpha05"
+androidx-datastore-preferences-core-okio-jvm = "1.1.0-alpha05"
+
+androidx-preference = "1.2.1"
+androidx-preference-ktx = "1.2.1"
+
+androidx-work-runtime = "2.8.1"
+androidx-work-runtime-ktx = "2.8.1"
+androidx-work-testing = "2.8.1"
+androidx-work-gcm = "2.8.1"
+androidx-work-multiprocess = "2.8.1"
+androidx-work-rxjava2 = "2.8.1"
+androidx-work-rxjava3 = "2.8.1"
+
 [libraries]
 # MultiDex : [https://developer.android.google.cn/studio/build/multidex?hl=zh-cn]
 androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
@@ -144,8 +179,7 @@ androidx-test-espresso-idling-resource = { group = "androidx.test.espresso", nam
 androidx-test-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "androidx-test-espresso-intents" }
 androidx-test-espresso-web = { group = "androidx.test.espresso", name = "espresso-web", version.ref = "androidx-test-espresso-web" }
 
-# 生命周期感知型组件可执行操作来响应另一个组件（如 activity 和 fragment）的生命周期状态的变化。
-# 这些组件有助于您写出更有条理且往往更精简的代码，这样的代码更易于维护。
+# 生命周期感知型组件可执行操作来响应另一个组件（如 activity 和 fragment）的生命周期状态的变化。这些组件有助于您写出更有条理且往往更精简的代码，这样的代码更易于维护。
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "androidx-lifecycle-common" }
 androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "androidx-lifecycle-common-java8" }
 androidx-lifecycle-common-compiler = { module = "androidx.lifecycle:lifecycle-compiler", version.ref = "androidx-lifecycle-common-compiler" }
@@ -205,20 +239,42 @@ androidx-room-paging-rxjava3 =  { module = "androidx.room:room-paging-rxjava3", 
 androidx-room-paging-guava =  { module = "androidx.room:room-paging-guava", version.ref = "androidx-room-paging-guava" }
 
 # 使用“相对定位(约束布局)”灵活地确定控件的位置和大小
-androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
+androidx-constraintlayout-core = { module = "androidx.constraintlayout:constraintlayout-core", version.ref = "androidx-constraintlayout-core" }
+androidx-constraintlayout-solver = { module = "androidx.constraintlayout:constraintlayout-solver", version.ref = "androidx-constraintlayout-solver" }
 
 # Palette 获取颜色可以用于沉浸式
-androidx-palette = "androidx.palette:palette:1.0.0"
+androidx-palette = { module = "androidx.palette:palette", version.ref = "androidx-palette" }
+androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "androidx-palette-ktx" }
 
 # Material Design 界面组件 [https://mvnrepository.com/artifact/com.google.android.material/material]
-android-material = "com.google.android.material:material:1.10.0-alpha06"
-
-# Kotlin Android 注入库 [https://insert-koin.io/]
-android-koin = "io.insert-koin:koin-android:3.2.0"
+androidx-material = { module = "com.google.android.material:material", version.ref = "androidx-material" }
 
 # DataStore 替换 SharedPreference
-androidx-datastore = "androidx.datastore:datastore-preferences:1.0.0"
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "androidx-datastore" }
+androidx-datastore-android = { module = "androidx.datastore:datastore-android", version.ref = "androidx-datastore-android" }
+androidx-datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "androidx-datastore-core" }
+androidx-datastore-jvm = { module = "androidx.datastore:datastore-jvm", version.ref = "androidx-datastore-jvm" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore-preferences" }
+androidx-datastore-preferences-android = { module = "androidx.datastore:datastore-preferences-android", version.ref = "androidx-datastore-preferences-android" }
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "androidx-datastore-preferences-core" }
+androidx-datastore-preferences-core-jvm = { module = "androidx.datastore:datastore-preferences-core-jvm", version.ref = "androidx-datastore-preferences-core-jvm" }
+androidx-datastore-preferences-rxjava2 = { module = "androidx.datastore:datastore-preferences-rxjava2", version.ref = "androidx-datastore-preferences-rxjava2" }
+androidx-datastore-preferences-rxjava3 = { module = "androidx.datastore:datastore-preferences-rxjava3", version.ref = "androidx-datastore-preferences-rxjava3" }
+androidx-datastore-preferences-core-okio = { module = "androidx.datastore:datastore-core-okio", version.ref = "androidx-datastore-preferences-core-okio" }
+androidx-datastore-preferences-core-okio-jvm = { module = "androidx.datastore:datastore-core-okio-jvm", version.ref = "androidx-datastore-preferences-core-okio-jvm" }
+androidx-datastore-rxjava2 = { module = "androidx.datastore:datastore-rxjava2", version.ref = "androidx-datastore-rxjava2" }
+androidx-datastore-rxjava3 = { module = "androidx.datastore:datastore-rxjava3", version.ref = "androidx-datastore-rxjava3" }
 
-# 首选项 JetpackCompose
-androidx-preference = "androidx.preference:preference:${Versions.preference-version}"
-androidx-preference-ktx = "androidx.preference:preference:${Versions.preference-version}"
+# 无需与设备存储空间交互，也不需要管理界面，便能构建交互式设置画面。
+androidx-preference = { module = "androidx.preference:preference", version.ref = "androidx-preference" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "androidx-preference-ktx" }
+
+# 使用 WorkManager API 可以轻松地调度那些必须可靠运行的可延期异步任务。通过这些 API，您可以创建任务并提交给 WorkManager，以便在满足工作约束条件时运行。
+androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "androidx-work-runtime" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work-runtime-ktx" }
+androidx-work-gcm = { module = "androidx.work:work-gcm", version.ref = "androidx-work-gcm" }
+androidx-work-multiprocess = { module = "androidx.work:work-multiprocess", version.ref = "androidx-work-multiprocess" }
+androidx-work-rxjava2 = { module = "androidx.work:work-rxjava2", version.ref = "androidx-work-rxjava2" }
+androidx-work-rxjava3 = { module = "androidx.work:work-rxjava3", version.ref = "androidx-work-rxjava3" }
+androidx-work-testing = { module = "androidx.work:work-testing", version.ref = "androidx-work-testing" }
