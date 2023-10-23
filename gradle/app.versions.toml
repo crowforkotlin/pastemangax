@@ -1,0 +1,224 @@
+[versions]
+agp = "8.1.1"
+kotlin = "1.9.10"
+multidex = "2.0.1"
+ksp = "1.9.10-1.0.13"
+
+androidx-core = "1.12.0"
+androidx-core-animation = "1.0.0-rc01"
+androidx-core-animation-testing = "1.0.0-rc01"
+androidx-core-google-shortcuts = "1.1.0"
+androidx-core-i18n = "1.0.0-alpha01"
+androidx-core-role = "2.2.0"
+androidx-core-telecom = "1.0.0-alpha02"
+androidx-core-splashscreen = "1.0.1"
+androidx-core-performance = "1.0.0-beta02"
+androidx-core-performance-play-services = "1.0.0-beta02"
+androidx-core-performance-testing = "1.0.0-beta02"
+androidx-core-location-altitude = "1.0.0-alpha01"
+androidx-core-remoteviews = "1.0.0"
+androidx-arch-core-common = "2.2.0"
+androidx-arch-core-runtime = "2.2.0"
+androidx-arch-core-testing = "2.2.0"
+
+androidx-appcompat = "1.6.1"
+androidx-appcompat-resources = "1.6.1"
+androidx-activity = "1.8.0"
+
+androidx-test-core = "1.5.0"
+androidx-test-junit = "1.1.5"
+androidx-test-truth = "1.5.0"
+androidx-test-runner = "1.5.2"
+androidx-test-orchestrator = "1.4.2"
+androidx-test-rules = "1.5.0"
+androidx-test-services = "1.4.2"
+androidx-test-monitor = "1.6.1"
+androidx-test-espresso-accessibility = "3.5.1"
+androidx-test-espresso-contrib = "3.5.1"
+androidx-test-espresso-core = "3.5.1"
+androidx-test-espresso-idling-resource = "3.5.1"
+androidx-test-espresso-intents = "3.5.1"
+androidx-test-espresso-web = "3.5.1"
+
+androidx-lifecycle-common = "2.6.20"
+androidx-lifecycle-common-java8 = "2.6.2"
+androidx-lifecycle-common-compiler = "2.6.2"
+androidx-lifecycle-lifecycle-extensions = "2.2.0"
+androidx-lifecycle-livedata = "2.6.2"
+androidx-lifecycle-livedata-core = "2.6.2"
+androidx-lifecycle-livedata-core-ktx = "2.6.2"
+androidx-lifecycle-process = "2.6.2"
+androidx-lifecycle-reactivestreams = "2.6.2"
+androidx-lifecycle-reactivestreams-ktx = "2.6.2"
+androidx-lifecycle-runtime = "2.6.2"
+androidx-lifecycle-runtime-ktx = "2.6.2"
+androidx-lifecycle-runtime-testing = "2.6.2"
+androidx-lifecycle-service = "2.6.2"
+androidx-lifecycle-viewmodel = "2.6.2"
+androidx-lifecycle-viewmodel-ktx = "2.6.2"
+androidx-lifecycle-viewmodel-savedstate = "2.6.2"
+
+androidx-paging-runtime = "3.2.1"
+androidx-paging-runtime-ktx = "3.2.1"
+androidx-paging-common-common = "3.2.1"
+androidx-paging-common-android = "3.2.1"
+androidx-paging-common-linuxx64 = "3.2.1"
+androidx-paging-common-iosarm64 = "3.2.1"
+androidx-paging-common-iossimulatorarm64 = "3.2.1"
+androidx-paging-common-iosx64 = "3.2.1"
+androidx-paging-common-jvm = "3.2.1"
+androidx-paging-common-ktx = "3.2.1"
+androidx-paging-common-macosarm64 = "3.2.1"
+androidx-paging-common-macosx64 = "3.2.1"
+androidx-paging-guava = "3.2.1"
+androidx-paging-rxjava2 = "3.2.1"
+androidx-paging-rxjava2-ktx = "3.2.1"
+androidx-pagingg-rxjava3 = "3.2.1"
+androidx-paging-testing = "3.2.1"
+androidx-paging-testing-android = "3.2.1"
+androidx-paging-testing-jvm = "3.2.1"
+androidx-paging-testing-iosarm64 = "3.2.1"
+androidx-paging-testing-iossimulatorarm64 = "3.2.1"
+androidx-paging-testing-linuxx64 = "3.2.1"
+androidx-paging-testing-macosarm64 = "3.2.1"
+androidx-paging-testing-macosx64 = "3.2.1"
+androidx-room-runtime = "2.6.0"
+androidx-room-common = "2.6.0"
+androidx-room-ktx = "2.6.0"
+androidx-room-compiler = "2.6.0"
+androidx-room-compiler-processing = "2.6.0"
+androidx-room-coroutines = "2.6.0"
+androidx-room-paging = "2.6.0"
+androidx-room-rxjava2 = "2.6.0"
+androidx-room-rxjava3 = "2.6.0"
+androidx-room-paging-rxjava2 = "2.6.0"
+androidx-room-paging-rxjava3 = "2.6.0"
+androidx-room-paging-guava  = "2.6.0"
+
+[libraries]
+# MultiDex : [https://developer.android.google.cn/studio/build/multidex?hl=zh-cn]
+androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
+
+# 针对最新的平台功能和 API 调整应用,同时还支持旧设备 : [https://developer.android.google.cn/jetpack/androidx/releases/core?hl=zh-cn]
+androidx-core = { module = "androidx.core:core", version.ref = "androidx-core" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+androidx-core-animation = { module = "androidx.core:core-animation", version.ref = "androidx-core-animation" }
+androidx-core-animation-testing = { module = "androidx.core:core-animation-testing", version.ref = "androidx-core-animation-testing" }
+androidx-core-google-shortcuts = { module = "androidx.core:core-google-shortcuts", version.ref = "androidx-core-google-shortcuts" }
+androidx-core-i18n = { module = "androidx.core:core-i18n", version.ref = "androidx-core-i18n" }
+androidx-core-role = { module = "androidx.core:core-role", version.ref = "androidx-core-role" }
+androidx-core-telecom = { module = "androidx.core:core-telecom", version.ref = "androidx-core-telecom" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidx-core-splashscreen" }
+androidx-core-performance = { module = "androidx.core:core-performance", version.ref = "androidx-core-performance" }
+androidx-core-performance-play-services = { module = "androidx.core:core-performance-play-services", version.ref = "androidx-core-performance-play-services" }
+androidx-core-performance-testing = { module = "androidx.core:core-performance-testing", version.ref = "androidx-core-performance-testing" }
+androidx-core-location-altitude = { module = "androidx.core:core-location-altitude", version.ref = "androidx-core-location-altitude" }
+androidx-core-remoteviews = { module = "androidx.core:core-remoteviews", version.ref = "androidx-core-remoteviews" }
+androidx-arch-core-common = { module = "androidx.arch.core:core-common", version.ref = "androidx-arch-core-common" }
+androidx-arch-core-runtime = { module = "androidx.arch.core:core-runtime", version.ref = "androidx-arch-core-runtime" }
+androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch-core-testing" }
+
+# 允许在平台的旧版 API 上访问新 API
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "androidx-appcompat-resources" }
+
+# 访问基于 Activity 构建的可组合 API
+androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
+
+# Androidce测试组件
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test-core" }
+androidx-test-core-ktx = { module = "androidx.test:core-ktx", version.ref = "androidx-test-core" }
+androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-junit" }
+androidx-test-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "androidx-test-junit" }
+androidx-test-truth = { module = "androidx.test.ext:truth", version.ref = "androidx-test-truth" }
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test-runner" }
+androidx-test-orchestrator = { module = "androidx.test:orchestrator", version.ref = "androidx-test-orchestrator" }
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test-rules" }
+androidx-test-services = { module = "androidx.test.services:test-services", version.ref = "androidx-test-services" }
+androidx-test-monitor = { module = "androidx.test:monitor", version.ref = "androidx-test-monitor" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-test-espresso-core" }
+androidx-test-espresso-accessibility = { group = "androidx.test.espresso", name = "espresso-accessibility", version.ref = "androidx-test-espresso-accessibility" }
+androidx-test-espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "androidx-test-espresso-contrib" }
+androidx-test-espresso-idling-resource = { group = "androidx.test.espresso", name = "espresso-idling-resource", version.ref = "androidx-test-espresso-idling-resource" }
+androidx-test-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "androidx-test-espresso-intents" }
+androidx-test-espresso-web = { group = "androidx.test.espresso", name = "espresso-web", version.ref = "androidx-test-espresso-web" }
+
+# 生命周期感知型组件可执行操作来响应另一个组件（如 activity 和 fragment）的生命周期状态的变化。
+# 这些组件有助于您写出更有条理且往往更精简的代码，这样的代码更易于维护。
+androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "androidx-lifecycle-common" }
+androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "androidx-lifecycle-common-java8" }
+androidx-lifecycle-common-compiler = { module = "androidx.lifecycle:lifecycle-compiler", version.ref = "androidx-lifecycle-common-compiler" }
+androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "androidx-lifecycle-lifecycle-extensions" }
+androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version.ref = "androidx-lifecycle-livedata" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidx-lifecycle-livedata" }
+androidx-lifecycle-livedata-core = { module = "androidx.lifecycle:lifecycle-livedata-core", version.ref = "androidx-lifecycle-livedata-core" }
+androidx-lifecycle-livedata-core-ktx = { module = "androidx.lifecycle:lifecycle-livedata-core-ktx", version.ref = "androidx-lifecycle-livedata-core-ktx" }
+androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "androidx-lifecycle-process" }
+androidx-lifecycle-reactivestreams = { module = "androidx.lifecycle:lifecycle-reactivestreams", version.ref = "androidx-lifecycle-reactivestreams" }
+androidx-lifecycle-reactivestreams-ktx = { module = "androidx.lifecycle:lifecycle-reactivestreams-ktx", version.ref = "androidx-lifecycle-reactivestreams-ktx" }
+androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime", version.ref = "androidx-lifecycle-runtime" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-runtime-ktx" }
+androidx-lifecycle-runtime-testing = { module = "androidx.lifecycle:lifecycle-runtime-testing", version.ref = "androidx-lifecycle-runtime-testing" }
+androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "androidx-lifecycle-service" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle-viewmodel" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-viewmodel-ktx" }
+androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "androidx-lifecycle-viewmodel-savedstate" }
+
+# androidx paging
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "androidx-paging-runtime" }
+androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "androidx-paging-runtime-ktx" }
+androidx-paging-common-common = { module = "androidx.paging:paging-common", version.ref = "androidx-paging-common-common" }
+androidx-paging-common-android = { module = "androidx.paging:paging-common-android", version.ref = "androidx-paging-common-android" }
+androidx-paging-common-linuxx64 = { module = "androidx.paging:paging-common-linuxx64", version.ref = "androidx-paging-common-linuxx64" }
+androidx-paging-common-iosarm64 = { module = "androidx.paging:paging-common-iosarm64", version.ref = "androidx-paging-common-iosarm64" }
+androidx-paging-common-iossimulatorarm64 = { module = "androidx.paging:paging-common-iossimulatorarm64", version.ref = "androidx-paging-common-iossimulatorarm64" }
+androidx-paging-common-iosx64 = { module = "androidx.paging:paging-common-iosx64", version.ref = "androidx-paging-common-iosx64" }
+androidx-paging-common-jvm = { module = "androidx.paging:paging-common-jvm", version.ref = "androidx-paging-common-jvm" }
+androidx-paging-common-ktx = { module = "androidx.paging:paging-common-ktx", version.ref = "androidx-paging-common-ktx" }
+androidx-paging-common-macosarm64 = { module = "androidx.paging:paging-common-macosarm64", version.ref = "androidx-paging-common-macosarm64" }
+androidx-paging-common-macosx64 = { module = "androidx.paging:paging-common-macosx64", version.ref = "androidx-paging-common-macosx64" }
+androidx-paging-guava = { module = "androidx.paging:paging-guava", version.ref = "androidx-paging-guava" }
+androidx-paging-rxjava2 = { module = "androidx.paging:paging-rxjava2", version.ref = "androidx-paging-rxjava2" }
+androidx-paging-rxjava2-ktx = { module = "androidx.paging:paging-rxjava2-ktx", version.ref = "androidx-paging-rxjava2-ktx" }
+androidx-pagingg-rxjava3 = { module = "androidx.paging:paging-rxjava3", version.ref = "androidx-pagingg-rxjava3" }
+androidx-paging-testing = { module = "androidx.paging:paging-testing", version.ref = "androidx-paging-testing" }
+androidx-paging-testing-android = { module = "androidx.paging:paging-testing-android", version.ref = "androidx-paging-testing-android" }
+androidx-paging-testing-jvm = { module = "androidx.paging:paging-testing-jvm", version.ref = "androidx-paging-testing-jvm" }
+androidx-paging-testing-iosarm64 = { module = "androidx.paging:paging-testing-iosarm64", version.ref = "androidx-paging-testing-iosarm64" }
+androidx-paging-testing-iossimulatorarm64 = { module = "androidx.paging:paging-testing-iossimulatorarm64", version.ref = "androidx-paging-testing-iossimulatorarm64" }
+androidx-paging-testing-linuxx64 = { module = "androidx.paging:paging-testing-linuxx64", version.ref = "androidx-paging-testing-linuxx64" }
+androidx-paging-testing-macosarm64 = { module = "androidx.paging:paging-testing-macosarm64", version.ref = "androidx-paging-testing-macosarm64" }
+androidx-paging-testing-macosx64 = { module = "androidx.paging:paging-testing-macosx64", version.ref = "androidx-paging-testing-macosx64" }
+
+androidx-room-runtime =  { module = "androidx.room:room-runtime", version.ref = "androidx-room-runtime" }
+androidx-room-common =  { module = "androidx.room:room-common", version.ref = "androidx-room-common" }
+androidx-room-ktx =  { module = "androidx.room:room-ktx", version.ref = "androidx-room-ktx" }
+androidx-room-compiler =  { module = "androidx.room:room-compiler", version.ref = "androidx-room-compiler" }
+androidx-room-compiler-processing =  { module = "androidx.room:room-compiler-processing", version.ref = "androidx-room-compiler-processing" }
+androidx-room-coroutines =  { module = "androidx.room:room-coroutines", version.ref = "androidx-room-coroutines" }
+androidx-room-paging =  { module = "androidx.room:room-paging", version.ref = "androidx-room-paging" }
+androidx-room-rxjava2 =  { module = "androidx.room:room-rxjava2", version.ref = "androidx-room-rxjava2" }
+androidx-room-rxjava3 =  { module = "androidx.room:room-rxjava3", version.ref = "androidx-room-rxjava3" }
+androidx-room-paging-rxjava2 =  { module = "androidx.room:room-paging-rxjava2", version.ref = "androidx-room-paging-rxjava2" }
+androidx-room-paging-rxjava3 =  { module = "androidx.room:room-paging-rxjava3", version.ref = "androidx-room-paging-rxjava3" }
+androidx-room-paging-guava =  { module = "androidx.room:room-paging-guava", version.ref = "androidx-room-paging-guava" }
+
+# 使用“相对定位(约束布局)”灵活地确定控件的位置和大小
+androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
+
+# Palette 获取颜色可以用于沉浸式
+androidx-palette = "androidx.palette:palette:1.0.0"
+
+# Material Design 界面组件 [https://mvnrepository.com/artifact/com.google.android.material/material]
+android-material = "com.google.android.material:material:1.10.0-alpha06"
+
+# Kotlin Android 注入库 [https://insert-koin.io/]
+android-koin = "io.insert-koin:koin-android:3.2.0"
+
+# DataStore 替换 SharedPreference
+androidx-datastore = "androidx.datastore:datastore-preferences:1.0.0"
+
+# 首选项 JetpackCompose
+androidx-preference = "androidx.preference:preference:${Versions.preference-version}"
+androidx-preference-ktx = "androidx.preference:preference:${Versions.preference-version}"
