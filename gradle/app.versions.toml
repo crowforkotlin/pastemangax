@@ -130,6 +130,21 @@ androidx-work-multiprocess = "2.8.1"
 androidx-work-rxjava2 = "2.8.1"
 androidx-work-rxjava3 = "2.8.1"
 
+androidx-hilt-common = "1.0.0"
+androidx-hilt-compiler = "1.0.0"
+androidx-hilt-lifecycle-viewmodel = "1.0.0"
+androidx-hilt-navigation = "1.0.0"
+androidx-hilt-navigation-fragment = "1.0.0"
+androidx-hilt-work = "1.0.0"
+
+androidx-fragment = "1.6.1"
+androidx-fragment-ktx = "1.6.1"
+androidx-fragment-testing = "1.6.1"
+androidx-fragment-testing-manifest = "1.6.1"
+
+androidx-dynamicanimation = "1.0.0"
+androidx-dynamicanimation-ktx = "1.0.0"
+
 [libraries]
 # MultiDex : [https://developer.android.google.cn/studio/build/multidex?hl=zh-cn]
 androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
@@ -278,3 +293,21 @@ androidx-work-multiprocess = { module = "androidx.work:work-multiprocess", versi
 androidx-work-rxjava2 = { module = "androidx.work:work-rxjava2", version.ref = "androidx-work-rxjava2" }
 androidx-work-rxjava3 = { module = "androidx.work:work-rxjava3", version.ref = "androidx-work-rxjava3" }
 androidx-work-testing = { module = "androidx.work:work-testing", version.ref = "androidx-work-testing" }
+
+# 扩展了 Dagger Hilt 的功能，以实现 AndroidX 库中某些类的依赖项注入。
+androidx-hilt-commin = { module = "androidx.hilt:hilt-common", version.ref = "androidx-hilt-common" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "androidx-hilt-compiler" }
+androidx-hilt-lifecycle-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "androidx-hilt-lifecycle-viewmodel" }
+androidx-hilt-navigation = { module = "androidx.hilt:hilt-navigation", version.ref = "androidx-hilt-navigation" }
+androidx-hilt-navigation-fragment = { module = "androidx.hilt:hilt-navigation-fragment", version.ref = "androidx-hilt-navigation-fragment" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "androidx-hilt-work" }
+
+# 将您的应用细分为在一个 Activity 中托管的多个独立屏幕。
+androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "androidx-fragment" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment-ktx" }
+androidx-fragment-testing = { module = "androidx.fragment:fragment-testing", version.ref = "androidx-fragment-testing" }
+androidx-fragment-testing-manifest = { module = "androidx.fragment:fragment-testing-manifest", version.ref = "androidx-fragment-testing-manifest" }
+
+# 使用基于物理特性的动画 API 制作流畅的动画。
+androidx-dynamicanimation = { module = "androidx.dynamicanimation:dynamicanimation", version.ref = "androidx-dynamicanimation" }
+androidx-dynamicanimation-ktx = { module = "androidx.dynamicanimation:dynamicanimation-ktx", version.ref = "androidx-dynamicanimation-ktx" }
