@@ -39,7 +39,7 @@ lottie = "6.1.0"
 photoview = "2.0.0"
 
 # [ https://github.com/scwang90/SmartRefreshLayout ]
-smartrefresh = "2.1.0"
+smartrefresh = "2.0.5"
 
 glide = "5.0.0-rc01"
 

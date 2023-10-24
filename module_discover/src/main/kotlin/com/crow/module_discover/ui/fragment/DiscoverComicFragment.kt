@@ -84,11 +84,11 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
      */
     private var mToolbarSubtitle: TextView? = null
 
-    private var  mSubtitlePrefix: String by Delegates.observable(app.getString(baseR.string.base_all)) { _, _, new ->
+    private var  mSubtitlePrefix: String by Delegates.observable(app.applicationContext.getString(baseR.string.base_all)) { _, _, new ->
         mBinding.topbar.subtitle = getString(R.string.discover_subtitle, new, mSubtitleSuffix)
     }
 
-    private var  mSubtitleSuffix: String by Delegates.observable(app.getString(baseR.string.base_all)) { _, _, new ->
+    private var  mSubtitleSuffix: String by Delegates.observable(app.applicationContext.getString(baseR.string.base_all)) { _, _, new ->
         mBinding.topbar.subtitle = getString(R.string.discover_subtitle, mSubtitlePrefix, new)
     }
 

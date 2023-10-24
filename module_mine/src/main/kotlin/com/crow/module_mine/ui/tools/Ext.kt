@@ -5,7 +5,7 @@ import android.view.ContextThemeWrapper
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import br.com.simplepass.loadingbutton.customViews.ProgressButton
+import com.github.leandroborgesferreira.loadingbutton.customViews.ProgressButton
 
 // Fix Memory Leak
 fun ProgressButton.updateLifecycleObserver(lifecycle: Lifecycle?) {

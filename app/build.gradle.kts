@@ -162,10 +162,10 @@ dependencies {
     ksp(libs.glide.ksp)
 
     // 引入Base库
-    implementation(project(mapOf("path" to ":lib_base")))
+    implementation(project(":lib_base"))
 
     // 模块 主页
-    implementation(project(mapOf("path" to ":module_main")))
+    implementation(project(":module_main"))
 
     // 引入MultiDex依赖
     implementation(app.androidx.multidex)

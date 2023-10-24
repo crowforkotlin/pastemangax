@@ -62,11 +62,11 @@ class AppGlideProgressFactory private constructor (private val mUrl: String) {
 
     inline fun<T> getRequestListener(crossinline failure: (catch: GlideException?) -> Boolean = { false }, crossinline ready: (resource: T, dataSource: DataSource?) -> Boolean= { _, _ -> false }): RequestListener<T> {
         return object : RequestListener<T> {
-            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<T>?, isFirstResource: Boolean) : Boolean {
+            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<T>, isFirstResource: Boolean) : Boolean {
                 doRemoveListener().doClean()
                 return failure(e)
             }
-            override fun onResourceReady(resource: T, model: Any?, target: Target<T>?, dataSource: DataSource?, isFirstResource: Boolean) : Boolean {
+            override fun onResourceReady(resource: T & Any, model: Any, target: Target<T>, dataSource: DataSource, isFirstResource: Boolean) : Boolean {
                 doRemoveListener().doClean()
                 return ready(resource, dataSource)
             }

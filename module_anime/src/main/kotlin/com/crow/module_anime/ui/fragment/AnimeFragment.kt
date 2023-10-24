@@ -92,7 +92,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
      *
      * ● 2023-10-10 02:20:34 周二 上午
      */
-    private var  mSubtitle: String by Delegates.observable(app.getString(baseR.string.base_all)) { _, _, new ->
+    private var  mSubtitle: String by Delegates.observable(app.applicationContext.getString(baseR.string.base_all)) { _, _, new ->
         mBinding.topbar.subtitle = new
     }
 

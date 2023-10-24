@@ -210,7 +210,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             }.await()
 
             // 结束刷新
-            mBinding.homeRefresh.finishRefresh()
+            mBinding.homeRefresh.finishRefresh(300)
 
             // HomeData 界面处理
             mDataRvAdapter.submitList(mHomeVM.getSnapshotHomeData(), 50L)

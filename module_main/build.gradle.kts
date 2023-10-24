@@ -61,12 +61,12 @@ android {
 dependencies {
 
     // 引入Base库
-    implementation(project(mapOf("path" to ":lib_base")))
+    implementation(project(":lib_base"))
 
-    api(project(mapOf("path" to ":module_home")))
-    api(project(mapOf("path" to ":module_discover")))
-    api(project(mapOf("path" to ":module_bookshelf")))
-    api(project(mapOf("path" to ":module_book")))
-    api(project(mapOf("path" to ":module_mine")))
-    api(project(mapOf("path" to ":module_anime")))
+    api(project(":module_home"))
+    api(project(":module_discover"))
+    api(project(":module_bookshelf"))
+    api(project(":module_book"))
+    api(project(":module_mine"))
+    api(project(":module_anime"))
 }

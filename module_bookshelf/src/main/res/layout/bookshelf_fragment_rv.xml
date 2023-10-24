@@ -54,12 +54,13 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.imageview.ShapeableImageView
+    <ImageView
         android:id="@+id/image_new"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/base_dp28"
+        android:layout_height="@dimen/base_dp28"
         android:layout_margin="@dimen/base_dp5"
         app:layout_constraintEnd_toEndOf="parent"
+        android:translationZ="@dimen/base_dp1"
         app:layout_constraintTop_toTopOf="parent"
         android:src="@drawable/base_icon_new_24dp" />
 

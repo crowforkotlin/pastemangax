@@ -1,5 +1,5 @@
 plugins {
-    alias(app.plugins.android.application)
+    alias(app.plugins.android.library)
     alias(app.plugins.android.kotlin)
     alias(app.plugins.android.ksp)
 }
@@ -28,7 +28,7 @@ android {
         buildConfigField("int", "VERSION_CODE", "${AppConfigs.version_code}")
 
         // 资源前缀（所有资源前缀必须添加）
-        resourcePrefix(AppConfigs.base_resource_prefix)
+        resourcePrefix = AppConfigs.base_resource_prefix
 
         // 编译的SDK版本
         compileSdk = AppConfigs.compile_sdk_version
@@ -97,6 +97,7 @@ dependencies {
     api(app.androidx.appcompat)
     api(app.androidx.material)
     api(app.androidx.constraintlayout)
+    api(app.androidx.lifecycle.service)
     api(app.androidx.lifecycle.runtime.ktx)
     api(app.androidx.lifecycle.livedata.ktx)
     api(app.androidx.lifecycle.viewmodel.ktx)
