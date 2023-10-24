@@ -1,9 +1,6 @@
 plugins {
-    // Android 应用程序插件
-    id(Plugins.android_library)
-
-    // 使用 Kotlin语言开发Android 插件
-    kotlin(Plugins.kotlin_android)
+    alias(app.plugins.android.library)
+    alias(app.plugins.android.kotlin)
 }
 
 android {

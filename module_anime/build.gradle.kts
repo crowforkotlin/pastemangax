@@ -1,15 +1,6 @@
 plugins {
-    // Android 应用程序插件
-    id(Plugins.android_library)
-
-    // Ksp
-    // id(Plugins.google_devtools_ksp) version Versions.ksp_version
-
-    // 使用 Kotlin语言开发Android 插件
-    kotlin(Plugins.kotlin_android)
-
-    // 使用Kotlin序列化插件
-    // kotlin(Plugins.kotlin_serialization) version Versions.kotlin_version
+    alias(app.plugins.android.library)
+    alias(app.plugins.android.kotlin)
 }
 
 kotlin { jvmToolchain(11) }
@@ -74,8 +65,8 @@ dependencies {
     // 引入Base库
     implementation(project(mapOf("path" to ":lib_base")))
 
-    implementation(Dependencies.media3_exoplayer)
-    implementation(Dependencies.media3_exoplayer_hls)
-    implementation(Dependencies.media3_exoplayer_dash)
-    implementation(Dependencies.media3_ui)
+    implementation(app.androidx.media3.exoplayer)
+    implementation(app.androidx.media3.exoplayer.hls)
+    implementation(app.androidx.media3.exoplayer.dash)
+    implementation(app.androidx.media3.ui)
 }

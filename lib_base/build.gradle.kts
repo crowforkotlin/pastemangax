@@ -1,13 +1,7 @@
 plugins {
-
-    // 使用插件库
-    id(Plugins.android_library)
-
-    // Ksp
-    id(Plugins.google_devtools_ksp) version Versions.ksp_version
-
-    // 使用 Kotlin语言开发Android 插件
-    kotlin(Plugins.kotlin_android)
+    alias(app.plugins.android.application)
+    alias(app.plugins.android.kotlin)
+    alias(app.plugins.android.ksp)
 }
 
 kotlin { jvmToolchain(11) }
@@ -98,73 +92,55 @@ dependencies {
     // 引入App下libs文件下的所有Jar包
     api(fileTree("dir" to "libs", "include" to "*.jar"))
 
-    /* Home */
-    api(Dependencies.androidx_core)
-    api(Dependencies.androidx_activity)
-    api(Dependencies.androidx_appcompat)
-    api(Dependencies.android_material)
-    api(Dependencies.androidx_constraintlayout)
-    api(Dependencies.androidx_lifecycle_ktx)
-    api(Dependencies.androidx_lifecycle_livedata_ktx)
-    api(Dependencies.androidx_lifecycle_service)
-    api(Dependencies.androidx_lifecycle_viewmodel_ktx)
-    api(Dependencies.androidx_datastore)
-    api(Dependencies.androidx_paging_runtime)
-    api(Dependencies.androidx_paging_runtime_ktx)
-    api(Dependencies.androidx_paging_common)
-    api(Dependencies.androidx_paging_common_ktx)
-    api(Dependencies.androidx_core_splash_screen)
+    api(app.androidx.core)
+    api(app.androidx.activity)
+    api(app.androidx.appcompat)
+    api(app.androidx.material)
+    api(app.androidx.constraintlayout)
+    api(app.androidx.lifecycle.runtime.ktx)
+    api(app.androidx.lifecycle.livedata.ktx)
+    api(app.androidx.lifecycle.viewmodel.ktx)
+    api(app.androidx.datastore.preferences)
+    api(app.androidx.paging.runtime.ktx)
+    api(app.androidx.paging.common.ktx)
+    api(app.androidx.core.splashscreen)
+    api(app.androidx.room.ktx)
+    api(app.androidx.room.runtime)
 
-    api(Dependencies.androidx_preference_ktx)
-
-//    debugApi(Dependencies.glance)
-    debugApi(Dependencies.leakcanary) // 不支持在MinSdk 24以下的设备运行
-    testApi(Dependencies.junit_junit)
-    androidTestApi(Dependencies.androidx_test_junit_ktx)
-    androidTestApi(Dependencies.androidx_test_espresso)
-
-    api(Dependencies.kotlinx_coroutines)
-    api(Dependencies.kotlin_stdlib)
-
-    api(Dependencies.moshi)
-    api(Dependencies.moshi_kotlin)
-    api(Dependencies.retrofit_moshi)
-
-    api(Dependencies.androidx_room_runtime)
-    api(Dependencies.androidx_room_ktx)
-
-    /* Koin 注入框架 */
-    api(Dependencies.android_koin)
-
-    /* Github */
-    api(Dependencies.retrofit)
-
-
-    api(Dependencies.okhttp)
-    api(Dependencies.okhttp_loggin)
-
-    api(Dependencies.logger)
-    api(Dependencies.lottie)
-    api(Dependencies.photoview)
-
-    api(Dependencies.glide)
-    api(Dependencies.glide_integration) { exclude(group = "glide-parent") }
-    ksp(Dependencies.glide_compiler_ksp)
-
-    api(Dependencies.loading_button)
-    api(Dependencies.luksiege_picture_selector)
-    api(Dependencies.luksiege_ucrop)
-
-    api(Dependencies.smart_refresh)
-    api(Dependencies.smart_refresh_material_header)
+    api(libs.kotlin.coroutines.core)
+    api(libs.kotlin.stdlib)
+    api(libs.moshi)
+    api(libs.moshi.kotlin)
+    api(libs.okhttp)
+    api(libs.okhttp.logging.interceptor)
+    api(libs.retrofit)
+    api(libs.retrofit.converter.moshi)
+    api(libs.koin.android)
+    api(libs.logger)
+    api(libs.lottie)
+    api(libs.photoview)
+    api(libs.loading.button)
+    api(libs.luksiege.picture.selector)
+    api(libs.luksiege.ucrop)
+    api(libs.refresh.layout.kernel)
+    api(libs.refresh.header.material)
+    api(libs.glide)
+    api(libs.glide.okhttp3.integration) { exclude(group = "glide-parent") }
+    ksp(libs.glide.ksp)
 
     api(platform(compose.bom))
-    api(compose.activity)
-    api(compose.material3.core)
-    api(compose.material.core)
+    api(compose.androidx.activity)
+    api(compose.androidx.material3)
+    api(compose.androidx.material)
+    api(compose.androidx.ui.tooling)
+    api(compose.androidx.ui.util)
+    api(compose.androidx.material.icons.extended)
     api(compose.accompanist.themeadapter)
-    api(compose.ui.tooling)
-    api(compose.ui.util)
-    api(compose.material.icons)
     api(compose.accompanist.systemuicontroller)
+
+    // 不支持在MinSdk 24以下的设备运行
+    debugApi(libs.leakcanary.android)
+    debugApi(libs.glance)
+    androidTestApi(app.androidx.test.junit.ktx)
+    androidTestApi(app.androidx.test.espresso.core)
 }

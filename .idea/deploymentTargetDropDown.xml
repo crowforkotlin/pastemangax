@@ -5,6 +5,9 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="lib_base">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
