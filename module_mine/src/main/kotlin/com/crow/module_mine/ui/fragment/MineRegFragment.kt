@@ -23,7 +23,7 @@ import com.crow.module_mine.databinding.MineFragmentRegBinding
 import com.crow.module_mine.model.MineIntent
 import com.crow.module_mine.ui.tools.updateLifecycleObserver
 import com.crow.module_mine.ui.viewmodel.MineViewModel
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -40,7 +40,7 @@ class MineRegFragment : BaseMviFragment<MineFragmentRegBinding>() {
      *
      * ● 2023-09-07 23:19:24 周四 下午
      */
-    private val mUserVM by sharedViewModel<MineViewModel>()
+    private val mUserVM by activityViewModel<MineViewModel>()
 
     /**
      * ● 是否注冊成功？

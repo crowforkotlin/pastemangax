@@ -6,8 +6,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.get
 import androidx.core.view.isEmpty
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -18,6 +16,7 @@ import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.copymanga.entity.Fragments
+import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
@@ -30,6 +29,8 @@ import com.crow.base.tools.extensions.px2sp
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.BaseErrorViewStub
+import com.crow.base.ui.view.baseErrorViewStub
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
@@ -111,6 +112,15 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     private var mIsCancelTokenDialog: Boolean = false
 
     /**
+     * ● BaseViewStub
+     *
+     * ● 2023-10-29 20:59:42 周日 下午
+     * @author crowforkotlin
+     */
+    private var mBaseErrorViewStub by BaseNotNullVar<BaseErrorViewStub>(true)
+
+
+    /**
      * ● 获取VB
      *
      * ● 2023-10-10 01:01:31 周二 上午
@@ -124,9 +134,13 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
      */
     override fun initView(savedInstanceState: Bundle?) {
 
+        // 初始化viewstub
+        mBaseErrorViewStub = baseErrorViewStub(mBinding.error, lifecycle) { mBinding.refresh.autoRefresh() }
+
         // 初始化RV适配器
         mBinding.list.adapter = mAdapter
-        
+
+
         // 设置加载动画独占1行，漫画卡片3行
         (mBinding.list.layoutManager as GridLayoutManager).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -245,18 +259,18 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                             if (mAdapter.itemCount == 0) {
 
                                 // 错误提示淡入
-                                mBinding.tipsError.animateFadeIn()
+                                mBaseErrorViewStub.loadLayout(visible = true, animation = true)
 
                                 // 发现页 “漫画” 淡出
                                 mBinding.list.animateFadeOutWithEndInVisibility()
                             }
 
-                            if (mBinding.tipsError.isGone) toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+                            if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
                         }
                         .doOnResult {
                             // 错误提示 可见
-                            if (mBinding.tipsError.isVisible) {
-                                mBinding.tipsError.isVisible = false
+                            if (mBaseErrorViewStub.isVisible()) {
+                                mBaseErrorViewStub.loadLayout(visible = false, animation = false)
                                 mBinding.list.animateFadeIn()
                             }
                         }

@@ -11,4 +11,6 @@
     <color name="base_book_green">#4CAF50</color>
     <color name="base_book_indigo">#3F51B5</color>
 
+    <color name="base_blue_100">#bbdefb</color>
+
 </resources>

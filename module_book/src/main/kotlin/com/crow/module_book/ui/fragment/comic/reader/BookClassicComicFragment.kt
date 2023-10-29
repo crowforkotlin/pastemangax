@@ -21,7 +21,7 @@ import com.crow.module_book.ui.viewmodel.ComicViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.yield
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import com.crow.base.R as baseR
 
 class BookClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
@@ -31,7 +31,7 @@ class BookClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
      *
      * ● 2023-09-01 22:22:54 周五 下午
      */
-    private val mComicVM by sharedViewModel<ComicViewModel>()
+    private val mComicVM by activityViewModel<ComicViewModel>()
 
     /**
      * ● 漫画RV

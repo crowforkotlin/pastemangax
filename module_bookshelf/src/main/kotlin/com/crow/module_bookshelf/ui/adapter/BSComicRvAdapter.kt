@@ -3,6 +3,7 @@ package com.crow.module_bookshelf.ui.adapter
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
@@ -12,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
+import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.copymanga.appComicCardHeight
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
@@ -54,7 +56,11 @@ class BSComicRvAdapter(
         }
 
         fun onBind(item: BookshelfComicResults) {
-            binding.imageNew.isInvisible = (item.mLastBrowse?.mLastBrowseName == item.mComic.mLastChapterName)
+            if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) {
+                binding.imageNew.isInvisible = (item.mLastBrowse?.mLastBrowseName == item.mComic.mLastChapterName)
+            } else {
+                binding.imageNew.isGone = true
+            }
             binding.loading.isVisible = true
             binding.loadingText.isVisible = true
             binding.loadingText.text = AppGlideProgressFactory.PERCENT_0

@@ -23,7 +23,7 @@ import com.crow.module_mine.databinding.MineFragmentLoginBinding
 import com.crow.module_mine.model.MineIntent
 import com.crow.module_mine.ui.tools.updateLifecycleObserver
 import com.crow.module_mine.ui.viewmodel.MineViewModel
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import com.crow.base.R as baseR
 
 
@@ -37,7 +37,7 @@ class MineLoginFragment() : BaseMviFragment<MineFragmentLoginBinding>(){
     }
 
     /** （Activity 级别） 用户VM */
-    private val mUserVM by sharedViewModel<MineViewModel>()
+    private val mUserVM by activityViewModel<MineViewModel>()
 
     /** 是否登录成功 */
     private var mIsLoginSuccess: Boolean = false

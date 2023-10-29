@@ -20,7 +20,7 @@ import com.crow.module_book.ui.viewmodel.ComicViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.yield
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -32,7 +32,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  **************************/
 class BookStriptComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
-    private val mComicVM by sharedViewModel<ComicViewModel>()
+    private val mComicVM by activityViewModel<ComicViewModel>()
 
     private val mComicStriptRvAdapter: ComicStriptRvAdapter by lazy { ComicStriptRvAdapter() }
 

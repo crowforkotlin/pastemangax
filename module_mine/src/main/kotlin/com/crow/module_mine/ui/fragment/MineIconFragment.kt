@@ -34,7 +34,7 @@ import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCropImageEngine
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import com.crow.base.R as baseR
 
 class MineIconFragment : BaseMviFragment<MineFragmentIconBinding>() {
@@ -43,7 +43,7 @@ class MineIconFragment : BaseMviFragment<MineFragmentIconBinding>() {
     private var mWindowInsets: WindowInsetsControllerCompat? = null
 
     // 共享 用户VM
-    private val mUserVM by sharedViewModel<MineViewModel>()
+    private val mUserVM by activityViewModel<MineViewModel>()
 
     private fun navigateUp() = parentFragmentManager.popAsyncWithClear(Fragments.Icon.name)
 

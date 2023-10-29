@@ -25,7 +25,7 @@ import com.crow.module_mine.ui.adapter.MineUpdateInfoRvAdapter
 import com.crow.module_mine.ui.viewmodel.MineInfoViewModel
 import com.crow.module_mine.ui.viewmodel.MineViewModel
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.crow.base.R as baseR
 
@@ -41,7 +41,7 @@ import com.crow.base.R as baseR
 class MineUpdateInfoFragment : BaseMviFragment<MineFragmentInfoBinding>() {
 
     // 共享用户VM
-    private val mUserVM by sharedViewModel<MineViewModel>()
+    private val mUserVM by activityViewModel<MineViewModel>()
 
     // 用户 更新信息 VM
     private val mUserUpdateInfoVM by viewModel<MineInfoViewModel>()

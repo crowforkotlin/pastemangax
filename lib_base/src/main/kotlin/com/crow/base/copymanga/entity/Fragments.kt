@@ -25,5 +25,6 @@ enum class Fragments {
     History,
     ComicClassic,
     AnimeInfo,
+    Topic,
 //    ComicStript,
 }
