@@ -11,7 +11,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.log
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -54,7 +53,6 @@ abstract class BaseViewStub<VB : ViewBinding>(
      * @author crowforkotlin
      */
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        event.log()
         when (event) {
             Lifecycle.Event.ON_DESTROY -> {
                 mView = null

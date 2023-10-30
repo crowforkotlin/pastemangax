@@ -122,25 +122,16 @@
                     app:spanCount="3"
                     tools:listitem="@layout/bookshelf_fragment_rv" />
 
-                <TextView
-                    android:id="@+id/tips"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:text="@string/bookshelf_empty"
-                    android:textSize="@dimen/base_sp18" />
-<!--                <ViewStub
+                <ViewStub
                     android:id="@+id/tips"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="gone"
-                    android:layout="@layout/base_error_layout"
+                    android:layout="@layout/bookshelf_lottie_layout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />-->
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </FrameLayout>
 
