@@ -28,7 +28,6 @@ import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
 import com.crow.base.tools.extensions.ifNull
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
@@ -48,7 +47,9 @@ import com.crow.module_bookshelf.ui.adapter.BSNovelRvAdapter
 import com.crow.module_bookshelf.ui.view.BookshelfViewStub
 import com.crow.module_bookshelf.ui.view.bookshelfViewStub
 import com.crow.module_bookshelf.ui.viewmodel.BookshelfViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -118,19 +119,25 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     private var mViewStub by BaseNotNullVar<BookshelfViewStub>(true)
 
     /**
+     * ● 刷新任务
+     *
+     * ● 2023-10-31 01:04:17 周二 上午
+     * @author crowforkotlin
+     */
+    private var mRefershJob: Job? = null
+
+    /**
      * ● 处理错误时 隐藏控件
      *
      * ● 2023-07-07 21:50:17 周五 下午
      */
     private fun processErrorHideView() {
-        if (mBinding.tips.tag == null) return
+        if (mBinding.tips.tag != null) return
         mBinding.tips.tag = null
         mViewStub.loadLayout(visible = true, animation = true)
-//        mBinding.tips.animateFadeIn()  // “空文本” 可见
         if (mBinding.count.isVisible) mBinding.count.animateFadeOutWithEndInVisibility()          // 隐藏 计数
         if (mBinding.comicList.isVisible) mBinding.comicList.animateFadeOutWithEndInVisibility()  // 隐藏 漫画 Rv
         if (mBinding.novelList.isVisible) mBinding.novelList.animateFadeOutWithEndInVisibility()    // 隐藏 轻小说 Rv
-        mBinding.refresh.finishRefresh()   // 完成刷新
     }
 
     /**
@@ -190,13 +197,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      * ● 2023-07-07 22:03:47 周五 下午
      */
     private fun processResultView(bookshelfRv: RecyclerView) {
-//        if (mBinding.tips.isGone || mBinding.tips.tag != null) return
-        mViewStub.isVisible().log()
-        mViewStub.isGone().log()
-        if (mViewStub.isGone() || mBinding.tips.tag != null) return
+        if (mViewStub.isVisible() || mBinding.tips.tag != null) return
         mBinding.tips.tag = Unit
-//        mBinding.tips.animateFadeOutWithEndInVisible()
-        mViewStub.loadLayout(visible = false,  animation = true)
+        mViewStub.loadLayout(visible = false,  animation = false)
         mBinding.count.animateFadeIn()
         bookshelfRv.animateFadeIn()
     }
@@ -209,7 +212,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     private fun processResult(comicResp: BookshelfComicResp?, novelResp: BookshelfNovelResp?) {
         when(mBinding.buttonGroup.checkedButtonId) {
             mBinding.comic.id -> {
-                if (comicResp?.mList?.isEmpty() == true) {
+                if (mComicRvAdapter.itemCount == 0 && comicResp?.mList?.isEmpty() == true) {
                     mViewStub.loadLayout(visible = true, animation = true)
                     toast(getString(R.string.bookshelf_empty_comic))
                     return
@@ -218,7 +221,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                 comicResp?.let { mBinding.count.text =  getString(R.string.bookshelf_comic_count, mComicCount ?: -1) }
             }
             mBinding.novel.id -> {
-                if (novelResp?.mList?.isEmpty() == true) {
+                if (mNovelRvAdapter.itemCount == 0 && novelResp?.mList?.isEmpty() == true) {
                     mViewStub.loadLayout(visible = true, animation = true)
                     toast(getString(R.string.bookshelf_empty_novel))
                     return
@@ -262,7 +265,6 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             // 发送获取书架 “轻小说” 的意图 需要动态收集书架状态才可
             mVM.input(BookshelfIntent.GetBookshelfNovel())
         }
-
 
         // 每个观察者需要一个单独的生命周期块，在同一个会导致第二个观察者失效 收集书架 漫画Pager状态
         repeatOnLifecycle {
@@ -325,6 +327,8 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         parentFragmentManager.clearFragmentResultListener(BOOKSHELF)
+        mRefershJob?.cancel()
+        mRefershJob = null
     }
 
     /**
@@ -389,12 +393,23 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                 mBinding.novel.id -> mBinding.novelList.isVisible = true
             }
             mBinding.refresh.autoRefresh()
-            mComicRvAdapter.refresh()
-            mNovelRvAdapter.refresh()
         }
 
         // 刷新监听
-        mBinding.refresh.setOnRefreshListener {
+        mBinding.refresh.setOnRefreshListener { layout ->
+
+            // 尚未登录
+            if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty()) {
+                toast(getString(R.string.bookshelf_identity_expired))
+                layout.finishRefresh()
+                return@setOnRefreshListener
+            }
+
+            // 刷新超时取消
+            mRefershJob = lifecycleScope.launch {
+                delay(BaseEvent.BASE_FLAG_TIME_1000 shl 2)
+                layout.finishRefresh()
+            }
 
             // 如果 空书架文本可见 刷新两个适配器 并退出逻辑
             if (mViewStub.isVisible()) {
@@ -508,7 +523,12 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             when (intent) {
                 is BookshelfIntent.GetBookshelfComic -> {
                     intent.mViewState
-                        .doOnSuccess { if (mBinding.refresh.isRefreshing) mBinding.refresh.finishRefresh() }
+                        .doOnSuccess {
+                            if (mBinding.refresh.isRefreshing) {
+                                mBinding.refresh.finishRefresh()
+                                mRefershJob?.cancel()
+                            }
+                        }
                         .doOnError { code, msg ->
 
                             // 如果当前按钮组不为 漫画 则退出
@@ -535,7 +555,12 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
                 is BookshelfIntent.GetBookshelfNovel -> {
                     intent.mViewState
-                        .doOnSuccess { if (mBinding.refresh.isRefreshing) mBinding.refresh.finishRefresh() }
+                        .doOnSuccess {
+                            if (mBinding.refresh.isRefreshing) {
+                                mBinding.refresh.finishRefresh()
+                                mRefershJob?.cancel()
+                            }
+                        }
                         .doOnError { code, msg ->
 
                             // 如果当前按钮组为 轻小说
@@ -557,7 +582,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                             if (mBinding.buttonGroup.checkedButtonId != R.id.novel) return@doOnResult
 
                             // 处理正确结果
-                             processResult(null, intent.bookshelfNovelResp ?: return@doOnResult)
+                            processResult(null, intent.bookshelfNovelResp ?: return@doOnResult)
                         }
                 }
             }

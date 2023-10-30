@@ -74,30 +74,38 @@ abstract class BaseViewStub<VB : ViewBinding>(
             mView = mViewStub.inflate()
             mView?.let { view -> mOnBinding.onBinding(view, bindViewBinding(view)) }
             if (animation) {
-                mView?.animateFadeIn()
+                if (isVisible()) mView?.animateFadeIn()
+                else {
+                    mView?.let {  view ->
+                        view.animateFadeOut().withEndAction {
+                            view.isGone = true
+                            mViewStub.isGone = true
+                        }
+                    }
+                }
             } else {
-                mView?.isVisible = true
+                mView?.isGone = true
+                mViewStub.isGone = true
             }
         } else {
-            mView?.let { error ->
+            mView?.let { view ->
                 when {
                     visible -> {
                         if (animation) {
                             mViewStub.isVisible = true
-                            error.animateFadeIn()
+                            view.animateFadeIn()
                         } else mViewStub.isVisible = true
                     }
 
                     animation -> {
-                        error.animateFadeOut()
-                            .withEndAction {
-                                error.isGone = true
+                        view.animateFadeOut().withEndAction {
+                                view.isGone = true
                                 mViewStub.isGone = true
                             }
                     }
 
                     else -> {
-                        error.isGone = true
+                        view.isGone = true
                         mViewStub.isGone = true
                     }
                 }
