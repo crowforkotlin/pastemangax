@@ -64,7 +64,7 @@ class BSComicRvAdapter(
             binding.loading.isVisible = true
             binding.loadingText.isVisible = true
             binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
             mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mComic.mCover) { _, _, percentage, _, _ -> binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage) }
             Glide.with(itemView.context)
                 .load(item.mComic.mCover)

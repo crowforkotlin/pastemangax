@@ -59,7 +59,7 @@ class BSNovelRvAdapter(
         fun onBind(item: BookshelfNovelResults) {
             binding.loading.isVisible = true
             binding.loadingText.isVisible = true
-            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
             mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mNovel.mCover) { _, _, percentage, _, _ -> binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage) }
 
             Glide.with(itemView.context)

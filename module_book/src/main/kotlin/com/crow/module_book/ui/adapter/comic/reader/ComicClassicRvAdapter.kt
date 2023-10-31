@@ -83,7 +83,7 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
             binding.loadingText.isVisible = true
             binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
             binding.retry.isGone = true
-            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
             mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage) }
             itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.MATCH_PARENT }
             Glide.with(itemView.context)

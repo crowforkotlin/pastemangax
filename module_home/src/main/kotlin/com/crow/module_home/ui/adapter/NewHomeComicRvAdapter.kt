@@ -168,7 +168,7 @@ class NewHomeComicRvAdapter(
             binding.homeComicRvLoading.isVisible = true
             binding.homeComicRvProgressText.isVisible = true
             binding.homeComicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
             mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ ->
                 binding.homeComicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
             }

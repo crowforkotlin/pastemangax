@@ -7,8 +7,10 @@ import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.model.resp.homepage.results.Results
 import com.crow.module_home.model.resp.search.SearchComicResp
 import com.crow.module_home.model.resp.search.SearchNovelResp
+import com.crow.module_home.model.resp.topic.TopicResp
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /*************************
@@ -48,4 +50,11 @@ interface HomeService {
         @Query("limit") limit: Int,
         @Query("platform") platform: Int = 3
     ) : Flow<BaseResultResp<SearchNovelResp>>
+
+    @GET(BaseStrings.URL.ComicTopic)
+    fun getTopic(
+        @Path(BaseStrings.PATH_WORD) pathword: String,
+        @Query("offset") start: Int,
+        @Query("limit") limit: Int
+    ) : Flow<BaseResultResp<TopicResp>>
 }

@@ -49,7 +49,7 @@ class ComicHistoryListAdapter(private val onClick: (name: String, pathword: Stri
             binding.discoverLoading.isVisible = true
             binding.discoverProgressText.isVisible = true
             binding.discoverProgressText.text = AppGlideProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
 
             mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mComic.mCover) { _, _, percentage, _, _ ->
                 binding.discoverProgressText.text = AppGlideProgressFactory.getProgressString(percentage)

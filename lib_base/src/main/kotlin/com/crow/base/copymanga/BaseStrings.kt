@@ -34,6 +34,7 @@ object BaseStrings {
         const val ComicHistory = "/api/v3/member/browse/comics?platform=3&_update=true"
         const val ComicAddToBookshelf = "/api/v3/member/collect/comic"
         const val ComicSearch = "/api/v3/search/comic"
+        const val ComicTopic = "/api/v3/topic/{$PATH_WORD}/contents"
 
         const val NovelInfo = "/api/v3/book/{pathword}?_update=true"
         const val NovelChapter = "/api/v3/book/{pathword}/volumes"
