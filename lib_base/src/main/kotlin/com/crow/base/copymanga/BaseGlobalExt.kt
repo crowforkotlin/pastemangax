@@ -25,6 +25,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDivider
 import com.squareup.moshi.JsonDataException
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 /*************************
@@ -35,8 +36,7 @@ import java.util.Locale
  * @Description: UtilsExt
  * @formatter:on
  **************************/
-
-private val formatter  = DecimalFormat.getInstance(Locale.US) as DecimalFormat
+private val formatter  = DecimalFormat("###,###.##", DecimalFormatSymbols(Locale.US).also { it.groupingSeparator = '.' })
 
 fun formatValue(value: Int): String {
     return when {
@@ -103,5 +103,3 @@ inline fun View.processTokenError(code: Int, msg: String?, crossinline doOnCance
             else toast(app.getString(R.string.BaseUnknowError))
         }
 }
-
-

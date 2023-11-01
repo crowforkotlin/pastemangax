@@ -66,7 +66,7 @@
         android:gravity="center|start"
         android:layout_marginStart="@dimen/base_dp10"
         android:layout_marginEnd="@dimen/base_dp10"
-        android:maxLines="1"
+        android:maxLines="2"
         android:textSize="@dimen/base_sp11"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,8 +81,7 @@
         android:layout_gravity="center"
         android:ellipsize="end"
         android:gravity="center|start"
-        android:maxLines="1"
-        android:minLines="1"
+        android:maxLines="2"
         android:layout_marginStart="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
         android:layout_marginEnd="@dimen/base_dp10"
@@ -112,62 +111,14 @@
         app:layout_constraintTop_toBottomOf="@+id/author"
         tools:text="热度：404" />
 
-    <TextView
-        android:id="@+id/time"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/base_dp10"
-        android:layout_marginTop="@dimen/base_dp10"
-        android:layout_marginEnd="@dimen/base_dp10"
-        android:ellipsize="end"
-        android:gravity="center|start"
-        android:maxLines="1"
-        android:minLines="1"
-        android:textSize="@dimen/base_sp10"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/card"
-        app:layout_constraintTop_toBottomOf="@+id/hot"
-        tools:text="时间：2044年" />
-
-    <TextView
-        android:id="@+id/readed"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/base_dp10"
-        android:layout_marginTop="@dimen/base_dp10"
-        android:layout_marginEnd="@dimen/base_dp10"
-        android:ellipsize="end"
-        android:gravity="center|start"
-        android:maxLines="1"
-        android:minLines="1"
-        android:textSize="@dimen/base_sp10"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/card"
-        app:layout_constraintTop_toBottomOf="@+id/time"
-        tools:text="已阅读至：第9章" />
-
-    <TextView
-        android:id="@+id/lastest"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/base_dp10"
-        android:layout_marginTop="@dimen/base_dp10"
-        android:layout_marginEnd="@dimen/base_dp10"
-        android:ellipsize="end"
-        android:gravity="center|start"
-        android:maxLines="1"
-        android:minLines="1"
-        android:textSize="@dimen/base_sp10"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/card"
-        app:layout_constraintTop_toBottomOf="@+id/readed"
-        tools:text="最新一章：第18话" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/card"
+        app:layout_constraintEnd_toEndOf="@+id/hot"
+        app:layout_constraintStart_toStartOf="@+id/hot"
+        app:layout_constraintTop_toBottomOf="@+id/hot"/>
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/materialDivider"

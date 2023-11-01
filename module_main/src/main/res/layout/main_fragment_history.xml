@@ -72,6 +72,17 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/main_history_rv" />
 
+            <ViewStub
+                android:id="@+id/error"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:layout="@layout/base_error_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </FrameLayout>
 
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>

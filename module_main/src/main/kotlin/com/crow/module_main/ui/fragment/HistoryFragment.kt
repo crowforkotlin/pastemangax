@@ -6,19 +6,25 @@ import androidx.activity.addCallback
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.crow.base.R
 import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.processTokenError
+import com.crow.base.kt.BaseNotNullVar
+import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
+import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.popSyncWithClear
-import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.BaseErrorViewStub
+import com.crow.base.ui.view.baseErrorViewStub
 import com.crow.base.ui.viewmodel.doOnError
+import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_main.databinding.MainFragmentHistoryBinding
 import com.crow.module_main.model.intent.MainIntent
@@ -26,6 +32,9 @@ import com.crow.module_main.ui.adapter.ComicHistoryListAdapter
 import com.crow.module_main.ui.adapter.NovelHistoryListAdapter
 import com.crow.module_main.ui.viewmodel.HistoryViewModel
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
@@ -54,7 +63,7 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
      */
     private val mComicAdapter by lazy {
         ComicHistoryListAdapter { name, pathword ->
-            navigate(Fragments.BookComicInfo.name, name, pathword)
+            onNavigate(Fragments.BookComicInfo.name, name, pathword)
         }
     }
 
@@ -65,16 +74,32 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
      */
     private val mNovelAdapter by lazy {
         NovelHistoryListAdapter { name, pathword ->
-            navigate(Fragments.BookNovelInfo.name, name, pathword)
+            onNavigate(Fragments.BookNovelInfo.name, name, pathword)
         }
     }
+
+    /**
+     * ● 网络任务
+     *
+     * ● 2023-11-01 23:50:26 周三 下午
+     * @author crowforkotlin
+     */
+    private var mNetworkJob: Job? = null
+
+    /**
+     * ● 错误视图
+     *
+     * ● 2023-11-02 00:01:07 周四 上午
+     * @author crowforkotlin
+     */
+    private var mError by BaseNotNullVar<BaseErrorViewStub>(true)
 
     /**
      * ● 导航
      *
      * ● 2023-10-04 17:00:33 周三 下午
      */
-    private fun navigate(tag: String, name: String, pathword: String) {
+    private fun onNavigate(tag: String, name: String, pathword: String) {
         val bundle = Bundle()
         bundle.putString(BaseStrings.PATH_WORD, pathword)
         bundle.putString(BaseStrings.NAME, name)
@@ -86,7 +111,6 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
             backStackName = tag
         )
     }
-
 
     /**
      * ● 获取VB
@@ -104,6 +128,9 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
 
         // 设置 内边距属性 实现沉浸式效果
         immersionRoot()
+
+        // 初始化错误视图
+        mError = baseErrorViewStub(mBinding.error, lifecycle) { mBinding.refresh.autoRefresh() }
 
         // 设置刷新时不允许列表滚动
         mBinding.refresh.setDisableContentWhenRefresh(true)
@@ -166,22 +193,11 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
      */
     override fun initObserver(saveInstanceState: Bundle?) {
 
-        repeatOnLifecycle {
-            mVM.mComicHistoryFlowPager?.collect {
-                mComicAdapter.submitData(it)
-            }
-        }
-
-        repeatOnLifecycle {
-            mVM.mNovelHistoryFlowPager?.collect {
-                mNovelAdapter.submitData(it)
-            }
-        }
-
         mVM.onOutput { intent ->
             when(intent) {
                 is MainIntent.GetComicHistory -> {
                     intent.mViewState
+                        .doOnSuccess(mBinding.refresh::finishRefresh)
                         .doOnError { code, msg ->
                             mBinding.root.processTokenError(code, msg) {
                                 val tag = Fragments.Login.name
@@ -193,8 +209,30 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
                                     backStackName = tag
                                 )
                             }
+                            if (mComicAdapter.itemCount == 0) {
+                                mBinding.comicList.animateFadeOutWithEndInVisibility()
+                                if (mError.isGone()) mError.loadLayout(visible = true, animation = true)
+                            }
+                            if (mNovelAdapter.itemCount == 0) {
+                                mBinding.novelList.animateFadeOutWithEndInVisibility()
+                                if (mError.isGone()) mError.loadLayout(visible = true, animation = true)
+                            }
                         }
-                        .doOnSuccess(mBinding.refresh::finishRefresh)
+                        .doOnResult {
+                            if (mError.isVisible()) { mError.loadLayout(visible = false, animation = true) }
+                            when(mBinding.tablayout.selectedTabPosition) {
+                                0  -> {
+                                    if (mBinding.comicList.isInvisible) {
+                                        mBinding.comicList.animateFadeIn()
+                                    }
+                                }
+                                else -> {
+                                    if (mBinding.novelList.isInvisible) {
+                                        mBinding.novelList.animateFadeIn()
+                                    }
+                                }
+                            }
+                        }
                 }
             }
         }
@@ -207,8 +245,24 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mVM.input(MainIntent.GetComicHistory())
-        mVM.input(MainIntent.GetNovelHistory())
+
+        mNetworkJob = lifecycleScope.launch {
+            delay(BASE_ANIM_200L shl 1)
+            mVM.input(MainIntent.GetComicHistory()) { mVM.mComicHistoryFlowPager?.onCollect(this@HistoryFragment) { mComicAdapter.submitData(it) } }
+            mVM.input(MainIntent.GetNovelHistory()) { mVM.mNovelHistoryFlowPager?.onCollect(this@HistoryFragment) { mNovelAdapter.submitData(it) } }
+        }
+    }
+
+    /**
+     * ● Lifecycle onDestroyView
+     *
+     * ● 2023-11-01 23:51:04 周三 下午
+     * @author crowforkotlin
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mNetworkJob?.cancel()
+        mNetworkJob = null
     }
 
     /**

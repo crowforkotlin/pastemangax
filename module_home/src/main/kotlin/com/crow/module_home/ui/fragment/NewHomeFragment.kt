@@ -496,13 +496,12 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                         .doOnSuccess {
                             if (mBinding.homeRefresh.isRefreshing) {
                                 mBinding.homeRefresh.finishRefresh(BASE_ANIM_300L.toInt())
-                                if (mBinding.error.isGone) {
-                                    toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
-                                }
                             }
                         }
                         .doOnResult { doLoadHomePage() }
                         .doOnError { _, _ ->
+
+                            toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
 
                             if (mDataRvAdapter.itemCount == 0) {
 

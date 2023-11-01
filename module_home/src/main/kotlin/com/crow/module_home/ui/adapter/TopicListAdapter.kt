@@ -12,14 +12,19 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
+import com.crow.base.R
+import com.crow.base.app.app
 import com.crow.base.copymanga.appComicCardHeight
 import com.crow.base.copymanga.appComicCardWidth
+import com.crow.base.copymanga.formatValue
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.px2sp
 import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_home.databinding.HomeTopicRvBinding
 import com.crow.module_home.model.resp.topic.TopicResult
+import com.google.android.material.chip.Chip
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -32,6 +37,8 @@ import com.crow.module_home.model.resp.topic.TopicResult
 class TopicListAdapter(private val onClick: (name: String, pathword: String) -> Unit) :
     PagingDataAdapter<TopicResult, TopicListAdapter.HistoryVH>(DiffCallback()) {
 
+    private val mChipTextSize = app.px2sp(app.resources.getDimension(R.dimen.base_sp12_5))
+
     inner class HistoryVH(binding: HomeTopicRvBinding) : BaseGlideLoadingViewHolder<HomeTopicRvBinding>(binding) {
 
         init {
@@ -39,6 +46,7 @@ class TopicListAdapter(private val onClick: (name: String, pathword: String) -> 
                 width = appComicCardWidth
                 height = appComicCardHeight
             }
+
             itemView.doOnClickInterval { (getItem(absoluteAdapterPosition) ?: return@doOnClickInterval).apply { onClick(mName, mPathWord) } }
         }
 
@@ -70,12 +78,18 @@ class TopicListAdapter(private val onClick: (name: String, pathword: String) -> 
                 })
                 .into(binding.image)
 
+
+            binding.chipGroup.removeAllViews()
+            item?.mTheme?.forEach {
+                val chip = Chip(itemView.context)
+                chip.text = it.mName
+                chip.textSize = mChipTextSize
+                binding.chipGroup.addView(chip)
+            }
+
             binding.name.text = item.mName
-            binding.time.text = ""
-            binding.author.text = ""
-            binding.readed.text = ""
-            binding.lastest.text = ""
-            binding.hot.text = ""
+            binding.author.text = item.mAuthor.joinToString { it.mName }
+            binding.hot.text = formatValue(item.mPopular)
         }
     }
 

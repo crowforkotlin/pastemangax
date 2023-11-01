@@ -159,7 +159,15 @@ class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<H
             is HomeIntent.GetRecPageByRefresh -> getRecPageByRefresh(intent)
             is HomeIntent.SearchComic -> onSearchComic(intent)
             is HomeIntent.SearchNovel -> onSearchNovel(intent)
-            is HomeIntent.GetTopic -> getTopic(intent)
+        }
+    }
+
+    override fun dispatcher(intent: HomeIntent, onEndAction: Runnable) {
+        when (intent) {
+            is HomeIntent.GetTopic -> {
+                getTopic(intent)
+                onEndAction.run()
+            }
         }
     }
 }

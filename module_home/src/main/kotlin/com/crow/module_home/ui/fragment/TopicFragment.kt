@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.crow.base.R
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
+import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.navigateIconClickGap
@@ -90,6 +91,14 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
     private var mRefreshJob: Job? = null
 
     /**
+     * ● 网络任务
+     *
+     * ● 2023-11-01 23:40:47 周三 下午
+     * @author crowforkotlin
+     */
+    private var mNetworkJob: Job? = null
+
+    /**
      * ● Error ViewStub
      *
      * ● 2023-11-01 00:23:39 周三 上午
@@ -121,7 +130,14 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
                 toast(getString(R.string.BaseUnknowError))
                 navigateUp()
             }
-            .onSuccess { mVM.input(HomeIntent.GetTopic(mTopic.mPathWord)) }
+            .onSuccess {
+                mNetworkJob = lifecycleScope.launch {
+                    delay(BASE_ANIM_200L shl 1)
+                    mVM.input(HomeIntent.GetTopic(mTopic.mPathWord)) {
+                        mVM.mTopicFlowPage?.onCollect(this@TopicFragment) { mAdapter.submitData(it) }
+                    }
+                }
+            }
     }
 
     /**
@@ -133,6 +149,8 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         BaseEvent.getSIngleInstance().remove("TOPIC_FRAGMENT_REFRESH_ANIMATE_ONLY")
+        mNetworkJob?.cancel()
+        mNetworkJob = null
         mRefreshJob?.cancel()
         mRefreshJob = null
     }
@@ -155,9 +173,6 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
      * @author crowforkotlin
      */
     override fun initObserver(saveInstanceState: Bundle?) {
-
-        // Topic PageFlow ---> Update Rv Item
-        mVM.mTopicFlowPage?.onCollect(this) { lifecycleScope.launch { mAdapter.submitData(it) } }
 
         mVM.onOutput { intent ->
             when(intent) {
@@ -235,6 +250,7 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
         // 返回
         mBinding.topbar.navigateIconClickGap { navigateUp() }
 
+        // 刷新
         mBinding.refresh.setOnRefreshListener {  layout ->
             mRefreshJob?.cancel()
             mRefreshJob = lifecycleScope.launch {

@@ -81,10 +81,11 @@ class HistoryViewModel(val repository: MainRepository) : BaseMviViewModel<MainIn
         ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
     }
 
-    override fun dispatcher(intent: MainIntent) {
+    override fun dispatcher(intent: MainIntent, onEndAction: Runnable) {
         when(intent) {
             is MainIntent.GetComicHistory -> getComicHistory(intent = intent)
             is MainIntent.GetNovelHistory -> getNovelHistory(intent = intent)
         }
+        onEndAction.run()
     }
 }
