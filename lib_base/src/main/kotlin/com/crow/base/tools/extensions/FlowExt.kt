@@ -73,7 +73,11 @@ internal fun <R> ProducerScope<R>.processing(response: Response<R>) {
     }
 }
 
-suspend inline fun <T> Flow<T>.toData(): T? {
+suspend fun <T> Flow<T?>.onNotnull(notNull: suspend (T) -> Unit) {
+    collect { if (it != null) notNull(it) }
+}
+
+suspend inline fun <T> Flow<T>.toDataNullable(): T? {
     var data: T? = null
     collect {
         data = it
@@ -91,6 +95,3 @@ fun<T> Flow<T>.onCollect(fragment: Fragment, lifecycleState: Lifecycle.State = L
 fun<T> Flow<T>.onCollect(activity: AppCompatActivity, lifecycleState: Lifecycle.State = Lifecycle.State.STARTED, iBaseFlowCollectLifecycle: IBaseFlowCollectLifecycle<T>) {
     activity.repeatOnLifecycle(lifecycleState) { collect { iBaseFlowCollectLifecycle.onCollect(it) } }
 }
-
-
-

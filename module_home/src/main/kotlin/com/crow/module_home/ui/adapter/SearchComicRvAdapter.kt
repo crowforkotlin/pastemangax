@@ -59,7 +59,7 @@ class SearchComicRvAdapter(
         vh.binding.homeSearchRvLoading.isVisible = true
         vh.binding.homeSearchRvProgressText.isVisible = true
         vh.binding.homeSearchRvProgressText.text = AppGlideProgressFactory.PERCENT_0
-        vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+        vh.mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
             vh.binding.homeSearchRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
         }

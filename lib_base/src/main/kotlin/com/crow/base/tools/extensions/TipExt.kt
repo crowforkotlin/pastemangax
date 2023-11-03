@@ -46,23 +46,6 @@ fun Any?.preetyLogger(level :  Int = Logger.INFO){
     }
 }
 
-/* Android内置Log 有反射 */
-@Deprecated("此函数包含反射，不建议在正式版中大量使用")
-fun Any?.log(level :  Int = Logger.INFO,tag: String = TIPS_TAG) {
-    if (this == null) {
-        Log.e(tag,"The loogger value is null.")
-        return
-    }
-    val type = this::class.java.simpleName
-    when(level) {
-        Logger.ERROR -> Log.e(tag,"$type : $this")
-        Logger.DEBUG -> Log.d(tag,"$type : $this")
-        Logger.WARN -> Log.w(tag,"$type : $this")
-        Logger.INFO -> Log.i(tag,"$type : $this")
-        Logger.VERBOSE -> Log.v(tag,"$type : $this")
-    }
-}
-
 /* Original Android Logger */
 fun logger(content: Any?, level: Int = Logger.INFO, tag: String = TIPS_TAG) {
     if (content == null) {
@@ -77,6 +60,22 @@ fun logger(content: Any?, level: Int = Logger.INFO, tag: String = TIPS_TAG) {
         Logger.VERBOSE -> Log.v(tag,"$content")
     }
 }
+
+/* Original Android Logger */
+fun Any?.log(level: Int = Logger.INFO, tag: String = TIPS_TAG) {
+    if (this == null) {
+        Log.e(tag, NullPointerException("Value is null.").stackTraceToString())
+        return
+    }
+    when(level) {
+        Logger.ERROR -> Log.e(tag,"$this")
+        Logger.DEBUG -> Log.d(tag,"$this")
+        Logger.WARN -> Log.w(tag,"$this")
+        Logger.INFO -> Log.i(tag,"$this")
+        Logger.VERBOSE -> Log.v(tag,"$this")
+    }
+}
+
 
 private var mToast: Toast? = null
 private var mToastHide: Boolean = false

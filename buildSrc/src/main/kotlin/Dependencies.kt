@@ -83,7 +83,6 @@ object Dependencies {
      * ● 2023-09-18 00:10:47 周一 上午
      */
     const val androidx_preference = "androidx.preference:preference:${Versions.preference_version}"
-    const val androidx_preference_ktx = "androidx.preference:preference:${Versions.preference_version}"
 
     /** Coroutine 协程
     * - Github : [https://github.com/Kotlin/kotlinx.coroutines]
@@ -169,7 +168,7 @@ object Dependencies {
     /** leakcanary 内存泄漏检查工具
     * - Github : [https://github.com/square/leakcanary]
     */
-    const val leakcanary = "com.squareup.leakcanary:leakcanary-android:2.12"
+    const val leakcanary = ":leakcanary-android:2.12"
 
 
     /** Glance database 分析
@@ -184,11 +183,10 @@ object Dependencies {
     const val glide_compiler = "com.github.bumptech.glide:compiler:${Versions.glide_version}"
     const val glide_compiler_ksp = "com.github.bumptech.glide:ksp:${Versions.glide_version}"
     const val glide_annotations  = "com.github.bumptech.glide:annotations:${Versions.glide_version}"
-    const val glide_ksp = "com.github.bumptech.glide:ksp:${Versions.glide_version}"
     const val glide_integration = "com.github.bumptech.glide:okhttp3-integration:${Versions.glide_version}"
 
     /** PhotoView
-    * - Github : [https://github.com/Baseflow/PhotoView]
+    * - Github : [ https://github.com/Baseflow/PhotoView ]
     */
     const val photoview = "com.github.chrisbanes:PhotoView:2.0.0"
 

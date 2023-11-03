@@ -53,8 +53,8 @@ class AppGlideProgressFactory private constructor (private val mUrl: String) {
                 val isComplete = mProgressPercentage >= 100
                 mProgressListener?.doOnProgress(url, isComplete, mProgressPercentage, bytesRead, totalBytes)
                 if (isComplete) {
-                    doClean(url)
-                    doRemoveListener()
+                    onCleanCache(url)
+                    onRemoveListener()
                 }
         }
     }
@@ -62,12 +62,12 @@ class AppGlideProgressFactory private constructor (private val mUrl: String) {
 
     inline fun<T> getRequestListener(crossinline failure: (catch: GlideException?) -> Boolean = { false }, crossinline ready: (resource: T, dataSource: DataSource?) -> Boolean= { _, _ -> false }): RequestListener<T> {
         return object : RequestListener<T> {
-            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<T>?, isFirstResource: Boolean) : Boolean {
-                doRemoveListener().doClean()
+            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<T>, isFirstResource: Boolean) : Boolean {
+                onRemoveListener().onCleanCache()
                 return failure(e)
             }
-            override fun onResourceReady(resource: T, model: Any?, target: Target<T>?, dataSource: DataSource?, isFirstResource: Boolean) : Boolean {
-                doRemoveListener().doClean()
+            override fun onResourceReady(resource: T & Any, model: Any, target: Target<T>, dataSource: DataSource, isFirstResource: Boolean) : Boolean {
+                onRemoveListener().onCleanCache()
                 return ready(resource, dataSource)
             }
         }
@@ -78,12 +78,12 @@ class AppGlideProgressFactory private constructor (private val mUrl: String) {
         return this
     }
 
-    fun doRemoveListener(): AppGlideProgressFactory {
+    fun onRemoveListener(): AppGlideProgressFactory {
         mProgressListener = null
         return this
     }
 
-    fun doClean(url: String = mUrl): AppGlideProgressFactory {
+    fun onCleanCache(url: String = mUrl): AppGlideProgressFactory {
         mProgressManagerMap.remove(url)
         return this
     }

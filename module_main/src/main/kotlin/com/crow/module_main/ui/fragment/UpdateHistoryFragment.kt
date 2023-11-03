@@ -10,6 +10,7 @@ import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.BASE_ANIM_100L
+import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
@@ -26,6 +27,7 @@ import com.crow.module_main.databinding.MainFragmentUpdateHistoryBinding
 import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.ui.adapter.UpdateHistoryAdapter
 import com.crow.module_main.ui.viewmodel.MainViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -52,8 +54,7 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
      * ● 2023-06-21 00:12:29 周三 上午
      */
     private fun navigateUp() {
-        if (arguments?.getBoolean("force_update") == true) FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name)
-            .post(viewLifecycleOwner, Unit)
+        if (arguments?.getBoolean("force_update") == true) FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).post(viewLifecycleOwner, Unit)
         else parentFragmentManager.popSyncWithClear(Fragments.UpdateHistory.name)
     }
 
@@ -92,7 +93,10 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
      * ● 2023-06-21 00:47:23 周三 上午
      */
     override fun initData(savedInstanceState: Bundle?) {
-        mMainVM.input(AppIntent.GetUpdateInfo())
+        lifecycleScope.launch {
+            delay(BASE_ANIM_200L shl 1)
+            mMainVM.input(AppIntent.GetUpdateInfo())
+        }
     }
 
     /**

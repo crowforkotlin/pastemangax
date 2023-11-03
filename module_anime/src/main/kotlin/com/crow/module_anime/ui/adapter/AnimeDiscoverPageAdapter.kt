@@ -62,7 +62,7 @@ class AnimeDiscoverPageAdapter(
         vh.binding.discoverLoading.isVisible = true
         vh.binding.discoverProgressText.isVisible = true
         vh.binding.discoverProgressText.text = AppGlideProgressFactory.PERCENT_0
-        vh.mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+        vh.mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
 
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mCover) { _, _, percentage, _, _ ->
             vh.binding.discoverProgressText.text = AppGlideProgressFactory.getProgressString(percentage)

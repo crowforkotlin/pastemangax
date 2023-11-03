@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/base_dp5"
     android:layout_marginTop="@dimen/base_dp12_5"
@@ -11,20 +11,21 @@
     tools:context="com.crow.module_bookshelf.ui.fragment.BookshelfFragment">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/bookshelf_rv_shadowLayout"
+        android:id="@+id/cardview"
         style="@style/Widget.Material3.CardView.Filled"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="@dimen/base_dp1"
+        android:layout_marginTop="@dimen/base_dp12"
         app:cardCornerRadius="@dimen/base_dp10"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:cardElevation="@dimen/base_dp1"
+        app:layout_constraintEnd_toEndOf="@+id/image_new"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/image_new"
         app:strokeColor="@color/base_grey_400_40"
         app:strokeWidth="@dimen/base_dp1">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/bookshelf_rv_loading"
+            android:id="@+id/loading"
             style="@style/Widget.Material3.CircularProgressIndicator.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +36,7 @@
             app:trackCornerRadius="@dimen/base_dp99" />
 
         <TextView
-            android:id="@+id/bookshelf_rv_progress_text"
+            android:id="@+id/loading_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -44,19 +45,28 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/bookshelf_rv_image"
-            android:layout_width="wrap_content"
+            android:id="@+id/image"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/BaseTodoTextView"
             android:foreground="?attr/selectableItemBackground"
             android:scaleType="centerCrop"
-            tools:layout_height="@dimen/base_dp168"
-            tools:layout_width="@dimen/base_dp120" />
+            tools:layout_height="@dimen/base_dp168" />
 
     </com.google.android.material.card.MaterialCardView>
 
+    <ImageView
+        android:id="@+id/image_new"
+        android:layout_width="@dimen/base_dp28"
+        android:layout_height="@dimen/base_dp28"
+        android:layout_margin="@dimen/base_dp5"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:translationZ="@dimen/base_dp1"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/base_icon_new_24dp" />
+
+
     <TextView
-        android:id="@+id/bookshelf_rv_name"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/base_dp2_5"
@@ -66,14 +76,14 @@
         android:minLines="2"
         android:textSize="@dimen/base_sp12"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/bookshelf_rv_time"
-        app:layout_constraintEnd_toEndOf="@id/bookshelf_rv_shadowLayout"
-        app:layout_constraintStart_toStartOf="@id/bookshelf_rv_shadowLayout"
-        app:layout_constraintTop_toBottomOf="@id/bookshelf_rv_shadowLayout"
+        app:layout_constraintBottom_toTopOf="@+id/time"
+        app:layout_constraintEnd_toEndOf="@id/cardview"
+        app:layout_constraintStart_toStartOf="@id/cardview"
+        app:layout_constraintTop_toBottomOf="@id/cardview"
         tools:text="@string/BaseAppName" />
 
     <TextView
-        android:id="@+id/bookshelf_rv_time"
+        android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -82,8 +92,8 @@
         android:textSize="@dimen/base_sp12"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/bookshelf_rv_name"
-        app:layout_constraintStart_toStartOf="@+id/bookshelf_rv_name"
+        app:layout_constraintEnd_toEndOf="@+id/name"
+        app:layout_constraintStart_toStartOf="@+id/name"
         tools:text="@string/BaseTodoTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

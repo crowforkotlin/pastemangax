@@ -305,7 +305,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         // 设置成false是因为 当View重新创建的时候 可以重新添加章节选择器
         mIsTabAlreadyAdded = false
 
-        mAppGlideProgressFactory?.doClean()?.doRemoveListener()
+        mAppGlideProgressFactory?.onCleanCache()?.onRemoveListener()
         mAppGlideProgressFactory = null
 
         mBaseEvent.remove(LOGIN_CHAPTER_HAS_BEEN_SETED)

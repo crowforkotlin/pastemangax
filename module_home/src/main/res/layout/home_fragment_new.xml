@@ -68,19 +68,19 @@
                 tools:itemCount="6"
                 tools:listitem="@layout/home_fragment_comic_rv_body" />
 
-            <TextView
-                android:id="@+id/home_tips_error"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/BaseLoadingErrorNeedRefresh"
-                android:textSize="@dimen/base_sp16"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+    <ViewStub
+        android:id="@+id/error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout="@layout/base_error_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

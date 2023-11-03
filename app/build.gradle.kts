@@ -1,12 +1,7 @@
 plugins {
-    // Android 应用程序插件
-    id(Plugins.android_application)
-
-    // Ksp
-    id(Plugins.google_devtools_ksp) version Versions.ksp_version
-
-    // 使用 Kotlin语言开发Android 插件
-    kotlin(Plugins.kotlin_android)
+    alias(app.plugins.android.application)
+    alias(app.plugins.android.kotlin)
+    alias(app.plugins.android.ksp)
 }
 
 kotlin { jvmToolchain(11) }
@@ -162,15 +157,16 @@ android {
 
 dependencies {
 
+
     // Glide编译器
-    ksp(Dependencies.glide_compiler_ksp)
+    ksp(libs.glide.ksp)
 
     // 引入Base库
-    implementation(project(mapOf("path" to ":lib_base")))
+    implementation(project(":lib_base"))
 
     // 模块 主页
-    implementation(project(mapOf("path" to ":module_main")))
+    implementation(project(":module_main"))
 
     // 引入MultiDex依赖
-    implementation(Dependencies.androidx_multidex)
+    implementation(app.androidx.multidex)
 }

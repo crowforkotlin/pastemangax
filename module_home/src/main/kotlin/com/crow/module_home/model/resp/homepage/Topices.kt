@@ -46,5 +46,5 @@ data class Topices(
     val mPathWord: String,
 
     @Json(name =  "datetime_created")
-    val mDatetimeCreated: String,
+    val mDatetimeCreated: String?,
 )

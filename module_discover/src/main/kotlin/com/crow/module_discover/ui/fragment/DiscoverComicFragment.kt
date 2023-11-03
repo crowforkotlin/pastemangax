@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.core.view.get
 import androidx.core.view.isEmpty
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -18,6 +16,7 @@ import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
@@ -31,6 +30,8 @@ import com.crow.base.tools.extensions.px2sp
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.BaseErrorViewStub
+import com.crow.base.ui.view.baseErrorViewStub
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
@@ -48,7 +49,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.qualifier.named
 import kotlin.properties.Delegates
 import com.crow.base.R as baseR
@@ -63,8 +64,13 @@ import com.crow.base.R as baseR
  **************************/
 class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
+    /**
+     * ● Static Area
+     *
+     * ● 2023-10-29 21:00:58 周日 下午
+     * @author crowforkotlin
+     */
     companion object {
-
 
         const val COMIC = "Discover_Comic"
 
@@ -72,7 +78,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     }
 
     /** ● (Activity级别) 发现页VM */
-    private val mVM by sharedViewModel<DiscoverViewModel>()
+    private val mVM by activityViewModel<DiscoverViewModel>()
 
     /** ● 漫画适配器 */
     private lateinit var mAdapter: DiscoverComicAdapter
@@ -84,13 +90,26 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
      */
     private var mToolbarSubtitle: TextView? = null
 
-    private var  mSubtitlePrefix: String by Delegates.observable(app.getString(baseR.string.base_all)) { _, _, new ->
+    /**
+     * ● 前缀和后缀
+     *
+     * ● 2023-10-29 21:00:35 周日 下午
+     * @author crowforkotlin
+     */
+    private var  mSubtitlePrefix: String by Delegates.observable(app.applicationContext.getString(baseR.string.base_all)) { _, _, new ->
         mBinding.topbar.subtitle = getString(R.string.discover_subtitle, new, mSubtitleSuffix)
     }
-
-    private var  mSubtitleSuffix: String by Delegates.observable(app.getString(baseR.string.base_all)) { _, _, new ->
+    private var  mSubtitleSuffix: String by Delegates.observable(app.applicationContext.getString(baseR.string.base_all)) { _, _, new ->
         mBinding.topbar.subtitle = getString(R.string.discover_subtitle, mSubtitlePrefix, new)
     }
+
+    /**
+     * ● BaseViewStub
+     *
+     * ● 2023-10-29 20:59:42 周日 下午
+     * @author crowforkotlin
+     */
+    private var mBaseErrorViewStub by BaseNotNullVar<BaseErrorViewStub>(true)
 
     /** ● 收集状态 */
     fun onCollectState() {
@@ -294,6 +313,9 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         // 设置Title
         mBinding.topbar.title = getString(R.string.discover_comic)
 
+        // 初始化viewstub
+        mBaseErrorViewStub = baseErrorViewStub(mBinding.error, lifecycle) { mBinding.refresh.autoRefresh() }
+
         // 初始化 发现页 漫画适配器
         mAdapter = DiscoverComicAdapter { navigateBookComicInfo(it.mName, it.mPathWord) }
 
@@ -324,18 +346,18 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                             if (mAdapter.itemCount == 0) {
 
                                 // 错误提示淡入
-                                mBinding.tipsError.animateFadeIn()
+                                mBaseErrorViewStub.loadLayout(visible = true, animation = true)
 
                                 // 发现页 “漫画” 淡出
                                 mBinding.list.animateFadeOutWithEndInVisibility()
                             }
 
-                            if (mBinding.tipsError.isGone) toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+                            if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
                         }
                         .doOnResult {
                             // 错误提示 可见
-                            if (mBinding.tipsError.isVisible) {
-                                mBinding.tipsError.isVisible = false
+                            if (mBaseErrorViewStub.isVisible()) {
+                                mBaseErrorViewStub.loadLayout(false)
                                 mBinding.list.animateFadeIn()
                             }
                         }

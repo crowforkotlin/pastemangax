@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             app:navigationIcon="@drawable/base_ic_back_24dp"
             app:navigationIconTint="@color/base_color_asc"
-            app:title="@string/user_update_history_title"
+            app:title="@string/mine_update_history_title"
             app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold" />
 
     </com.google.android.material.appbar.AppBarLayout>

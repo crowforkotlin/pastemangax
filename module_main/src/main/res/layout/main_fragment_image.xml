@@ -28,7 +28,7 @@
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="@string/user_blank_black_tips"
+		android:text="@string/mine_blank_black_tips"
 		android:layout_gravity="bottom|center"
 		android:gravity="center"
 		android:textColor="@android:color/white"

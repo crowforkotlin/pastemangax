@@ -9,7 +9,7 @@
     tools:context=".ui.fragment.BookshelfFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/bookshelf_toolbar"
+        android:id="@+id/topbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:menu="@menu/bookshelf_appbar_menu"
@@ -18,7 +18,7 @@
         app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold" />
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/bookshelf_refresh"
+        android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/bookshelf_frame_rv"
+            android:id="@+id/coordinator_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -37,7 +37,7 @@
                 android:background="@android:color/transparent">
 
                 <FrameLayout
-                    android:id="@+id/bookshelf_bar"
+                    android:id="@+id/bar_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/base_dp10"
@@ -45,19 +45,19 @@
                     app:layout_scrollFlags="scroll|enterAlways">
 
                     <com.google.android.material.button.MaterialButtonToggleGroup
-                        android:id="@+id/bookshelf_button_gropu"
+                        android:id="@+id/button_group"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/base_dp10"
                         android:layout_marginBottom="@dimen/base_dp5"
                         android:layout_marginTop="@dimen/base_dp5"
                         android:layout_gravity="start|center_vertical"
-                        app:checkedButton="@+id/bookshelf_comic"
+                        app:checkedButton="@+id/comic"
                         app:selectionRequired="true"
                         app:singleSelection="true">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/bookshelf_comic"
+                            android:id="@+id/comic"
                             style="@style/Widget.Material3.Button.OutlinedButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                             app:layout_constraintStart_toEndOf="@+id/bookshelfChip" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/bookshelf_novel"
+                            android:id="@+id/novel"
                             style="@style/Widget.Material3.Button.OutlinedButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
                     </com.google.android.material.button.MaterialButtonToggleGroup>
 
                     <TextView
-                        android:id="@+id/bookshelf_count"
+                        android:id="@+id/count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|center_vertical"
@@ -104,7 +104,7 @@
                 android:layout_height="match_parent">
 
                 <com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
-                    android:id="@+id/bookshelf_rv_comic"
+                    android:id="@+id/comic_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="invisible"
@@ -114,7 +114,7 @@
                     tools:visibility="visible" />
 
                 <com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
-                    android:id="@+id/bookshelf_rv_novel"
+                    android:id="@+id/novel_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="invisible"
@@ -122,15 +122,16 @@
                     app:spanCount="3"
                     tools:listitem="@layout/bookshelf_fragment_rv" />
 
-                <TextView
-                    android:id="@+id/bookshelf_tips_empty"
+                <ViewStub
+                    android:id="@+id/tips"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:text="@string/bookshelf_empty"
-                    android:textSize="@dimen/base_sp18" />
+                    android:visibility="gone"
+                    android:layout="@layout/bookshelf_lottie_layout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </FrameLayout>
 

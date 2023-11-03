@@ -49,7 +49,7 @@ import kotlinx.coroutines.sync.withLock
 class NewHomeComicRvAdapter(
     private val mOnRefresh: (MaterialButton) -> Unit,
     private val mOnClick: (name: String, pathword: String) -> Unit,
-    private val mOnTopic: (String) -> Unit
+    private val mOnTopic: (Topices) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     /**
@@ -156,7 +156,7 @@ class NewHomeComicRvAdapter(
                     mOnClick(item.mName, item.mPathWord)
                 }
                 is Topices -> {
-                    mOnTopic(item.mPathWord)
+                    mOnTopic(item)
                 }
                 else -> error("parse unknow item type!")
             }
@@ -168,7 +168,7 @@ class NewHomeComicRvAdapter(
             binding.homeComicRvLoading.isVisible = true
             binding.homeComicRvProgressText.isVisible = true
             binding.homeComicRvProgressText.text = AppGlideProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
             mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ ->
                 binding.homeComicRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
             }

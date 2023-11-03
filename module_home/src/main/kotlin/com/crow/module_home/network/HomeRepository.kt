@@ -17,6 +17,8 @@ class HomeRepository(private val service: HomeService) {
 
     fun getRecPageByRefresh(limit: Int, start: Int) = service.getRecPage(start, limit).flowOn(Dispatchers.IO)
 
+    fun getTopic(pathword: String, start: Int, limit: Int) = service.getTopic(pathword, start, limit).flowOn(Dispatchers.IO)
+
     fun doSearchComic(keyword: String, type: String, start: Int, limit: Int) = service.doSearchComic(keyword, type, start, limit).flowOn(Dispatchers.IO)
 
     fun doSearchNovel(keyword: String, type: String, start: Int, limit: Int) = service.doSearchNovel(keyword, type, start, limit).flowOn(Dispatchers.IO)

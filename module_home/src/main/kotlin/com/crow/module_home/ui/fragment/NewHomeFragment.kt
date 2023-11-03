@@ -20,6 +20,7 @@ import com.crow.base.copymanga.BaseEventEnum
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.appIsDarkMode
 import com.crow.base.copymanga.entity.Fragments
+import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.baseCoroutineException
 import com.crow.base.tools.coroutine.launchDelay
@@ -32,9 +33,12 @@ import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
+import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toast
 import com.crow.base.tools.extensions.withLifecycle
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.BaseErrorViewStub
+import com.crow.base.ui.view.baseErrorViewStub
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.view.event.BaseEventEntity
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
@@ -45,6 +49,7 @@ import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeFragmentNewBinding
 import com.crow.module_home.databinding.HomeFragmentSearchViewBinding
 import com.crow.module_home.model.intent.HomeIntent
+import com.crow.module_home.model.resp.homepage.Topices
 import com.crow.module_home.ui.adapter.NewHomeComicRvAdapter
 import com.crow.module_home.ui.adapter.NewHomeVpAdapter
 import com.crow.module_home.ui.compose.Banner
@@ -57,7 +62,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.qualifier.named
 import kotlin.system.exitProcess
 import com.crow.base.R as baseR
@@ -79,7 +84,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      *
      * ● 2023-09-17 01:27:48 周日 上午
      */
-    private val mHomeVM by sharedViewModel<HomeViewModel>()
+    private val mVM by activityViewModel<HomeViewModel>()
 
     /**
      * ● 推荐 “换一批” 刷新按钮
@@ -87,6 +92,14 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      * ● 2023-09-17 01:27:01 周日 上午
      */
     private var mRecRefresh: MaterialButton? = null
+
+    /**
+     * ● 错误的View
+     *
+     * ● 2023-10-29 20:59:42 周日 下午
+     * @author crowforkotlin
+     */
+    private var mBaseErrorViewStub by BaseNotNullVar<BaseErrorViewStub>(true)
 
     /**
      * ● 主页数据量较多， 采用Rv方式
@@ -98,10 +111,10 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             mOnRefresh = { button ->
                 button.isEnabled = false
                 mRecRefresh = button
-                mHomeVM.input(HomeIntent.GetRecPageByRefresh())
+                mVM.input(HomeIntent.GetRecPageByRefresh())
             },
             mOnClick = { name, pathword -> navigateBookComicInfo(name, pathword) },
-            mOnTopic = { }
+            mOnTopic = { topices -> navigateTopic(topices) }
         )
     }
 
@@ -177,6 +190,26 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
+     * ● 导航至Topic
+     *
+     * ● 2023-06-16 22:18:11 周五 下午
+     */
+    private fun navigateTopic(topic: Topices) {
+        val tag = Fragments.Topic.name
+        val bundle = Bundle()
+        bundle.putString(TopicFragment.TOPIC, toJson(topic))
+        requireParentFragment()
+            .parentFragmentManager
+            .navigateToWithBackStack(
+                id = baseR.id.app_main_fcv,
+                hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
+                addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
+                tag = tag,
+                backStackName = tag
+            )
+    }
+
+    /**
      * ● 加载主页数据
      *
      * ● 2023-09-17 19:40:26 周日 下午
@@ -186,8 +219,9 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         mBaseEvent.setBoolean("HOME_FRAGMENT_LOAD_HOME_PAGE", true)
 
         // 错误提示 可见
-        if (mBinding.homeTipsError.isVisible) {
-            mBinding.homeTipsError.isVisible = false
+
+        if (mBaseErrorViewStub.isVisible()) {
+            mBaseErrorViewStub.loadLayout(false)
             mBinding.homeRv.animateFadeIn()
         }
 
@@ -200,7 +234,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             // 等待Compose 界面 Complete
             async {
                 mBinding.homeComposeBanner.setContent {
-                    Banner(banners = mHomeVM.getSnapshotBanner()) { banner ->
+                    Banner(banners = mVM.getSnapshotBanner()) { banner ->
                         mBaseEvent.doOnInterval {
                             navigateBookComicInfo(banner.mBrief, banner.mComic?.mPathWord ?: return@doOnInterval)
                         }
@@ -210,10 +244,10 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             }.await()
 
             // 结束刷新
-            mBinding.homeRefresh.finishRefresh()
+            mBinding.homeRefresh.finishRefresh(300)
 
             // HomeData 界面处理
-            mDataRvAdapter.submitList(mHomeVM.getSnapshotHomeData(), 50L)
+            mDataRvAdapter.submitList(mVM.getSnapshotHomeData(), 50L)
         }
     }
 
@@ -338,7 +372,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         }
 
         // 获取主页数据
-        mHomeVM.input(HomeIntent.GetHomePage())
+        mVM.input(HomeIntent.GetHomePage())
 
         // Refresh
         mBinding.homeRefresh.autoRefreshAnimationOnly()
@@ -357,6 +391,9 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                 mBinding.homeSearchView.hide()
             }
         }
+
+        // 初始化viewstub
+        mBaseErrorViewStub = baseErrorViewStub(mBinding.error, lifecycle) { mBinding.homeRefresh.autoRefresh() }
 
         // 设置刷新时不允许列表滚动
         mBinding.homeRefresh.setDisableContentWhenRefresh(true)
@@ -393,16 +430,16 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         parentFragmentManager.setFragmentResultListener(HOME, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 0) {
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
-                    launchDelay(BASE_ANIM_200L) { mHomeVM.input(HomeIntent.GetHomePage()) }
+                    launchDelay(BASE_ANIM_200L) { mVM.input(HomeIntent.GetHomePage()) }
                 }
-                else mHomeVM.input(HomeIntent.GetHomePage())
+                else mVM.input(HomeIntent.GetHomePage())
             }
         }
 
         // 登录成功 监听
         parentFragmentManager.setFragmentResultListener(BaseEventEnum.LoginCategories.name, this) { _, bundle ->
             if (bundle.getInt(BaseStrings.ID) == 0) {
-                mHomeVM.input(HomeIntent.GetHomePage())
+                mVM.input(HomeIntent.GetHomePage())
             }
         }
 
@@ -435,7 +472,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             mBaseEvent.doOnInterval(object : BaseIEventIntervalExt<BaseEvent> {
                 override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) {
                     mBaseEvent.remove("HOME_FRAGMENT_LOAD_HOME_PAGE")
-                    mHomeVM.input(HomeIntent.GetHomePage())
+                    mVM.input(HomeIntent.GetHomePage())
                 }
                 override fun onIntervalFailure(gapTime: Long) {
                     it.finishRefresh()
@@ -451,7 +488,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      */
     override fun initObserver(saveInstanceState: Bundle?) {
 
-        mHomeVM.onOutput { intent ->
+        mVM.onOutput { intent ->
             when (intent) {
                 // （获取主页）（根据 刷新事件 来决定是否启用加载动画） 正常加载数据、反馈View
                 is HomeIntent.GetHomePage -> {
@@ -459,13 +496,13 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                         .doOnSuccess {
                             if (mBinding.homeRefresh.isRefreshing) {
                                 mBinding.homeRefresh.finishRefresh(BASE_ANIM_300L.toInt())
-                                if (mBinding.homeTipsError.isGone) {
-                                    toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
-                                }
                             }
                         }
                         .doOnResult { doLoadHomePage() }
                         .doOnError { _, _ ->
+
+                            toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+
                             if (mDataRvAdapter.itemCount == 0) {
 
                                 // Banner 不可见
@@ -478,12 +515,13 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                                         mBinding.homeComposeBanner.isGone = true
 
                                         // 错误提示淡入
-                                        mBinding.homeTipsError.animateFadeIn()
+                                        mBaseErrorViewStub.loadLayout(visible = true, animation = true)
                                     }
                                 } else {
 
                                     // 错误提示淡入
-                                    mBinding.homeTipsError.animateFadeIn()
+                                    mBaseErrorViewStub.loadLayout(visible = true, animation = true)
+
                                 }
 
                                 // 发现页 “漫画” 淡出
@@ -504,7 +542,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                         }
                         .doOnResult {
                             viewLifecycleOwner.lifecycleScope.launch {
-                                mDataRvAdapter.onRefreshSubmitList(mHomeVM.getSnapshotHomeData(), 50L)
+                                mDataRvAdapter.onRefreshSubmitList(mVM.getSnapshotHomeData(), 50L)
                                 mRecRefresh?.isEnabled = true
                             }
                         }

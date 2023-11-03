@@ -1,6 +1,7 @@
 <resources>
 	<string name="bookshelf_name">书架</string>
-	<string name="bookshelf_empty">书架全是空的欸＞﹏＜</string>
+	<string name="bookshelf_empty_comic">您还没有收藏至少一本漫画</string>
+	<string name="bookshelf_empty_novel">您还没有收藏至少一本轻小说</string>
 	<string name="bookshelf_comic_count">漫画数量（%d）</string>
 	<string name="bookshelf_identity_expired">身份过期啦，请重新登录~</string>
 	<string name="bookshelf_novel_count">轻小说数量（%d）</string>

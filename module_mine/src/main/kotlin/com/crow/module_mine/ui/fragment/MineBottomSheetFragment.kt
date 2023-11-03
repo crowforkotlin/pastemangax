@@ -24,7 +24,7 @@ import com.crow.module_mine.ui.adapter.MineRvAdapter
 import com.crow.module_mine.ui.viewmodel.MineViewModel
 import com.google.android.material.R.id.design_bottom_sheet
 import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.qualifier.named
 import com.crow.base.R as baseR
 
@@ -44,7 +44,7 @@ class MineBottomSheetFragment : BaseMviBottomSheetDialogFragment<MineFragmentBin
      *
      * ● 2023-07-02 20:31:08 周日 下午
      */
-    private val mUserVM by sharedViewModel<MineViewModel>()
+    private val mUserVM by activityViewModel<MineViewModel>()
 
     // 用户适配器数据
     private val mAdapterData = mutableListOf (

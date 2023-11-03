@@ -37,16 +37,16 @@
                 tools:listitem="@layout/anime_fragment_rv"
                 tools:itemCount="6" />
 
-            <TextView
-                android:id="@+id/tips_error"
+            <ViewStub
+                android:id="@+id/error"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/BaseLoadingErrorNeedRefresh"
-                android:textSize="@dimen/base_sp16"
-                android:textStyle="bold"
                 android:visibility="gone"
-                tools:visibility="visible" />
+                android:layout="@layout/base_error_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </FrameLayout>
 

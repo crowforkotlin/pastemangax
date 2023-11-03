@@ -253,7 +253,11 @@ class BookComicFragment : BookFragment() {
             if (mBaseEvent.getBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED) == null && chapter != null) {
                 mComicChapterRvAdapter?.mChapterName = chapter.mChapterName
                 mComicChapterRvAdapter?.notifyItemRangeChanged(0, mComicChapterRvAdapter?.itemCount ?: return@onCollect)
-                toast(getString(R.string.book_readed_chapter, chapter.mChapterName))
+                if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) {
+                    toast(getString(R.string.book_readed_chapter, chapter.mChapterName))
+                } else {
+                    toast(getString(R.string.book_readed_chapter_offline, chapter.mChapterName))
+                }
             }
         }
 

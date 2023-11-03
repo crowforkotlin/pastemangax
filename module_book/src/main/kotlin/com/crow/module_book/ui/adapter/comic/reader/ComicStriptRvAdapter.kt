@@ -67,7 +67,7 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             binding.loadingText.isVisible = true
             binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
             binding.retry.isVisible = false
-            mAppGlideProgressFactory?.doRemoveListener()?.doClean()
+            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
             mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl!!) { _, _, percentage, _, _ ->
                 binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage)
             }
