@@ -6,12 +6,9 @@
 <h3 align="center">⭐⭐⭐CopyMangaX⭐⭐⭐</h3>
 </div>
 
-[![Join Our QQ Group 闲聊 OR 技术交流](https://img.shields.io/badge/QQ%20Group-749015160-blue?style=for-the-badge&logo=tencent-qq&logoColor=white)](https://jq.qq.com/?_wv=1027&k=XIMjBxZW)
-
 <p>
 <img alt="Download" src="https://img.shields.io/github/downloads/crowforkotlin/CopyMangaX/total.svg"/>
 <img alt="ViewCount" src="https://views.whatilearened.today/views/github/crowforkotlin/CopyMangaX.svg"/>
-<a href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.githubusercontent.com/crowforkotlin/c3900c9ea4958acfa71973b8ea6bc91a/raw/clone.json&logo=github'></a>
 </p>
 
 - ### **🔶前言**
