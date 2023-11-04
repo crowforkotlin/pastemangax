@@ -11,6 +11,8 @@
 <img alt="ViewCount" src="https://views.whatilearened.today/views/github/crowforkotlin/CopyMangaX.svg"/>
 </p>
 
+[![Telegram](https://img.shields.io/badge/-telegram-red?color=white&logo=telegram&logoColor=blue)](https://t.me/+kFkVVuDOFsFiMzQ1)
+
 - ### **🔶前言**
     - **🟠数据来源于拷贝漫画 作者不对其中呈现的任何内容负责。**
     - **🔷项目介绍**
