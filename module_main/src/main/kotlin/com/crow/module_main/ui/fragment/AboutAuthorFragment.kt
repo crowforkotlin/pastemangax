@@ -7,13 +7,11 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import androidx.activity.addCallback
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.crow.base.copymanga.entity.Fragments
-import com.crow.base.copymanga.getSpannableString
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getCurrentVersionName
 import com.crow.base.tools.extensions.getNavigationBarHeight
@@ -63,16 +61,10 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { mBinding.mainAboutIcon.setImageDrawable(resource) }
             })
 
-
         val builder = SpannableStringBuilder()
-        val purple = ContextCompat.getColor(mContext, baseR.color.base_purple_8f6af1)
-        builder.appendLine(mContext.getString(R.string.main_about_crow).getSpannableString(purple, 6))
-        builder.appendLine()
-        builder.appendLine(mContext.getString(R.string.main_about_crow_email).getSpannableString(purple, 6))
+        builder.appendLine(mContext.getString(R.string.main_about_crow_email))
         builder.appendLine()
         builder.appendLine(mContext.getString(R.string.main_about_crow_help))
-        builder.appendLine()
-        builder.appendLine(mContext.getString(R.string.main_about_crow_cmmunication).getSpannableString(purple, 1))
         mBinding.mainAboutContent.text = builder
         mBinding.mainAboutAppVersion.text = getString(R.string.main_about_app_version, getCurrentVersionName().split("_")[0])
     }
@@ -89,7 +81,7 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
                             startActivity(intent)
                         }
                         .doOnError { _, _ ->
-                            intent.data = Uri.parse(getString(R.string.main_about_qq_gropu))
+                            intent.data = Uri.parse(getString(R.string.main_about_tg_gropu))
                             startActivity(intent)
                         }
                 }
