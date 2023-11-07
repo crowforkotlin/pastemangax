@@ -16,7 +16,7 @@
 		android:drawablePadding="@dimen/base_dp10"
 		android:text="@string/mine_reg_tips"
 		android:textStyle="bold"
-		app:drawableStartCompat="@drawable/mine_ic_login_tips"
+		app:drawableStartCompat="@drawable/base_ic_tips"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />

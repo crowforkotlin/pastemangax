@@ -1,5 +1,6 @@
 package com.crow.module_anime.ui.viewmodel
 
+import android.util.Base64
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -177,6 +178,22 @@ class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIn
             }
         }
         return stringBuffer
+    }
+
+    fun getSite(index: Int): String? {
+        return runCatching {
+            val listOf = listOf(
+                "bWFwaS5ob3RtYW5nYXNkLmNvbQ==",
+                "bWFwaS5ob3RtYW5nYXNnLmNvbQ==",
+                "bWFwaS5ob3RtYW5nYXNkLmNvbQ==",
+                "bWFwaS5ob3RtYW5nYXNmLmNvbQ==",
+                "bWFwaS5lbGZnamZnaGtrLmNsdWI=",
+                "bWFwaS5mZ2pmZ2hra2NlbnRlci5jbHVi",
+                "bWFwaS5mZ2pmZ2hray5jbHVi"
+            )
+            Base64.decode(listOf[index], Base64.DEFAULT).decodeToString()
+        }
+            .getOrNull()
     }
 
     fun setOrder(order: String) {

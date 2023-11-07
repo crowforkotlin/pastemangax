@@ -4,5 +4,8 @@
 	<string name="BaseZero">0%</string>
 	<string name="base_update_time"><b>更新时间</b></string>
 	<string name="base_hot"><b>热度</b></string>
+	<string name="base_site_tips" translatable="false">如果加载失败，可更改站点重新尝试！</string>
+	<string name="base_site_static" translatable="false">静态站点</string>
+	<string name="base_site_dynamic" translatable="false">动态站点</string>
 	<string name="base_all">全部</string>
 </resources>

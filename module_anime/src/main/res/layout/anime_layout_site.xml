@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/base_dp1"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:layout_marginBottom="@dimen/base_dp10" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/base_dp5"
+        android:layout_marginEnd="@dimen/base_dp5">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/settings_site_tips"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/base_dp20"
+                android:drawablePadding="@dimen/base_dp10"
+                android:text="@string/base_site_tips"
+                android:textSize="@dimen/base_sp12"
+                android:textStyle="bold"
+                app:drawableStartCompat="@drawable/base_ic_tips"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/static_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/base_dp20"
+                android:drawablePadding="@dimen/base_dp10"
+                android:text="@string/base_site_static"
+                android:textSize="@dimen/base_sp12"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/settings_site_tips" />
+
+            <RadioGroup
+                android:id="@+id/static_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/base_dp10"
+                app:layout_constraintEnd_toEndOf="@+id/settings_site_tips"
+                app:layout_constraintStart_toStartOf="@+id/settings_site_tips"
+                app:layout_constraintTop_toBottomOf="@+id/static_title"
+                app:layout_constraintVertical_bias="0">
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/site_main"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_site_main"
+                    android:textSize="@dimen/base_sp12"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/site_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_site_one"
+                    android:textSize="@dimen/base_sp12"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/site_two"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_site_one"
+                    android:textSize="@dimen/base_sp12"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/site_three"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_site_two"
+                    android:textSize="@dimen/base_sp12"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/site_four"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_site_three"
+                    android:textSize="@dimen/base_sp12"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/site_five"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_site_five"
+                    android:textSize="@dimen/base_sp12"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/site_six"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anime_site_six"
+                    android:textSize="@dimen/base_sp12"
+                    android:textStyle="bold" />
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/dynamic_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/base_dp20"
+                android:drawablePadding="@dimen/base_dp10"
+                android:text="@string/base_site_dynamic"
+                android:textSize="@dimen/base_sp12"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/static_group" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_marginTop="@dimen/base_dp10"
+                android:layout_marginBottom="@dimen/base_dp10"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/dynamic_title"
+                app:layout_constraintStart_toStartOf="@id/dynamic_title"
+                app:layout_constraintTop_toBottomOf="@+id/dynamic_title" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

@@ -57,7 +57,10 @@ object BaseStrings {
         const val DiscoverNovelHome = "/api/v3/books?free_type=1&_update=true"
 
 
-        const val HotManga = "https://www.relamanhua.com"
+        fun setHotMangaUrl(url: String) { HotManga = "https://$url" }
+
+        var HotManga = "https://mapi.hotmangasd.com"
+            private set
 
         const val HotManga_Reg = "/api/v3/register"
         const val HotManga_Login = "/api/v3/login"

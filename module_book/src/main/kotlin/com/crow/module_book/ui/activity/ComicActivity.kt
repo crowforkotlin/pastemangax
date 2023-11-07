@@ -37,8 +37,8 @@ import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_book.databinding.BookActivityComicBinding
 import com.crow.module_book.model.intent.BookIntent
-import com.crow.module_book.ui.fragment.comic.reader.BookClassicComicFragment
-import com.crow.module_book.ui.fragment.comic.reader.BookComicCategories
+import com.crow.module_book.ui.fragment.comic.reader.ClassicComicFragment
+import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
 import com.crow.module_book.ui.helper.GestureHelper
 import com.crow.module_book.ui.view.comic.rv.ComicFrameLayout
 import com.crow.module_book.ui.view.comic.rv.ComicRecyclerView
@@ -70,7 +70,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      *
      * ● 2023-07-07 23:54:42 周五 下午
      */
-    private val mComicCategory by lazy { BookComicCategories(this, mBinding.comicFcv) }
+    private val mComicCategory by lazy { ComicCategories(this, mBinding.comicFcv) }
 
     /**
      * ● Activitiy GestureHelper （手势处理）
@@ -119,7 +119,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         if (savedInstanceState == null) {
 
             // CLASSIC 经典 （按钮点击下一章）
-            mComicCategory.apply(BookComicCategories.Type.CLASSIC)
+            mComicCategory.apply(ComicCategories.Type.CLASSIC)
         }
     }
 
@@ -260,7 +260,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         val hasToolbar = hasGlobalPoint(mBinding.comicToolbar, ev.rawX.toInt(), ev.rawY.toInt())
         var hasButton = false
         val fragment = supportFragmentManager.fragments.firstOrNull()
-        if (fragment is BookClassicComicFragment) {
+        if (fragment is ClassicComicFragment) {
             val rv = ((fragment.view as ComicFrameLayout)[0] as ComicRecyclerView)
             val childView = rv.findChildViewUnder(ev.x, ev.y)
             if(childView is FrameLayout) {
@@ -281,7 +281,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     private fun judgeIsClassicButton(ev: MotionEvent): Boolean {
         val fragment = supportFragmentManager.fragments.firstOrNull()
-        if (fragment is BookClassicComicFragment) {
+        if (fragment is ClassicComicFragment) {
             super.dispatchTouchEvent(ev)
         }
         return true

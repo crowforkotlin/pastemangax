@@ -8,6 +8,7 @@ import androidx.core.view.get
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.app.app
@@ -37,7 +38,6 @@ import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_anime.R
 import com.crow.module_anime.databinding.AnimeDiscoverMoreLayoutBinding
 import com.crow.module_anime.databinding.AnimeFragmentBinding
-import com.crow.module_anime.databinding.AnimeLayoutSiteBinding
 import com.crow.module_anime.databinding.AnimeTipsTokenLayoutBinding
 import com.crow.module_anime.model.intent.AnimeIntent
 import com.crow.module_anime.ui.adapter.AnimeDiscoverPageAdapter
@@ -53,7 +53,7 @@ import java.util.Calendar
 import kotlin.properties.Delegates
 import com.crow.base.R as baseR
 
-class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
+class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
 
     /**
@@ -178,80 +178,61 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
         // 刷新监听
         mBinding.refresh.setOnRefreshListener { mAdapter.refresh() }
 
-        mBinding.topbar.apply {
+        // 漫画加载状态监听
+        mAdapter.addLoadStateListener {
+            if(it.source.refresh is LoadState.NotLoading) {
 
-            if (menu.isEmpty()) {
+                val toolbar = mBinding.topbar
 
-                // 先清空
-                menu.clear()
+                if (toolbar.menu.isEmpty()) {
 
-                // 加载布局
-                inflateMenu(R.menu.anime_menu)
+                    // 先清空
+                    toolbar.menu.clear()
 
-                // 年份
-                menu[0].doOnClickInterval { onSelectMenu(R.string.anime_year) }
+                    // 加载布局
+                    toolbar.inflateMenu(R.menu.anime_menu)
 
-                // 搜索
-                menu[1].doOnClickInterval { onSelectMenu(R.string.anime_search) }
+                    // 年份
+                    toolbar.menu[0].doOnClickInterval { onSelectMenu(R.string.anime_year) }
 
-                BaseEvent.getSIngleInstance().apply {
+                    // 类别
+                    toolbar.menu[1].doOnClickInterval { onSelectMenu(R.string.anime_search) }
 
                     // 更新时间
-                    menu[2].doOnClickInterval {
-                        if (getBoolean("ANIME_FRAGMENT_UPDATE_ORDER") == true) {
-                            setBoolean("ANIME_FRAGMENT_UPDATE_ORDER", false)
+
+                    val instance = BaseEvent.getSIngleInstance()
+                    toolbar.menu[2].doOnClickInterval {
+                        if (instance.getBoolean("ANIME_FRAGMENT_UPDATE_ORDER") == true) {
+                            instance.setBoolean("ANIME_FRAGMENT_UPDATE_ORDER", false)
                             mVM.setOrder("-datetime_updated")
                         } else {
-                            setBoolean("ANIME_FRAGMENT_UPDATE_ORDER", true)
+                            instance.setBoolean("ANIME_FRAGMENT_UPDATE_ORDER", true)
                             mVM.setOrder("datetime_updated")
                         }
                         updateAnime()
                     }
 
                     // 热度
-                    menu[3].doOnClickInterval {
-                        if (getBoolean("ANIME_FRAGMENT_POPULAR_ORDER") == true) {
-                            setBoolean("ANIME_FRAGMENT_POPULAR_ORDER", false)
+                    toolbar.menu[3].doOnClickInterval {
+                        if (instance.getBoolean("ANIME_FRAGMENT_POPULAR_ORDER") == true) {
+                            instance.setBoolean("ANIME_FRAGMENT_POPULAR_ORDER", false)
                             mVM.setOrder("-popular")
                         } else {
-                            setBoolean("ANIME_FRAGMENT_POPULAR_ORDER", true)
+                            instance.setBoolean("ANIME_FRAGMENT_POPULAR_ORDER", true)
                             mVM.setOrder("popular")
                         }
                         updateAnime()
                     }
 
-                    // 设置站点
-                    menu[4].doOnClickInterval {
-
-                        val binding = AnimeLayoutSiteBinding.inflate(layoutInflater)
-                        val dialog = mContext.newMaterialDialog {
-                            it.setTitle(getString(R.string.anime_site_setting))
-                            it.setView(binding.root)
-                        }
-                        binding.apply {
-                            staticGroup.setOnCheckedChangeListener { group, checkedId ->
-                                when(checkedId) {
-                                    R.id.site_main -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(0) ?: return@setOnCheckedChangeListener) }
-                                    R.id.site_one -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(1) ?: return@setOnCheckedChangeListener) }
-                                    R.id.site_two -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(2) ?: return@setOnCheckedChangeListener) }
-                                    R.id.site_three -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(3) ?: return@setOnCheckedChangeListener) }
-                                    R.id.site_four -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(4) ?: return@setOnCheckedChangeListener) }
-                                    R.id.site_five -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(5) ?: return@setOnCheckedChangeListener) }
-                                    R.id.site_six -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(6) ?: return@setOnCheckedChangeListener) }
-                                }
-                                dialog.cancel()
-                            }
-                        }
+                    if (toolbar.subtitle.isNullOrEmpty()) {
+                        mSubtitle = getString(baseR.string.base_all)
                     }
-                }
 
-                // 设置副标题
-                if (subtitle.isNullOrEmpty()) { mSubtitle = getString(baseR.string.base_all) }
-
-                // subtitle textview
-                mToolbarSubtitle = this::class.java.superclass.getDeclaredField("mSubtitleTextView").run {
-                    isAccessible = true
-                    get(this@apply) as TextView
+                    // subtitle textview
+                    mToolbarSubtitle = toolbar::class.java.superclass.getDeclaredField("mSubtitleTextView").run {
+                        isAccessible = true
+                        get(toolbar) as TextView
+                    }
                 }
             }
         }
@@ -323,6 +304,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
         }
     }
 
+
     /**
      * ● 请求失败重试
      *
@@ -380,46 +362,44 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
         mBinding.list.stopScroll()
 
-        AnimeDiscoverMoreLayoutBinding.inflate(layoutInflater).apply {
-
-            var job: Job? = null
-            val chipTextSize = mContext.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
-            val dialog = mContext.newMaterialDialog {
-                it.setTitle(getString(type))
-                it.setView(root)
-                it.setOnDismissListener { job?.cancel() }
-            }
-            when(type) {
-                R.string.anime_year -> {
-                    job = viewLifecycleOwner.lifecycleScope.launch {
-                        val year = Calendar.getInstance().get(Calendar.YEAR)
-                        repeat(22) {
-                            val newYear = when (it) {
-                                0 -> getString(baseR.string.base_all)
-                                1 -> year
-                                else -> year - (it - 1)
-                            }
-                            val chip = Chip(mContext)
-                            chip.text = newYear.toString()
-                            chip.textSize = chipTextSize
-                            chip.doOnClickInterval { _ ->
-                                dialog.cancel()
-                                mSubtitle = newYear.toString()
-                                mToolbarSubtitle?.animateFadeIn()
-                                mVM.setYear(if (newYear.toString() == getString(baseR.string.base_all)) "" else newYear.toString())
-                                updateAnime()
-                            }
-                            moreChipGroup.addView(chip)
-                            delay(16L)
+        val binding = AnimeDiscoverMoreLayoutBinding.inflate(layoutInflater)
+        val chipTextSize = mContext.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
+        var job: Job? = null
+        val dialog = mContext.newMaterialDialog {
+            it.setTitle(getString(type))
+            it.setView(binding.root)
+            it.setOnDismissListener { job?.cancel() }
+        }
+        when(type) {
+            R.string.anime_year -> {
+                job = viewLifecycleOwner.lifecycleScope.launch {
+                    val year = Calendar.getInstance().get(Calendar.YEAR)
+                    repeat(22) {
+                        val newYear = when (it) {
+                            0 -> getString(baseR.string.base_all)
+                            1 -> year
+                            else -> year - (it - 1)
                         }
+                        val chip = Chip(mContext)
+                        chip.text = newYear.toString()
+                        chip.textSize = chipTextSize
+                        chip.doOnClickInterval { _ ->
+                            dialog.cancel()
+                            mSubtitle = newYear.toString()
+                            mToolbarSubtitle?.animateFadeIn()
+                            mVM.setYear(if (newYear.toString() == getString(baseR.string.base_all)) "" else newYear.toString())
+                            updateAnime()
+                        }
+                        binding.moreChipGroup.addView(chip)
+                        delay(16L)
                     }
                 }
-                R.string.anime_search ->{
-                    job = viewLifecycleOwner.lifecycleScope.launch {
-                    }
-                }
-                else -> error("Unknow menu type!")
             }
+            R.string.anime_search ->{
+                job = viewLifecycleOwner.lifecycleScope.launch {
+                }
+            }
+            else -> error("Unknow menu type!")
         }
     }
 
