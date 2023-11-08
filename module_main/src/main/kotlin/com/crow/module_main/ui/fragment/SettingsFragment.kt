@@ -145,13 +145,13 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
             }
 
             // TV后缀设置当前站点为...
-            if (appConfig.mSite.endsWith(BaseStrings.URL.CopyManga_TLD_TV)) {
+            if (appConfig.mCopyMangaSite.endsWith(BaseStrings.URL.CopyManga_TLD_TV)) {
                 settingsSiteStaticRadioOne.isChecked = true
                 settingsSiteCurrent.text = getString(R.string.main_site_current, settingsSiteStaticRadioOne.text)
             }
 
             // SITE后缀设置当前站点为...
-            else if (appConfig.mSite.endsWith(BaseStrings.URL.CopyManga_TLD_SITE)) {
+            else if (appConfig.mCopyMangaSite.endsWith(BaseStrings.URL.CopyManga_TLD_SITE)) {
                 settingsSiteStaticRadioTwo.isChecked = true
                 settingsSiteCurrent.text = getString(R.string.main_site_current, settingsSiteStaticRadioTwo.text)
             }
@@ -177,7 +177,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                         settingsSiteStaticRadioOne.id -> BaseStrings.URL.setCopyMangaUrl(BaseStrings.URL.CopyManga_TLD_TV)
                         settingsSiteStaticRadioTwo.id -> BaseStrings.URL.setCopyMangaUrl(BaseStrings.URL.CopyManga_TLD_SITE)
                     }
-                    mVM.saveAppConfig(appConfig.copy(mSite = BaseStrings.URL.COPYMANGA))
+                    mVM.saveAppConfig(appConfig.copy(mCopyMangaSite = BaseStrings.URL.COPYMANGA))
                     mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
                 }
             }

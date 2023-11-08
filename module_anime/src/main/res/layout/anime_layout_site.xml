@@ -52,6 +52,7 @@
                 android:id="@+id/static_group"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+
                 android:layout_marginTop="@dimen/base_dp10"
                 app:layout_constraintEnd_toEndOf="@+id/settings_site_tips"
                 app:layout_constraintStart_toStartOf="@+id/settings_site_tips"
