@@ -24,4 +24,6 @@
     <string name="anime_site_five">站点⑤</string>
     <string name="anime_site_six">站点⑥</string>
 
+    <string name="anime_site_position">站点 - %d</string>
+
 </resources>

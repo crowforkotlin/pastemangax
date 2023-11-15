@@ -7,6 +7,7 @@ import com.crow.module_anime.model.req.RegReq
 import com.crow.module_anime.model.resp.chapter.AnimeChapterResp
 import com.crow.module_anime.model.resp.discover.DiscoverPageResp
 import com.crow.module_anime.model.resp.info.AnimeInfoResp
+import com.crow.module_anime.model.resp.site.SiteResp
 import com.crow.module_anime.model.resp.video.AnimeVideoResp
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.Body
@@ -51,4 +52,7 @@ interface AnimeService {
         @Path(BaseStrings.PATH_WORD) pathword: String,
         @Path("chapter_uuid") chapterUUID: String
     ): Flow<BaseResultResp<AnimeVideoResp>>
+
+    @GET(BaseStrings.URL.HotManga_Site)
+    fun getSite() : Flow<BaseResultResp<SiteResp>>
 }

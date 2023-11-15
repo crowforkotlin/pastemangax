@@ -19,12 +19,12 @@ import com.crow.base.copymanga.BaseUserConfig
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
+import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2sp
@@ -44,6 +44,7 @@ import com.crow.module_anime.databinding.AnimeLayoutSiteBinding
 import com.crow.module_anime.databinding.AnimeTipsTokenLayoutBinding
 import com.crow.module_anime.model.intent.AnimeIntent
 import com.crow.module_anime.ui.adapter.AnimeDiscoverPageAdapter
+import com.crow.module_anime.ui.adapter.AnimeSiteRvAdapter
 import com.crow.module_anime.ui.viewmodel.AnimeViewModel
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.Job
@@ -57,7 +58,6 @@ import kotlin.properties.Delegates
 import com.crow.base.R as baseR
 
 class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
-
 
     /**
      * ● Static Area
@@ -122,6 +122,21 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
      */
     private var mBaseErrorViewStub by BaseNotNullVar<BaseErrorViewStub>(true)
 
+    /**
+     * ● 站点VB
+     *
+     * ● 2023-11-11 13:20:16 周六 下午
+     * @author crowforkotlin
+     */
+    private var mSiteBinding: AnimeLayoutSiteBinding? = null
+
+    /**
+     * ● 站点窗口
+     *
+     * ● 2023-11-11 13:20:23 周六 下午
+     * @author crowforkotlin
+     */
+    private var mSiteDialog: AlertDialog? =null
 
     /**
      * ● 获取VB
@@ -301,55 +316,83 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                             }
                         }
                 }
+                is AnimeIntent.AnimeSiteIntent -> {
+                    intent.mViewState
+                        .doOnResult {
+                            mSiteDialog?.let {  dialog ->
+                                mSiteBinding?.let { binding ->
+                                    val sites = (intent.siteResp?.mApi?.flatMap { it.map {  site -> site } } ?: return@doOnResult).toMutableList()
+                                    binding.list.adapter = AnimeSiteRvAdapter { _, site ->
+                                        BaseStrings.URL.setHotMangaUrl(site)
+                                        dialog.cancel()
+                                    }
+                                        .also { adapter -> lifecycleScope.launch { adapter.doNotify(sites, BASE_ANIM_100L shr 1) } }
+                                }
+                            }
+                        }
+                }
             }
         }
     }
 
+    /**
+     * ● 点击站点
+     *
+     * ● 2023-11-11 13:06:59 周六 下午
+     * @author crowforkotlin
+     */
     private fun onSiteClick() {
         lifecycleScope.launch {
-            val binding = AnimeLayoutSiteBinding.inflate(layoutInflater)
-            val siteList = mVM.getSiteList()
-            val currentSite = Base64.encodeToString(HotManga.substring(8, HotManga.length).toByteArray(), Base64.NO_WRAP)
-            siteList.onEachIndexed { index, site ->
-                site.contentEquals(currentSite).log()
-                site.log()
-                currentSite.log()
-                if (currentSite.contentEquals(site)) {
-                    when(index) {
-                        0 -> binding.siteMain.isChecked = true
-                        1 -> binding.siteOne.isChecked = true
-                        2 -> binding.siteTwo.isChecked = true
-                        3 -> binding.siteThree.isChecked = true
-                        4 -> binding.siteFour.isChecked = true
-                        5 -> binding.siteFive.isChecked = true
-                        6 -> binding.siteSix.isChecked = true
-                    }
-                }
-            }
-            val dialog = mContext.newMaterialDialog {
-                it.setTitle(getString(R.string.anime_site_setting))
-                it.setView(binding.root)
-            }
-            val config = mVM.getReadedAppConfig() ?: return@launch run {
-                toast(getString(baseR.string.BaseUnknowError))
-                dialog.cancel()
-            }
-            binding.apply {
-                staticGroup.setOnCheckedChangeListener { _, checkedId ->
-                    when(checkedId) {
-                        R.id.site_main -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(0) ?: return@setOnCheckedChangeListener) }
-                        R.id.site_one -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(1) ?: return@setOnCheckedChangeListener) }
-                        R.id.site_two -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(2) ?: return@setOnCheckedChangeListener) }
-                        R.id.site_three -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(3) ?: return@setOnCheckedChangeListener) }
-                        R.id.site_four -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(4) ?: return@setOnCheckedChangeListener) }
-                        R.id.site_five -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(5) ?: return@setOnCheckedChangeListener) }
-                        R.id.site_six -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(6) ?: return@setOnCheckedChangeListener) }
-                    }
-                    mVM.saveAppConfig(config.copy(mHotMangaSite = HotManga))
-                    dialog.cancel()
-                }
-            }
+            mSiteBinding = AnimeLayoutSiteBinding.inflate(layoutInflater)
+            mSiteBinding?.apply {
 
+                val siteList: List<String> = mVM.getSiteList()
+                val currentSite: String = Base64.encodeToString(HotManga.substring(8, HotManga.length).toByteArray(), Base64.NO_WRAP)
+                siteList.onEachIndexed { index, site ->
+                    if (currentSite.contentEquals(site)) {
+                        when(index) {
+                            0 -> siteMain.isChecked = true
+                            1 -> siteOne.isChecked = true
+                            2 -> siteTwo.isChecked = true
+                            3 -> siteThree.isChecked = true
+                            4 -> siteFour.isChecked = true
+                            5 -> siteFive.isChecked = true
+                            6 -> siteSix.isChecked = true
+                        }
+                    }
+                }
+
+                mVM.input(AnimeIntent.AnimeSiteIntent())
+
+                title.text = getString(R.string.anime_site_setting)
+                close.doOnClickInterval { mSiteDialog?.cancel() }
+
+                mSiteDialog = mContext.newMaterialDialog {
+                    it.setView(root)
+                    it.setOnCancelListener {
+                        mSiteDialog = null
+                        mSiteBinding = null
+                    }
+                }
+
+                val config = mVM.getReadedAppConfig() ?: return@launch run {
+                    toast(getString(baseR.string.BaseUnknowError))
+                    mSiteDialog?.cancel()
+                }
+                staticGroup.setOnCheckedChangeListener { _, checkedId ->
+                        when(checkedId) {
+                            R.id.site_main -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(0) ?: return@setOnCheckedChangeListener) }
+                            R.id.site_one -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(1) ?: return@setOnCheckedChangeListener) }
+                            R.id.site_two -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(2) ?: return@setOnCheckedChangeListener) }
+                            R.id.site_three -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(3) ?: return@setOnCheckedChangeListener) }
+                            R.id.site_four -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(4) ?: return@setOnCheckedChangeListener) }
+                            R.id.site_five -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(5) ?: return@setOnCheckedChangeListener) }
+                            R.id.site_six -> { BaseStrings.URL.setHotMangaUrl(mVM.getSite(6) ?: return@setOnCheckedChangeListener) }
+                        }
+                        mVM.saveAppConfig(config.copy(mHotMangaSite = HotManga))
+                        mSiteDialog?.cancel()
+                    }
+            }
         }
     }
 

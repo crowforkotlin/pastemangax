@@ -102,7 +102,7 @@
         android:text="@string/BaseLoadingRetry"
         android:textColor="@color/black"
         android:visibility="invisible"
-        app:backgroundTint="@color/main_blue_100"
+        app:backgroundTint="@color/base_blue_100"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

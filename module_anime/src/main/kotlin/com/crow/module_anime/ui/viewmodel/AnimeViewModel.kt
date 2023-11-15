@@ -92,7 +92,12 @@ class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIn
             is AnimeIntent.RegIntent -> onRegIntent(intent)
             is AnimeIntent.LoginIntent -> onLoginIntent(intent)
             is AnimeIntent.AnimeVideoIntent -> onAnimeVideoIntent(intent)
+            is AnimeIntent.AnimeSiteIntent -> onAnimeSiteIntent(intent)
         }
+    }
+
+    private fun onAnimeSiteIntent(intent: AnimeIntent.AnimeSiteIntent) {
+        flowResult(intent, repository.getSite()) { value -> intent.copy(siteResp = value.mResults) }
     }
 
     private fun onAnimeVideoIntent(intent: AnimeIntent.AnimeVideoIntent) {

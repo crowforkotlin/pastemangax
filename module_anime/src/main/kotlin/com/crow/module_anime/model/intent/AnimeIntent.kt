@@ -9,6 +9,7 @@ import com.crow.module_anime.model.resp.info.AnimeInfoResp
 import com.crow.module_anime.model.resp.login.UserLoginResp
 import com.crow.module_anime.model.resp.reg.UserRegResp
 import com.crow.module_anime.model.resp.search.SearchResp
+import com.crow.module_anime.model.resp.site.SiteResp
 import com.crow.module_anime.model.resp.video.AnimeVideoResp
 
 open class AnimeIntent : BaseMviIntent() {
@@ -39,4 +40,6 @@ open class AnimeIntent : BaseMviIntent() {
     ) : AnimeIntent()
 
     data class AnimeSearchIntent(val pathword: String, val offset: Int, val limit: Int, val searchResp: SearchResp) : AnimeIntent()
+
+    data class AnimeSiteIntent(val siteResp: SiteResp? = null) : AnimeIntent()
 }
