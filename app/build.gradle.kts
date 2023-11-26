@@ -4,8 +4,6 @@ plugins {
     alias(app.plugins.android.ksp)
 }
 
-kotlin { jvmToolchain(11) }
-
 android {
 
     // 标识应用程序命名空间 （应用商店上的唯一标识符）
