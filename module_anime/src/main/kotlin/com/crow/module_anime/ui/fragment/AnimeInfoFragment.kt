@@ -25,6 +25,7 @@ import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.px2sp
@@ -175,10 +176,15 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      * ● 2023-10-12 01:22:41 周四 上午
      */
     override fun initListener() {
+
+        // 刷新
         mBinding.refresh.setOnRefreshListener {
             mVM.input(AnimeIntent.PageInfoIntent(mPathword))
             mVM.input(AnimeIntent.ChapterListIntent(mPathword))
         }
+
+        // 返回
+        mBinding.back.doOnClickInterval { navigateUp() }
     }
 
     /**
