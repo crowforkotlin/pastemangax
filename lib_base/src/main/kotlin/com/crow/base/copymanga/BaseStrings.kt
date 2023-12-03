@@ -1,3 +1,5 @@
+@file:Suppress("ConstPropertyName")
+
 package com.crow.base.copymanga
 
 object BaseStrings {

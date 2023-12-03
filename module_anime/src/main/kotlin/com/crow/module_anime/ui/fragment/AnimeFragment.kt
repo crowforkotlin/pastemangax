@@ -1,12 +1,17 @@
 package com.crow.module_anime.ui.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.core.view.isEmpty
+import androidx.core.view.isGone
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
@@ -16,6 +21,7 @@ import com.crow.base.copymanga.BaseLoadStateAdapter
 import com.crow.base.copymanga.BaseStrings
 import com.crow.base.copymanga.BaseStrings.URL.HotManga
 import com.crow.base.copymanga.BaseUserConfig
+import com.crow.base.copymanga.appIsDarkMode
 import com.crow.base.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
@@ -23,8 +29,11 @@ import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2sp
@@ -35,11 +44,13 @@ import com.crow.base.ui.view.BaseErrorViewStub
 import com.crow.base.ui.view.baseErrorViewStub
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
+import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.module_anime.R
 import com.crow.module_anime.databinding.AnimeDiscoverMoreLayoutBinding
 import com.crow.module_anime.databinding.AnimeFragmentBinding
+import com.crow.module_anime.databinding.AnimeFragmentSearchViewBinding
 import com.crow.module_anime.databinding.AnimeLayoutSiteBinding
 import com.crow.module_anime.databinding.AnimeTipsTokenLayoutBinding
 import com.crow.module_anime.model.intent.AnimeIntent
@@ -139,6 +150,14 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     private var mSiteDialog: AlertDialog? =null
 
     /**
+     * ● 番剧站点列表加载任务
+     *
+     * ● 2023-12-03 18:28:15 周日 下午
+     * @author crowforkotlin
+     */
+    private var mAnimeSiteJob: Job? = null
+
+    /**
      * ● 获取VB
      *
      * ● 2023-10-10 01:01:31 周二 上午
@@ -157,7 +176,6 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
         // 初始化RV适配器
         mBinding.list.adapter = mAdapter
-
 
         // 设置加载动画独占1行，漫画卡片3行
         (mBinding.list.layoutManager as GridLayoutManager).apply {
@@ -210,7 +228,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                 menu[0].doOnClickInterval { onSelectMenu(R.string.anime_year) }
 
                 // 搜索
-                menu[1].doOnClickInterval { onSelectMenu(R.string.anime_search) }
+                menu[1].doOnClickInterval {
+                    loadSearchView()
+                }
 
                 BaseEvent.getSIngleInstance().apply {
 
@@ -318,15 +338,41 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                 }
                 is AnimeIntent.AnimeSiteIntent -> {
                     intent.mViewState
+                        .doOnLoading {
+                            mSiteBinding?.let { binding ->
+                                if (binding.lottie.isGone) {
+                                    binding.lottie.resumeAnimation()
+                                    binding.lottie.animateFadeIn()
+                                }
+                            }
+                        }
+                        .doOnError { _, _ ->
+                           mSiteBinding?.let { binding ->
+                               if (binding.lottie.isVisible) {
+                                   binding.lottie.animateFadeOutWithEndInVisible()
+                                   binding.list.animateFadeOut()
+                                   binding.reload.animateFadeIn()
+                               }
+                           }
+                        }
                         .doOnResult {
                             mSiteDialog?.let {  dialog ->
                                 mSiteBinding?.let { binding ->
                                     val sites = (intent.siteResp?.mApi?.flatMap { it.map {  site -> site } } ?: return@doOnResult).toMutableList()
+                                    if (binding.list.isInvisible) {
+                                        binding.list.animateFadeIn()
+                                    }
                                     binding.list.adapter = AnimeSiteRvAdapter { _, site ->
                                         BaseStrings.URL.setHotMangaUrl(site)
                                         dialog.cancel()
                                     }
-                                        .also { adapter -> lifecycleScope.launch { adapter.doNotify(sites, BASE_ANIM_100L shr 1) } }
+                                        .also { adapter ->
+                                            mAnimeSiteJob = lifecycleScope.launch {
+                                                binding.lottie.pauseAnimation()
+                                                binding.lottie.isGone = true
+                                                adapter.doNotify(sites, BASE_ANIM_100L shl 1)
+                                            }
+                                        }
                                 }
                             }
                         }
@@ -345,7 +391,6 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
         lifecycleScope.launch {
             mSiteBinding = AnimeLayoutSiteBinding.inflate(layoutInflater)
             mSiteBinding?.apply {
-
                 val siteList: List<String> = mVM.getSiteList()
                 val currentSite: String = Base64.encodeToString(HotManga.substring(8, HotManga.length).toByteArray(), Base64.NO_WRAP)
                 siteList.onEachIndexed { index, site ->
@@ -366,10 +411,15 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
                 title.text = getString(R.string.anime_site_setting)
                 close.doOnClickInterval { mSiteDialog?.cancel() }
-
+                reload.doOnClickInterval {
+                    reload.animateFadeOut()
+                    mVM.input(AnimeIntent.AnimeSiteIntent())
+                }
                 mSiteDialog = mContext.newMaterialDialog {
                     it.setView(root)
                     it.setOnCancelListener {
+                        mAnimeSiteJob?.cancel()
+                        mAnimeSiteJob = null
                         mSiteDialog = null
                         mSiteBinding = null
                     }
@@ -489,6 +539,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                 }
                 R.string.anime_search ->{
                     job = viewLifecycleOwner.lifecycleScope.launch {
+
                     }
                 }
                 else -> error("Unknow menu type!")
@@ -541,5 +592,34 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
             if (!mIsCancelTokenDialog) { mVM.input(AnimeIntent.RegIntent(mVM.genReg())) }
         }
         return tokenEmpty
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun loadSearchView() {
+        val binding = AnimeFragmentSearchViewBinding.inflate(layoutInflater)
+        mBinding.searchView.apply {
+            val bgColor: Int; val tintColor: Int
+            if (appIsDarkMode) {
+                tintColor = ContextCompat.getColor(mContext, android.R.color.white)
+                bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
+            } else {
+                tintColor = ContextCompat.getColor(mContext, android.R.color.black)
+                bgColor = ContextCompat.getColor(mContext, android.R.color.white)
+            }
+
+            // 设置SearchView toolbar导航图标
+            toolbar.setNavigationIcon(baseR.drawable.base_ic_back_24dp)
+
+            // 设置Navigation 颜色
+            toolbar.navigationIcon?.setTint(tintColor)
+
+            // 设置SearchView toolbar背景色白，沉浸式
+            toolbar.setBackgroundColor(bgColor)
+
+            // 关闭状态栏空格间距
+            setStatusBarSpacerEnabled(false)
+            addView(binding.root)
+            show()
+        }
     }
 }

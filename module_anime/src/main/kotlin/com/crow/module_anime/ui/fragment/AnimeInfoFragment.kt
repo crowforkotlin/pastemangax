@@ -53,8 +53,9 @@ import com.crow.base.R as baseR
 
 /**
  * ● 动漫信息页面
- * ● @author : crowforkotlin
+ *
  * ● 2023-10-11 22:59:51 周三 下午
+ * @author : crowforkotlin
  */
 class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
 
@@ -218,7 +219,6 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
                         .doOnResult {
                             loadAnimeChapterList(intent.chapters ?: return@doOnResult)
                         }
-
                 }
             }
         }
@@ -292,6 +292,12 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      */
     private fun navigateUp() { parentFragmentManager.popSyncWithClear(Fragments.AnimeInfo.name) }
 
+    /**
+     * ● 启动动漫Activity
+     *
+     * ● 2023-11-30 01:26:58 周四 上午
+     * @author crowforkotlin
+     */
     private fun launchAnimeActivity(pos: Int, chapter: AnimeChapterResult) {
 
         when(chapter.mLines.size) {

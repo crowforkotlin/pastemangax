@@ -2,6 +2,7 @@ package com.crow.module_anime.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -25,6 +26,7 @@ class AnimeSiteRvAdapter(
     inner class SiteVH(val button: MaterialRadioButton) : RecyclerView.ViewHolder(button) {
         
         init {
+            button.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
             button.doOnClickInterval { mClick(absoluteAdapterPosition, getItem(absoluteAdapterPosition)) }
         }
         
