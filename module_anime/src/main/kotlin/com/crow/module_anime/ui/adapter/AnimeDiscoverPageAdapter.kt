@@ -42,9 +42,9 @@ class AnimeDiscoverPageAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : LoadingViewHolder {
         return LoadingViewHolder(AnimeFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
 
-            vh.binding.discoverRvImage.layoutParams.height = appComicCardHeight
+            vh.binding.image.layoutParams.height = appComicCardHeight
 
-            vh.binding.discoverRvBookCard.doOnClickInterval {
+            vh.binding.card.doOnClickInterval {
                 mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
 
@@ -52,20 +52,20 @@ class AnimeDiscoverPageAdapter(
                 mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
 
-            ToolTipsView.showToolTipsByLongClick(vh.binding.discoverRvName)
+            ToolTipsView.showToolTipsByLongClick(vh.binding.name)
         }
     }
 
     override fun onBindViewHolder(vh: LoadingViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        vh.binding.discoverLoading.isVisible = true
-        vh.binding.discoverProgressText.isVisible = true
-        vh.binding.discoverProgressText.text = AppGlideProgressFactory.PERCENT_0
+        vh.binding.loading.isVisible = true
+        vh.binding.loadingText.isVisible = true
+        vh.binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
         vh.mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
 
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mCover) { _, _, percentage, _, _ ->
-            vh.binding.discoverProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+            vh.binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage)
         }
 
         Glide.with(vh.itemView.context)
@@ -73,25 +73,25 @@ class AnimeDiscoverPageAdapter(
             .addListener(vh.mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    vh.binding.discoverLoading.isInvisible = true
-                    vh.binding.discoverProgressText.isInvisible = true
+                    vh.binding.loading.isInvisible = true
+                    vh.binding.loadingText.isInvisible = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    vh.binding.discoverLoading.isInvisible = true
-                    vh.binding.discoverProgressText.isInvisible = true
+                    vh.binding.loading.isInvisible = true
+                    vh.binding.loadingText.isInvisible = true
                     NoTransition()
                 }
             })
-            .into(vh.binding.discoverRvImage)
+            .into(vh.binding.image)
 
-        vh.binding.discoverRvName.text = item.mName
-        vh.binding.discoverRvHot.text = formatValue(item.mPopular)
-        vh.binding.discoverRvTime.text = item.mDatetimeUpdated
+        vh.binding.name.text = item.mName
+        vh.binding.hot.text = formatValue(item.mPopular)
+        vh.binding.time.text = item.mDatetimeUpdated
     }
 
     override fun setColor(vh: LoadingViewHolder, color: Int) {
-        vh.binding.discoverRvName.setTextColor(color)
-        vh.binding.discoverRvHot.setTextColor(color)
-        vh.binding.discoverRvTime.setTextColor(color)
+        vh.binding.name.setTextColor(color)
+        vh.binding.hot.setTextColor(color)
+        vh.binding.time.setTextColor(color)
     }
 }

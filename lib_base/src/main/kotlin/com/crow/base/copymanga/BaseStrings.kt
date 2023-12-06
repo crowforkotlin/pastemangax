@@ -70,6 +70,7 @@ object BaseStrings {
         const val HotManga_AnimeChapterList = "/api/v3/cartoon/{$PATH_WORD}/chapters2"
         const val HotManga_AnimeVideo = "/api/v3/cartoon/{$PATH_WORD}/chapter/{chapter_uuid}?platform=1"
         const val HotManga_Site = "/api/v3/system/network2?platform=1"
+        const val HotManga_Search = "api/v3/search/cartoon?platform=1&free_type=1&_update=true"
     }
 
 }

@@ -37,8 +37,10 @@ class NovelHistoryListAdapter(private val onClick: (name: String, pathword: Stri
     inner class HistoryVH(binding: MainHistoryRvBinding) : BaseGlideLoadingViewHolder<MainHistoryRvBinding>(binding) {
 
         init {
-            binding.discoverRvBookCard.layoutParams.width = appComicCardWidth
-            binding.discoverRvBookCard.layoutParams.height = appComicCardHeight
+            binding.card.layoutParams.apply { 
+                width = appComicCardWidth
+                height = appComicCardHeight
+            }
             itemView.doOnClickInterval {
                 val item = (getItem(absoluteAdapterPosition) ?: return@doOnClickInterval).mBook
                 onClick(item.mName, item.mPathWord)
@@ -46,13 +48,13 @@ class NovelHistoryListAdapter(private val onClick: (name: String, pathword: Stri
         }
 
         fun onBind(item: NovelHistoryResult) {
-            binding.discoverLoading.isVisible = true
-            binding.discoverProgressText.isVisible = true
-            binding.discoverProgressText.text = AppGlideProgressFactory.PERCENT_0
+            binding.loading.isVisible = true
+            binding.loadingText.isVisible = true
+            binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
             mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
 
             mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mBook.mCover) { _, _, percentage, _, _ ->
-                binding.discoverProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+                binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage)
             }
 
             Glide.with(itemView)
@@ -60,25 +62,25 @@ class NovelHistoryListAdapter(private val onClick: (name: String, pathword: Stri
                 .addListener(mAppGlideProgressFactory?.getRequestListener())
                 .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                     if (dataSource == DataSource.REMOTE) {
-                        binding.discoverLoading.isInvisible = true
-                        binding.discoverProgressText.isInvisible = true
+                        binding.loading.isInvisible = true
+                        binding.loadingText.isInvisible = true
                         DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                     } else {
-                        binding.discoverLoading.isInvisible = true
-                        binding.discoverProgressText.isInvisible = true
+                        binding.loading.isInvisible = true
+                        binding.loadingText.isInvisible = true
                         NoTransition()
                     }
                 })
-                .into(binding.discoverRvImage)
+                .into(binding.image)
 
             val context = itemView.context
 
-            binding.discoverRvName.text = item.mBook.mName
-            binding.discoverRvTime.text = context.getString(bookR.string.BookComicUpdate, item.mBook.mDatetimeUpdated)
-            binding.discoverRvAuthor.text = context.getString(bookR.string.BookComicAuthor, item.mBook.mAuthor.joinToString { it.mName })
-            binding.discoverRvReaded.text = context.getString(bookR.string.book_readed_chapter, item.mLastChapterName)
-            binding.discoverRvLastest.text = context.getString(bookR.string.BookComicNewChapter, item.mBook.mLastChapterName)
-            binding.discoverRvHot.text = context.getString(bookR.string.BookComicHot, formatValue(item.mBook.mPopular))
+            binding.name.text = item.mBook.mName
+            binding.time.text = context.getString(bookR.string.BookComicUpdate, item.mBook.mDatetimeUpdated)
+            binding.author.text = context.getString(bookR.string.BookComicAuthor, item.mBook.mAuthor.joinToString { it.mName })
+            binding.readed.text = context.getString(bookR.string.book_readed_chapter, item.mLastChapterName)
+            binding.lastest.text = context.getString(bookR.string.BookComicNewChapter, item.mBook.mLastChapterName)
+            binding.hot.text = context.getString(bookR.string.BookComicHot, formatValue(item.mBook.mPopular))
         }
     }
 

@@ -17,7 +17,9 @@ import com.crow.module_anime.model.intent.AnimeIntent
 import com.crow.module_anime.model.req.RegReq
 import com.crow.module_anime.model.resp.discover.DiscoverPageResult
 import com.crow.module_anime.model.resp.login.UserLoginResp
+import com.crow.module_anime.model.resp.search.SearchResult
 import com.crow.module_anime.model.source.DiscoverPageDataSource
+import com.crow.module_anime.model.source.SearchPageDataSource
 import com.crow.module_anime.network.AnimeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -35,6 +37,14 @@ class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIn
      * ● 2023-10-10 00:50:44 周二 上午
      */
     var mDiscoverPageFlow: Flow<PagingData<DiscoverPageResult>>? = null
+        private set
+
+    /**
+     * ● SearchPageFlow
+     *
+     * ● 2023-10-10 00:50:44 周二 上午
+     */
+    var mSearchPageFlow: Flow<PagingData<SearchResult>>? = null
         private set
 
     /**
@@ -93,7 +103,29 @@ class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIn
             is AnimeIntent.LoginIntent -> onLoginIntent(intent)
             is AnimeIntent.AnimeVideoIntent -> onAnimeVideoIntent(intent)
             is AnimeIntent.AnimeSiteIntent -> onAnimeSiteIntent(intent)
+            is AnimeIntent.AnimeSearchIntent -> onAnimeSearchIntent(intent)
         }
+    }
+
+    private fun onAnimeSearchIntent(intent: AnimeIntent.AnimeSearchIntent) {
+        mSearchPageFlow = Pager(
+            config = PagingConfig(
+                pageSize = 30,
+                initialLoadSize = 30,
+                enablePlaceholders = true
+            ),
+            pagingSourceFactory = {
+                SearchPageDataSource { position, pageSize ->
+                    flowResult(
+                        repository.getSearchPage(
+                            query = intent.queryString,
+                            offset = position,
+                            limit = pageSize
+                        ), intent
+                    ) { value -> intent.copy(searchResp = value.mResults) }.mResults
+                }
+            }
+        ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
     }
 
     private fun onAnimeSiteIntent(intent: AnimeIntent.AnimeSiteIntent) {

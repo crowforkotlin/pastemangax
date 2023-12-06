@@ -28,6 +28,7 @@ import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
+import com.crow.base.tools.extensions.afterTextChanged
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
@@ -36,6 +37,7 @@ import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
+import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.px2sp
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
@@ -55,6 +57,7 @@ import com.crow.module_anime.databinding.AnimeLayoutSiteBinding
 import com.crow.module_anime.databinding.AnimeTipsTokenLayoutBinding
 import com.crow.module_anime.model.intent.AnimeIntent
 import com.crow.module_anime.ui.adapter.AnimeDiscoverPageAdapter
+import com.crow.module_anime.ui.adapter.AnimeSearchPageAdapter
 import com.crow.module_anime.ui.adapter.AnimeSiteRvAdapter
 import com.crow.module_anime.ui.viewmodel.AnimeViewModel
 import com.google.android.material.chip.Chip
@@ -94,6 +97,26 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
             navigateAnimeInfoPage(anime.mPathWord, anime.mName)
         }
     }
+
+    /**
+     * ● Search Page Rv Adapter
+     *
+     * ● 2023-12-06 21:15:18 周三 下午
+     * @author crowforkotlin
+     */
+    private val mSearchAdapter by lazy {
+        AnimeSearchPageAdapter { anime ->
+           navigateAnimeInfoPage(anime.mPathWord, anime.mName)
+        }
+    }
+
+    /**
+     * ● SearchBinding
+     *
+     * ● 2023-12-06 21:21:52 周三 下午
+     * @author crowforkotlin
+     */
+    private var mSearchBinding: AnimeFragmentSearchViewBinding? = null
 
     /**
      * ● subtitle textview
@@ -377,6 +400,24 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                             }
                         }
                 }
+                is AnimeIntent.AnimeSearchIntent -> {
+                    mSearchBinding?.apply {
+                        intent.mViewState
+                            .doOnLoading { root.autoRefresh() }
+                            .doOnSuccess { root.finishRefresh() }
+                            .doOnError { _, _ ->
+                                if (mSearchAdapter.itemCount == 0) {
+                                    tips.animateFadeIn()
+                                } else {
+                                    tips.animateFadeOutWithEndInVisible()
+                                }
+                            }
+                            .doOnResult {
+                                if (tips.isVisible) tips.animateFadeOutWithEndInVisible()
+                                if (list.isInvisible) list.animateFadeIn()
+                            }
+                    }
+                }
             }
         }
     }
@@ -594,32 +635,59 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
         return tokenEmpty
     }
 
+    private fun onCollectSearchPage(content: String) {
+        if (mVM.mSearchPageFlow == null) {
+            mVM.input(AnimeIntent.AnimeSearchIntent(content))
+        }
+        repeatOnLifecycle {
+            mVM.mSearchPageFlow?.collect {
+                "Search".log()
+                mSearchAdapter.submitData(it)
+            }
+        }
+    }
+
     @SuppressLint("RestrictedApi")
     private fun loadSearchView() {
-        val binding = AnimeFragmentSearchViewBinding.inflate(layoutInflater)
-        mBinding.searchView.apply {
-            val bgColor: Int; val tintColor: Int
-            if (appIsDarkMode) {
-                tintColor = ContextCompat.getColor(mContext, android.R.color.white)
-                bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
-            } else {
-                tintColor = ContextCompat.getColor(mContext, android.R.color.black)
-                bgColor = ContextCompat.getColor(mContext, android.R.color.white)
+        if (mSearchBinding == null) {
+            mSearchBinding = AnimeFragmentSearchViewBinding.inflate(layoutInflater)
+            mSearchBinding!!.let { binding ->
+                binding.list.adapter = mSearchAdapter
+                mBinding.searchView.apply {
+
+                    editText.afterTextChanged { content -> onCollectSearchPage(content) }
+
+                    val bgColor: Int; val tintColor: Int
+
+                    when {
+                             appIsDarkMode -> {
+                             tintColor = ContextCompat.getColor(mContext, android.R.color.white)
+                             bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
+                             }
+                             else -> {
+                             tintColor = ContextCompat.getColor(mContext, android.R.color.black)
+                             bgColor = ContextCompat.getColor(mContext, android.R.color.white)
+                             }
+                             }
+
+                    // 设置SearchView toolbar导航图标
+                    toolbar.setNavigationIcon(baseR.drawable.base_ic_back_24dp)
+
+                    // 设置Navigation 颜色
+                    toolbar.navigationIcon?.setTint(tintColor)
+
+                    // 设置SearchView toolbar背景色白，沉浸式
+                    toolbar.setBackgroundColor(bgColor)
+
+                    // 关闭状态栏空格间距
+                    setStatusBarSpacerEnabled(false)
+                    addView(binding.root)
+                    show()
+                }
             }
-
-            // 设置SearchView toolbar导航图标
-            toolbar.setNavigationIcon(baseR.drawable.base_ic_back_24dp)
-
-            // 设置Navigation 颜色
-            toolbar.navigationIcon?.setTint(tintColor)
-
-            // 设置SearchView toolbar背景色白，沉浸式
-            toolbar.setBackgroundColor(bgColor)
-
-            // 关闭状态栏空格间距
-            setStatusBarSpacerEnabled(false)
-            addView(binding.root)
-            show()
+        }
+        else {
+            mBinding.searchView.show()
         }
     }
 }

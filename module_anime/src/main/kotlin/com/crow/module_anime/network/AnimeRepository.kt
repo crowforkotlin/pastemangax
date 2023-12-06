@@ -26,6 +26,8 @@ class AnimeRepository(val service: AnimeService) {
 
     fun getAnimeInfoPage(pathword: String) = service.getAnimeInfo(pathword).flowOn(Dispatchers.IO)
 
+    fun getSearchPage(query: String, offset: Int, limit: Int) = service.getSearchPage(query, offset, limit).flowOn(Dispatchers.IO)
+
     fun getAnimeDiscoverPage(
         order: String,
         year: String,

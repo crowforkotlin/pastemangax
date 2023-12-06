@@ -39,7 +39,7 @@ open class AnimeIntent : BaseMviIntent() {
         val video: AnimeVideoResp? = null
     ) : AnimeIntent()
 
-    data class AnimeSearchIntent(val pathword: String, val offset: Int, val limit: Int, val searchResp: SearchResp) : AnimeIntent()
+    data class AnimeSearchIntent(val queryString: String, val searchResp: SearchResp? = null) : AnimeIntent()
 
     data class AnimeSiteIntent(val siteResp: SiteResp? = null) : AnimeIntent()
 }
