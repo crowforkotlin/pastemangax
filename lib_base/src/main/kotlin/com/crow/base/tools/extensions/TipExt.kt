@@ -20,7 +20,7 @@ import com.orhanobut.logger.Logger
  * @formatter:off
  *************************/
 
-const val TIPS_TAG = "PRETTY_LOGGER"
+const val TIPS_TAG = "CopyMangaX"
 
 /* Original PRETTY LOGGER日志输出 */
 fun String.logError() = Logger.e(this)

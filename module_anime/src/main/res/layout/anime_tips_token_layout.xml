@@ -10,7 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_margin="?android:dialogPreferredPadding"
         android:layout_height="wrap_content"
-
         android:text="@string/BaseTips"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,11 +31,10 @@
         android:id="@id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/base_dp1"
-        android:layout_marginTop="@dimen/base_dp10"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="@dimen/base_dp10"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        android:layout_marginTop="@dimen/base_dp5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/close" />
 
     <TextView
         android:id="@+id/tips"

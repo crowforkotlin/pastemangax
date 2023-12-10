@@ -3,8 +3,6 @@ plugins {
     alias(app.plugins.android.kotlin)
 }
 
-kotlin { jvmToolchain(11) }
-
 android {
 
     // 配置构建功能相关的选项
@@ -64,7 +62,6 @@ dependencies {
 
     // 引入Base库
     implementation(project(mapOf("path" to ":lib_base")))
-
     implementation(app.androidx.media3.exoplayer)
     implementation(app.androidx.media3.exoplayer.hls)
     implementation(app.androidx.media3.exoplayer.dash)

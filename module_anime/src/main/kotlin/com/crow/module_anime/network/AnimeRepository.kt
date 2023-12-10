@@ -18,11 +18,15 @@ import kotlin.random.Random
 
 class AnimeRepository(val service: AnimeService) {
 
+    fun getSite() = service.getSite().flowOn(Dispatchers.IO)
+
     fun getVideo(pathword: String, chapterUUID: String) = service.getVideo(pathword, chapterUUID)
 
     fun getAnimeChapterList(pathword: String) = service.getAnimeChapterList(pathword).flowOn(Dispatchers.IO)
 
     fun getAnimeInfoPage(pathword: String) = service.getAnimeInfo(pathword).flowOn(Dispatchers.IO)
+
+    fun getSearchPage(query: String, offset: Int, limit: Int) = service.getSearchPage(query, offset, limit).flowOn(Dispatchers.IO)
 
     fun getAnimeDiscoverPage(
         order: String,

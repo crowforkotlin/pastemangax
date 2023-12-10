@@ -65,8 +65,6 @@ android {
     }
 }
 
-kotlin { jvmToolchain(11) }
-
 dependencies {
 
     // ksp for room

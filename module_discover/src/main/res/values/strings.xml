@@ -7,4 +7,5 @@
 	<string name="discover_tag"><b>类别</b></string>
 	<string name="discover_location"><b>地区</b></string>
 	<string name="discover_subtitle"><b>%s-%s</b></string>
+
 </resources>

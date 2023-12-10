@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textStyle="bold"
-            android:text="@string/home_saerch_tips" />
+            android:text="@string/home_search_tips" />
 
     </FrameLayout>
 

@@ -25,6 +25,7 @@ import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.px2sp
@@ -52,8 +53,9 @@ import com.crow.base.R as baseR
 
 /**
  * ● 动漫信息页面
- * ● @author : crowforkotlin
+ *
  * ● 2023-10-11 22:59:51 周三 下午
+ * @author : crowforkotlin
  */
 class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
 
@@ -175,10 +177,15 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      * ● 2023-10-12 01:22:41 周四 上午
      */
     override fun initListener() {
+
+        // 刷新
         mBinding.refresh.setOnRefreshListener {
             mVM.input(AnimeIntent.PageInfoIntent(mPathword))
             mVM.input(AnimeIntent.ChapterListIntent(mPathword))
         }
+
+        // 返回
+        mBinding.back.doOnClickInterval { navigateUp() }
     }
 
     /**
@@ -212,7 +219,6 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
                         .doOnResult {
                             loadAnimeChapterList(intent.chapters ?: return@doOnResult)
                         }
-
                 }
             }
         }
@@ -286,6 +292,12 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      */
     private fun navigateUp() { parentFragmentManager.popSyncWithClear(Fragments.AnimeInfo.name) }
 
+    /**
+     * ● 启动动漫Activity
+     *
+     * ● 2023-11-30 01:26:58 周四 上午
+     * @author crowforkotlin
+     */
     private fun launchAnimeActivity(pos: Int, chapter: AnimeChapterResult) {
 
         when(chapter.mLines.size) {

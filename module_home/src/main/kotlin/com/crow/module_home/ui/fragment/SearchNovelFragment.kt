@@ -53,7 +53,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
     fun doInputSearchNovelIntent() {
 
         val keyword = mSearchView?.text.toString().ifEmpty {
-            mBinding.homeSearchNovelTips.text = getString(R.string.home_saerch_tips)
+            mBinding.homeSearchNovelTips.text = getString(R.string.home_search_tips)
             if(mBinding.homeSearchNovelRv.isVisible) mBinding.homeSearchNovelRv.animateFadeOutWithEndInVisibility()
             mBinding.homeSearchNovelTips.animateFadeIn()
             return

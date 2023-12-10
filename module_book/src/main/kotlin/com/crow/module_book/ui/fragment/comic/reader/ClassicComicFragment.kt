@@ -24,7 +24,7 @@ import kotlinx.coroutines.yield
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import com.crow.base.R as baseR
 
-class BookClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
+class ClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     /**
      * ● 漫画VM

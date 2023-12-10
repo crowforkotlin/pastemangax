@@ -44,11 +44,11 @@ class DiscoverNovelAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : ViewHolder {
         return ViewHolder(DiscoverFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
 
-            val layoutParams = vh.binding.discoverRvImage.layoutParams
+            val layoutParams = vh.binding.image.layoutParams
             layoutParams.width = appComicCardWidth - appDp10
             layoutParams.height = appComicCardHeight
 
-            vh.binding.discoverRvBookCard.doOnClickInterval {
+            vh.binding.card.doOnClickInterval {
                 mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
         }
@@ -59,12 +59,12 @@ class DiscoverNovelAdapter(
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
-        vh.binding.discoverLoading.isVisible = true
-        vh.binding.discoverProgressText.isVisible = true
-        vh.binding.discoverProgressText.text = AppGlideProgressFactory.PERCENT_0
+        vh.binding.loading.isVisible = true
+        vh.binding.loadingText.isVisible = true
+        vh.binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
         vh.mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
         vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
-            vh.binding.discoverProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+            vh.binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage)
         }
         
         Glide.with(vh.itemView.context)
@@ -72,27 +72,27 @@ class DiscoverNovelAdapter(
             .listener(vh.mAppGlideProgressFactory?.getRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
-                    vh.binding.discoverLoading.isInvisible = true
-                    vh.binding.discoverProgressText.isInvisible = true
+                    vh.binding.loading.isInvisible = true
+                    vh.binding.loadingText.isInvisible = true
                     DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
                 } else {
-                    vh.binding.discoverLoading.isInvisible = true
-                    vh.binding.discoverProgressText.isInvisible = true
+                    vh.binding.loading.isInvisible = true
+                    vh.binding.loadingText.isInvisible = true
                     NoTransition<Drawable>()
                 }
             })
-            .into(vh.binding.discoverRvImage)
+            .into(vh.binding.image)
 
-        vh.binding.discoverRvName.text = item.mName
-        vh.binding.discoverRvAuthor.text = item.mAuthor.joinToString { it.mName }
-        vh.binding.discoverRvHot.text = formatValue(item.mPopular)
-        vh.binding.discoverRvTime.text = item.mDatetimeUpdated
+        vh.binding.name.text = item.mName
+        vh.binding.author.text = item.mAuthor.joinToString { it.mName }
+        vh.binding.hot.text = formatValue(item.mPopular)
+        vh.binding.time.text = item.mDatetimeUpdated
     }
 
     override fun setColor(vh: ViewHolder, color: Int) {
-        vh.binding.discoverRvName.setTextColor(color)
-        vh.binding.discoverRvAuthor.setTextColor(color)
-        vh.binding.discoverRvTime.setTextColor(color)
-        vh.binding.discoverRvHot.setTextColor(color)
+        vh.binding.name.setTextColor(color)
+        vh.binding.author.setTextColor(color)
+        vh.binding.time.setTextColor(color)
+        vh.binding.hot.setTextColor(color)
     }
 }

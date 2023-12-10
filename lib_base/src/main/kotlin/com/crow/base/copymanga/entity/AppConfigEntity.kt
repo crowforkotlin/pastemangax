@@ -13,27 +13,32 @@ import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toTypeEntity
 import com.squareup.moshi.Json
 
+/**
+ * App 全局配置
+ *
+ * @property mAppFirstInit 第一次初始化
+ * @property mHotMangaSite HotManga站点
+ * @property mCopyMangaSite CopyManga站点
+ * @property mRoute 路线 "0", "1"
+ * @property mResolution 分辨率 800、1200、1500
+ * @constructor Create empty App config entity
+ */
 data class AppConfigEntity(
 
-    /** ● 第一次初始化 */
     @Json(name = "App_FirstInit")
     val mAppFirstInit: Boolean = false,
 
-    /** ● 站点 */
-    @Json(name = "Site")
-    val mSite: String = BaseStrings.URL.COPYMANGA,
+    @Json(name = "HotManga_Site")
+    val mHotMangaSite: String = BaseStrings.URL.HotManga,
 
-    /** ● 路线 "0", "1" */
+    @Json(name = "CopyManga_Site")
+    val mCopyMangaSite: String = BaseStrings.URL.COPYMANGA,
+
     @Json(name = "Route")
     val mRoute: String = BaseUserConfig.CURRENT_ROUTE,
 
-    /**
-     * ● 分辨率 800、1200、1500
-     *
-     * ● 2023-10-02 23:36:24 周一 下午
-     */
     @Json(name = "Resolution")
-    val mResolution: Int = BaseUserConfig.RESOLUTION
+    val mResolution: Int = BaseUserConfig.RESOLUTION,
 ) {
     companion object {
 

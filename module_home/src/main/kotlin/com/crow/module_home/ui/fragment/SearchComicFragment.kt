@@ -53,7 +53,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
     fun doInputSearchComicIntent() {
 
         val keyword = mSearchView?.text.toString().ifEmpty {
-            mBinding.homeSearchComicTips.text = getString(R.string.home_saerch_tips)
+            mBinding.homeSearchComicTips.text = getString(R.string.home_search_tips)
             if (mBinding.homeSearchComicRv.isVisible) mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
             mBinding.homeSearchComicTips.animateFadeIn()
             return

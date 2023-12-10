@@ -78,7 +78,8 @@ class MainActivity : BaseMviActivity<ViewBinding>()  {
             if (appConfig != null) {
 
                 // 设置站点和TOKEN
-                BaseStrings.URL.COPYMANGA = appConfig.mSite
+                BaseStrings.URL.COPYMANGA = appConfig.mCopyMangaSite
+                BaseStrings.URL.HotManga = appConfig.mHotMangaSite
                 BaseUserConfig.CURRENT_ROUTE = appConfig.mRoute
                 BaseUserConfig.RESOLUTION = appConfig.mResolution
 

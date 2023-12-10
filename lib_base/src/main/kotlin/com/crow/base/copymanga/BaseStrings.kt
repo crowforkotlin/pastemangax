@@ -1,3 +1,5 @@
+@file:Suppress("ConstPropertyName")
+
 package com.crow.base.copymanga
 
 object BaseStrings {
@@ -57,7 +59,9 @@ object BaseStrings {
         const val DiscoverNovelHome = "/api/v3/books?free_type=1&_update=true"
 
 
-        const val HotManga = "https://www.relamanhua.com"
+        fun setHotMangaUrl(url: String) { HotManga = "https://$url" }
+
+        var HotManga = "https://mapi.hotmangasd.com"
 
         const val HotManga_Reg = "/api/v3/register"
         const val HotManga_Login = "/api/v3/login"
@@ -65,7 +69,8 @@ object BaseStrings {
         const val HotManga_AnimeInfoPage = "/api/v3/cartoon2/{$PATH_WORD}"
         const val HotManga_AnimeChapterList = "/api/v3/cartoon/{$PATH_WORD}/chapters2"
         const val HotManga_AnimeVideo = "/api/v3/cartoon/{$PATH_WORD}/chapter/{chapter_uuid}?platform=1"
-
+        const val HotManga_Site = "/api/v3/system/network2?platform=1"
+        const val HotManga_Search = "api/v3/search/cartoon?platform=1&free_type=1&_update=true"
     }
 
 }

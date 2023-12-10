@@ -22,6 +22,8 @@
     <string name="book_add_invalid">登录后才可添加至书架喔！</string>
 
 	<string name="book_comic_stript">条漫</string>
+	<string name="book_comic_page_right">翻页-从右到左</string>
+	<string name="book_comic_page_left">翻页-从左到左</string>
 	<string name="book_comic_classic">经典</string>
 
 	<string name="book_comic_stript_readed">已读章节：%s</string>

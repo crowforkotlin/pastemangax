@@ -138,7 +138,6 @@ val networkModule = module {
                     .build()
                 )
             })
-            .sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())
             .hostnameVerifier(SSLSocketClient.hostnameVerifier)
             .pingInterval(5, TimeUnit.SECONDS)
             .connectTimeout(10, TimeUnit.SECONDS)
