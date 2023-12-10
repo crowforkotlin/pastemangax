@@ -1,9 +1,11 @@
 package com.crow.module_anime.ui.fragment
 
 import android.annotation.SuppressLint
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -13,6 +15,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
@@ -41,6 +44,7 @@ import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.px2sp
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
+import com.crow.base.tools.extensions.withLifecycle
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.BaseErrorViewStub
 import com.crow.base.ui.view.baseErrorViewStub
@@ -130,9 +134,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
      *
      * ● 2023-10-10 02:20:34 周二 上午
      */
-    private var  mSubtitle: String by Delegates.observable(app.applicationContext.getString(baseR.string.base_all)) { _, _, new ->
-        mBinding.topbar.subtitle = new
-    }
+    private var  mSubtitle: String by Delegates.observable(app.applicationContext.getString(baseR.string.base_all)) { _, _, new -> mBinding.topbar.subtitle = new }
 
     /**
      * ● 提示窗口VB
@@ -188,11 +190,33 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     override fun getViewBinding(inflater: LayoutInflater) = AnimeFragmentBinding.inflate(layoutInflater)
 
     /**
+     * ● Lifecycle onDestroyView
+     *
+     * ● 2023-12-09 17:41:07 周六 下午
+     * @author crowforkotlin
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mSiteBinding = null
+        mSiteBinding = null
+        mSiteDialog = null
+        mTipDialog = null
+    }
+
+    /**
      * ● 初始化视图
      *
      * ● 2023-10-10 01:01:42 周二 上午
      */
     override fun initView(savedInstanceState: Bundle?) {
+
+        if (savedInstanceState != null) {
+            withLifecycle(state = Lifecycle.State.RESUMED) {
+                if (mBinding.searchView.isShowing) {
+                    loadSearchView()
+                }
+            }
+        }
 
         // 初始化viewstub
         mBaseErrorViewStub = baseErrorViewStub(mBinding.error, lifecycle) { mBinding.refresh.autoRefresh() }
@@ -237,6 +261,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
         // 刷新监听
         mBinding.refresh.setOnRefreshListener { mAdapter.refresh() }
 
+        // Appbar
         mBinding.topbar.apply {
 
             if (menu.isEmpty()) {
@@ -293,6 +318,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     isAccessible = true
                     get(this@apply) as TextView
                 }
+                mToolbarSubtitle?.typeface = Typeface.DEFAULT_BOLD
             }
         }
     }
@@ -404,13 +430,13 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     mSearchBinding?.apply {
                         intent.mViewState
                             .doOnLoading { root.autoRefresh() }
-                            .doOnSuccess { root.finishRefresh() }
-                            .doOnError { _, _ ->
-                                if (mSearchAdapter.itemCount == 0) {
-                                    tips.animateFadeIn()
-                                } else {
-                                    tips.animateFadeOutWithEndInVisible()
+                            .doOnSuccess {
+                                lifecycleScope.launch {
+                                    delay(BASE_ANIM_300L shl 1)
+                                    root.finishRefresh()
+                                    BaseEvent.getSIngleInstance().setBoolean("ANIME_FRAGMENT_SEARCH_FLAG", false)
                                 }
+                                if (mSearchAdapter.itemCount == 0) tips.animateFadeIn() else if (tips.isVisible) tips.animateFadeOutWithEndInVisible()
                             }
                             .doOnResult {
                                 if (tips.isVisible) tips.animateFadeOutWithEndInVisible()
@@ -636,39 +662,47 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     private fun onCollectSearchPage(content: String) {
-        if (mVM.mSearchPageFlow == null) {
+        BaseEvent.getSIngleInstance().apply {
+            if(getBoolean("ANIME_FRAGMENT_SEARCH_FLAG") == true) return
+            setBoolean("ANIME_FRAGMENT_SEARCH_FLAG", true)
             mVM.input(AnimeIntent.AnimeSearchIntent(content))
-        }
-        repeatOnLifecycle {
-            mVM.mSearchPageFlow?.collect {
-                "Search".log()
-                mSearchAdapter.submitData(it)
+            repeatOnLifecycle {
+                mVM.mSearchPageFlow?.collect {
+                    mSearchAdapter.submitData(it)
+                }
             }
         }
     }
 
     @SuppressLint("RestrictedApi")
     private fun loadSearchView() {
-        if (mSearchBinding == null) {
+        mSearchBinding?.let { mBinding.searchView.show() } ?: {
             mSearchBinding = AnimeFragmentSearchViewBinding.inflate(layoutInflater)
             mSearchBinding!!.let { binding ->
                 binding.list.adapter = mSearchAdapter
                 mBinding.searchView.apply {
 
-                    editText.afterTextChanged { content -> onCollectSearchPage(content) }
+                    //  搜索刷新
+                    binding.root.setOnRefreshListener { onCollectSearchPage(editText.text.toString()) }
+
+                    // 监听EditText 通知对应VP对应页发送意图
+                    editText.setOnEditorActionListener { textview, _, event->
+                        if (event?.action == MotionEvent.ACTION_DOWN) if (!mBinding.refresh.isRefreshing) onCollectSearchPage(textview.text.toString())
+                        false
+                    }
 
                     val bgColor: Int; val tintColor: Int
 
                     when {
-                             appIsDarkMode -> {
-                             tintColor = ContextCompat.getColor(mContext, android.R.color.white)
-                             bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
-                             }
-                             else -> {
-                             tintColor = ContextCompat.getColor(mContext, android.R.color.black)
-                             bgColor = ContextCompat.getColor(mContext, android.R.color.white)
-                             }
-                             }
+                        appIsDarkMode -> {
+                            tintColor = ContextCompat.getColor(mContext, android.R.color.white)
+                            bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
+                        }
+                        else -> {
+                            tintColor = ContextCompat.getColor(mContext, android.R.color.black)
+                            bgColor = ContextCompat.getColor(mContext, android.R.color.white)
+                        }
+                    }
 
                     // 设置SearchView toolbar导航图标
                     toolbar.setNavigationIcon(baseR.drawable.base_ic_back_24dp)
@@ -685,9 +719,6 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     show()
                 }
             }
-        }
-        else {
-            mBinding.searchView.show()
         }
     }
 }

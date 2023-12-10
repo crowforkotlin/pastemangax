@@ -1,5 +1,6 @@
 package com.crow.module_discover.ui.fragment
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TextView
@@ -226,6 +227,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                         isAccessible = true
                         get(toolbar) as TextView
                     }
+                    mToolbarSubtitle?.typeface = Typeface.DEFAULT_BOLD
                 }
             }
         }
