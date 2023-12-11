@@ -174,6 +174,12 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mBinding.viewPager.adapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
     }
 
+    /**
+     * ● Lifecycle onStart
+     *
+     * ● 2023-12-12 00:47:21 周二 上午
+     * @author crowforkotlin
+     */
     override fun onStart() {
         super.onStart()
         mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) {

@@ -677,6 +677,12 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
         return tokenEmpty
     }
 
+    /**
+     * ● 处理搜索页面收集的结果
+     *
+     * ● 2023-12-12 00:36:35 周二 上午
+     * @author crowforkotlin
+     */
     private fun onCollectSearchPage(content: String) {
         BaseEvent.getSIngleInstance().apply {
             if(getBoolean("ANIME_FRAGMENT_SEARCH_FLAG") == true) return
