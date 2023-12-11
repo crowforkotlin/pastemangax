@@ -23,7 +23,7 @@
         tools:ignore="DuplicateSpeakableTextCheck" />
 
     <TextView
-        android:id="@+id/book_info_name"
+        android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
@@ -100,7 +100,7 @@
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
-        android:id="@+id/book_info_status"
+        android:id="@+id/status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
@@ -115,7 +115,7 @@
         tools:text="@string/BaseTodoTextView" />
 
     <TextView
-        android:id="@+id/book_info_author"
+        android:id="@+id/author"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="@dimen/base_sp12_5"
@@ -127,11 +127,11 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
-        app:layout_constraintTop_toBottomOf="@+id/book_info_status"
+        app:layout_constraintTop_toBottomOf="@+id/status"
         tools:text="@string/BaseTodoTextView" />
 
     <TextView
-        android:id="@+id/book_info_hot"
+        android:id="@+id/hot"
         android:textSize="@dimen/base_sp12_5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -143,11 +143,11 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
-        app:layout_constraintTop_toBottomOf="@+id/book_info_author"
+        app:layout_constraintTop_toBottomOf="@+id/author"
         tools:text="@string/BaseTodoTextView" />
 
     <TextView
-        android:id="@+id/book_info_update"
+        android:id="@+id/update"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
@@ -159,11 +159,11 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
-        app:layout_constraintTop_toBottomOf="@+id/book_info_hot"
+        app:layout_constraintTop_toBottomOf="@+id/hot"
         tools:text="@string/BaseTodoTextView" />
 
     <TextView
-        android:id="@+id/book_info_new_chapter"
+        android:id="@+id/chapter"
         android:textSize="@dimen/base_sp12_5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -175,7 +175,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
-        app:layout_constraintTop_toBottomOf="@+id/book_info_update"
+        app:layout_constraintTop_toBottomOf="@+id/update"
         tools:text="@string/BaseTodoTextView" />
 
     <com.google.android.material.button.MaterialButton
@@ -272,8 +272,8 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"/>
 
-                    <TextView
-                        android:id="@+id/book_info_desc"
+                   <!-- <TextView
+                        android:id="@+id/desc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/base_dp10"
@@ -283,6 +283,18 @@
                         android:textSize="@dimen/base_sp12_5"
                         android:maxLines="10"
                         android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/book_info_theme_chip"
+                        tools:text="@string/BaseTodoTextView" />
+-->
+                    <com.crow.base.ui.view.atrr_text_layout.BaseAttrTextLayout
+                        android:id="@+id/desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/base_dp70"
+                        android:layout_marginStart="@dimen/base_dp10"
+                        android:layout_marginTop="@dimen/base_dp10"
+                        android:layout_marginEnd="@dimen/base_dp10"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/book_info_theme_chip"

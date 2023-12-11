@@ -89,17 +89,17 @@ class BookNovelFragment : BookFragment() {
                 }
             })
             .into(mBinding.bookInfoImage)
-        mBinding.bookInfoAuthor.text = getString(R.string.BookComicAuthor, novelInfoPage.mAuthor.joinToString { it.mName })
-        mBinding.bookInfoHot.text = getString(R.string.BookComicHot, formatValue(novelInfoPage.mPopular))
-        mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, novelInfoPage.mDatetimeUpdated)
-        mBinding.bookInfoNewChapter.text = getString(R.string.BookComicNewChapter, novelInfoPage.mLastChapter.mName)
-        mBinding.bookInfoStatus.text = when (novelInfoPage.mStatus.mValue) {
+        mBinding.author.text = getString(R.string.BookComicAuthor, novelInfoPage.mAuthor.joinToString { it.mName })
+        mBinding.hot.text = getString(R.string.BookComicHot, formatValue(novelInfoPage.mPopular))
+        mBinding.update.text = getString(R.string.BookComicUpdate, novelInfoPage.mDatetimeUpdated)
+        mBinding.chapter.text = getString(R.string.BookComicNewChapter, novelInfoPage.mLastChapter.mName)
+        mBinding.status.text = when (novelInfoPage.mStatus.mValue) {
             Status.LOADING -> getString(R.string.BookComicStatus, novelInfoPage.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_green), 3)
             Status.FINISH -> getString(R.string.BookComicStatus, novelInfoPage.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_red), 3)
             else -> null
         }
-        mBinding.bookInfoName.text = novelInfoPage.mName
-        mBinding.bookInfoDesc.text = novelInfoPage.mBrief.removeWhiteSpace()
+        mBinding.name.text = novelInfoPage.mName
+        mBinding.desc.mText = novelInfoPage.mBrief.removeWhiteSpace()
         novelInfoPage.mTheme.forEach { theme ->
             mBinding.bookInfoThemeChip.addView(Chip(mContext).also {
                 it.text = theme.mName

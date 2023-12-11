@@ -10,6 +10,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.text.TextPaint
+import android.util.AttributeSet
 import android.view.ViewTreeObserver
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
@@ -30,7 +31,11 @@ import kotlin.properties.Delegates
  * @author crowforkotlin
  * @formatter:on
  */
-class BaseAttrTextLayout(context: Context) : FrameLayout(context), IBaseAttrTextExt {
+class BaseAttrTextLayout : FrameLayout, IBaseAttrTextExt {
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     /**
      * ● 静态区域
