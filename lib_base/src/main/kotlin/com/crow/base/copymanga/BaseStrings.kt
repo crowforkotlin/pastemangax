@@ -9,6 +9,7 @@ object BaseStrings {
     const val IMAGE_URL = "image_url"
     const val ID = "id"
     const val ENABLE_DELAY = "enable_delay"
+    const val BACKPRESS = "onBackPress"
 
 
     object URL {

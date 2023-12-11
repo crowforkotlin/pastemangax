@@ -193,7 +193,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                     toolbar.menu[1].doOnClickInterval { onSelectMenu(R.string.discover_location) }
 
                     // 更新时间
-
                     val instance = BaseEvent.getSIngleInstance()
                     toolbar.menu[2].doOnClickInterval {
                         if (instance.getBoolean("DISCOVER_COMIC_FRAGMENT_UPDATE_ORDER") == true) {

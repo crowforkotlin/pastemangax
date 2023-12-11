@@ -23,5 +23,7 @@
     <string name="BaseActionShare">Share</string>
 
 
+    <string name="BaseExitApp">"再次返回将退出APP！"</string>
+
 
 </resources>

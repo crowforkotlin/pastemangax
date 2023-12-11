@@ -20,6 +20,7 @@ import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
+import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.BaseViewState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDivider
@@ -65,6 +66,7 @@ val appComicCardHeight: Int by lazy {
 val appComicCardWidth: Int by lazy { (appComicCardHeight / 1.25).toInt() }
 val appDp10 by lazy { app.px2dp(app.resources.getDimensionPixelSize(R.dimen.base_dp10).toFloat()).toInt() }
 var appIsDarkMode = SpNameSpace.CATALOG_NIGHT_MODE.getSharedPreferences().getBoolean(SpNameSpace.Key.ENABLE_DARK, false)
+val appEvent = BaseEvent.newInstance(BaseEvent.BASE_FLAG_TIME_1000 shl 1)
 
 /**
  * ● 处理Token 错误
