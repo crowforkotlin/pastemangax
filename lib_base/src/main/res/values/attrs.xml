@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <declare-styleable name="SComicRecyclerView" tools:ignore="ResourceName">
+        <attr name="min_scale" format="float" />
+        <attr name="max_scale" format="float" />
+        <attr name="default_scale" format="float" />
+        <attr name="zoom_duration" format="integer" />
+    </declare-styleable>
+
+    <attr name="baseIconButtonStyle" format="reference"/>
+    <attr name="baseIconButtonElevatedStyle" format="reference"/>
+
+</resources>

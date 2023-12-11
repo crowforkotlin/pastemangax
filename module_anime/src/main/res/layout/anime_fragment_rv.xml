@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/base_dp5"
+    android:layout_marginTop="@dimen/base_dp7_5"
+    android:layout_marginEnd="@dimen/base_dp5"
+    android:layout_marginBottom="@dimen/base_dp7_5"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
+        style="@style/Widget.Material3.CardView.Filled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/base_dp1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/base_grey_400_40"
+        app:cardCornerRadius="@dimen/base_dp10"
+        app:strokeWidth="@dimen/base_dp1">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:adjustViewBounds="true"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/BaseTodoTextView"
+            android:foreground="@drawable/base_bg_item_ripper"
+            android:scaleType="centerCrop"
+            tools:layout_height="@dimen/base_dp168"
+            tools:layout_width="@dimen/base_dp120"
+            tools:visibility="invisible" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/loading"
+            style="@style/Widget.Material3.CircularProgressIndicator.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            app:indicatorColor="@color/base_light_blue_500"
+            app:indicatorSize="@dimen/base_dp36"
+            app:trackCornerRadius="@dimen/base_dp99" />
+
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/BaseZero"
+            android:textSize="@dimen/base_sp10"
+            android:textStyle="bold" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/base_dp2_5"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:minLines="2"
+        android:textSize="@dimen/base_sp11"
+        android:textStyle="bold"
+        tools:text="书名:xxxx" />
+
+    <TextView
+        android:id="@+id/hot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/base_dp2_5"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingStart="@dimen/base_dp10"
+        android:paddingEnd="@dimen/base_dp10"
+        android:textSize="@dimen/base_sp10"
+        android:textStyle="bold"
+        tools:text="热度：404" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textSize="@dimen/base_sp10"
+        android:textStyle="bold"
+        tools:text="时间：2044年" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

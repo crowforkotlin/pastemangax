@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<item
+		android:id="@+id/main_menu_homepage"
+		android:icon="@drawable/main_ic_home_24dp"
+		android:title="@string/home_homepage"
+		app:showAsAction="always" />
+
+	<item
+		android:id="@+id/main_menu_discovery_comic"
+		android:icon="@drawable/main_ic_discover_24dp"
+		android:title="@string/home_comic"
+		app:showAsAction="ifRoom" />
+
+<!--
+	<item
+		android:id="@+id/main_menu_discovery_novel"
+		android:icon="@drawable/main_ic_novel_24dp"
+		android:title="@string/home_novel"
+		app:showAsAction="ifRoom" />
+-->
+
+	<item
+		android:id="@+id/main_menu_bookshelf"
+		android:icon="@drawable/main_ic_bookshelf_24dp"
+		android:title="@string/bookshelf_name"
+		app:showAsAction="ifRoom" />
+
+	<item
+		android:id="@+id/main_menu_anime"
+		android:icon="@drawable/anime_icon_24dp"
+		android:title="@string/anime_name"
+		app:showAsAction="ifRoom" />
+
+</menu>

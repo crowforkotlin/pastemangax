@@ -1,0 +1,260 @@
+[versions]
+android-gradle-plugin = "8.3.0-alpha14"
+kotlin = "1.9.10"
+ksp = "1.9.10-1.0.13"
+
+androidx-core = "1.12.0"
+androidx-core-animation = "1.0.0-rc01"
+androidx-core-animation-testing = "1.0.0-rc01"
+androidx-core-google-shortcuts = "1.1.0"
+androidx-core-i18n = "1.0.0-alpha01"
+androidx-core-role = "2.2.0"
+androidx-core-telecom = "1.0.0-alpha02"
+androidx-core-splashscreen = "1.0.1"
+androidx-core-performance = "1.0.0-beta02"
+androidx-core-performance-play-services = "1.0.0-beta02"
+androidx-core-performance-testing = "1.0.0-beta02"
+androidx-core-location-altitude = "1.0.0-alpha01"
+androidx-core-remoteviews = "1.0.0"
+androidx-arch = "2.2.0"
+androidx-appcompat = "1.7.0-alpha03"
+androidx-activity = "1.8.0"
+androidx-test-core = "1.5.0"
+androidx-test-junit = "1.1.5"
+androidx-test-truth = "1.5.0"
+androidx-test-runner = "1.5.2"
+androidx-test-orchestrator = "1.4.2"
+androidx-test-rules = "1.5.0"
+androidx-test-services = "1.4.2"
+androidx-test-monitor = "1.6.1"
+androidx-test-espresso = "3.5.1"
+androidx-lifecycle = "2.6.2"
+androidx-paging = "3.2.1"
+androidx-room = "2.6.0"
+androidx-constraintlayout = "2.1.4"
+androidx-material = "1.10.0-alpha06"
+androidx-palette = "1.0.0"
+androidx-datastore = "1.1.0-alpha05"
+androidx-preference = "1.2.1"
+androidx-work = "2.8.1"
+androidx-hilt = "1.0.0"
+androidx-fragment = "1.6.1"
+androidx-dynamicanimation = "1.0.0"
+androidx-swiperefreshlayout = "1.2.0-alpha01"
+androidx-navigation = "2.7.4"
+androidx-media3 = "1.1.1"
+androidx-multidex = "2.0.1"
+
+[libraries]
+
+# MultiDex : [https://developer.android.google.cn/studio/build/multidex?hl=zh-cn]
+androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "androidx-multidex" }
+
+# 针对最新的平台功能和 API 调整应用,同时还支持旧设备 : [https://developer.android.google.cn/jetpack/androidx/releases/core?hl=zh-cn]
+androidx-core = { module = "androidx.core:core", version.ref = "androidx-core" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+androidx-core-animation = { module = "androidx.core:core-animation", version.ref = "androidx-core-animation" }
+androidx-core-animation-testing = { module = "androidx.core:core-animation-testing", version.ref = "androidx-core-animation-testing" }
+androidx-core-google-shortcuts = { module = "androidx.core:core-google-shortcuts", version.ref = "androidx-core-google-shortcuts" }
+androidx-core-i18n = { module = "androidx.core:core-i18n", version.ref = "androidx-core-i18n" }
+androidx-core-role = { module = "androidx.core:core-role", version.ref = "androidx-core-role" }
+androidx-core-telecom = { module = "androidx.core:core-telecom", version.ref = "androidx-core-telecom" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidx-core-splashscreen" }
+androidx-core-performance = { module = "androidx.core:core-performance", version.ref = "androidx-core-performance" }
+androidx-core-performance-play-services = { module = "androidx.core:core-performance-play-services", version.ref = "androidx-core-performance-play-services" }
+androidx-core-performance-testing = { module = "androidx.core:core-performance-testing", version.ref = "androidx-core-performance-testing" }
+androidx-core-location-altitude = { module = "androidx.core:core-location-altitude", version.ref = "androidx-core-location-altitude" }
+androidx-core-remoteviews = { module = "androidx.core:core-remoteviews", version.ref = "androidx-core-remoteviews" }
+androidx-arch-core-common = { module = "androidx.arch.core:core-common", version.ref = "androidx-arch" }
+androidx-arch-core-runtime = { module = "androidx.arch.core:core-runtime", version.ref = "androidx-arch" }
+androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch" }
+
+# 允许在平台的旧版 API 上访问新 API
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "androidx-appcompat" }
+
+# 访问基于 Activity 构建的可组合 API
+androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
+
+# Androidce测试组件
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test-core" }
+androidx-test-core-ktx = { module = "androidx.test:core-ktx", version.ref = "androidx-test-core" }
+androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-junit" }
+androidx-test-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "androidx-test-junit" }
+androidx-test-truth = { module = "androidx.test.ext:truth", version.ref = "androidx-test-truth" }
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test-runner" }
+androidx-test-orchestrator = { module = "androidx.test:orchestrator", version.ref = "androidx-test-orchestrator" }
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test-rules" }
+androidx-test-services = { module = "androidx.test.services:test-services", version.ref = "androidx-test-services" }
+androidx-test-monitor = { module = "androidx.test:monitor", version.ref = "androidx-test-monitor" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-test-espresso" }
+androidx-test-espresso-accessibility = { group = "androidx.test.espresso", name = "espresso-accessibility", version.ref = "androidx-test-espresso" }
+androidx-test-espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "androidx-test-espresso" }
+androidx-test-espresso-idling-resource = { group = "androidx.test.espresso", name = "espresso-idling-resource", version.ref = "androidx-test-espresso" }
+androidx-test-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "androidx-test-espresso" }
+androidx-test-espresso-web = { group = "androidx.test.espresso", name = "espresso-web", version.ref = "androidx-test-espresso" }
+
+# 生命周期感知型组件可执行操作来响应另一个组件（如 activity 和 fragment）的生命周期状态的变化。这些组件有助于您写出更有条理且往往更精简的代码，这样的代码更易于维护。
+androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-common-compiler = { module = "androidx.lifecycle:lifecycle-compiler", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-livedata-core = { module = "androidx.lifecycle:lifecycle-livedata-core", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-livedata-core-ktx = { module = "androidx.lifecycle:lifecycle-livedata-core-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-reactivestreams = { module = "androidx.lifecycle:lifecycle-reactivestreams", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-reactivestreams-ktx = { module = "androidx.lifecycle:lifecycle-reactivestreams-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-testing = { module = "androidx.lifecycle:lifecycle-runtime-testing", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "androidx-lifecycle" }
+
+# androidx paging
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "androidx-paging" }
+androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "androidx-paging" }
+androidx-paging-common-common = { module = "androidx.paging:paging-common", version.ref = "androidx-paging" }
+androidx-paging-common-android = { module = "androidx.paging:paging-common-android", version.ref = "androidx-paging" }
+androidx-paging-common-linuxx64 = { module = "androidx.paging:paging-common-linuxx64", version.ref = "androidx-paging" }
+androidx-paging-common-iosarm64 = { module = "androidx.paging:paging-common-iosarm64", version.ref = "androidx-paging" }
+androidx-paging-common-iossimulatorarm64 = { module = "androidx.paging:paging-common-iossimulatorarm64", version.ref = "androidx-paging" }
+androidx-paging-common-iosx64 = { module = "androidx.paging:paging-common-iosx64", version.ref = "androidx-paging" }
+androidx-paging-common-jvm = { module = "androidx.paging:paging-common-jvm", version.ref = "androidx-paging" }
+androidx-paging-common-ktx = { module = "androidx.paging:paging-common-ktx", version.ref = "androidx-paging" }
+androidx-paging-common-macosarm64 = { module = "androidx.paging:paging-common-macosarm64", version.ref = "androidx-paging" }
+androidx-paging-common-macosx64 = { module = "androidx.paging:paging-common-macosx64", version.ref = "androidx-paging" }
+androidx-paging-guava = { module = "androidx.paging:paging-guava", version.ref = "androidx-paging" }
+androidx-paging-rxjava2 = { module = "androidx.paging:paging-rxjava2", version.ref = "androidx-paging" }
+androidx-paging-rxjava2-ktx = { module = "androidx.paging:paging-rxjava2-ktx", version.ref = "androidx-paging" }
+androidx-paging-rxjava3 = { module = "androidx.paging:paging-rxjava3", version.ref = "androidx-paging" }
+androidx-paging-testing = { module = "androidx.paging:paging-testing", version.ref = "androidx-paging" }
+androidx-paging-testing-android = { module = "androidx.paging:paging-testing-android", version.ref = "androidx-paging" }
+androidx-paging-testing-jvm = { module = "androidx.paging:paging-testing-jvm", version.ref = "androidx-paging" }
+androidx-paging-testing-iosarm64 = { module = "androidx.paging:paging-testing-iosarm64", version.ref = "androidx-paging" }
+androidx-paging-testing-iossimulatorarm64 = { module = "androidx.paging:paging-testing-iossimulatorarm64", version.ref = "androidx-paging" }
+androidx-paging-testing-linuxx64 = { module = "androidx.paging:paging-testing-linuxx64", version.ref = "androidx-paging" }
+androidx-paging-testing-macosarm64 = { module = "androidx.paging:paging-testing-macosarm64", version.ref = "androidx-paging" }
+androidx-paging-testing-macosx64 = { module = "androidx.paging:paging-testing-macosx64", version.ref = "androidx-paging" }
+
+androidx-room-runtime =  { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
+androidx-room-common =  { module = "androidx.room:room-common", version.ref = "androidx-room" }
+androidx-room-ktx =  { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
+androidx-room-compiler =  { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
+androidx-room-compiler-processing =  { module = "androidx.room:room-compiler-processing", version.ref = "androidx-room" }
+androidx-room-coroutines =  { module = "androidx.room:room-coroutines", version.ref = "androidx-room" }
+androidx-room-paging =  { module = "androidx.room:room-paging", version.ref = "androidx-room" }
+androidx-room-rxjava2 =  { module = "androidx.room:room-rxjava2", version.ref = "androidx-room" }
+androidx-room-rxjava3 =  { module = "androidx.room:room-rxjava3", version.ref = "androidx-room" }
+androidx-room-paging-rxjava2 =  { module = "androidx.room:room-paging-rxjava2", version.ref = "androidx-room" }
+androidx-room-paging-rxjava3 =  { module = "androidx.room:room-paging-rxjava3", version.ref = "androidx-room" }
+androidx-room-paging-guava =  { module = "androidx.room:room-paging-guava", version.ref = "androidx-room" }
+
+# 使用“相对定位(约束布局)”灵活地确定控件的位置和大小
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
+androidx-constraintlayout-core = { module = "androidx.constraintlayout:constraintlayout-core", version.ref = "androidx-constraintlayout" }
+androidx-constraintlayout-solver = { module = "androidx.constraintlayout:constraintlayout-solver", version.ref = "androidx-constraintlayout" }
+
+# Palette 获取颜色可以用于沉浸式
+androidx-palette = { module = "androidx.palette:palette", version.ref = "androidx-palette" }
+androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "androidx-palette" }
+
+# Material Design 界面组件 [https://mvnrepository.com/artifact/com.google.android.material/material]
+androidx-material = { module = "com.google.android.material:material", version.ref = "androidx-material" }
+
+# DataStore 替换 SharedPreference
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "androidx-datastore" }
+androidx-datastore-android = { module = "androidx.datastore:datastore-android", version.ref = "androidx-datastore" }
+androidx-datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "androidx-datastore" }
+androidx-datastore-jvm = { module = "androidx.datastore:datastore-jvm", version.ref = "androidx-datastore" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
+androidx-datastore-preferences-android = { module = "androidx.datastore:datastore-preferences-android", version.ref = "androidx-datastore" }
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "androidx-datastore" }
+androidx-datastore-preferences-core-jvm = { module = "androidx.datastore:datastore-preferences-core-jvm", version.ref = "androidx-datastore" }
+androidx-datastore-preferences-rxjava2 = { module = "androidx.datastore:datastore-preferences-rxjava2", version.ref = "androidx-datastore" }
+androidx-datastore-preferences-rxjava3 = { module = "androidx.datastore:datastore-preferences-rxjava3", version.ref = "androidx-datastore" }
+androidx-datastore-preferences-core-okio = { module = "androidx.datastore:datastore-core-okio", version.ref = "androidx-datastore" }
+androidx-datastore-preferences-core-okio-jvm = { module = "androidx.datastore:datastore-core-okio-jvm", version.ref = "androidx-datastore" }
+androidx-datastore-rxjava2 = { module = "androidx.datastore:datastore-rxjava2", version.ref = "androidx-datastore" }
+androidx-datastore-rxjava3 = { module = "androidx.datastore:datastore-rxjava3", version.ref = "androidx-datastore" }
+
+# 无需与设备存储空间交互，也不需要管理界面，便能构建交互式设置画面。
+androidx-preference = { module = "androidx.preference:preference", version.ref = "androidx-preference" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "androidx-preference" }
+
+# 使用 WorkManager API 可以轻松地调度那些必须可靠运行的可延期异步任务。通过这些 API，您可以创建任务并提交给 WorkManager，以便在满足工作约束条件时运行。
+androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "androidx-work" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
+androidx-work-gcm = { module = "androidx.work:work-gcm", version.ref = "androidx-work" }
+androidx-work-multiprocess = { module = "androidx.work:work-multiprocess", version.ref = "androidx-work" }
+androidx-work-rxjava2 = { module = "androidx.work:work-rxjava2", version.ref = "androidx-work" }
+androidx-work-rxjava3 = { module = "androidx.work:work-rxjava3", version.ref = "androidx-work" }
+androidx-work-testing = { module = "androidx.work:work-testing", version.ref = "androidx-work" }
+
+# 扩展了 Dagger Hilt 的功能，以实现 AndroidX 库中某些类的依赖项注入。
+androidx-hilt-commin = { module = "androidx.hilt:hilt-common", version.ref = "androidx-hilt" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "androidx-hilt" }
+androidx-hilt-lifecycle-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "androidx-hilt" }
+androidx-hilt-navigation = { module = "androidx.hilt:hilt-navigation", version.ref = "androidx-hilt" }
+androidx-hilt-navigation-fragment = { module = "androidx.hilt:hilt-navigation-fragment", version.ref = "androidx-hilt" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "androidx-hilt" }
+
+# 将您的应用细分为在一个 Activity 中托管的多个独立屏幕。
+androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "androidx-fragment" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
+androidx-fragment-testing = { module = "androidx.fragment:fragment-testing", version.ref = "androidx-fragment" }
+androidx-fragment-testing-manifest = { module = "androidx.fragment:fragment-testing-manifest", version.ref = "androidx-fragment" }
+
+# 使用基于物理特性的动画 API 制作流畅的动画。
+androidx-dynamicanimation = { module = "androidx.dynamicanimation:dynamicanimation", version.ref = "androidx-dynamicanimation" }
+androidx-dynamicanimation-ktx = { module = "androidx.dynamicanimation:dynamicanimation-ktx", version.ref = "androidx-dynamicanimation" }
+
+# 实现下拉刷新的界面模式
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
+
+# Navigation 是一个框架，用于在 Android 应用中的“目的地”之间导航，该框架提供一致的 API，无论目的地是作为 Fragment、Activity 还是其他组件实现。
+androidx-navigation-common = { module = "androidx.navigation:navigation-common", version.ref = "androidx-navigation" }
+androidx-navigation-common-ktx = { module = "androidx.navigation:navigation-common-ktx", version.ref = "androidx-navigation" }
+androidx-navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "androidx-navigation" }
+androidx-navigation-dynamic-features-runtime = { module = "androidx.navigation:navigation-dynamic-features-runtime", version.ref = "androidx-navigation" }
+androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "androidx-navigation" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
+androidx-navigation-runtime = { module = "androidx.navigation:navigation-runtime", version.ref = "androidx-navigation" }
+androidx-navigation-runtime-ktx = { module = "androidx.navigation:navigation-runtime-ktx", version.ref = "androidx-navigation" }
+androidx-navigation-safe-args-generator = { module = "androidx.navigation:navigation-safe-args-generator", version.ref = "androidx-navigation" }
+androidx-navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "androidx-navigation" }
+androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "androidx-navigation" }
+androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "androidx-navigation" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
+
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "androidx-media3" }
+androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "androidx-media3" }
+androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "androidx-media3" }
+androidx-media3-exoplayer-rtsp = { module = "androidx.media3:media3-exoplayer-rtsp", version.ref = "androidx-media3" }
+androidx-media3-exoplayer-ima = { module = "androidx.media3:media3-exoplayer-ima", version.ref = "androidx-media3" }
+androidx-media3-datasource-cronet = { module = "androidx.media3:media3-datasource-cronet", version.ref = "androidx-media3" }
+androidx-media3-datasource-okhttp = { module = "androidx.media3:media3-datasource-okhttp", version.ref = "androidx-media3" }
+androidx-media3-datasource-rtmp = { module = "androidx.media3:media3-datasource-rtmp", version.ref = "androidx-media3" }
+androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "androidx-media3" }
+androidx-media3-ui-leanback = { module = "androidx.media3:media3-ui-leanback", version.ref = "androidx-media3" }
+androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "androidx-media3" }
+androidx-media3-extractor = { module = "androidx.media3:media3-extractor", version.ref = "androidx-media3" }
+androidx-media3-cast = { module = "androidx.media3:media3-cast", version.ref = "androidx-media3" }
+androidx-media3-exoplayer-workmanager = { module = "androidx.media3:media3-exoplayer-workmanager", version.ref = "androidx-media3" }
+androidx-media3-transformer = { module = "androidx.media3:media3-transformer", version.ref = "androidx-media3" }
+androidx-media3-test-utils = { module = "androidx.media3:media3-test-utils", version.ref = "androidx-media3" }
+androidx-media3-test-utils-robolectric = { module = "androidx.media3:media3-test-utils-robolectric", version.ref = "androidx-media3" }
+androidx-media3-database = { module = "androidx.media3:media3-database", version.ref = "androidx-media3" }
+androidx-media3-decoder = { module = "androidx.media3:media3-decoder", version.ref = "androidx-media3" }
+androidx-media3-datasource = { module = "androidx.media3:media3-datasource", version.ref = "androidx-media3" }
+androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "androidx-media3" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
+android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

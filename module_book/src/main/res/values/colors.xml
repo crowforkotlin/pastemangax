@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="book_green">#81c784</color>
+	<color name="book_red">#e57373</color>
+	<color name="book_blue">#2196f3</color>
+	<color name="book_button_bg_white">#F7F2F9</color>
+	<color name="book_button_text_purple">#6750A4</color>
+    <color name="book_ant_10">#141414</color>
+    <color name="book_classic_prenext">#e6fffb</color>
+    <color name="book_classic_text">#000000</color>
+</resources>

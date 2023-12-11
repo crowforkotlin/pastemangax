@@ -1,0 +1,39 @@
+<resources>
+
+	<string name="main_user" translatable="false">用户</string>
+	<string name="main_update_go" translatable="false">前往更新</string>
+	<string name="main_update_time" translatable="false">◉  更新日期：%s</string>
+	<string name="main_update_url_title" translatable="false">更新节点</string>
+	<string name="main_update_cancel" translatable="false">暂不更新</string>
+
+	<string name="main_settings_titile" translatable="false">设置</string>
+	<string name="main_settings_style" translatable="false">个性化</string>
+	<string name="main_settings_site" translatable="false">站点设置（节点）</string>
+	<string name="main_settings_proxy" translatable="false">代理设置（路线）</string>
+	<string name="main_settings_resolution" translatable="false">分辨率</string>
+
+	<string name="main_resolution_tips" translatable="false">默认分辨率为1500！ 如果漫画加载较慢 可以选择分辨率为800！</string>
+	<string name="main_resolution_title" translatable="false">漫画分辨率</string>
+
+	<string name="main_proxy_title" translatable="false">路线设置</string>
+	<string name="main_proxy_tips" translatable="false">接口API访问均是海外，图片CDN可能会变化，请谨慎使用</string>
+	<string name="main_proxy_domestic_route" translatable="false">国内路线（请勿使用梯子、可能会导致无法访问）</string>
+	<string name="main_proxy_overseas_route" translatable="false">港台、海外路线</string>
+
+	<string name="main_site_current" translatable="false">当前站点：%s</string>
+	<string name="main_site_one" translatable="false">（无需梯子-推荐）站点① </string>
+	<string name="main_site_two" translatable="false">（需要梯子-次选）站点② </string>
+	<string name="main_permission_tips" translatable="false">您需要同意写入权限才可保存图片到本地！</string>
+	<string name="main_about_crow_email" translatable="false">◉ 电子邮箱：crowforkotlin@gmail.com</string>
+	<string name="main_about_crow_help" translatable="false">◉ 如有Bug请电邮联系，感谢各位以来的长期支持！</string>
+	<string name="main_about_crow_cmmunication" translatable="false">◉ 闲聊、技术都可加群交流、非常欢迎^_^</string>
+	<string name="main_about_join_telegram_group" translatable="false">Telegram Group</string>
+	<string name="main_about_app_version" translatable="false">当前版本：%s</string>
+	<string name="main_about_tg_gropu" translatable="false">https://t.me/+kFkVVuDOFsFiMzQ1</string>
+	<string name="main_update_tips" translatable="false">版本已经是最新的了！</string>
+	<string name="main_update_error" translatable="false">检查版本更新错误！</string>
+    <string name="main_save_local" translatable="false">保存到本地</string>
+    <string name="main_dark_mode" translatable="false">黑夜模式</string>
+
+	<string name="main_history" translatable="false">历史记录</string>
+</resources>

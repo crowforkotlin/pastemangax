@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+	<TextView
+		android:id="@+id/main_update_title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/base_dp10"
+		android:drawablePadding="@dimen/base_dp5"
+		android:ellipsize="end"
+		android:gravity="center"
+		android:maxLines="1"
+		android:textSize="@dimen/base_sp24"
+		android:textStyle="bold"
+		app:drawableStartCompat="@drawable/mine_ic_update_24dp"
+		app:layout_constraintStart_toStartOf="@+id/main_update_cancel"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:text="有新的更新啦" />
+
+	<TextView
+		android:id="@+id/main_update_time"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/base_dp5"
+		android:ellipsize="end"
+		android:gravity="center"
+		android:maxLines="1"
+		android:minLines="2"
+		android:textSize="@dimen/base_sp10"
+		android:textStyle="bold"
+		app:layout_constraintStart_toStartOf="@+id/main_update_title"
+		app:layout_constraintTop_toBottomOf="@+id/main_update_title"
+		tools:text="更新日期：2023年4月18日" />
+
+	<com.google.android.material.divider.MaterialDivider
+		android:id="@+id/materialDivider"
+		android:layout_width="match_parent"
+		android:layout_marginTop="@dimen/base_dp10"
+		android:layout_height="@dimen/base_dp1"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/main_update_time" />
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/main_update_scrollview"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:maxHeight="@dimen/base_dp200"
+		android:layout_marginTop="@dimen/base_dp20"
+		android:layout_marginBottom="@dimen/base_dp10"
+		android:layout_marginStart="@dimen/base_dp10"
+		android:layout_marginEnd="@dimen/base_dp10"
+		app:layout_constraintBottom_toTopOf="@+id/main_update_go"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/materialDivider">
+
+		<TextView
+			android:id="@+id/main_update_text"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:minLines="2"
+			android:gravity="center_vertical"
+			android:autoLink="web"
+			android:textSize="@dimen/base_sp14"
+			android:textStyle="bold"
+			tools:text="@string/BaseTodoTextView" />
+
+	</androidx.core.widget.NestedScrollView>
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/main_update_cancel"
+		style="@style/Widget.Material3.Button.ElevatedButton"
+		app:layout_constraintHorizontal_bias="0"
+		android:layout_width="wrap_content"
+		app:rippleColor="@color/base_grey_500"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/base_dp10"
+		android:text="@string/main_update_cancel"
+		android:textColor="@color/base_black"
+		android:textStyle="bold"
+		app:backgroundTint="@color/mine_deep_purple_300"
+		app:iconTint="@null"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@+id/main_update_go"
+		app:layout_constraintStart_toStartOf="parent" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/main_update_go"
+		style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/base_dp10"
+		android:text="@string/main_update_go"
+		android:textColor="@color/base_black"
+		app:rippleColor="@color/base_grey_500"
+		android:textStyle="bold"
+		app:backgroundTint="@color/mine_deep_purple_300"
+		app:icon="@drawable/mine_ic_air_plane_24dp"
+		app:iconTint="@null"
+
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/main_update_history"
+		style="@style/Base.Theme.Button.Icon.Tint"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:icon="@drawable/mine_ic_update_history_24dp"
+		app:iconTint="@null"
+		app:rippleColor="@color/base_grey_500"
+		app:backgroundTint="@color/mine_deep_purple_300"
+		app:layout_constraintEnd_toEndOf="@+id/main_update_go"
+		app:layout_constraintTop_toTopOf="@+id/main_update_title" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

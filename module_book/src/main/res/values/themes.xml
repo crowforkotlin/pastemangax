@@ -1,0 +1,8 @@
+<resources>
+
+	<style name="Book.Theme.CopyManga" parent="Theme.Material3.DayNight.NoActionBar">
+	</style>
+
+	<style name="Book.Theme.Chapter" parent="Widget.Material3.Button.ElevatedButton" />
+
+</resources>

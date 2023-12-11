@@ -1,0 +1,22 @@
+<resources>
+	<!-- Base application theme. -->
+	<style name="Main.Theme.CopyManga" parent="Theme.Material3.DayNight.NoActionBar">
+	</style>
+
+	<style name="Main.Theme.CardView" parent="Widget.Material3.CardView.Elevated">
+		<item name="cardBackgroundColor">@color/base_white</item>
+	</style>
+
+	<style name="Main.Theme.Bottom.Text" parent="TextAppearance.Material3.LabelMedium">
+		<item name="android:textSize">@dimen/base_sp12</item>
+	</style>
+
+	<style name="Main.Theme.BottomNavigationView.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+		<item name="android:width">@dimen/base_dp56</item>
+		<item name="android:height">@dimen/base_dp28</item>
+		<item name="marginHorizontal">@dimen/base_dp4</item>
+		<item name="shapeAppearance">@style/ShapeAppearance.M3.Comp.NavigationBar.ActiveIndicator.Shape</item>
+		<item name="android:color">@macro/m3_comp_navigation_bar_active_indicator_color</item>
+	</style>
+
+</resources>

@@ -1,0 +1,5 @@
+<resources>
+
+	<style name="Discover.Theme.CopyManga" parent="Theme.Material3.DayNight.NoActionBar">
+	</style>
+</resources>

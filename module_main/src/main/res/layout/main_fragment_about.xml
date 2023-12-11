@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	style="@style/Base.Theme.BG"
+	android:layout_height="match_parent"
+	android:fillViewport="true">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<ImageView
+			android:id="@+id/main_about_icon"
+			android:layout_width="@dimen/base_dp108"
+			android:layout_height="@dimen/base_dp108"
+			android:contentDescription="@string/BaseTodoTextView"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/main_about_back"
+			tools:src="@drawable/base_icon_crow" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/main_about_back"
+			style="@style/Widget.Material3.Button.IconButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="@dimen/base_dp5"
+			app:icon="@drawable/base_ic_back_24dp"
+			app:iconTint="@color/black"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<com.google.android.material.card.MaterialCardView
+			style="@style/Widget.Material3.CardView.Elevated"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/base_dp10"
+			android:layout_marginTop="@dimen/base_dp20"
+			android:layout_marginEnd="@dimen/base_dp10"
+			android:layout_marginBottom="@dimen/base_dp10"
+			app:cardElevation="@dimen/base_dp5"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/main_about_icon">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+				<TextView
+					android:id="@+id/main_about_content"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:layout_margin="@dimen/base_dp10"
+					android:textSize="@dimen/base_sp16"
+					android:textStyle="bold"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					tools:text="@string/BaseTodoTextView" />
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/user_about_add_qq_group"
+					style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_margin="@dimen/base_dp10"
+					android:text="@string/main_about_join_telegram_group"
+					android:textColor="@color/base_black"
+					android:textStyle="bold"
+					app:backgroundTint="@color/mine_deep_purple_300"
+					app:icon="@drawable/mine_ic_air_plane_24dp"
+					app:iconTint="@null"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintTop_toBottomOf="@+id/main_about_content" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<TextView
+			android:id="@+id/main_about_app_version"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="@dimen/base_dp10"
+			android:text="@string/BaseTodoTextView"
+			android:textSize="@dimen/base_sp12"
+			android:textStyle="bold"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

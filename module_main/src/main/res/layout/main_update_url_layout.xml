@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+	<TextView
+		android:id="@+id/main_update_url_title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/base_dp10"
+		android:letterSpacing="0.5"
+		android:text="@string/main_update_url_title"
+		android:textSize="@dimen/base_sp24"
+		android:textStyle="bold"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/main_update_url_scrollview"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:layout_constraintBottom_toTopOf="@+id/main_update_url_cancel"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		android:layout_marginBottom="@dimen/base_dp10"
+		app:layout_constraintTop_toBottomOf="@+id/main_update_url_title">
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/main_update_url_rv"
+			android:layout_width="match_parent"
+			tools:listitem="@layout/main_update_url_rv"
+			tools:itemCount="3"
+			android:layout_height="wrap_content"
+			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+	</androidx.core.widget.NestedScrollView>
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/main_update_url_cancel"
+		style="@style/Widget.Material3.Button.ElevatedButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/base_dp10"
+		android:text="@string/main_update_cancel"
+		android:textColor="@color/base_black"
+		android:textStyle="bold"
+		app:backgroundTint="@color/mine_deep_purple_300"
+		app:iconTint="@null"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

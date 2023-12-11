@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/play"
+    style="@style/Widget.Material3.Button.ElevatedButton"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/base_dp40"
+    android:layout_marginStart="@dimen/base_dp4"
+    android:layout_marginEnd="@dimen/base_dp4"
+    android:ellipsize="end"
+    android:maxLines="1"
+    android:textAlignment="center"
+    android:textSize="@dimen/base_sp10"
+    android:textStyle="bold"
+    app:elevation="@dimen/base_dp10"
+    tools:text="你好" />

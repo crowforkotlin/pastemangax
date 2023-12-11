@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/loading_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie"
+        android:layout_width="@dimen/base_dp200"
+        android:layout_height="@dimen/base_dp200"
+        android:layout_gravity="center"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="lottie/lottie-error.json"
+        app:lottie_loop="true" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/retry"
+        android:layout_width="wrap_content"
+        app:elevation="@dimen/base_dp1"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/base_dp10"
+        android:text="@string/BaseLoadingRetry"
+        android:textColor="@color/black"
+        android:textSize="@dimen/base_sp13"
+        android:textStyle="bold"
+        app:backgroundTint="@color/base_blue_100" />
+
+</FrameLayout>

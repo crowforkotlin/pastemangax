@@ -1,0 +1,41 @@
+<resources>
+
+	<!-- TODO: Remove or change this placeholder text -->
+	<string name="mine_login">登录</string>
+	<string name="mine_login_ok">登录成功！</string>
+	<string name="mine_reg">注册</string>
+	<string name="mine_reg_ok">注册成功！</string>
+	<string name="mine_check_update">检查更新</string>
+	<string name="mine_about">关于作者</string>
+	<string name="mine_info">个人信息</string>
+	<string name="mine_gender">性别：%s</string>
+	<string name="mine_nickname">昵称：%s</string>
+	<string name="mine_username">用户名：%s</string>
+	<string name="mine_datetime_created">注册日期：%s</string>
+	<string name="mine_download_count">下载漫画量：%s</string>
+	<string name="mine_email">邮箱地址：%s</string>
+	<string name="mine_blank_white_tips">“你置身在一片空白之中，它们悉数留给你…“</string>
+	<string name="mine_blank_black_tips">”crowforkotlin will develop more features…“</string>
+	<string name="mine_upload_icon_tips">注：头像30天内只能修改一次！上传涩图永久禁言!</string>
+	<string name="mine_upload_icon_tips_title">须知</string>
+	<string name="mine_tips_title">提示</string>
+	<string name="mine_upload_icon_tips_agreen">同意</string>
+	<string name="mine_download">我的下载</string>
+	<string name="mine_usr_invalid">"账号长度在6位及以上！"</string>
+	<string name="mine_pwd_invalid">"密码长度在6位及以上！"</string>
+	<string name="mine_repwd_notmatch">两次输入的密码不一致！"</string>
+	<string name="mine_plese_login">登录获取更好的体验~</string>
+	<string name="mine_exit">退出账号</string>
+	<string name="mine_exit_sucess">已退出！</string>
+	<string name="mine_change_icon">修改头像</string>
+	<string name="mine_usr">账号</string>
+	<string name="mine_pwd">密码</string>
+	<string name="mine_re_pwd">重复密码</string>
+	<string name="mine_auto_login">自动登录</string>
+	<string name="mine_info_invalid">"身份过期请重新登录！"</string>
+	<string name="mine_browsing_history">浏览记录</string>
+	<string name="mine_login_tips">小提示：登录和注册功能1分钟内只可请求5–10次左右，超过次数后需等待5分钟左右才可恢复!</string>
+	<string name="mine_reg_tips">小提示：注册功能1分钟内只可请求5次左右，超过次数后需等待10分钟左右才可恢复!</string>
+	<string name="mine_info_blank_tips">“温故一词，知新之趣。”</string>
+	<string name="mine_update_history_title">版本历史记录</string>
+</resources>

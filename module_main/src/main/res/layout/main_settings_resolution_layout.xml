@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/base_dp10">
+
+    <TextView
+        android:id="@+id/settings_proxy_tips"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_dp20"
+        android:drawablePadding="@dimen/base_dp10"
+        android:text="@string/main_resolution_tips"
+        android:textSize="@dimen/base_sp12"
+        android:textStyle="bold"
+        app:drawableStartCompat="@drawable/base_ic_tips"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/settings_proxy_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/base_dp20"
+        android:layout_marginEnd="@dimen/base_dp20"
+        android:drawablePadding="@dimen/base_dp10"
+        android:text="@string/main_resolution_title"
+        android:textColor="@color/base_color_asc"
+        android:textSize="@dimen/base_sp18"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/settings_proxy_tips"
+        app:layout_constraintTop_toBottomOf="@+id/settings_proxy_tips" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/mainMaterialdivider"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:layout_height="@dimen/base_dp1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_proxy_title" />
+
+    <RadioGroup
+        android:id="@+id/settings_resolution_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_dp20"
+        android:layout_marginTop="@dimen/base_dp20"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainMaterialdivider"
+        app:layout_constraintVertical_bias="0"
+        tools:ignore="HardcodedText">
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/settings_resolution_800"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="800"
+            android:textSize="@dimen/base_sp12"
+            android:textStyle="bold" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/settings_resolution_1200"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1200"
+            android:textSize="@dimen/base_sp12"
+            android:textStyle="bold" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/settings_resolution_1500"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1500"
+            android:textSize="@dimen/base_sp12"
+            android:textStyle="bold" />
+
+    </RadioGroup>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

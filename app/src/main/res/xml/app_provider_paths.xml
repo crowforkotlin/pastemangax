@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+
+    <cache-path
+        name="cache_files"
+        path="." />
+
+    <external-path
+        name="ext_files"
+        path="." />
+
+    <external-cache-path
+        name="ext_cache_files"
+        path="." />
+
+    <external-files-path
+        name="external-files-path"
+        path="." />
+
+    <external-cache-path
+        name="external-cache-path"
+        path="." />
+
+    <files-path
+        name="files-path"
+        path="." />
+
+    <!--suppress AndroidElementNotAllowed -->
+    <root-path
+        name="ext_storage"
+        path="/storage/" />
+
+</paths>
