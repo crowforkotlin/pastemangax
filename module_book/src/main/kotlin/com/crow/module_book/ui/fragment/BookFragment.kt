@@ -8,11 +8,11 @@ import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.appComicCardHeight
-import com.crow.base.copymanga.appComicCardWidth
-import com.crow.base.copymanga.entity.Fragments
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.appComicCardWidth
+import com.crow.mangax.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility

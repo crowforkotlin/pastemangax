@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crow.base.app.BaseApp
-import com.crow.base.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.appIsDarkMode
 import com.crow.copymanga.model.di.factoryModule
 import com.crow.copymanga.model.di.fragmentModule
 import com.crow.copymanga.model.di.networkModule

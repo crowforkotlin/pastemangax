@@ -6,7 +6,7 @@ import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.crow.base.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.base.databinding.BasePagingFooterRetryBinding
 import com.crow.base.tools.extensions.doOnClickInterval
 

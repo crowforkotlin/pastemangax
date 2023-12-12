@@ -1,9 +1,9 @@
 package com.crow.module_book.network
 
-import com.crow.base.copymanga.BaseStrings.PATH_WORD
-import com.crow.base.copymanga.BaseStrings.URL
-import com.crow.base.copymanga.resp.BaseNullableResultResp
-import com.crow.base.copymanga.resp.BaseResultResp
+import com.crow.mangax.copymanga.BaseStrings.PATH_WORD
+import com.crow.mangax.copymanga.BaseStrings.URL
+import com.crow.mangax.copymanga.resp.BaseNullableResultResp
+import com.crow.mangax.copymanga.resp.BaseResultResp
 import com.crow.module_book.model.resp.ComicBrowserResp
 import com.crow.module_book.model.resp.ComicInfoResp
 import com.crow.module_book.model.resp.ComicPageResp

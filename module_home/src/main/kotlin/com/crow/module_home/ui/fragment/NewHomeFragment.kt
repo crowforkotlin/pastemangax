@@ -15,12 +15,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.GridLayoutManager
-import com.crow.base.copymanga.BaseEventEnum
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseStrings.ID
-import com.crow.base.copymanga.appEvent
-import com.crow.base.copymanga.appIsDarkMode
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseStrings.ID
+import com.crow.mangax.copymanga.appEvent
+import com.crow.mangax.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.baseCoroutineException
@@ -47,6 +47,8 @@ import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
+import com.crow.mangax.tools.language.ChineseConverter
+import com.crow.mangax.tools.language.ConversionType
 import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeFragmentNewBinding
 import com.crow.module_home.databinding.HomeFragmentSearchViewBinding
@@ -381,6 +383,8 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                 mBinding.searchView.hide()
             }
         }
+
+        ChineseConverter.convert(" 你是真的覺得自己很厲害 ？？？", ConversionType.HK2S, mContext).log()
 
         // 初始化viewstub
         mBaseErrorViewStub = baseErrorViewStub(mBinding.error, lifecycle) { mBinding.homeRefresh.autoRefresh() }

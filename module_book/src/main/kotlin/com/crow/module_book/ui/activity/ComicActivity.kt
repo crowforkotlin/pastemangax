@@ -19,8 +19,8 @@ import androidx.core.view.get
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.appIsDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.hasGlobalPoint

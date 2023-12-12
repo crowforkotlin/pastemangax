@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
 import com.crow.base.app.app
-import com.crow.base.copymanga.BaseEventEnum
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getNavigationBarHeight
 import com.crow.base.tools.extensions.getStatusBarHeight

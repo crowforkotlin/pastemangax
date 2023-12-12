@@ -1,3 +1,5 @@
+@file:Suppress("ConstPropertyName")
+
 /*************************
  * @Machine: RedmiBook Pro 15
  * @RelativePath: Configuration.kt
@@ -28,6 +30,9 @@ object AppConfigs {
 
     // Base库的命名空间
     const val base_namespace = "com.crow.base"
+
+    // Lib CopyManga 命名空间
+    const val lib_copymanga = "com.crow.mangax"
 
     // App 资源前缀
     const val app_resource_prefix = "app"
@@ -79,6 +84,9 @@ object AppConfigs {
 
     // jvm版本
     const val jvm_target = "11"
+
+    // ndk Version
+    const val ndk_version = "23.2.8568313"
 
     // Android 提供的默认测试工具
     const val test_instrumentation_runner = "androidx.test.runner.AndroidJUnitRunner"

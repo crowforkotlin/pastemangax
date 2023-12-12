@@ -1,7 +1,7 @@
 package com.crow.module_discover.network
 
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.resp.BaseResultResp
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.resp.BaseResultResp
 import com.crow.module_discover.model.resp.DiscoverComicHomeResp
 import com.crow.module_discover.model.resp.DiscoverComicTagResp
 import com.crow.module_discover.model.resp.DiscoverNovelHomeResp

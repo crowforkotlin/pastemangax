@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getCurrentVersionName
 import com.crow.base.tools.extensions.getNavigationBarHeight

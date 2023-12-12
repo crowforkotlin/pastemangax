@@ -15,12 +15,12 @@ import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
-import com.crow.base.copymanga.appComicCardHeight
-import com.crow.base.copymanga.formatValue
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.formatValue
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.ToolTipsView
 import com.crow.module_home.databinding.HomeFragmentComicRvBodyBinding
 import com.crow.module_home.databinding.HomeFragmentComicRvHeaderBinding

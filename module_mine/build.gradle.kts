@@ -60,6 +60,9 @@ android {
 
 dependencies {
 
-    // 引入Base库
-    implementation(project(mapOf("path" to ":lib_base")))
+    // 引入lib_base库
+    implementation(project(":lib_base"))
+
+    // 引入lib_mangax库
+    implementation(project(":lib_mangax"))
 }

@@ -6,8 +6,8 @@ import androidx.activity.addCallback
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import com.crow.base.copymanga.BaseEventEnum
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_200L

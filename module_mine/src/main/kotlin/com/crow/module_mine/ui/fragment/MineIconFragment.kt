@@ -15,8 +15,8 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.setPadding
 import com.bumptech.glide.Glide
-import com.crow.base.copymanga.appIsDarkMode
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.newMaterialDialog

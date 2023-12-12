@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.updateLayoutParams
-import com.crow.base.copymanga.appIsDarkMode
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateIconClickGap

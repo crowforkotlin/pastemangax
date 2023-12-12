@@ -8,8 +8,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.R
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn

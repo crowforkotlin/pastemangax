@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_anime.databinding.AnimeFragmentChapterRvBinding
 import com.crow.module_anime.model.resp.chapter.AnimeChapterResult
 import kotlinx.coroutines.delay

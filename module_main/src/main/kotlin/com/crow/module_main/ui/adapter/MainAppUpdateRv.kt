@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.R
 import com.crow.base.app.app
-import com.crow.base.copymanga.getSpannableString
+import com.crow.mangax.copymanga.getSpannableString
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_main.databinding.MainUpdateUrlRvBinding
 import com.crow.module_main.model.resp.update.Url

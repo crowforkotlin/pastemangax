@@ -1,6 +1,6 @@
 package com.crow.module_home.model.intent
 
-import com.crow.base.copymanga.resp.BaseResultResp
+import com.crow.mangax.copymanga.resp.BaseResultResp
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
 import com.crow.module_home.model.resp.homepage.ComicDatas
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult

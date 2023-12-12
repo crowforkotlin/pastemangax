@@ -17,13 +17,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
-import com.crow.base.copymanga.BaseUserConfig
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.module_book.databinding.BookActivityComicRvBinding
 import com.crow.module_book.databinding.BookFragmentClassicIntentRvBinding

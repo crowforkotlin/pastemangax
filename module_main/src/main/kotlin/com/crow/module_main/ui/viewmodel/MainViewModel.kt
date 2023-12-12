@@ -3,8 +3,8 @@ package com.crow.module_main.ui.viewmodel
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.lifecycle.viewModelScope
-import com.crow.base.copymanga.appIsDarkMode
-import com.crow.base.copymanga.entity.AppConfigEntity
+import com.crow.mangax.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.entity.AppConfigEntity
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel

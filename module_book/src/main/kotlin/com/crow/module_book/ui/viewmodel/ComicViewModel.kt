@@ -2,7 +2,7 @@ package com.crow.module_book.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.crow.base.app.app
-import com.crow.base.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.createCoroutineExceptionHandler
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel

@@ -1,7 +1,7 @@
 package com.crow.module_mine.network
 
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.resp.BaseResultResp
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.resp.BaseResultResp
 import com.crow.module_mine.model.resp.MineLoginResultsOkResp
 import com.crow.module_mine.model.resp.MineUpdateInfoResp
 import kotlinx.coroutines.flow.Flow

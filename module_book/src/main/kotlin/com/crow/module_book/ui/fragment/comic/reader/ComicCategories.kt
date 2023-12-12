@@ -4,7 +4,7 @@ import androidx.annotation.IdRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.navigate
 import com.crow.module_book.R
 import com.crow.module_book.ui.activity.ComicActivity

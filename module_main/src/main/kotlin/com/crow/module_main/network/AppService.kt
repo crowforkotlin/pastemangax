@@ -1,6 +1,6 @@
 package com.crow.module_main.network
 
-import com.crow.base.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseStrings
 import com.crow.module_main.model.resp.MainAppUpdateResp
 import com.crow.module_main.model.resp.MainSiteResp
 import kotlinx.coroutines.flow.Flow

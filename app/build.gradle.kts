@@ -48,6 +48,16 @@ android {
 
         // 资源前缀（所有资源前缀必须添加）
         resourcePrefix(AppConfigs.app_resource_prefix)
+
+        // NDK默认配置
+        ndk {
+
+            // NDK VERSION 设置23 和 MINSDK 23保持一致
+            ndkVersion = AppConfigs.ndk_version
+
+            // 设置支持的SO库架构 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            abiFilters += listOf("x86", "x86_64", "armeabi-v7a", "arm64-v8a")
+        }
     }
 
     // 应用程序的构建类型
@@ -159,8 +169,11 @@ dependencies {
     // Glide编译器
     ksp(libs.glide.ksp)
 
-    // 引入Base库
+    // 引入lib_base库
     implementation(project(":lib_base"))
+
+    // 引入lib_mangax库
+    implementation(project(":lib_mangax"))
 
     // 模块 主页
     implementation(project(":module_main"))

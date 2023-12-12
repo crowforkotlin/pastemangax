@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.crow.base.copymanga.appComicCardHeight
-import com.crow.base.copymanga.appComicCardWidth
-import com.crow.base.copymanga.appDp10
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.appComicCardWidth
+import com.crow.mangax.copymanga.appDp10
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
 import com.crow.module_bookshelf.model.resp.bookshelf_novel.BookshelfNovelResults
 

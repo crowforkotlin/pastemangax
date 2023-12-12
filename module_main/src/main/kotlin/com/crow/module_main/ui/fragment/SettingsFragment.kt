@@ -13,9 +13,9 @@ import androidx.core.view.forEach
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.app.app
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUserConfig
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility

@@ -1,7 +1,7 @@
 package com.crow.module_main.network
 
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.resp.BaseResultResp
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.resp.BaseResultResp
 import com.crow.module_main.model.resp.comic_history.ComicHistoryResp
 import com.crow.module_main.model.resp.novel_history.NovelHistoryResp
 import kotlinx.coroutines.flow.Flow

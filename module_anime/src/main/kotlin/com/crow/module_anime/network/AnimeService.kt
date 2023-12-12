@@ -1,8 +1,8 @@
 package com.crow.module_anime.network
 
 import androidx.annotation.IntRange
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.resp.BaseResultResp
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.resp.BaseResultResp
 import com.crow.module_anime.model.req.RegReq
 import com.crow.module_anime.model.resp.chapter.AnimeChapterResp
 import com.crow.module_anime.model.resp.discover.DiscoverPageResp

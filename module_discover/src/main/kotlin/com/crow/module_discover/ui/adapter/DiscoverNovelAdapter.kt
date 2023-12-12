@@ -12,15 +12,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
-import com.crow.base.copymanga.appComicCardHeight
-import com.crow.base.copymanga.appComicCardWidth
-import com.crow.base.copymanga.appDp10
-import com.crow.base.copymanga.entity.IBookAdapterColor
-import com.crow.base.copymanga.formatValue
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.appComicCardWidth
+import com.crow.mangax.copymanga.appDp10
+import com.crow.mangax.copymanga.entity.IBookAdapterColor
+import com.crow.mangax.copymanga.formatValue
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_discover.databinding.DiscoverFragmentRvBinding
 import com.crow.module_discover.model.resp.novel_home.DiscoverNovelHomeResult
 
