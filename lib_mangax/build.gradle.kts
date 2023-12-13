@@ -50,9 +50,6 @@ android {
 
     // NDK BUILD构建配置
     externalNativeBuild {
-//        ndkBuild {
-//            path = file("src/main/jni/Android.mk")
-//        }
         cmake {
             path = file("CMakeLists.txt")
         }
