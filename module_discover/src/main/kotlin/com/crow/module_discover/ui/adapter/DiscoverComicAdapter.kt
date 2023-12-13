@@ -20,8 +20,11 @@ import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.ToolTipsView
+import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_discover.databinding.DiscoverFragmentRvBinding
 import com.crow.module_discover.model.resp.comic_home.DiscoverComicHomeResult
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 class DiscoverComicAdapter(
     inline val mDoOnTapComic: (DiscoverComicHomeResult) -> Unit
@@ -56,6 +59,8 @@ class DiscoverComicAdapter(
         }
     }
 
+    private val mViewScope = MainScope()
+
     override fun onBindViewHolder(vh: LoadingViewHolder, position: Int) {
         val item = getItem(position) ?: return
 
@@ -83,8 +88,10 @@ class DiscoverComicAdapter(
                 }
             })
             .into(vh.binding.image)
+        mViewScope.launch {
 
-        vh.binding.name.text = item.mName
+            vh.binding.name.text = ChineseConverter.convert(item.mName)
+        }
         vh.binding.author.text = item.mAuthor.joinToString { it.mName }
         vh.binding.hot.text = formatValue(item.mPopular)
         vh.binding.time.text = item.mDatetimeUpdated

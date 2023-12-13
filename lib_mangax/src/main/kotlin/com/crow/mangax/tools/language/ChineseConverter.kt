@@ -2,36 +2,40 @@ package com.crow.mangax.tools.language
 
 import android.content.Context
 import android.util.Log
-import com.crow.base.tools.extensions.log
+import com.crow.base.app.app
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.async
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.concurrent.Executors
 
 /**
  * Created by zhangqichuan on 29/2/16.
  */
 object ChineseConverter {
 
-    init {
-        System.loadLibrary("ChineseConverter")
-        "LOAD".log()
+    init { System.loadLibrary("ChineseConverter") }
+
+    fun init() {
+        val lastDataFile = File(app.filesDir.toString() + "/opencc_data/zFinished2")
+        if (!lastDataFile.exists()) {
+            initialize(app)
+        }
     }
-    
+
+    private val mConvertScope = CoroutineScope(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
     /***
      * @param text           the text to be converted to
      * @param conversionType the conversion type
      * @param context        android context
      * @return the converted text
      */
-    fun convert(text: String, conversionType: ConversionType, context: Context): String {
-        val lastDataFile = File(context.filesDir.toString() + "/openccdata/zFinished2")
-        if (!lastDataFile.exists()) {
-            initialize(context)
-        }
-        val dataFolder = File(context.filesDir.toString() + "/openccdata")
-        return convert(text, conversionType.value, dataFolder.absolutePath)
+    suspend fun convert(text: String, conversionType: ConversionType = ConversionType.HK2S): String {
+        return mConvertScope.async { convert(text, conversionType.value, File(app.filesDir.toString() + "/opencc_data").absolutePath) }.await()
     }
 
     /***
@@ -39,7 +43,7 @@ object ChineseConverter {
      * @param context
      */
     fun clearDictDataFolder(context: Context) {
-        val dataFolder = File(context.filesDir.toString() + "/openccdata")
+        val dataFolder = File(context.filesDir.toString() + "/opencc_data")
         deleteRecursive(dataFolder)
     }
 
@@ -53,7 +57,7 @@ object ChineseConverter {
     private external fun convert(text: String, configFile: String, absoluteDataFolderPath: String): String
 
     private fun initialize(context: Context) {
-        copyFolder("openccdata", context)
+        copyFolder("opencc_data", context)
     }
 
     private fun copyFolder(folderName: String, context: Context) {

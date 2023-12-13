@@ -48,9 +48,13 @@ android {
         }
     }
 
+    // NDK BUILD构建配置
     externalNativeBuild {
-        ndkBuild {
-            path = file("src/main/jni/Android.mk")
+//        ndkBuild {
+//            path = file("src/main/jni/Android.mk")
+//        }
+        cmake {
+            path = file("CMakeLists.txt")
         }
     }
 
@@ -84,7 +88,7 @@ android {
         kotlin.srcDir(AppConfigs.source_kotlin)
 
         // JNI 库文件路径
-        jniLibs.srcDirs(AppConfigs.source_libs, AppConfigs.source_jniLibs)
+        jniLibs.srcDirs(AppConfigs.source_libs)
     }
 
     // 配置Compose 选项

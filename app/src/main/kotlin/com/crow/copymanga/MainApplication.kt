@@ -11,6 +11,7 @@ import com.crow.copymanga.model.di.networkModule
 import com.crow.copymanga.model.di.servicesModule
 import com.crow.copymanga.model.di.singleModule
 import com.crow.copymanga.model.di.viewModelModule
+import com.crow.mangax.tools.language.ChineseConverter
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.core.context.startKoin
@@ -30,6 +31,8 @@ class MainApplication : BaseApp() {
         super.onCreate()
 
         AppCompatDelegate.setDefaultNightMode(if(appIsDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
+
+        ChineseConverter.init()
 
         startKoin {
             fragmentFactory()

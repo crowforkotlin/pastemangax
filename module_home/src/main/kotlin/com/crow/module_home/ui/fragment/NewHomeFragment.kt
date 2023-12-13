@@ -69,6 +69,7 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.qualifier.named
 import kotlin.system.exitProcess
+import kotlin.system.measureTimeMillis
 import com.crow.base.R as baseR
 
 class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
@@ -383,8 +384,6 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                 mBinding.searchView.hide()
             }
         }
-
-        ChineseConverter.convert(" 你是真的覺得自己很厲害 ？？？", ConversionType.HK2S, mContext).log()
 
         // 初始化viewstub
         mBaseErrorViewStub = baseErrorViewStub(mBinding.error, lifecycle) { mBinding.homeRefresh.autoRefresh() }
