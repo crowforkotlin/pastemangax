@@ -8,7 +8,11 @@ import com.crow.base.tools.extensions.logger
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,7 +25,8 @@ import kotlin.coroutines.CoroutineContext
  * @Author: CrowForKotlin
  * @Description: Coroutine Ext
  **************************/
-
+private val baseUIJob = SupervisorJob()
+val baseUI = CoroutineScope(Dispatchers.Main + baseUIJob)
 val baseCoroutineException = GlobalCoroutineExceptionHandler()
 
 class GlobalCoroutineExceptionHandler : CoroutineExceptionHandler {
@@ -57,3 +62,5 @@ fun createCoroutineExceptionHandler(content: String, handler: ((Throwable) -> Un
         logger(content = "$content : ${throwable.stackTraceToString()}", level = Log.ERROR)
     }
 }
+
+fun cancelAllUIJob() = baseUIJob.cancelChildren()

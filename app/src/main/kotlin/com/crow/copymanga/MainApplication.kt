@@ -32,7 +32,7 @@ class MainApplication : BaseApp() {
 
         AppCompatDelegate.setDefaultNightMode(if(appIsDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
 
-        ChineseConverter.init()
+        ChineseConverter.initialize(applicationContext)
 
         startKoin {
             fragmentFactory()

@@ -43,7 +43,7 @@ object ChineseConverter {
      * ● 2023-12-14 01:49:17 周四 上午
      * @author crowforkotlin
      */
-    private fun initialize(context: Context) {
+    fun initialize(context: Context) {
         mConvertScope.launch(Dispatchers.IO) {
             val lastDataFile = File(app.filesDir.toString() + "/opencc_data/zFinished2")
             if (!lastDataFile.exists()) {

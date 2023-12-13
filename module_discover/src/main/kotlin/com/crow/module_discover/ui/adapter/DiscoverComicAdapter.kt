@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
+import com.crow.base.tools.coroutine.baseUI
 import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.entity.IBookAdapterColor
 import com.crow.mangax.copymanga.formatValue
@@ -23,11 +24,11 @@ import com.crow.base.ui.view.ToolTipsView
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_discover.databinding.DiscoverFragmentRvBinding
 import com.crow.module_discover.model.resp.comic_home.DiscoverComicHomeResult
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class DiscoverComicAdapter(
-    inline val mDoOnTapComic: (DiscoverComicHomeResult) -> Unit
+    private val onClick: (DiscoverComicHomeResult) -> Unit
 ) : PagingDataAdapter<DiscoverComicHomeResult, DiscoverComicAdapter.LoadingViewHolder>(DiffCallback()), IBookAdapterColor<DiscoverComicAdapter.LoadingViewHolder> {
 
     class DiffCallback : DiffUtil.ItemCallback<DiscoverComicHomeResult>() {
@@ -48,18 +49,16 @@ class DiscoverComicAdapter(
             vh.binding.image.layoutParams.height = appComicCardHeight
 
             vh.binding.card.doOnClickInterval {
-                mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
+                onClick(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
 
             vh.binding.root.doOnClickInterval {
-                mDoOnTapComic(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
+                onClick(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
 
             ToolTipsView.showToolTipsByLongClick(vh.binding.name)
         }
     }
-
-    private val mViewScope = MainScope()
 
     override fun onBindViewHolder(vh: LoadingViewHolder, position: Int) {
         val item = getItem(position) ?: return
@@ -88,10 +87,7 @@ class DiscoverComicAdapter(
                 }
             })
             .into(vh.binding.image)
-        mViewScope.launch {
-
-            vh.binding.name.text = ChineseConverter.convert(item.mName)
-        }
+        baseUI.launch { vh.binding.name.text = ChineseConverter.convert(item.mName) }
         vh.binding.author.text = item.mAuthor.joinToString { it.mName }
         vh.binding.hot.text = formatValue(item.mPopular)
         vh.binding.time.text = item.mDatetimeUpdated
