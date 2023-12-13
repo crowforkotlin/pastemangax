@@ -35,7 +35,7 @@ object ChineseConverter {
      * @return the converted text
      */
     suspend fun convert(text: String, conversionType: ConversionType = ConversionType.HK2S): String {
-        return mConvertScope.async { convert(text, conversionType.value, File(app.filesDir.toString() + "/opencc_data").absolutePath) }.await()
+        return mConvertScope.async { nativeConvert(text, "${app.filesDir.absolutePath}/opencc_data/${conversionType.value}") }.await()
     }
 
     /***
@@ -55,6 +55,8 @@ object ChineseConverter {
     }
 
     private external fun convert(text: String, configFile: String, absoluteDataFolderPath: String): String
+
+    private external fun nativeConvert(text: String, filePath: String): String
 
     private fun initialize(context: Context) {
         copyFolder("opencc_data", context)

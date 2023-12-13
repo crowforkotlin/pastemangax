@@ -48,35 +48,22 @@ enum class ConversionType {
     val value: String
         //tw2sp.json Traditional Chinese (Taiwan Standard) to Simplified Chinese with Mainland Chinese idiom 繁體（臺灣正體標準）到簡體並轉換爲中國大陸常用詞彙
         get() {
-            if (this == HK2S) {
-                return "hk2s.json"
-            } else if (this == HK2T) {
-                return "hk2t.json"
-            } else if (this == JP2T) {
-                return "jp2t.json"
-            } else if (this == S2HK) {
-                return "s2hk.json"
-            } else if (this == S2T) {
-                return "s2t.json"
-            } else if (this == S2TW) {
-                return "s2tw.json"
-            } else if (this == S2TWP) {
-                return "s2twp.json"
-            } else if (this == T2HK) {
-                return "t2hk.json"
-            } else if (this == T2S) {
-                return "t2s.json"
-            } else if (this == T2TW) {
-                return "t2tw.json"
-            } else if (this == T2JP) {
-                return "t2jp.json"
-            } else if (this == TW2S) {
-                return "tw2s.json"
-            } else if (this == TW2T) {
-                return "tw2t.json"
-            } else if (this == TW2SP) {
-                return "tw2sp.json"
+            return when(this) {
+                HK2S -> "hk2s.json"
+                HK2T -> "hk2t.json"
+                JP2T -> "jp2t.json"
+                S2HK -> "s2hk.json"
+                S2T -> "s2t.json"
+                S2TW -> "s2tw.json"
+                S2TWP -> "s2twp.json"
+                T2HK -> "t2hk.json"
+                T2S -> "t2s.json"
+                T2TW -> "t2tw.json"
+                T2JP -> "t2jp.json"
+                TW2S -> "tw2s.json"
+                TW2T -> "tw2t.json"
+                TW2SP -> "tw2sp.json"
+                else -> "s2t.json"
             }
-            return "s2t.json"
         }
 }
