@@ -44,7 +44,7 @@ android {
             ndkVersion = AppConfigs.ndk_version
 
             // 设置支持的SO库架构 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
-            abiFilters += listOf("x86", "x86_64", "armeabi-v7a", "arm64-v8a")
+            abiFilters += listOf(/*"x86", "x86_64", "armeabi-v7a", */"arm64-v8a")
         }
     }
 

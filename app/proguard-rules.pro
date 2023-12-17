@@ -1,6 +1,6 @@
 # CopyMangaX
--keep  class com.crow.base.copymanga.entity.AppConfigEntity { *; }
--keepclassmembers  class com.crow.base.copymanga.resp.** { *; }
+-keep  class com.crow.mangax.copymanga.entity.AppConfigEntity { *; }
+-keepclassmembers  class com.crow.mangax.copymanga.resp.** { *; }
 -keepclassmembers  class com.crow.module_anime.model.resp.** { *; }
 -keepclassmembers  class com.crow.module_book.model.resp.** { *; }
 -keepclassmembers  class com.crow.module_book.model** { *; }

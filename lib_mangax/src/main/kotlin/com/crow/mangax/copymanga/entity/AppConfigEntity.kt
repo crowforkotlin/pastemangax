@@ -83,7 +83,7 @@ data class AppConfigEntity(
             val sp = SpNameSpace.CATALOG_CONFIG.getSharedPreferences()
             mDarkMode = sp.getBoolean(SpNameSpace.Key.ENABLE_DARK, false)
             mChineseConvert = sp.getBoolean(SpNameSpace.Key.ENABLE_CHINESE_CONVERT, true)
-            mHotAccurateDisplay = sp.getBoolean(SpNameSpace.Key.ENABLE_HOT_ACCURATE_DISPLAY, true)
+            mHotAccurateDisplay = sp.getBoolean(SpNameSpace.Key.ENABLE_HOT_ACCURATE_DISPLAY, false)
             mUpdatePrefix = sp.getBoolean(SpNameSpace.Key.ENABLE_UPDATE_PREFIX, true)
         }
 
