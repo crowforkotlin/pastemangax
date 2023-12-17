@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.app
-import com.crow.mangax.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.view.TooltipsView
@@ -41,7 +41,7 @@ class NovelChapterRvAdapter(
     private val mMutex = Mutex()
 
     init {
-        if (appIsDarkMode) {
+        if (mDarkMode) {
             mBtSurfaceColor = ContextCompat.getColor(app, com.google.android.material.R.color.m3_sys_color_dark_surface)
             mBtTextColor = ContextCompat.getColor(app, R.color.book_button_bg_white)
         } else {

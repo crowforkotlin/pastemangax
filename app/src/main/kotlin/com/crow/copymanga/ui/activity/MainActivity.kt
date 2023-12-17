@@ -10,7 +10,7 @@ import androidx.viewbinding.ViewBinding
 import com.crow.base.R.id.app_main_fcv
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseUserConfig
-import com.crow.mangax.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeOut
@@ -86,7 +86,7 @@ class MainActivity : BaseMviActivity<ViewBinding>()  {
                 // 第一次初始化则获取动态站点
                 if (appConfig.mAppFirstInit) mContainerVM.input(AppIntent.GetDynamicSite())
 
-                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = (!appIsDarkMode)
+                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = (!mDarkMode)
             }
         }
     }

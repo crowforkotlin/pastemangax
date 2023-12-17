@@ -14,9 +14,6 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import com.crow.base.R
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.resp.BaseContentInvalidResp
-import com.crow.base.tools.extensions.SpNameSpace
-import com.crow.base.tools.extensions.SpNameSpace.CATALOG_CONFIG
-import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.showSnackBar
@@ -24,6 +21,7 @@ import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.BaseViewState
+import com.crow.mangax.copymanga.entity.AppConfigEntity
 import com.crow.mangax.tools.language.ChineseConverter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDivider
@@ -53,12 +51,7 @@ val appDp10 by lazy { app.px2dp(app.resources.getDimensionPixelSize(R.dimen.base
 
 val appEvent = BaseEvent.newInstance(BaseEvent.BASE_FLAG_TIME_1000 shl 1)
 
-var appIsDarkMode = CATALOG_CONFIG.getSharedPreferences().getBoolean(SpNameSpace.Key.ENABLE_DARK, true)
-var appChineseConvertEnable = CATALOG_CONFIG.getSharedPreferences().getBoolean(SpNameSpace.Key.ENABLE_CHINESE_CONVERT, true)
-var appHotAccurateDisplayEnable = CATALOG_CONFIG.getSharedPreferences().getBoolean(SpNameSpace.Key.ENABLE_HOT_ACCURATE_DISPLAY, false)
-
 private val formatter  = DecimalFormat("###,###.##", DecimalFormatSymbols(Locale.US).also { it.groupingSeparator = '.' })
-
 /**
  * ● 格式化热度字符串
  *
@@ -66,16 +59,39 @@ private val formatter  = DecimalFormat("###,###.##", DecimalFormatSymbols(Locale
  * @author crowforkotlin
  */
 fun formatHotValue(value: Int): String {
-    return when {
-        value >= 10000 -> {
-            formatter.applyPattern("#,#### W")
-            formatter.format(value)
+    return if(AppConfigEntity.mHotAccurateDisplay)  {
+        return when {
+            value >= 10_000_000 -> {
+                String.format("%.1fW", value / 10_000.0)
+            }
+            value >= 1_000_000 -> {
+                String.format("%.1fW", value / 10_000.0)
+            }
+            value >= 100_000 -> {
+                String.format("%.1fW", value / 10_000.0)
+            }
+            value >= 10_000 -> {
+                String.format("%.1fW", value / 10_000.0)
+            }
+            value >= 1000 -> {
+                String.format("%.1fK", value / 1000.0)
+            }
+            else -> value.toString()
         }
-        value >= 1000 -> {
-            formatter.applyPattern("#,### K")
-            formatter.format(value)
+    } else {
+        when {
+            value >= 10000 -> {
+                formatter.applyPattern("#,#### W")
+                formatter.format(value)
+            }
+
+            value >= 1000 -> {
+                formatter.applyPattern("#,### K")
+                formatter.format(value)
+            }
+
+            else -> value.toString()
         }
-        else -> value.toString()
     }
 }
 
@@ -129,5 +145,5 @@ fun View.processTokenError(code: Int, msg: String?, doOnCancel: (MaterialAlertDi
 }
 
 inline fun LifecycleCoroutineScope.tryConvert(text: String, crossinline result: (String) -> Unit) {
-   if (appChineseConvertEnable) { launch { result(ChineseConverter.convert(text)) } } else result(text)
+   if (AppConfigEntity.mChineseConvert) { launch { result(ChineseConverter.convert(text)) } } else result(text)
 }

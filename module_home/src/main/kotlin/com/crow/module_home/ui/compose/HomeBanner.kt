@@ -128,7 +128,6 @@ fun Banner(
                     if (pageIsDragging.not()) {
                         val toPage = nextPage.takeIf { nextPage < pageStateBanner.pageCount }
                             ?: (current + pageStart + 1)
-                        toPage.log()
                         if (toPage > current) {
                             pageStateBanner.animateScrollToPage(toPage)
                         } else {

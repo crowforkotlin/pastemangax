@@ -37,7 +37,7 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
-import com.crow.mangax.copymanga.appChineseConvertEnable
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_anime.R
 import com.crow.module_anime.databinding.AnimeFragmentInfoBinding
@@ -274,7 +274,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
         mBinding.update.text = getString(R.string.anime_update_time, anim.mDatetimeUpdated)
         mBinding.chipGroup.removeAllViews()
 
-        if (appChineseConvertEnable) {
+        if (mChineseConvert) {
             lifecycleScope.launch {
                 mBinding.newChapter.text = ChineseConverter.convert(getString(R.string.anime_new_chapter, anim.mLastChapter.mName))
                 mBinding.title.text = ChineseConverter.convert(anim.mName)

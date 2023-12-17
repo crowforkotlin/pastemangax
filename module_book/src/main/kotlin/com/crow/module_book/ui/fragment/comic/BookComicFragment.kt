@@ -37,7 +37,7 @@ import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
-import com.crow.mangax.copymanga.appChineseConvertEnable
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
 import com.crow.mangax.copymanga.tryConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_book.R
@@ -113,7 +113,7 @@ class BookComicFragment : BookFragment() {
             Status.FINISH -> getString(R.string.BookComicStatus, comicInfoPage.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_red), 3)
             else -> ". . ."
         }.toString()
-        if (appChineseConvertEnable) {
+        if (mChineseConvert) {
             lifecycleScope.launch {
                 mBinding.chapter.text = ChineseConverter.convert(getString(R.string.BookComicNewChapter, comicInfoPage.mLastChapter.mName))
                 mBinding.status.text = ChineseConverter.convert(status)

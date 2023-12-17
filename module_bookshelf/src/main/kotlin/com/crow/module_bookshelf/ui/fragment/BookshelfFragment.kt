@@ -496,7 +496,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                 mVM.sendGetBookshelfInent(
                     when(menuItem.itemId) {
                         R.id.bookshelf_menu_sort_add -> "-datetime_modifier"
-                        R.id.bookshelf_menu_sort_update ->"-datetime_updated"
+                        R.id.bookshelf_menu_sort_update -> "-datetime_updated"
                         R.id.bookshelf_menu_sort_readed -> "-datetime_browse"
                         else -> return@doOnInterval
                     }

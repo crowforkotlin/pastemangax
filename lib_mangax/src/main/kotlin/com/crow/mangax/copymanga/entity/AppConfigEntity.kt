@@ -5,10 +5,12 @@ import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.base.tools.extensions.DataStoreAgent
+import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.appConfigDataStore
 import com.crow.base.tools.extensions.asyncDecode
 import com.crow.base.tools.extensions.asyncEncode
 import com.crow.base.tools.extensions.decode
+import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toTypeEntity
 import com.squareup.moshi.Json
@@ -42,6 +44,49 @@ data class AppConfigEntity(
 ) {
     companion object {
 
+        /**
+         * ●  黑夜模式
+         *
+         * ● 2023-12-18 00:10:11 周一 上午
+         * @author crowforkotlin
+         */
+        var mDarkMode = false
+
+        /**
+         * ● 更新前置
+         *
+         * ● 2023-12-18 00:10:25 周一 上午
+         * @author crowforkotlin
+         */
+        var mUpdatePrefix = true
+            private set
+
+        /**
+         * ● 简繁题转换
+         *
+         * ● 2023-12-18 00:10:38 周一 上午
+         * @author crowforkotlin
+         */
+        var mChineseConvert = true
+            private set
+
+        /**
+         * ● 热度精准显示
+         *
+         * ● 2023-12-18 00:10:53 周一 上午
+         * @author crowforkotlin
+         */
+        var mHotAccurateDisplay = false
+            private set
+
+        fun initialization() {
+            val sp = SpNameSpace.CATALOG_CONFIG.getSharedPreferences()
+            mDarkMode = sp.getBoolean(SpNameSpace.Key.ENABLE_DARK, false)
+            mChineseConvert = sp.getBoolean(SpNameSpace.Key.ENABLE_CHINESE_CONVERT, true)
+            mHotAccurateDisplay = sp.getBoolean(SpNameSpace.Key.ENABLE_HOT_ACCURATE_DISPLAY, true)
+            mUpdatePrefix = sp.getBoolean(SpNameSpace.Key.ENABLE_UPDATE_PREFIX, true)
+        }
+
         private var mAppConfigEntity: AppConfigEntity? =null
 
         fun getInstance(): AppConfigEntity {
@@ -49,8 +94,7 @@ data class AppConfigEntity(
         }
 
         suspend fun saveAppConfig(appConfigEntity: AppConfigEntity) {
-            mAppConfigEntity = appConfigEntity
-            app.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(appConfigEntity))
+            app.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(appConfigEntity.also { mAppConfigEntity = it }))
         }
 
         suspend fun readAppConfig(): AppConfigEntity? {

@@ -49,7 +49,8 @@ object SpNameSpace {
     object Key {
         const val ENABLE_DARK = "enable_dark"
         const val ENABLE_CHINESE_CONVERT = "enable_chinese_convert"
-        const val ENABLE_HOT_ACCURATE_DISPLAY = "enable_hot_ACCURATE_DISPLAY"
+        const val ENABLE_HOT_ACCURATE_DISPLAY = "enable_hot_accurate_display"
+        const val ENABLE_UPDATE_PREFIX = "enable_update_prefix"
     }
 }
 

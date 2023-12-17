@@ -35,7 +35,11 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
-import com.crow.mangax.copymanga.appChineseConvertEnable
+import com.crow.mangax.copymanga.entity.AppConfigEntity
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mHotAccurateDisplay
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mUpdatePrefix
 import com.crow.module_main.R
 import com.crow.mangax.R as mangaR
 import com.crow.module_main.databinding.MainFragmentSettingsBinding
@@ -124,14 +128,14 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
     private fun onCheckedItem(position: Int, switch: MaterialSwitch) {
         when(position) {
-            5 -> initChineseConvert(switch)
+            5 -> mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_CHINESE_CONVERT, switch.isChecked)
+            6 -> mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_HOT_ACCURATE_DISPLAY, switch.isChecked)
+            7 -> mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_UPDATE_PREFIX, switch.isChecked)
         }
-    }
-
-    private fun initChineseConvert(switch: MaterialSwitch) {
-        SpNameSpace.CATALOG_CONFIG.getSharedPreferences().edit { putBoolean(SpNameSpace.Key.ENABLE_CHINESE_CONVERT, switch.isChecked) }
         toast(getString(mangaR.string.mangax_restart_effect))
     }
+
+
 
     private suspend fun initResolution() {
 
@@ -287,8 +291,9 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                 SettingContentEntity(mID = 2, mResource = R.drawable.main_ic_proxy_24dp, mContent = getString(R.string.main_settings_proxy)),
                 SettingContentEntity(mID = 3, mResource = R.drawable.main_ic_resolution_24dp, mContent = getString(R.string.main_settings_resolution)),
                 SettingTitleEntity(mID = 4, mTitle = getString(R.string.main_settings_title_genric)),
-                SettingSwitchEntity(mID = 5, mContent = "繁体转简体", mEnable = appChineseConvertEnable),
-                SettingSwitchEntity(mID = 6, mContent = "热度精准显示", mEnable = appChineseConvertEnable),
+                SettingSwitchEntity(mID = 5, mContent = "繁体转简体", mEnable = mChineseConvert),
+                SettingSwitchEntity(mID = 6, mContent = "热度精准显示", mEnable = mHotAccurateDisplay),
+                SettingSwitchEntity(mID = 7, mContent = "书架更新前置", mEnable = mUpdatePrefix),
             )
         )
 

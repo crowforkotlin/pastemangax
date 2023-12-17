@@ -1,5 +1,8 @@
 package com.crow.mangax.copymanga
 
+import com.crow.base.tools.extensions.SpNameSpace
+import com.crow.base.tools.extensions.getSharedPreferences
+
 object BaseUserConfig {
     var CURRENT_USER_TOKEN = ""
     var CURRENT_ROUTE = "0"

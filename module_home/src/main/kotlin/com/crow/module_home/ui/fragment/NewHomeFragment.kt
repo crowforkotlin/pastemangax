@@ -19,7 +19,7 @@ import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseStrings.ID
 import com.crow.mangax.copymanga.appEvent
-import com.crow.mangax.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.FlowBus
@@ -284,7 +284,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             val searchComicFragment = SearchComicFragment.newInstance(mBinding.searchView) { name, pathword ->  navigateBookComicInfo(name, pathword) }   // 实例化SearchComicFragment
             val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.searchView) { name, pathword -> navigateBookNovelInfo(name, pathword) }     // 实例化SearchNovelFragment
             val bgColor: Int; val tintColor: Int
-            if (appIsDarkMode) {
+            if (mDarkMode) {
                 bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
                 tintColor = ContextCompat.getColor(mContext, android.R.color.white)
             } else {

@@ -15,7 +15,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.setPadding
 import com.bumptech.glide.Glide
-import com.crow.mangax.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
@@ -58,7 +58,7 @@ class MineIconFragment : BaseMviFragment<MineFragmentIconBinding>() {
         super.onDestroyView()
 
         // 恢复状态栏亮色 同时 置空（防止泄漏...?）
-        mWindowInsets?.isAppearanceLightStatusBars = !appIsDarkMode
+        mWindowInsets?.isAppearanceLightStatusBars = !mDarkMode
         mWindowInsets = null
     }
 

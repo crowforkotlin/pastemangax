@@ -17,7 +17,7 @@ import com.crow.mangax.copymanga.appDp10
 import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.copymanga.appChineseConvertEnable
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
@@ -77,7 +77,7 @@ class BSNovelRvAdapter(
                 })
                 .into(binding.image)
 
-            if (appChineseConvertEnable) {
+            if (mChineseConvert) {
                 mLifecycleScope.launch { binding.name.text = ChineseConverter.convert(item.mNovel.mName) }
             } else {
                 binding.name.text = item.mNovel.mName

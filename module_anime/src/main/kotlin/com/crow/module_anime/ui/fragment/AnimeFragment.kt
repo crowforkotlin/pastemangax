@@ -26,7 +26,7 @@ import com.crow.mangax.copymanga.BaseStrings.ID
 import com.crow.mangax.copymanga.BaseStrings.URL.HotManga
 import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.mangax.copymanga.appEvent
-import com.crow.mangax.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
@@ -722,7 +722,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     val bgColor: Int; val tintColor: Int
 
                     when {
-                        appIsDarkMode -> {
+                        mDarkMode -> {
                             tintColor = ContextCompat.getColor(mContext, android.R.color.white)
                             bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
                         }

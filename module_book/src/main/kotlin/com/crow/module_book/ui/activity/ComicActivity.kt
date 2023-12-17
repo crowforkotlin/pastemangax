@@ -20,7 +20,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.hasGlobalPoint
@@ -315,8 +315,8 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
             .addTarget(mBinding.comicToolbar)
         TransitionManager.beginDelayedTransition(mBinding.root, transition)
         mBinding.comicToolbar.isGone = isHide
-        mWindowInsetsCompat.isAppearanceLightStatusBars = !appIsDarkMode
-        mWindowInsetsCompat.isAppearanceLightNavigationBars = !appIsDarkMode
+        mWindowInsetsCompat.isAppearanceLightStatusBars = !mDarkMode
+        mWindowInsetsCompat.isAppearanceLightNavigationBars = !mDarkMode
         if (isHide) {
             immersionFullScreen(mWindowInsetsCompat)
         } else {

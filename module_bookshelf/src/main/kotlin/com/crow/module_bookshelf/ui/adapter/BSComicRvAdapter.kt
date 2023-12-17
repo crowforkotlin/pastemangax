@@ -19,7 +19,7 @@ import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.copymanga.appChineseConvertEnable
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
@@ -86,7 +86,7 @@ class BSComicRvAdapter(
                     }
                 })
                 .into(binding.image)
-            mLifecycleScope.launch { binding.name.text = if (appChineseConvertEnable) ChineseConverter.convert(item.mComic.mName) else item.mComic.mName }
+            mLifecycleScope.launch { binding.name.text = if (mChineseConvert) ChineseConverter.convert(item.mComic.mName) else item.mComic.mName }
             binding.time.text = item.mComic.mDatetimeUpdated
         }
     }

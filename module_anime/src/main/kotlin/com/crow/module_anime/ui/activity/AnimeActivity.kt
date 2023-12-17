@@ -271,8 +271,8 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
             .addTarget(mBinding.topbar)
         TransitionManager.beginDelayedTransition(mBinding.root, transition)
         mBinding.topbar.isGone = isHide
-        mWindowInsetsCompat.isAppearanceLightStatusBars = !appIsDarkMode
-        mWindowInsetsCompat.isAppearanceLightNavigationBars = !appIsDarkMode
+        mWindowInsetsCompat.isAppearanceLightStatusBars = !mDarkMode
+        mWindowInsetsCompat.isAppearanceLightNavigationBars = !mDarkMode
         if (isHide) {
             immersionFullScreen(mWindowInsetsCompat)
         } else {
