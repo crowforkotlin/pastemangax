@@ -292,8 +292,8 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                 SettingContentEntity(mID = 3, mResource = R.drawable.main_ic_resolution_24dp, mContent = getString(R.string.main_settings_resolution)),
                 SettingTitleEntity(mID = 4, mTitle = getString(R.string.main_settings_title_genric)),
                 SettingSwitchEntity(mID = 5, mContent = "繁体转简体", mEnable = mChineseConvert),
-                SettingSwitchEntity(mID = 6, mContent = "热度精准显示", mEnable = mHotAccurateDisplay),
                 SettingSwitchEntity(mID = 7, mContent = "书架更新前置", mEnable = mUpdatePrefix),
+                SettingSwitchEntity(mID = 6, mContent = "热度精准显示", mEnable = mHotAccurateDisplay),
             )
         )
 

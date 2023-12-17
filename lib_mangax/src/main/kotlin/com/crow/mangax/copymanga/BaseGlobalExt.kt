@@ -59,7 +59,7 @@ private val formatter  = DecimalFormat("###,###.##", DecimalFormatSymbols(Locale
  * @author crowforkotlin
  */
 fun formatHotValue(value: Int): String {
-    return if(AppConfigEntity.mHotAccurateDisplay)  {
+    return if(!AppConfigEntity.mHotAccurateDisplay)  {
         return when {
             value >= 10_000_000 -> {
                 String.format("%.1fW", value / 10_000.0)
