@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.GenericTransitionOptions
@@ -12,15 +13,19 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
-import com.crow.base.copymanga.appComicCardHeight
-import com.crow.base.copymanga.appComicCardWidth
-import com.crow.base.copymanga.formatValue
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.appComicCardWidth
+import com.crow.mangax.copymanga.formatHotValue
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.base.ui.view.TooltipsView
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
+import com.crow.mangax.tools.language.ChineseConverter
+import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_main.databinding.MainHistoryRvBinding
 import com.crow.module_main.model.resp.comic_history.ComicHistoryResult
+import kotlinx.coroutines.launch
 import com.crow.module_book.R as bookR
 
 /*************************
@@ -31,8 +36,10 @@ import com.crow.module_book.R as bookR
  * @Description: HistoryListAdapter
  * @formatter:on
  **************************/
-class ComicHistoryListAdapter(private val onClick: (name: String, pathword: String) -> Unit) :
-    PagingDataAdapter<ComicHistoryResult, ComicHistoryListAdapter.HistoryVH>(DiffCallback()) {
+class ComicHistoryListAdapter(
+    private val mLifecycleScope: LifecycleCoroutineScope,
+    private val onClick: (name: String, pathword: String) -> Unit) :
+PagingDataAdapter<ComicHistoryResult, ComicHistoryListAdapter.HistoryVH>(DiffCallback()) {
 
     inner class HistoryVH(binding: MainHistoryRvBinding) : BaseGlideLoadingViewHolder<MainHistoryRvBinding>(binding) {
 
@@ -43,6 +50,7 @@ class ComicHistoryListAdapter(private val onClick: (name: String, pathword: Stri
                 val item = (getItem(absoluteAdapterPosition) ?: return@doOnClickInterval).mComic
                 onClick(item.mName, item.mPathWord)
             }
+            TooltipsView.showTipsWhenLongClick(binding.name)
         }
 
         fun onBind(item: ComicHistoryResult) {
@@ -73,12 +81,20 @@ class ComicHistoryListAdapter(private val onClick: (name: String, pathword: Stri
 
             val context = itemView.context
 
-            binding.name.text = item.mComic.mName
+            if (mChineseConvert) {
+                mLifecycleScope.launch {
+                    binding.name.text = ChineseConverter.convert(item.mComic.mName)
+                    binding.readed.text = ChineseConverter.convert(context.getString(bookR.string.book_readed_chapter, item.mLastChapterName))
+                    binding.lastest.text = ChineseConverter.convert(context.getString(bookR.string.BookComicNewChapter, item.mComic.mLastChapterName))
+                }
+            } else {
+                binding.name.text = item.mComic.mName
+                binding.readed.text = context.getString(bookR.string.book_readed_chapter, item.mLastChapterName)
+                binding.lastest.text = context.getString(bookR.string.BookComicNewChapter, item.mComic.mLastChapterName)
+            }
             binding.time.text = context.getString(bookR.string.BookComicUpdate, item.mComic.mDatetimeUpdated)
             binding.author.text = context.getString(bookR.string.BookComicAuthor, item.mComic.mAuthor.joinToString { it.mName })
-            binding.readed.text = context.getString(bookR.string.book_readed_chapter, item.mLastChapterName)
-            binding.lastest.text = context.getString(bookR.string.BookComicNewChapter, item.mComic.mLastChapterName)
-            binding.hot.text = context.getString(bookR.string.BookComicHot, formatValue(item.mComic.mPopular))
+            binding.hot.text = context.getString(bookR.string.BookComicHot, formatHotValue(item.mComic.mPopular))
         }
     }
 

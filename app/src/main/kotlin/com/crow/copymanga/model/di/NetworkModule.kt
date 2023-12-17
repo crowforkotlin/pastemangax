@@ -1,10 +1,10 @@
 package com.crow.copymanga.model.di
 
 import androidx.multidex.BuildConfig
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUserConfig
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
-import com.crow.base.copymanga.glide.AppGlideProgressResponseBody
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.glide.AppGlideProgressResponseBody
 import com.crow.base.tools.extensions.baseMoshi
 import com.crow.base.tools.network.FlowCallAdapterFactory
 import okhttp3.HttpUrl.Companion.toHttpUrl

@@ -12,10 +12,10 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.app.app
-import com.crow.base.copymanga.BaseLoadStateAdapter
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUserConfig
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.BaseLoadStateAdapter
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
@@ -76,7 +76,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
      * ● 2023-10-10 01:00:55 周二 上午
      */
     private val mAdapter by lazy {
-        AnimeDiscoverPageAdapter { anime ->
+        AnimeDiscoverPageAdapter(lifecycleScope) { anime ->
             navigateAnimeInfoPage(anime.mPathWord, anime.mName)
         }
     }

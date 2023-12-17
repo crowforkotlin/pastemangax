@@ -103,7 +103,7 @@
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
                 android:layout_height="match_parent">
 
-                <com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
+                <com.crow.mangax.copymanga.ui.view.BaseTapScrollRecyclerView
                     android:id="@+id/comic_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -113,7 +113,7 @@
                     tools:listitem="@layout/bookshelf_fragment_rv"
                     tools:visibility="visible" />
 
-                <com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
+                <com.crow.mangax.copymanga.ui.view.BaseTapScrollRecyclerView
                     android:id="@+id/novel_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

@@ -1,7 +1,7 @@
 package com.crow.module_home.network
 
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.resp.BaseResultResp
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.resp.BaseResultResp
 import com.crow.module_home.model.resp.homepage.ComicDatas
 import com.crow.module_home.model.resp.homepage.results.RecComicsResult
 import com.crow.module_home.model.resp.homepage.results.Results

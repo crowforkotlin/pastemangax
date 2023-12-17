@@ -27,11 +27,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        android:id="@+id/settings_rv"
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/BaseAppName"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/main_fragment_settings_rv" />
+        tools:listitem="@layout/main_fragment_settings_content_rv" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

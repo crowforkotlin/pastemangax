@@ -10,7 +10,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import com.crow.base.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseStrings
 import com.crow.base.tools.extensions.immersionFullScreen
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.immersureFullView
@@ -271,8 +271,8 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
             .addTarget(mBinding.topbar)
         TransitionManager.beginDelayedTransition(mBinding.root, transition)
         mBinding.topbar.isGone = isHide
-        mWindowInsetsCompat.isAppearanceLightStatusBars = !appIsDarkMode
-        mWindowInsetsCompat.isAppearanceLightNavigationBars = !appIsDarkMode
+        mWindowInsetsCompat.isAppearanceLightStatusBars = !mDarkMode
+        mWindowInsetsCompat.isAppearanceLightNavigationBars = !mDarkMode
         if (isHide) {
             immersionFullScreen(mWindowInsetsCompat)
         } else {

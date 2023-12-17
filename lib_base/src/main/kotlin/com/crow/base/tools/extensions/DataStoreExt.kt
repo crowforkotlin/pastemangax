@@ -44,9 +44,14 @@ object DataStoreAgent {
 
 object SpNameSpace {
 
-    const val CATALOG_NIGHT_MODE = "Catalog.NightMode"
+    const val CATALOG_CONFIG = "Catalog.Config"
 
-    object Key { const val ENABLE_DARK = "enable_dark" }
+    object Key {
+        const val ENABLE_DARK = "enable_dark"
+        const val ENABLE_CHINESE_CONVERT = "enable_chinese_convert"
+        const val ENABLE_HOT_ACCURATE_DISPLAY = "enable_hot_accurate_display"
+        const val ENABLE_UPDATE_PREFIX = "enable_update_prefix"
+    }
 }
 
 object DBNameSpace {

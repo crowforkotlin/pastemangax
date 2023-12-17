@@ -6,9 +6,9 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.crow.base.copymanga.BaseLoadStateAdapter
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.BaseLoadStateAdapter
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible

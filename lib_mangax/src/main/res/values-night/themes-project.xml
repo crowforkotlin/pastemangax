@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="MangaX.Theme.Material3_Project" parent="Theme.Material3.DayNight.NoActionBar" >
+        <item name="colorOnPrimary">@color/base_color_asc</item>
+    </style>
+
+    <style name="MangaX.TextAppearance.Widget.Button" parent="TextAppearance.Material3.TitleSmall" >
+        <item name="android:textColor">@color/base_color_asc</item>
+    </style>
+
+    <style name="MangaX.Theme.Button.Elevated.Icon" parent="Widget.Material3.Button.ElevatedButton.Icon" >
+        <item name="android:textColor">@color/base_white</item>
+    </style>
+
+    <style name="MangaX.Theme.Button.Icon.Text" parent="Widget.Material3.Button.IconButton" >
+        <item name="android:textColor">@color/base_white</item>
+    </style>
+
+    <style name="MangaX.Theme.Button.Icon.Tint" parent="Widget.Material3.Button.IconButton" >
+        <item name="iconTint">@color/base_white</item>
+    </style>
+
+    <style name="MangaX.Theme.Button.Icon.Tint.Text" parent="Widget.Material3.Button.IconButton" >
+        <item name="iconTint">@color/base_white</item>
+        <item name="android:textColor">@color/base_white</item>
+    </style>
+
+    <style name="MangaX.Theme.Button.Icon.Back" parent="Widget.Material3.Button.IconButton" >
+        <item name="iconTint">@color/base_white</item>
+    </style>
+
+    <style name="MangaX.Theme.BG" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:background">@color/base_bg</item>
+    </style>
+
+</resources>

@@ -14,13 +14,13 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
 import com.crow.base.app.app
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUserConfig
-import com.crow.base.copymanga.appComicCardHeight
-import com.crow.base.copymanga.appComicCardWidth
-import com.crow.base.copymanga.entity.Fragments
-import com.crow.base.copymanga.formatValue
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.appComicCardWidth
+import com.crow.mangax.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.formatHotValue
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
@@ -37,6 +37,8 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
+import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_anime.R
 import com.crow.module_anime.databinding.AnimeFragmentInfoBinding
 import com.crow.module_anime.model.intent.AnimeIntent
@@ -267,21 +269,37 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
             .into(mBinding.image)
 
         mBinding.company.text = getString(R.string.anime_company, anim.mCompany.mName)
-        mBinding.hot.text = getString(R.string.anime_hot, formatValue(anim.mPopular))
+        mBinding.hot.text = getString(R.string.anime_hot, formatHotValue(anim.mPopular))
         mBinding.showTime.text = getString(R.string.anime_show_time, anim.mYears)
         mBinding.update.text = getString(R.string.anime_update_time, anim.mDatetimeUpdated)
-        mBinding.newChapter.text = getString(R.string.anime_new_chapter, anim.mLastChapter.mName)
-        mBinding.title.text = anim.mName
-        mBinding.desc.text = anim.mBrief.removeWhiteSpace()
         mBinding.chipGroup.removeAllViews()
 
-        anim.mTheme.forEach { theme ->
-            mBinding.chipGroup.addView(Chip(mContext).also {
-                it.text = theme.mName
-                it.textSize = app.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
-                it.chipStrokeWidth = app.px2dp(resources.getDimension(baseR.dimen.base_dp1))
-                it.isClickable = false
-            })
+        if (mChineseConvert) {
+            lifecycleScope.launch {
+                mBinding.newChapter.text = ChineseConverter.convert(getString(R.string.anime_new_chapter, anim.mLastChapter.mName))
+                mBinding.title.text = ChineseConverter.convert(anim.mName)
+                mBinding.desc.text = ChineseConverter.convert(anim.mBrief.removeWhiteSpace())
+                anim.mTheme.forEach { theme ->
+                    mBinding.chipGroup.addView(Chip(mContext).also {
+                        it.text = ChineseConverter.convert(theme.mName)
+                        it.textSize = app.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
+                        it.chipStrokeWidth = app.px2dp(resources.getDimension(baseR.dimen.base_dp1))
+                        it.isClickable = false
+                    })
+                }
+            }
+        } else {
+            mBinding.newChapter.text = getString(R.string.anime_new_chapter, anim.mLastChapter.mName)
+            mBinding.title.text = anim.mName
+            mBinding.desc.text = anim.mBrief.removeWhiteSpace()
+            anim.mTheme.forEach { theme ->
+                mBinding.chipGroup.addView(Chip(mContext).also {
+                    it.text = theme.mName
+                    it.textSize = app.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
+                    it.chipStrokeWidth = app.px2dp(resources.getDimension(baseR.dimen.base_dp1))
+                    it.isClickable = false
+                })
+            }
         }
     }
 

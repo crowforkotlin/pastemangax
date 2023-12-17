@@ -13,10 +13,10 @@ import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import com.crow.base.app.app
-import com.crow.base.copymanga.BaseLoadStateAdapter
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.entity.Fragments
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.BaseLoadStateAdapter
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
@@ -193,7 +193,6 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                     toolbar.menu[1].doOnClickInterval { onSelectMenu(R.string.discover_location) }
 
                     // 更新时间
-
                     val instance = BaseEvent.getSIngleInstance()
                     toolbar.menu[2].doOnClickInterval {
                         if (instance.getBoolean("DISCOVER_COMIC_FRAGMENT_UPDATE_ORDER") == true) {
@@ -319,7 +318,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         mBaseErrorViewStub = baseErrorViewStub(mBinding.error, lifecycle) { mBinding.refresh.autoRefresh() }
 
         // 初始化 发现页 漫画适配器
-        mAdapter = DiscoverComicAdapter { navigateBookComicInfo(it.mName, it.mPathWord) }
+        mAdapter = DiscoverComicAdapter(lifecycleScope) { navigateBookComicInfo(it.mName, it.mPathWord) }
 
         // 设置适配器
         mBinding.list.adapter = mAdapter.withLoadStateFooter(BaseLoadStateAdapter { mAdapter.retry() })

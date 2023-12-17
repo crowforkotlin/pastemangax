@@ -5,13 +5,14 @@ package com.crow.module_book.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.appComicCardHeight
-import com.crow.base.copymanga.appComicCardWidth
-import com.crow.base.copymanga.entity.Fragments
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.appComicCardWidth
+import com.crow.mangax.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
@@ -22,6 +23,7 @@ import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.base.ui.view.atrr_text_layout.BaseAttrTextLayout
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
@@ -243,13 +245,27 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         mBinding.bookInfoRefresh.setDisableContentWhenRefresh(true)
 
         val more = ". . ."
-        mBinding.bookInfoName.text = mName
-        mBinding.bookInfoDesc.text =  more
-        mBinding.bookInfoStatus.text = getString(R.string.BookComicStatus, more)
-        mBinding.bookInfoAuthor.text = getString(R.string.BookComicAuthor, more)
-        mBinding.bookInfoHot.text = getString(R.string.BookComicHot, more)
-        mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, more)
-        mBinding.bookInfoNewChapter.text = getString(R.string.BookComicNewChapter, more)
+        /*mBinding.desc.apply {
+            mFontSize = resources.getDimension(baseR.dimen.base_sp13)
+            mFontBold = true
+            mAnimationTop = true
+            mFontMonoSpace = true
+            mMultipleLineEnable = true
+            mEnableAntiAlias = true
+            mAnimationMode = BaseAttrTextLayout.ANIMATION_MOVE_Y
+            mFontColor = ContextCompat.getColor(mContext, baseR.color.base_color_asc)
+            mGravity = BaseAttrTextLayout.GRAVITY_CENTER_START
+            mScrollSpeed = 11
+            mResidenceTime = 3 * 1000
+            mText =  more
+        }*/
+        mBinding.desc.text = more
+        mBinding.name.text = mName
+        mBinding.status.text = getString(R.string.BookComicStatus, more)
+        mBinding.author.text = getString(R.string.BookComicAuthor, more)
+        mBinding.hot.text = getString(R.string.BookComicHot, more)
+        mBinding.update.text = getString(R.string.BookComicUpdate, more)
+        mBinding.chapter.text = getString(R.string.BookComicNewChapter, more)
     }
 
     /** ● 处理章节结果

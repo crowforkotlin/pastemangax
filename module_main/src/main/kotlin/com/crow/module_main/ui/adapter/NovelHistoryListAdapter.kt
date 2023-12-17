@@ -12,13 +12,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
-import com.crow.base.copymanga.appComicCardHeight
-import com.crow.base.copymanga.appComicCardWidth
-import com.crow.base.copymanga.formatValue
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.appComicCardWidth
+import com.crow.mangax.copymanga.formatHotValue
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_main.databinding.MainHistoryRvBinding
 import com.crow.module_main.model.resp.novel_history.NovelHistoryResult
 import com.crow.module_book.R as bookR
@@ -80,7 +80,7 @@ class NovelHistoryListAdapter(private val onClick: (name: String, pathword: Stri
             binding.author.text = context.getString(bookR.string.BookComicAuthor, item.mBook.mAuthor.joinToString { it.mName })
             binding.readed.text = context.getString(bookR.string.book_readed_chapter, item.mLastChapterName)
             binding.lastest.text = context.getString(bookR.string.BookComicNewChapter, item.mBook.mLastChapterName)
-            binding.hot.text = context.getString(bookR.string.BookComicHot, formatValue(item.mBook.mPopular))
+            binding.hot.text = context.getString(bookR.string.BookComicHot, formatHotValue(item.mBook.mPopular))
         }
     }
 

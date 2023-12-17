@@ -3,6 +3,7 @@
 rootProject.name = "CopyMangaX"
 include(":app")
 include(":lib_base")
+include(":lib_mangax")
 include(":module_home")
 include(":module_main")
 include(":module_discover")

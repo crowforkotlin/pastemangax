@@ -6,8 +6,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.crow.base.copymanga.BaseUserConfig
-import com.crow.base.copymanga.entity.AppConfigEntity
+import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.entity.AppConfigEntity
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncDecode
 import com.crow.base.tools.extensions.toTypeEntity

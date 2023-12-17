@@ -10,13 +10,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.crow.base.copymanga.BaseEventEnum
-import com.crow.base.copymanga.BaseLoadStateAdapter
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUserConfig
-import com.crow.base.copymanga.entity.Fragments
-import com.crow.base.copymanga.processTokenError
-import com.crow.base.copymanga.ui.view.BaseTapScrollRecyclerView
+import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.BaseLoadStateAdapter
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.processTokenError
+import com.crow.mangax.copymanga.ui.view.BaseTapScrollRecyclerView
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_100L
@@ -87,14 +87,14 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      *
      * ● 2023-07-07 21:49:53 周五 下午
      */
-    private val mComicRvAdapter by lazy { BSComicRvAdapter { navigate(Fragments.BookComicInfo.name, it.mComic.mName, it.mComic.mPathWord) } }
+    private val mComicRvAdapter by lazy { BSComicRvAdapter(lifecycleScope) { navigate(Fragments.BookComicInfo.name, it.mComic.mName, it.mComic.mPathWord) } }
 
     /**
      * ● Bookshelf Novel适配器
      *
      * ● 2023-07-07 21:50:00 周五 下午
      */
-    private val mNovelRvAdapter by lazy { BSNovelRvAdapter { navigate(Fragments.BookNovelInfo.name, it.mNovel.mName, it.mNovel.mPathWord) } }
+    private val mNovelRvAdapter by lazy { BSNovelRvAdapter(lifecycleScope) { navigate(Fragments.BookNovelInfo.name, it.mNovel.mName, it.mNovel.mPathWord) } }
 
     /**
      * ● 漫画计数
@@ -496,7 +496,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                 mVM.sendGetBookshelfInent(
                     when(menuItem.itemId) {
                         R.id.bookshelf_menu_sort_add -> "-datetime_modifier"
-                        R.id.bookshelf_menu_sort_update ->"-datetime_updated"
+                        R.id.bookshelf_menu_sort_update -> "-datetime_updated"
                         R.id.bookshelf_menu_sort_readed -> "-datetime_browse"
                         else -> return@doOnInterval
                     }

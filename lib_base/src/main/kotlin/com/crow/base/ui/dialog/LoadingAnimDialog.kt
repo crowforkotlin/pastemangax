@@ -11,7 +11,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.R
-import com.crow.base.copymanga.appIsDarkMode
 import com.crow.base.databinding.BaseDialogLoadingBinding
 import com.crow.base.tools.coroutine.baseCoroutineException
 import com.crow.base.tools.extensions.BASE_ANIM_200L
@@ -115,7 +114,7 @@ class LoadingAnimDialog() : DialogFragment() {
         _mBinding = null
     }
 
-    fun applyWindow(lightStatusbar: Boolean = appIsDarkMode, @FloatRange(from = 0.0, to = 1.0) dimAmount: Float = 0f, isFullScreen: Boolean = false) {
+    fun applyWindow(lightStatusbar: Boolean = false, @FloatRange(from = 0.0, to = 1.0) dimAmount: Float = 0f, isFullScreen: Boolean = false) {
         dialog?.window?.apply {
             if (isFullScreen) addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)

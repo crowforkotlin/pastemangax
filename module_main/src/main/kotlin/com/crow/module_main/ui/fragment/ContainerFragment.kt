@@ -9,23 +9,30 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.viewpager2.widget.ViewPager2
-import com.crow.base.copymanga.BaseEventEnum
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUserConfig
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.base.R.string.BaseExitApp
+import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseStrings.ID
+import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.appEvent
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.isLatestVersion
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
@@ -33,6 +40,8 @@ import com.crow.base.tools.extensions.toast
 import com.crow.base.tools.extensions.updatePadding
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
+import com.crow.base.ui.view.event.BaseEventEntity
+import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnErrorInCoroutine
 import com.crow.base.ui.viewmodel.doOnResult
@@ -55,6 +64,7 @@ import com.crow.module_mine.ui.viewmodel.MineViewModel
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.qualifier.named
+import kotlin.system.exitProcess
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -165,6 +175,30 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     /**
+     * ● Lifecycle onStart
+     *
+     * ● 2023-12-12 00:47:21 周二 上午
+     * @author crowforkotlin
+     */
+    override fun onStart() {
+        super.onStart()
+        mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) {
+            val item = mBinding.viewPager.currentItem
+            if (item in 1..2) {
+                appEvent.doOnInterval(object : BaseIEventIntervalExt<BaseEvent> {
+                    override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) { toast(getString( BaseExitApp )) }
+                    override fun onIntervalFailure(gapTime: Long) {
+                        requireActivity().finish()
+                        exitProcess(0)
+                    }
+                })
+                return@addCallback
+            }
+            childFragmentManager.setFragmentResult(BaseStrings.BACKPRESS + mBinding.viewPager.currentItem, Bundle.EMPTY)
+        }
+    }
+
+    /**
      * ● Lifecycle OnViewCreated
      *
      * ● 2023-09-10 20:01:04 周日 下午
@@ -223,10 +257,12 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             }
             if (bundle.getBoolean(BaseStrings.ENABLE_DELAY, false)) {
                 launchDelay(BASE_ANIM_200L) {
-                     childFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name,  bundleOf(BaseStrings.ID to mBinding.viewPager.currentItem))
+                     childFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name,  bundleOf(
+                         ID to mBinding.viewPager.currentItem))
                 }
             } else {
-                 childFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name,  bundleOf(BaseStrings.ID to mBinding.viewPager.currentItem))
+                 childFragmentManager.setFragmentResult(BaseEventEnum.LoginCategories.name,  bundleOf(
+                     ID to mBinding.viewPager.currentItem))
             }
         }
 
@@ -254,7 +290,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
                     if (mEvent.getBoolean(mFragmentList[mBinding.viewPager.currentItem].hashCode().toString()) == true) return
                     else mEvent.setBoolean(mFragmentList[mBinding.viewPager.currentItem].hashCode().toString(), true)
-                    val bundle = bundleOf(BaseStrings.ID to mBinding.viewPager.currentItem, BaseStrings.ENABLE_DELAY to false)
+                    val bundle = bundleOf(ID to mBinding.viewPager.currentItem, BaseStrings.ENABLE_DELAY to false)
                     when(mBinding.viewPager.currentItem) {
                         0 -> childFragmentManager.setFragmentResult(NewHomeFragment.HOME, bundle)
                         1 -> childFragmentManager.setFragmentResult(DiscoverComicFragment.COMIC, bundle)
@@ -284,7 +320,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private fun onNotifyPage() {
         if (mContainerVM.mIsRestarted) {
             mContainerVM.mIsRestarted = false
-            val bundle = bundleOf(BaseStrings.ID to (arguments?.getInt(BaseStrings.ID) ?: 0).also {
+            val bundle = bundleOf(ID to (arguments?.getInt(ID) ?: 0).also {
                 saveItemPageID(it)
                 mEvent.setBoolean(mFragmentList[it].hashCode().toString(), true)
             }, BaseStrings.ENABLE_DELAY to true)
@@ -312,10 +348,10 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private fun saveItemPageID(position: Int) {
         if (arguments == null) {
             val bundle = Bundle()
-            bundle.putInt(BaseStrings.ID, position)
+            bundle.putInt(ID, position)
             arguments = bundle
         } else {
-            arguments!!.putInt(BaseStrings.ID, position)
+            requireArguments().putInt(ID, position)
         }
     }
 

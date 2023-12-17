@@ -16,13 +16,13 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
 import com.crow.base.app.app
-import com.crow.base.copymanga.BaseEventEnum
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseUserConfig
-import com.crow.base.copymanga.entity.Fragments
-import com.crow.base.copymanga.formatValue
-import com.crow.base.copymanga.getSpannableString
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.formatHotValue
+import com.crow.mangax.copymanga.getSpannableString
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
@@ -37,6 +37,9 @@ import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
+import com.crow.mangax.copymanga.tryConvert
+import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_book.R
 import com.crow.module_book.model.entity.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
@@ -102,24 +105,42 @@ class BookComicFragment : BookFragment() {
             })
             .into(mBinding.bookInfoImage)
 
-        mBinding.bookInfoAuthor.text = getString(R.string.BookComicAuthor, comicInfoPage.mAuthor.joinToString { it.mName })
-        mBinding.bookInfoHot.text = getString(R.string.BookComicHot, formatValue(comicInfoPage.mPopular))
-        mBinding.bookInfoUpdate.text = getString(R.string.BookComicUpdate, comicInfoPage.mDatetimeUpdated)
-        mBinding.bookInfoNewChapter.text = getString(R.string.BookComicNewChapter, comicInfoPage.mLastChapter.mName)
-        mBinding.bookInfoStatus.text = when (comicInfoPage.mStatus.mValue) {
+        mBinding.author.text = getString(R.string.BookComicAuthor, comicInfoPage.mAuthor.joinToString { it.mName })
+        mBinding.hot.text = getString(R.string.BookComicHot, formatHotValue(comicInfoPage.mPopular))
+        mBinding.update.text = getString(R.string.BookComicUpdate, comicInfoPage.mDatetimeUpdated)
+        val status = when (comicInfoPage.mStatus.mValue) {
             Status.LOADING -> getString(R.string.BookComicStatus, comicInfoPage.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_green), 3)
             Status.FINISH -> getString(R.string.BookComicStatus, comicInfoPage.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_red), 3)
-            else -> null
-        }
-        mBinding.bookInfoName.text = comicInfoPage.mName
-        mBinding.bookInfoDesc.text = comicInfoPage.mBrief.removeWhiteSpace()
-        comicInfoPage.mTheme.forEach { theme ->
-            mBinding.bookInfoThemeChip.addView(Chip(mContext).also {
-                it.text = theme.mName
-                it.textSize = app.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
-                it.chipStrokeWidth = app.px2dp(resources.getDimension(baseR.dimen.base_dp1))
-                it.isClickable = false
-            })
+            else -> ". . ."
+        }.toString()
+        if (mChineseConvert) {
+            lifecycleScope.launch {
+                mBinding.chapter.text = ChineseConverter.convert(getString(R.string.BookComicNewChapter, comicInfoPage.mLastChapter.mName))
+                mBinding.status.text = ChineseConverter.convert(status)
+                mBinding.name.text = ChineseConverter.convert(comicInfoPage.mName)
+                mBinding.desc.text = ChineseConverter.convert(comicInfoPage.mBrief.removeWhiteSpace())
+                comicInfoPage.mTheme.forEach { theme ->
+                    mBinding.bookInfoThemeChip.addView(Chip(mContext).also {
+                        it.text = ChineseConverter.convert(theme.mName)
+                        it.textSize = app.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
+                        it.chipStrokeWidth = app.px2dp(resources.getDimension(baseR.dimen.base_dp1))
+                        it.isClickable = false
+                    })
+                }
+            }
+        } else {
+            mBinding.chapter.text = getString(R.string.BookComicNewChapter, comicInfoPage.mLastChapter.mName)
+            mBinding.status.text = status
+            mBinding.name.text = comicInfoPage.mName
+            mBinding.desc.text = comicInfoPage.mBrief.removeWhiteSpace()
+            comicInfoPage.mTheme.forEach { theme ->
+                mBinding.bookInfoThemeChip.addView(Chip(mContext).also {
+                    it.text = theme.mName
+                    it.textSize = app.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
+                    it.chipStrokeWidth = app.px2dp(resources.getDimension(baseR.dimen.base_dp1))
+                    it.isClickable = false
+                })
+            }
         }
     }
 

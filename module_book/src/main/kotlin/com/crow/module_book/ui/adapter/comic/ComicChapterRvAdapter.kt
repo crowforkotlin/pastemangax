@@ -6,10 +6,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.app
-import com.crow.base.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.ui.view.ToolTipsView
+import com.crow.base.ui.view.TooltipsView
 import com.crow.module_book.R
 import com.crow.module_book.databinding.BookFragmentChapterRvBinding
 import com.crow.module_book.model.resp.comic_chapter.ComicChapterResult
@@ -44,12 +44,12 @@ class ComicChapterRvAdapter(
     private val mMutex = Mutex()
 
     init {
-        if (appIsDarkMode) {
+        if (mDarkMode) {
             mBtSurfaceColor = ContextCompat.getColor(app, com.google.android.material.R.color.m3_sys_color_dark_surface)
             mBtTextColor = ContextCompat.getColor(app, R.color.book_button_bg_white)
         } else {
             mBtSurfaceColor = ContextCompat.getColor(app, R.color.book_button_bg_white)
-            mBtTextColor = ContextCompat.getColor(app, R.color.book_button_text_purple)
+            mBtTextColor = ContextCompat.getColor(app, com.crow.base.R.color.base_black)
         }
     }
 
@@ -59,7 +59,7 @@ class ComicChapterRvAdapter(
         return ChapterVH(BookFragmentChapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
             vh.mButton.doOnClickInterval { mDoOnTapChapter(mComic[vh.absoluteAdapterPosition]) }
             vh.mButton.doOnLayout {
-                ToolTipsView.showToolTipsByLongClick(vh.mButton, it.measuredWidth shr 2)
+                TooltipsView.showTipsWhenLongClick(vh.mButton, it.measuredWidth shr 2)
             }
         }
     }

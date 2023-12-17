@@ -29,8 +29,7 @@ open class BaseEvent private constructor(val mFlagTime: Long) {
         private var mBaseEvent: BaseEvent? = null
 
         fun newInstance(initFlagTime: Long = BASE_FLAG_TIME_500): BaseEvent {
-            val baseEvent = BaseEvent(initFlagTime)
-            return baseEvent
+            return BaseEvent(initFlagTime)
         }
 
         fun getSIngleInstance(): BaseEvent {

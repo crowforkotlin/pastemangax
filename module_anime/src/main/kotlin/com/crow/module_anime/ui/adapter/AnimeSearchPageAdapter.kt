@@ -12,15 +12,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
-import com.crow.base.copymanga.appComicCardHeight
-import com.crow.base.copymanga.appComicCardWidth
-import com.crow.base.copymanga.entity.IBookAdapterColor
-import com.crow.base.copymanga.formatValue
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.appComicCardWidth
+import com.crow.mangax.copymanga.entity.IBookAdapterColor
+import com.crow.mangax.copymanga.formatHotValue
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
-import com.crow.base.ui.view.ToolTipsView
+import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.base.ui.view.TooltipsView
 import com.crow.module_anime.databinding.AnimeFragmentSearchRvBinding
 import com.crow.module_anime.model.resp.search.SearchResult
 
@@ -56,7 +56,7 @@ class AnimeSearchPageAdapter(
                 mOnClick(getItem(vh.absoluteAdapterPosition) ?: return@doOnClickInterval)
             }
 
-            ToolTipsView.showToolTipsByLongClick(vh.binding.name)
+            TooltipsView.showTipsWhenLongClick(vh.binding.name)
         }
     }
 
@@ -89,7 +89,7 @@ class AnimeSearchPageAdapter(
             .into(vh.binding.image)
 
         vh.binding.name.text = item.mName
-        vh.binding.hot.text = formatValue(item.mPopular)
+        vh.binding.hot.text = formatHotValue(item.mPopular)
         vh.binding.time.text = item.mYears
     }
 

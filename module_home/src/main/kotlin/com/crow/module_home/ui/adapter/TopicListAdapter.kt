@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.GenericTransitionOptions
@@ -14,17 +15,20 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
 import com.crow.base.R
 import com.crow.base.app.app
-import com.crow.base.copymanga.appComicCardHeight
-import com.crow.base.copymanga.appComicCardWidth
-import com.crow.base.copymanga.formatValue
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.appComicCardWidth
+import com.crow.mangax.copymanga.formatHotValue
+import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.px2sp
-import com.crow.base.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
+import com.crow.mangax.tools.language.ChineseConverter
+import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_home.databinding.HomeTopicRvBinding
 import com.crow.module_home.model.resp.topic.TopicResult
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.launch
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -34,8 +38,10 @@ import com.google.android.material.chip.Chip
  * @Description: HistoryListAdapter
  * @formatter:on
  **************************/
-class TopicListAdapter(private val onClick: (name: String, pathword: String) -> Unit) :
-    PagingDataAdapter<TopicResult, TopicListAdapter.HistoryVH>(DiffCallback()) {
+class TopicListAdapter(
+    private val mLifecycleScope: LifecycleCoroutineScope,
+    private val onClick: (name: String, pathword: String) -> Unit
+) : PagingDataAdapter<TopicResult, TopicListAdapter.HistoryVH>(DiffCallback()) {
 
     private val mChipTextSize = app.px2sp(app.resources.getDimension(R.dimen.base_sp12_5))
 
@@ -79,17 +85,31 @@ class TopicListAdapter(private val onClick: (name: String, pathword: String) -> 
                 .into(binding.image)
 
 
-            binding.chipGroup.removeAllViews()
-            item?.mTheme?.forEach {
-                val chip = Chip(itemView.context)
-                chip.text = it.mName
-                chip.textSize = mChipTextSize
-                binding.chipGroup.addView(chip)
+            if (mChineseConvert) {
+                mLifecycleScope.launch {
+                    binding.chipGroup.removeAllViews()
+                    item.mTheme.forEach {
+                        val chip = Chip(itemView.context)
+                        chip.text = ChineseConverter.convert(it.mName)
+                        chip.textSize = mChipTextSize
+                        binding.chipGroup.addView(chip)
+                    }
+                    binding.name.text = ChineseConverter.convert(item.mName)
+                }
+            } else {
+                binding.chipGroup.removeAllViews()
+                item.mTheme.forEach {
+                    val chip = Chip(itemView.context)
+                    chip.text = it.mName
+                    chip.textSize = mChipTextSize
+                    binding.chipGroup.addView(chip)
+                }
+                binding.name.text = item.mName
             }
 
-            binding.name.text = item.mName
+
             binding.author.text = item.mAuthor.joinToString { it.mName }
-            binding.hot.text = formatValue(item.mPopular)
+            binding.hot.text = formatHotValue(item.mPopular)
         }
     }
 

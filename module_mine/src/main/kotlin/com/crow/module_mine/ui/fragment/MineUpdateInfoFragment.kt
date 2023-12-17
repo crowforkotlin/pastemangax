@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
-import com.crow.base.copymanga.BaseEventEnum
-import com.crow.base.copymanga.entity.Fragments
-import com.crow.base.copymanga.processTokenError
+import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.processTokenError
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.onCollect

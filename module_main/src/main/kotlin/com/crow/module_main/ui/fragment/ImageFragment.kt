@@ -13,8 +13,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.crow.base.app.app
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.popSyncWithClear

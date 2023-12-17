@@ -4,16 +4,20 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crow.base.app.BaseApp
-import com.crow.base.copymanga.appIsDarkMode
+import com.crow.base.tools.extensions.log
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
 import com.crow.copymanga.model.di.factoryModule
 import com.crow.copymanga.model.di.fragmentModule
 import com.crow.copymanga.model.di.networkModule
 import com.crow.copymanga.model.di.servicesModule
 import com.crow.copymanga.model.di.singleModule
 import com.crow.copymanga.model.di.viewModelModule
+import com.crow.mangax.copymanga.entity.AppConfigEntity
+import com.crow.mangax.tools.language.ChineseConverter
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.core.context.startKoin
+import kotlin.system.measureTimeMillis
 
 
 /*************************
@@ -29,7 +33,11 @@ class MainApplication : BaseApp() {
     override fun onCreate() {
         super.onCreate()
 
-        AppCompatDelegate.setDefaultNightMode(if(appIsDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
+        AppConfigEntity.initialization()
+
+        AppCompatDelegate.setDefaultNightMode(if(mDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
+
+        ChineseConverter.initialize(applicationContext)
 
         startKoin {
             fragmentFactory()

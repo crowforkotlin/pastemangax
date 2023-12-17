@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.updateLayoutParams
-import com.crow.base.copymanga.appIsDarkMode
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateIconClickGap
@@ -84,7 +84,7 @@ class StyleableFragment : BaseMviFragment<MainFragmentStyleableBinding>() {
             if (it == null) return@onCollect
 
             if (mStyableAdapter == null) {
-                mStyableAdapter = StyleableAdapter(getStyleableEntitys(appIsDarkMode)) { pos, isSwitch ->
+                mStyableAdapter = StyleableAdapter(getStyleableEntitys(mDarkMode)) { pos, isSwitch ->
                     if (pos == 0) {
                         showLoadingAnim()
                         val darkMode = if (isSwitch) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO

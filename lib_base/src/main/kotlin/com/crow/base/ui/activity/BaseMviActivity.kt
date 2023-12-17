@@ -3,7 +3,6 @@ package com.crow.base.ui.activity
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.viewbinding.ViewBinding
-import com.crow.base.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
 import com.crow.base.ui.viewmodel.mvi.BaseMviSuspendResult
@@ -44,6 +43,5 @@ abstract class BaseMviActivity<out VB: ViewBinding> : BaseActivityImpl(), IBaseM
 
     override fun onDestroy() {
         super.onDestroy()
-        AppGlideProgressFactory.doReset()
     }
 }

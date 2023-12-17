@@ -6,6 +6,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
+import com.crow.mangax.copymanga.entity.AppConfigEntity
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mUpdatePrefix
 import com.crow.module_bookshelf.model.intent.BookshelfIntent
 import com.crow.module_bookshelf.model.resp.bookshelf_comic.BookshelfComicResults
 import com.crow.module_bookshelf.model.resp.bookshelf_novel.BookshelfNovelResults
@@ -29,7 +31,7 @@ class BookshelfViewModel(val repository: BookShelfRepository) : BaseMviViewModel
     var mBookshelfComicFlowPager : Flow<PagingData<BookshelfComicResults>>? = null
     var mBookshelfNovelFlowPager : Flow<PagingData<BookshelfNovelResults>>? = null
 
-    private var mOrder = "-datetime_modifier"
+    private var mOrder = if (mUpdatePrefix) "-datetime_updated" else "-datetime_modifier"
 
     // 默认加载20页 第一次初始化加载的大小默认为 （PageSize * 3）这里也设置成20
     fun getBookshelfComic(intent: BookshelfIntent.GetBookshelfComic) {

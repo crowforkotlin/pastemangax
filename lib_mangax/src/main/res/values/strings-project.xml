@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mangax_token_error">身份信息过期!\n您接下来的浏览将是访客模式！\n是否重新登录？</string>
+	<string name="mangax_zero">0%</string>
+	<string name="mangax_update_time"><b>更新时间</b></string>
+	<string name="mangax_hot"><b>热度</b></string>
+	<string name="mangax_site_tips" translatable="false">如果加载失败，可更改站点重新尝试！</string>
+	<string name="mangax_site_static" translatable="false">静态站点</string>
+	<string name="mangax_site_dynamic" translatable="false">动态站点</string>
+	<string name="mangax_all">全部</string>
+	<string name="mangax_restart_effect">重启APP后生效！</string>
+</resources>

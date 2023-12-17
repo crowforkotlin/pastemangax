@@ -21,6 +21,5 @@
 	<string name="home_saerch_null_result">很抱歉，没有找到匹配的结果。</string>
 	<string name="home_search_tips">输入关键词查询预期的漫画或轻小说吧！</string>
 	<string name="home_saerch_new_record">上滑发现新增记录！</string>
-	<string name="home_exit_app">"再次返回将退出APP！"</string>
 
 </resources>

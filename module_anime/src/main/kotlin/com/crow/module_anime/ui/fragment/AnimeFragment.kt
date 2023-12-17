@@ -20,27 +20,28 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.app.app
-import com.crow.base.copymanga.BaseLoadStateAdapter
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.BaseStrings.URL.HotManga
-import com.crow.base.copymanga.BaseUserConfig
-import com.crow.base.copymanga.appIsDarkMode
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.BaseLoadStateAdapter
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseStrings.ID
+import com.crow.mangax.copymanga.BaseStrings.URL.HotManga
+import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.appEvent
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
-import com.crow.base.tools.extensions.afterTextChanged
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
-import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.px2sp
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
@@ -49,6 +50,8 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.BaseErrorViewStub
 import com.crow.base.ui.view.baseErrorViewStub
 import com.crow.base.ui.view.event.BaseEvent
+import com.crow.base.ui.view.event.BaseEventEntity
+import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
@@ -73,6 +76,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
 import java.util.Calendar
 import kotlin.properties.Delegates
+import kotlin.system.exitProcess
 import com.crow.base.R as baseR
 
 class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
@@ -97,7 +101,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
      * ● 2023-10-10 01:00:55 周二 上午
      */
     private val mAdapter by lazy {
-        AnimeDiscoverPageAdapter { anime ->
+        AnimeDiscoverPageAdapter(lifecycleScope) { anime ->
             navigateAnimeInfoPage(anime.mPathWord, anime.mName)
         }
     }
@@ -247,7 +251,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
         // 设置容器Fragment的回调监听
         parentFragmentManager.setFragmentResultListener(ANIME, this) { _, bundle ->
-            if (bundle.getInt(BaseStrings.ID) == 3) {
+            if (bundle.getInt(ID) == 3) {
                 mBinding.refresh.autoRefreshAnimationOnly()
                 mBinding.refresh.finishRefresh((BASE_ANIM_300L.toInt() shl 1) or 0xFF)
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
@@ -255,6 +259,20 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                 } else {
                     onCollectState()
                 }
+            }
+        }
+
+        // 返回事件回调
+        parentFragmentManager.setFragmentResultListener(BaseStrings.BACKPRESS + 3, this) { _, _ ->
+            if (mBinding.searchView.isShowing) mBinding.searchView.hide()
+            else {
+                appEvent.doOnInterval(object : BaseIEventIntervalExt<BaseEvent>{
+                   override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) { toast(getString(baseR.string.BaseExitApp)) }
+                   override fun onIntervalFailure(gapTime: Long) {
+                       requireActivity().finish()
+                       exitProcess(0)
+                   }
+               })
             }
         }
 
@@ -276,9 +294,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                 menu[0].doOnClickInterval { onSelectMenu(R.string.anime_year) }
 
                 // 搜索
-                menu[1].doOnClickInterval {
-                    loadSearchView()
-                }
+                menu[1].doOnClickInterval { loadSearchView() }
 
                 BaseEvent.getSIngleInstance().apply {
 
@@ -661,6 +677,12 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
         return tokenEmpty
     }
 
+    /**
+     * ● 处理搜索页面收集的结果
+     *
+     * ● 2023-12-12 00:36:35 周二 上午
+     * @author crowforkotlin
+     */
     private fun onCollectSearchPage(content: String) {
         BaseEvent.getSIngleInstance().apply {
             if(getBoolean("ANIME_FRAGMENT_SEARCH_FLAG") == true) return
@@ -674,9 +696,15 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
         }
     }
 
-    @SuppressLint("RestrictedApi")
+    /**
+     * ● 加载搜索视图
+     *
+     * ● 2023-12-11 22:11:28 周一 下午
+     * @author crowforkotlin
+     */
+    @SuppressLint("RestrictedApi", "PrivateResource")
     private fun loadSearchView() {
-        mSearchBinding?.let { mBinding.searchView.show() } ?: {
+        if (mSearchBinding == null) {
             mSearchBinding = AnimeFragmentSearchViewBinding.inflate(layoutInflater)
             mSearchBinding!!.let { binding ->
                 binding.list.adapter = mSearchAdapter
@@ -694,7 +722,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     val bgColor: Int; val tintColor: Int
 
                     when {
-                        appIsDarkMode -> {
+                        mDarkMode -> {
                             tintColor = ContextCompat.getColor(mContext, android.R.color.white)
                             bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
                         }
@@ -719,6 +747,6 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     show()
                 }
             }
-        }
+        } else mBinding.searchView.show()
     }
 }

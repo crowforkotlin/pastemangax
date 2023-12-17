@@ -3,8 +3,8 @@ package com.crow.module_main.ui.viewmodel
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.lifecycle.viewModelScope
-import com.crow.base.copymanga.appIsDarkMode
-import com.crow.base.copymanga.entity.AppConfigEntity
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.AppConfigEntity
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
@@ -47,8 +47,14 @@ class MainViewModel(val repository: AppRepository) : BaseMviViewModel<AppIntent>
     }
 
     fun saveCatalogDarkModeEnable(darkMode: Int) {
-        appIsDarkMode = darkMode == AppCompatDelegate.MODE_NIGHT_YES
-        SpNameSpace.CATALOG_NIGHT_MODE.getSharedPreferences().edit { putBoolean(SpNameSpace.Key.ENABLE_DARK, appIsDarkMode) }
+        mDarkMode = darkMode == AppCompatDelegate.MODE_NIGHT_YES
+        SpNameSpace.CATALOG_CONFIG.getSharedPreferences().edit { putBoolean(SpNameSpace.Key.ENABLE_DARK, mDarkMode) }
+    }
+
+    fun saveAppCatLogConfig(key: String, isChecked: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            SpNameSpace.CATALOG_CONFIG.getSharedPreferences().edit { putBoolean(key, isChecked) }
+        }
     }
 
     suspend fun getReadedAppConfig(): AppConfigEntity? {

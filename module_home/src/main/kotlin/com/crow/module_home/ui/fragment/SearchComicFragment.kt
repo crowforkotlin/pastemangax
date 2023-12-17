@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
-import com.crow.base.copymanga.BaseLoadStateAdapter
+import com.crow.mangax.copymanga.BaseLoadStateAdapter
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut

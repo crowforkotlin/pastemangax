@@ -55,6 +55,7 @@ import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.crow.base.R.color.base_grey_500_75
+import com.crow.base.tools.extensions.log
 import com.crow.module_home.model.resp.homepage.Banner
 import kotlinx.coroutines.delay
 import kotlin.coroutines.cancellation.CancellationException

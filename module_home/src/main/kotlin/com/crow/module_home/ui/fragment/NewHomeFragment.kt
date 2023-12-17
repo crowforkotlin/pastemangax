@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.core.view.isGone
@@ -16,10 +15,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.GridLayoutManager
-import com.crow.base.copymanga.BaseEventEnum
-import com.crow.base.copymanga.BaseStrings
-import com.crow.base.copymanga.appIsDarkMode
-import com.crow.base.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseStrings.ID
+import com.crow.mangax.copymanga.appEvent
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.baseCoroutineException
@@ -31,6 +32,7 @@ import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.toJson
@@ -45,6 +47,8 @@ import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
+import com.crow.mangax.tools.language.ChineseConverter
+import com.crow.mangax.tools.language.ConversionType
 import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeFragmentNewBinding
 import com.crow.module_home.databinding.HomeFragmentSearchViewBinding
@@ -65,6 +69,7 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.qualifier.named
 import kotlin.system.exitProcess
+import kotlin.system.measureTimeMillis
 import com.crow.base.R as baseR
 
 class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
@@ -108,6 +113,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      */
     private val mDataRvAdapter by lazy {
         NewHomeComicRvAdapter(
+            mLifecycleScope = lifecycleScope,
             mOnRefresh = { button ->
                 button.isEnabled = false
                 mRecRefresh = button
@@ -273,12 +279,12 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     private fun initSearchView() {
         if (mBaseEvent.getBoolean("HOME_FRAGMENT_INIT_SEARCH_VIEW") == true) return
         mBaseEvent.setBoolean("HOME_FRAGMENT_INIT_SEARCH_VIEW", true)
-        mBinding.homeSearchView.apply {
+        mBinding.searchView.apply {
             val binding = HomeFragmentSearchViewBinding.inflate(layoutInflater).also { mSearchBinding = it }                                                                 // 获取SearchViewBinding
-            val searchComicFragment = SearchComicFragment.newInstance(mBinding.homeSearchView) { name, pathword ->  navigateBookComicInfo(name, pathword) }   // 实例化SearchComicFragment
-            val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.homeSearchView) { name, pathword -> navigateBookNovelInfo(name, pathword) }     // 实例化SearchNovelFragment
+            val searchComicFragment = SearchComicFragment.newInstance(mBinding.searchView) { name, pathword ->  navigateBookComicInfo(name, pathword) }   // 实例化SearchComicFragment
+            val searchNovelFragment = SearchNovelFragment.newInstance(mBinding.searchView) { name, pathword -> navigateBookNovelInfo(name, pathword) }     // 实例化SearchNovelFragment
             val bgColor: Int; val tintColor: Int
-            if (appIsDarkMode) {
+            if (mDarkMode) {
                 bgColor = ContextCompat.getColor(mContext, com.google.android.material.R.color.m3_sys_color_dark_surface)
                 tintColor = ContextCompat.getColor(mContext, android.R.color.white)
             } else {
@@ -325,19 +331,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      */
     override fun onStart() {
         super.onStart()
-        val baseEvent : BaseEvent = BaseEvent.newInstance(BaseEvent.BASE_FLAG_TIME_1000 shl 1)
-        mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) {
-            if (mBinding.homeSearchView.isShowing) mBinding.homeSearchView.hide()
-            else {
-                baseEvent.doOnInterval(object : BaseIEventIntervalExt<BaseEvent>{
-                    override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) { toast(getString(R.string.home_exit_app)) }
-                    override fun onIntervalFailure(gapTime: Long) {
-                        requireActivity().finish()
-                        exitProcess(0)
-                    }
-                })
-            }
-        }
+
     }
 
     /**
@@ -388,7 +382,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         // 内存重启后隐藏SearchView
         if (savedInstanceState != null) {
             withLifecycle(state = Lifecycle.State.RESUMED) {
-                mBinding.homeSearchView.hide()
+                mBinding.searchView.hide()
             }
         }
 
@@ -428,7 +422,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
 
         // 设置容器Fragment的回调监听
         parentFragmentManager.setFragmentResultListener(HOME, this) { _, bundle ->
-            if (bundle.getInt(BaseStrings.ID) == 0) {
+            if (bundle.getInt(ID) == 0) {
                 if (bundle.getBoolean(BaseStrings.ENABLE_DELAY)) {
                     launchDelay(BASE_ANIM_200L) { mVM.input(HomeIntent.GetHomePage()) }
                 }
@@ -436,16 +430,31 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             }
         }
 
+        // 返回事件回调
+        parentFragmentManager.setFragmentResultListener(BaseStrings.BACKPRESS + 0, this) { _, _ ->
+            if (mBinding.searchView.isShowing) mBinding.searchView.hide()
+            else {
+                appEvent.doOnInterval(object : BaseIEventIntervalExt<BaseEvent>{
+                    override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) { toast(getString(baseR.string.BaseExitApp)) }
+                    override fun onIntervalFailure(gapTime: Long) {
+                        requireActivity().finish()
+                        exitProcess(0)
+                    }
+                })
+            }
+        }
+
+
         // 登录成功 监听
         parentFragmentManager.setFragmentResultListener(BaseEventEnum.LoginCategories.name, this) { _, bundle ->
-            if (bundle.getInt(BaseStrings.ID) == 0) {
+            if (bundle.getInt(ID) == 0) {
                 mVM.input(HomeIntent.GetHomePage())
             }
         }
 
         // 搜索
         mBinding.homeToolbar.menu[0].doOnClickInterval {
-            if (mBinding.homeSearchView.isShowing) {
+            if (mBinding.searchView.isShowing) {
                 mSearchBinding?.homeSearchVp?.let {  vp ->
                     when(vp.currentItem) {
                         0 -> { (childFragmentManager.fragments[0] as SearchComicFragment).doInputSearchComicIntent() }
@@ -454,7 +463,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                 }
             } else {
                 initSearchView()
-                mBinding.homeSearchView.show()
+                mBinding.searchView.show()
             }
         }
 

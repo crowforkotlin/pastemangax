@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/base_dp10"
+    android:paddingTop="@dimen/base_dp5"
+    android:paddingBottom="@dimen/base_dp5"
+    android:paddingEnd="@dimen/base_dp10">
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/base_dp5"
+        android:layout_marginEnd="@dimen/base_dp5"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:textColor="@color/home_grey_400"
+        android:textSize="@dimen/base_sp12_5"
+        android:textStyle="bold"
+        tools:text="个性化" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/base_dp10" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

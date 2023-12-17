@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.app
-import com.crow.base.copymanga.appIsDarkMode
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.ui.view.ToolTipsView
+import com.crow.base.ui.view.TooltipsView
 import com.crow.module_book.R
 import com.crow.module_book.databinding.BookFragmentChapterRvBinding
 import com.crow.module_book.model.resp.novel_chapter.NovelChapterResult
@@ -41,7 +41,7 @@ class NovelChapterRvAdapter(
     private val mMutex = Mutex()
 
     init {
-        if (appIsDarkMode) {
+        if (mDarkMode) {
             mBtSurfaceColor = ContextCompat.getColor(app, com.google.android.material.R.color.m3_sys_color_dark_surface)
             mBtTextColor = ContextCompat.getColor(app, R.color.book_button_bg_white)
         } else {
@@ -66,7 +66,7 @@ class NovelChapterRvAdapter(
         val comic = mComic[position]
         vh.mButton.text = comic.name
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) vh.mButton.tooltipText = comic.name
-        else ToolTipsView.showToolTipsByLongClick(vh.mButton)
+        else TooltipsView.showTipsWhenLongClick(vh.mButton)
         if (mChapterName != null && comic.name == mChapterName!!) {
             vh.mButton.setBackgroundColor(ContextCompat.getColor(vh.itemView.context, R.color.book_blue))
             vh.mButton.setTextColor(ContextCompat.getColor(vh.itemView.context, android.R.color.white))
