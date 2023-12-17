@@ -101,7 +101,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
      * ● 2023-10-10 01:00:55 周二 上午
      */
     private val mAdapter by lazy {
-        AnimeDiscoverPageAdapter { anime ->
+        AnimeDiscoverPageAdapter(lifecycleScope) { anime ->
             navigateAnimeInfoPage(anime.mPathWord, anime.mName)
         }
     }

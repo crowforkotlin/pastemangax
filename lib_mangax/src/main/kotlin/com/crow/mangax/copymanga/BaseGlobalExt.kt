@@ -10,10 +10,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.setPadding
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.crow.base.R
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.resp.BaseContentInvalidResp
 import com.crow.base.tools.extensions.SpNameSpace
+import com.crow.base.tools.extensions.SpNameSpace.CATALOG_CONFIG
 import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2dp
@@ -22,9 +24,11 @@ import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.BaseViewState
+import com.crow.mangax.tools.language.ChineseConverter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDivider
 import com.squareup.moshi.JsonDataException
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -37,9 +41,31 @@ import java.util.Locale
  * @Description: UtilsExt
  * @formatter:on
  **************************/
+
+// 漫画卡片高度 和 宽度
+val appComicCardHeight: Int by lazy {
+    val width = app.resources.displayMetrics.widthPixels
+    val height = app.resources.displayMetrics.heightPixels
+    (width.toFloat() / (3.0 - width.toFloat() / height.toFloat())).toInt()
+}
+val appComicCardWidth: Int by lazy { (appComicCardHeight / 1.25).toInt() }
+val appDp10 by lazy { app.px2dp(app.resources.getDimensionPixelSize(R.dimen.base_dp10).toFloat()).toInt() }
+
+val appEvent = BaseEvent.newInstance(BaseEvent.BASE_FLAG_TIME_1000 shl 1)
+
+var appIsDarkMode = CATALOG_CONFIG.getSharedPreferences().getBoolean(SpNameSpace.Key.ENABLE_DARK, true)
+var appChineseConvertEnable = CATALOG_CONFIG.getSharedPreferences().getBoolean(SpNameSpace.Key.ENABLE_CHINESE_CONVERT, true)
+var appHotAccurateDisplayEnable = CATALOG_CONFIG.getSharedPreferences().getBoolean(SpNameSpace.Key.ENABLE_HOT_ACCURATE_DISPLAY, false)
+
 private val formatter  = DecimalFormat("###,###.##", DecimalFormatSymbols(Locale.US).also { it.groupingSeparator = '.' })
 
-fun formatValue(value: Int): String {
+/**
+ * ● 格式化热度字符串
+ *
+ * ● 2023-12-14 21:31:10 周四 下午
+ * @author crowforkotlin
+ */
+fun formatHotValue(value: Int): String {
     return when {
         value >= 10000 -> {
             formatter.applyPattern("#,#### W")
@@ -53,27 +79,23 @@ fun formatValue(value: Int): String {
     }
 }
 
+/**
+ * ● 可扩展字符串
+ *
+ * ● 2023-12-14 21:30:25 周四 下午
+ * @author crowforkotlin
+ */
 fun String.getSpannableString(color: Int, start: Int, end: Int = length): SpannableString {
     return SpannableString(this).also { it.setSpan(ForegroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE) }
 }
 
-// 漫画卡片高度 和 宽度
-val appComicCardHeight: Int by lazy {
-    val width = app.resources.displayMetrics.widthPixels
-    val height = app.resources.displayMetrics.heightPixels
-    (width.toFloat() / (3.0 - width.toFloat() / height.toFloat())).toInt()
-}
-val appComicCardWidth: Int by lazy { (appComicCardHeight / 1.25).toInt() }
-val appDp10 by lazy { app.px2dp(app.resources.getDimensionPixelSize(R.dimen.base_dp10).toFloat()).toInt() }
-var appIsDarkMode = SpNameSpace.CATALOG_NIGHT_MODE.getSharedPreferences().getBoolean(SpNameSpace.Key.ENABLE_DARK, false)
-val appEvent = BaseEvent.newInstance(BaseEvent.BASE_FLAG_TIME_1000 shl 1)
-
 /**
- * ● 处理Token 错误
+ * ● 处理Token错误
  *
- * ● 2023-09-22 22:57:48 周五 下午
+ * ● 2023-12-14 21:27:10 周四 下午
+ * @author crowforkotlin
  */
-inline fun View.processTokenError(code: Int, msg: String?, crossinline doOnCancel: (MaterialAlertDialogBuilder) -> Unit = { }, crossinline doOnConfirm: (MaterialAlertDialogBuilder) -> Unit) {
+fun View.processTokenError(code: Int, msg: String?, doOnCancel: (MaterialAlertDialogBuilder) -> Unit = { }, doOnConfirm: (MaterialAlertDialogBuilder) -> Unit) {
     runCatching { toTypeEntity<BaseContentInvalidResp>(msg)?.mResults ?: throw JsonDataException("parse exception!") }
         .onSuccess {
             context.newMaterialDialog { dialog ->
@@ -104,4 +126,8 @@ inline fun View.processTokenError(code: Int, msg: String?, crossinline doOnCance
             if (code == BaseViewState.Error.UNKNOW_HOST) this.showSnackBar(msg ?: app.getString(R.string.BaseLoadingError))
             else toast(app.getString(R.string.BaseUnknowError))
         }
+}
+
+inline fun LifecycleCoroutineScope.tryConvert(text: String, crossinline result: (String) -> Unit) {
+   if (appChineseConvertEnable) { launch { result(ChineseConverter.convert(text)) } } else result(text)
 }

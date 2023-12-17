@@ -62,7 +62,7 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
      * ● 2023-10-04 16:59:58 周三 下午
      */
     private val mComicAdapter by lazy {
-        ComicHistoryListAdapter { name, pathword ->
+        ComicHistoryListAdapter(lifecycleScope) { name, pathword ->
             onNavigate(Fragments.BookComicInfo.name, name, pathword)
         }
     }

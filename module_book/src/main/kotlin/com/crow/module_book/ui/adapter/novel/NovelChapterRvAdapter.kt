@@ -9,7 +9,7 @@ import com.crow.base.app.app
 import com.crow.mangax.copymanga.appIsDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.ui.view.ToolTipsView
+import com.crow.base.ui.view.TooltipsView
 import com.crow.module_book.R
 import com.crow.module_book.databinding.BookFragmentChapterRvBinding
 import com.crow.module_book.model.resp.novel_chapter.NovelChapterResult
@@ -66,7 +66,7 @@ class NovelChapterRvAdapter(
         val comic = mComic[position]
         vh.mButton.text = comic.name
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) vh.mButton.tooltipText = comic.name
-        else ToolTipsView.showToolTipsByLongClick(vh.mButton)
+        else TooltipsView.showTipsWhenLongClick(vh.mButton)
         if (mChapterName != null && comic.name == mChapterName!!) {
             vh.mButton.setBackgroundColor(ContextCompat.getColor(vh.itemView.context, R.color.book_blue))
             vh.mButton.setTextColor(ContextCompat.getColor(vh.itemView.context, android.R.color.white))

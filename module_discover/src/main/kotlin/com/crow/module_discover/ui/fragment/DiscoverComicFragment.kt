@@ -18,8 +18,6 @@ import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.kt.BaseNotNullVar
-import com.crow.base.tools.coroutine.baseUI
-import com.crow.base.tools.coroutine.cancelAllUIJob
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
@@ -320,7 +318,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         mBaseErrorViewStub = baseErrorViewStub(mBinding.error, lifecycle) { mBinding.refresh.autoRefresh() }
 
         // 初始化 发现页 漫画适配器
-        mAdapter = DiscoverComicAdapter { navigateBookComicInfo(it.mName, it.mPathWord) }
+        mAdapter = DiscoverComicAdapter(lifecycleScope) { navigateBookComicInfo(it.mName, it.mPathWord) }
 
         // 设置适配器
         mBinding.list.adapter = mAdapter.withLoadStateFooter(BaseLoadStateAdapter { mAdapter.retry() })
@@ -384,6 +382,5 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         BaseEvent.getSIngleInstance().remove("DISCOVER_COMIC_FRAGMENT_POPULAR_ORDER")
         BaseEvent.getSIngleInstance().remove("DISCOVER_COMIC_FRAGMENT_UPDATE_ORDER")
         mToolbarSubtitle = null
-        cancelAllUIJob()
     }
 }

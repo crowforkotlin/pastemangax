@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Base.Theme.BG"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/Base.Theme.BG"
     tools:context="com.crow.module_book.ui.fragment.BookFragment"
     tools:visibility="visible">
 
@@ -38,21 +38,21 @@
         app:layout_constraintStart_toEndOf="@+id/book_info_back"
         app:layout_constraintTop_toTopOf="@+id/book_info_back" />
 
-<!--
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/book_info_setting"
-        app:iconSize="@dimen/base_dp18"
-        style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/base_dp10"
-        android:layout_marginEnd="@dimen/base_dp10"
-        android:contentDescription="@string/BaseAppName"
-        app:icon="@drawable/base_ic_settings_24dp"
-        app:iconTint="@color/base_color_asc"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
--->
+    <!--
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/book_info_setting"
+            app:iconSize="@dimen/base_dp18"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/base_dp10"
+            android:layout_marginEnd="@dimen/base_dp10"
+            android:contentDescription="@string/BaseAppName"
+            app:icon="@drawable/base_ic_settings_24dp"
+            app:iconTint="@color/base_color_asc"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    -->
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/book_info_cardview"
@@ -105,9 +105,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
         android:layout_marginEnd="@dimen/base_dp10"
-        android:textSize="@dimen/base_sp12_5"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
@@ -118,12 +118,12 @@
         android:id="@+id/author"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/base_sp12_5"
         android:layout_marginStart="@dimen/base_dp10"
-        android:layout_marginEnd="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:ellipsize="end"
         android:maxLines="2"
+        android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
@@ -132,14 +132,14 @@
 
     <TextView
         android:id="@+id/hot"
-        android:textSize="@dimen/base_sp12_5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
-        android:layout_marginEnd="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
@@ -151,11 +151,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
-        android:layout_marginEnd="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
-        android:textSize="@dimen/base_sp12_5"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
@@ -164,14 +164,14 @@
 
     <TextView
         android:id="@+id/chapter"
-        android:textSize="@dimen/base_sp12_5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
-        android:layout_marginEnd="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
@@ -183,13 +183,13 @@
         style="@style/Base.Theme.Button.Icon.Tint.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:iconSize="@dimen/base_dp24"
         android:layout_weight="0.25"
         android:text="@string/book_comic_add_to_bookshelf"
         android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
         app:icon="@drawable/book_ic_add_to_bookshelf_24dp"
         app:iconGravity="top"
+        app:iconSize="@dimen/base_dp24"
         app:layout_constraintEnd_toStartOf="@+id/book_info_download"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/book_info_download"
@@ -197,18 +197,18 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_download"
+        style="@style/Base.Theme.Button.Icon.Tint.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Base.Theme.Button.Icon.Tint.Text"
         android:layout_marginTop="@dimen/base_dp10"
         android:minWidth="@dimen/base_dp48"
         android:minHeight="@dimen/base_dp48"
         android:text="@string/BookComicDownLoad"
+        android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
         app:icon="@drawable/base_ic_download_24dp"
-        app:iconSize="@dimen/base_dp24"
         app:iconGravity="top"
-        android:textSize="@dimen/base_sp12_5"
+        app:iconSize="@dimen/base_dp24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/book_info_cardview"
@@ -217,16 +217,16 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_readnow"
         android:layout_width="wrap_content"
+       style="@style/Base.Theme.Button.Icon.Tint.Text"
         android:layout_height="wrap_content"
-        style="@style/Base.Theme.Button.Icon.Tint.Text"
-        app:iconSize="@dimen/base_dp24"
         android:minWidth="@dimen/base_dp48"
         android:minHeight="@dimen/base_dp48"
         android:text="@string/BookComicReadNow"
-        android:textStyle="bold"
         android:textSize="@dimen/base_sp12_5"
+        android:textStyle="bold"
         app:icon="@drawable/book_ic_readnow_24dp"
         app:iconGravity="top"
+        app:iconSize="@dimen/base_dp24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_download"
         app:layout_constraintTop_toTopOf="@+id/book_info_download"
@@ -270,9 +270,9 @@
                         android:layout_marginEnd="@dimen/base_dp10"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                   <!-- <TextView
+                    <TextView
                         android:id="@+id/desc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -280,15 +280,14 @@
                         android:layout_marginTop="@dimen/base_dp10"
                         android:layout_marginEnd="@dimen/base_dp10"
                         android:ellipsize="end"
-                        android:textSize="@dimen/base_sp12_5"
                         android:maxLines="10"
+                        android:textSize="@dimen/base_sp12_5"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/book_info_theme_chip"
                         tools:text="@string/BaseTodoTextView" />
--->
-                    <com.crow.base.ui.view.atrr_text_layout.BaseAttrTextLayout
+                    <!--<com.crow.base.ui.view.atrr_text_layout.BaseAttrTextLayout
                         android:id="@+id/desc"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/base_dp70"
@@ -299,7 +298,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/book_info_theme_chip"
                         tools:text="@string/BaseTodoTextView" />
-
+-->
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.appbar.AppBarLayout>
@@ -308,26 +307,26 @@
                 android:id="@+id/book_info_linear_chapter"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible"
-                tools:visibility="visible"
                 android:layout_marginTop="@dimen/base_dp10"
                 android:orientation="vertical"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+                android:visibility="invisible"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                tools:visibility="visible">
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/book_info_rv_chapter_selector"
                     style="@style/ShapeAppearance.Material3.Corner.None"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/base_dp10"
-                    android:background="@android:color/transparent"
                     android:layout_marginStart="@dimen/base_dp5"
-                    app:tabIndicatorFullWidth="true"
+                    android:layout_marginTop="@dimen/base_dp10"
                     android:layout_marginEnd="@dimen/base_dp5"
-                    app:tabMode="scrollable"
+                    android:background="@android:color/transparent"
                     android:contentDescription="@string/BaseAppName"
-                    app:tabTextAppearance="@style/Base.Tablayout.TextAppearance"
                     android:visibility="gone"
+                    app:tabIndicatorFullWidth="true"
+                    app:tabMode="scrollable"
+                    app:tabTextAppearance="@style/Base.Tablayout.TextAppearance"
                     tools:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -345,12 +344,12 @@
 
             <TextView
                 android:id="@+id/comic_info_error_tips"
-                android:textStyle="bold"
-                android:textSize="@dimen/base_sp14"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="@string/BaseLoadingErrorNeedRefresh"
+                android:textSize="@dimen/base_sp14"
+                android:textStyle="bold"
                 android:visibility="gone"
                 tools:visibility="visible" />
 

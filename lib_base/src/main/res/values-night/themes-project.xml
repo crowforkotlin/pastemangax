@@ -2,30 +2,34 @@
 <resources>
 
     <style name="Base.Theme.Material3_Project" parent="Theme.Material3.Dark.NoActionBar">
-        <item name="baseIconButtonStyle">@style/Base.Theme.Button.Icon.Text</item>
-        <item name="baseIconButtonElevatedStyle">@style/Base.Theme.Button.Elevated.Icon</item>
-        <item name="android:textColor">@color/base_white</item>
+        <item name="android:textColor">@color/base_color_asc</item>
+        <item name="colorPrimary">@color/base_color_asc</item>
+        <item name="colorOnPrimary">@color/base_icon_desc</item>
+    </style>
+
+    <style name="Base.Material.Button.Style" parent="Widget.Material3.Button">
+        <item name="colorOnSurface">@color/base_color_asc</item>
     </style>
 
     <style name="Base.Theme.Button.Elevated.Icon" parent="Widget.Material3.Button.ElevatedButton.Icon" >
-        <item name="android:textColor">@color/base_white</item>
+        <item name="android:textColor">@color/base_color_asc</item>
     </style>
 
     <style name="Base.Theme.Button.Icon.Text" parent="Widget.Material3.Button.IconButton" >
-        <item name="android:textColor">@color/base_white</item>
+        <item name="android:textColor">@color/base_color_asc</item>
     </style>
 
     <style name="Base.Theme.Button.Icon.Tint" parent="Widget.Material3.Button.IconButton" >
-        <item name="iconTint">@color/base_white</item>
+        <item name="iconTint">@color/base_color_asc</item>
     </style>
 
     <style name="Base.Theme.Button.Icon.Tint.Text" parent="Widget.Material3.Button.IconButton" >
-        <item name="iconTint">@color/base_white</item>
-        <item name="android:textColor">@color/base_white</item>
+        <item name="iconTint">@color/base_color_asc</item>
+        <item name="android:textColor">@color/base_color_asc</item>
     </style>
 
     <style name="Base.Theme.Button.Icon.Back" parent="Widget.Material3.Button.IconButton" >
-        <item name="iconTint">@color/base_white</item>
+        <item name="iconTint">@color/base_color_asc</item>
     </style>
 
     <style name="Base.Theme.BG" parent="Theme.Material3.DayNight.NoActionBar">

@@ -28,6 +28,7 @@ import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
+import com.crow.mangax.copymanga.tryConvert
 import com.crow.module_home.databinding.HomeFragmentTopicBinding
 import com.crow.module_home.model.intent.HomeIntent
 import com.crow.module_home.model.resp.homepage.Topices
@@ -82,7 +83,7 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
      * @author crowforkotlin
      */
     private val mAdapter by lazy {
-        TopicListAdapter { name, pathword ->
+        TopicListAdapter(lifecycleScope) { name, pathword ->
             onNavigate(Fragments.BookComicInfo.name, name, pathword)
         }
     }
@@ -220,7 +221,7 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
 
         if (::mTopic.isInitialized) {
 
-            mBinding.textView.text = mTopic.mBrief
+            lifecycleScope.tryConvert(mTopic.mBrief, mBinding.textView::setText)
             mBinding.topbar.title =  "${mTopic.mJournal} ${mTopic.mPeriod}"
             mBinding.topbar.subtitle = mTopic.mDatetimeCreated
         }

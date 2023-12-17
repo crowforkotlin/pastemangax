@@ -87,14 +87,14 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      *
      * ● 2023-07-07 21:49:53 周五 下午
      */
-    private val mComicRvAdapter by lazy { BSComicRvAdapter { navigate(Fragments.BookComicInfo.name, it.mComic.mName, it.mComic.mPathWord) } }
+    private val mComicRvAdapter by lazy { BSComicRvAdapter(lifecycleScope) { navigate(Fragments.BookComicInfo.name, it.mComic.mName, it.mComic.mPathWord) } }
 
     /**
      * ● Bookshelf Novel适配器
      *
      * ● 2023-07-07 21:50:00 周五 下午
      */
-    private val mNovelRvAdapter by lazy { BSNovelRvAdapter { navigate(Fragments.BookNovelInfo.name, it.mNovel.mName, it.mNovel.mPathWord) } }
+    private val mNovelRvAdapter by lazy { BSNovelRvAdapter(lifecycleScope) { navigate(Fragments.BookNovelInfo.name, it.mNovel.mName, it.mNovel.mPathWord) } }
 
     /**
      * ● 漫画计数

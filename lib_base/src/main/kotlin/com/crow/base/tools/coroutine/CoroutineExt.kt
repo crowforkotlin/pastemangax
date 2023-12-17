@@ -25,8 +25,6 @@ import kotlin.coroutines.CoroutineContext
  * @Author: CrowForKotlin
  * @Description: Coroutine Ext
  **************************/
-private val baseUIJob = SupervisorJob()
-val baseUI = CoroutineScope(Dispatchers.Main + baseUIJob)
 val baseCoroutineException = GlobalCoroutineExceptionHandler()
 
 class GlobalCoroutineExceptionHandler : CoroutineExceptionHandler {
@@ -62,5 +60,3 @@ fun createCoroutineExceptionHandler(content: String, handler: ((Throwable) -> Un
         logger(content = "$content : ${throwable.stackTraceToString()}", level = Log.ERROR)
     }
 }
-
-fun cancelAllUIJob() = baseUIJob.cancelChildren()

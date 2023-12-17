@@ -17,7 +17,7 @@ import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.appDp10
 import com.crow.mangax.copymanga.entity.IBookAdapterColor
-import com.crow.mangax.copymanga.formatValue
+import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -82,7 +82,7 @@ class SearchNovelRvAdapter(
             .into(vh.binding.homeSearchRvImage)
         vh.binding.homeSearchRvName.text = item.mName
         vh.binding.homeSearchRvAuthor.text = item.mAuthor.joinToString { it.mName }
-        vh.binding.homeSearchRvHot.text = formatValue(item.mPopular)
+        vh.binding.homeSearchRvHot.text = formatHotValue(item.mPopular)
     }
 
     override fun setColor(vh: LoadingViewHolder, color: Int) {

@@ -9,10 +9,11 @@ import android.widget.LinearLayout
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.edit
 import androidx.core.view.forEach
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
-import com.crow.base.app.app
+import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.mangax.copymanga.entity.Fragments
@@ -22,6 +23,7 @@ import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
+import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
@@ -33,14 +35,20 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.mangax.copymanga.appChineseConvertEnable
 import com.crow.module_main.R
+import com.crow.mangax.R as mangaR
 import com.crow.module_main.databinding.MainFragmentSettingsBinding
 import com.crow.module_main.databinding.MainSettingsProxyLayoutBinding
 import com.crow.module_main.databinding.MainSettingsResolutionLayoutBinding
 import com.crow.module_main.databinding.MainSettingsSiteLayoutBinding
+import com.crow.module_main.model.entity.SettingSwitchEntity
+import com.crow.module_main.model.entity.SettingContentEntity
+import com.crow.module_main.model.entity.SettingTitleEntity
 import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.ui.adapter.SettingsAdapter
 import com.crow.module_main.ui.viewmodel.MainViewModel
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.radiobutton.MaterialRadioButton
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
@@ -86,6 +94,19 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
     private val mBaseEvent by lazy { BaseEvent.getSIngleInstance() }
 
     /**
+     * ● Settings Rv Adapter
+     *
+     * ● 2023-12-15 01:41:54 周五 上午
+     * @author crowforkotlin
+     */
+    private val mAdapter by lazy {
+        SettingsAdapter(
+            onClick = { onClickItem(it) },
+            onChecked = { pos, switch -> onCheckedItem(pos, switch) }
+        )
+    }
+
+    /**
      * ● 点击Item
      *
      * ● 2023-10-02 23:26:28 周一 下午
@@ -99,6 +120,17 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                 3 -> initResolution()
             }
         }
+    }
+
+    private fun onCheckedItem(position: Int, switch: MaterialSwitch) {
+        when(position) {
+            5 -> initChineseConvert(switch)
+        }
+    }
+
+    private fun initChineseConvert(switch: MaterialSwitch) {
+        SpNameSpace.CATALOG_CONFIG.getSharedPreferences().edit { putBoolean(SpNameSpace.Key.ENABLE_CHINESE_CONVERT, switch.isChecked) }
+        toast(getString(mangaR.string.mangax_restart_effect))
     }
 
     private suspend fun initResolution() {
@@ -219,7 +251,14 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
     private fun navigateToStyleableFragment() {
         with(Fragments.Styleable.name) {
-            parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv, this@SettingsFragment, get(named((this))), this, this, transaction = { it.setCenterAnimWithFadeOut() })
+            parentFragmentManager.navigateToWithBackStack(
+                id = baseR.id.app_main_fcv,
+                hideTarget = this@SettingsFragment,
+                addedTarget = get(named((this))),
+                tag = this,
+                backStackName = this,
+                transaction = { it.setCenterAnimWithFadeOut() }
+            )
         }
     }
 
@@ -230,26 +269,37 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
     override fun getViewBinding(inflater: LayoutInflater) =  MainFragmentSettingsBinding.inflate(inflater)
 
-    override fun initView(bundle: Bundle?) {
+    override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
         immersionPadding(mBinding.root)
 
-        mBinding.settingsRv.adapter = SettingsAdapter(mutableListOf(
-            R.drawable.main_ic_personalise_24dp to app.getString(R.string.main_settings_style),
-            R.drawable.main_ic_site_24dp to app.getString(R.string.main_settings_site),
-            R.drawable.main_ic_proxy_24dp to app.getString(R.string.main_settings_proxy),
-            R.drawable.main_ic_resolution_24dp to app.getString(R.string.main_settings_resolution),
-        )) { pos -> onClickItem(pos) }
+        // 初始化Rv适配器
+        mBinding.list.adapter = mAdapter
     }
 
-    override fun initData(savedInstanceState: Bundle?) { mVM.input(AppIntent.GetDynamicSite()) }
+    override fun initData(savedInstanceState: Bundle?) {
+        mAdapter.submitList(
+            mutableListOf(
+                SettingTitleEntity(mID = 0,mTitle = getString(R.string.main_settings_title_basic)),
+                SettingContentEntity(mID = 0, mResource = R.drawable.main_ic_personalise_24dp, mContent = getString(R.string.main_settings_style)),
+                SettingContentEntity(mID = 1, mResource = R.drawable.main_ic_site_24dp, mContent = getString(R.string.main_settings_site)),
+                SettingContentEntity(mID = 2, mResource = R.drawable.main_ic_proxy_24dp, mContent = getString(R.string.main_settings_proxy)),
+                SettingContentEntity(mID = 3, mResource = R.drawable.main_ic_resolution_24dp, mContent = getString(R.string.main_settings_resolution)),
+                SettingTitleEntity(mID = 4, mTitle = getString(R.string.main_settings_title_genric)),
+                SettingSwitchEntity(mID = 5, mContent = "繁体转简体", mEnable = appChineseConvertEnable),
+                SettingSwitchEntity(mID = 6, mContent = "热度精准显示", mEnable = appChineseConvertEnable),
+            )
+        )
+
+        mVM.input(AppIntent.GetDynamicSite())
+    }
 
     override fun initListener() {
         mBinding.settingsToolbar.navigateIconClickGap { navigateUp() }
     }
 
-    override fun initObserver(savedInstanceState: Bundle?) {
+    override fun initObserver(saveInstanceState: Bundle?) {
 
         val baseEvent = BaseEvent.newInstance()
 

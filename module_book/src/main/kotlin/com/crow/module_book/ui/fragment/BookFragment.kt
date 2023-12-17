@@ -245,7 +245,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         mBinding.bookInfoRefresh.setDisableContentWhenRefresh(true)
 
         val more = ". . ."
-        mBinding.desc.apply {
+        /*mBinding.desc.apply {
             mFontSize = resources.getDimension(baseR.dimen.base_sp13)
             mFontBold = true
             mAnimationTop = true
@@ -258,7 +258,8 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
             mScrollSpeed = 11
             mResidenceTime = 3 * 1000
             mText =  more
-        }
+        }*/
+        mBinding.desc.text = more
         mBinding.name.text = mName
         mBinding.status.text = getString(R.string.BookComicStatus, more)
         mBinding.author.text = getString(R.string.BookComicAuthor, more)

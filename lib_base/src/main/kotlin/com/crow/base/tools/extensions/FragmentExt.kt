@@ -169,8 +169,10 @@ inline fun FragmentManager.navigate(
 ) {
     transaction(beginTransaction())
         .replace(id, fragment, tag)
+        .addToBackStack(tag)
         .commit()
 }
+
 
 inline fun<reified T: Fragment> FragmentManager.navigateByAdd(
     @IdRes id: Int,

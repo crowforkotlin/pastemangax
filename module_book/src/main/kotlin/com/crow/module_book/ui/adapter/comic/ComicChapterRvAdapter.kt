@@ -9,7 +9,7 @@ import com.crow.base.app.app
 import com.crow.mangax.copymanga.appIsDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.ui.view.ToolTipsView
+import com.crow.base.ui.view.TooltipsView
 import com.crow.module_book.R
 import com.crow.module_book.databinding.BookFragmentChapterRvBinding
 import com.crow.module_book.model.resp.comic_chapter.ComicChapterResult
@@ -49,7 +49,7 @@ class ComicChapterRvAdapter(
             mBtTextColor = ContextCompat.getColor(app, R.color.book_button_bg_white)
         } else {
             mBtSurfaceColor = ContextCompat.getColor(app, R.color.book_button_bg_white)
-            mBtTextColor = ContextCompat.getColor(app, R.color.book_button_text_purple)
+            mBtTextColor = ContextCompat.getColor(app, com.crow.base.R.color.base_black)
         }
     }
 
@@ -59,7 +59,7 @@ class ComicChapterRvAdapter(
         return ChapterVH(BookFragmentChapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
             vh.mButton.doOnClickInterval { mDoOnTapChapter(mComic[vh.absoluteAdapterPosition]) }
             vh.mButton.doOnLayout {
-                ToolTipsView.showToolTipsByLongClick(vh.mButton, it.measuredWidth shr 2)
+                TooltipsView.showTipsWhenLongClick(vh.mButton, it.measuredWidth shr 2)
             }
         }
     }

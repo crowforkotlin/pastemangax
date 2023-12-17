@@ -7,6 +7,8 @@
 	<string name="main_update_cancel" translatable="false">暂不更新</string>
 
 	<string name="main_settings_titile" translatable="false">设置</string>
+	<string name="main_settings_title_basic" translatable="false">基础配置</string>
+	<string name="main_settings_title_genric" translatable="false">通用配置</string>
 	<string name="main_settings_style" translatable="false">个性化</string>
 	<string name="main_settings_site" translatable="false">站点设置（节点）</string>
 	<string name="main_settings_proxy" translatable="false">代理设置（路线）</string>

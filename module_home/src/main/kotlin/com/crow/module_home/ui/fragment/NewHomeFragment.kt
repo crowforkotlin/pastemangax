@@ -113,6 +113,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      */
     private val mDataRvAdapter by lazy {
         NewHomeComicRvAdapter(
+            mLifecycleScope = lifecycleScope,
             mOnRefresh = { button ->
                 button.isEnabled = false
                 mRecRefresh = button

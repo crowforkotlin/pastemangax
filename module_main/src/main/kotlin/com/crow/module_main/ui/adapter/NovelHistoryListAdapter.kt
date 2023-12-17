@@ -14,7 +14,7 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
 import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.appComicCardWidth
-import com.crow.mangax.copymanga.formatValue
+import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -80,7 +80,7 @@ class NovelHistoryListAdapter(private val onClick: (name: String, pathword: Stri
             binding.author.text = context.getString(bookR.string.BookComicAuthor, item.mBook.mAuthor.joinToString { it.mName })
             binding.readed.text = context.getString(bookR.string.book_readed_chapter, item.mLastChapterName)
             binding.lastest.text = context.getString(bookR.string.BookComicNewChapter, item.mBook.mLastChapterName)
-            binding.hot.text = context.getString(bookR.string.BookComicHot, formatValue(item.mBook.mPopular))
+            binding.hot.text = context.getString(bookR.string.BookComicHot, formatHotValue(item.mBook.mPopular))
         }
     }
 

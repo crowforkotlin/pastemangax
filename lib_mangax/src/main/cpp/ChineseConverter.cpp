@@ -18,13 +18,10 @@ jstring Java_com_crow_mangax_tools_language_ChineseConverter_convert(
     const char *text = env->GetStringUTFChars(text_, 0);
     const char *configFile = env->GetStringUTFChars(configFile_, 0);
     const char *absoluteDataFolderPath = env->GetStringUTFChars(absoluteDataFolderPath_, 0);
-
     opencc::SimpleConverter simpleConverter(std::string(absoluteDataFolderPath) + "/" + std::string(configFile));
-
     env->ReleaseStringUTFChars(text_, text);
     env->ReleaseStringUTFChars(configFile_, configFile);
     env->ReleaseStringUTFChars(absoluteDataFolderPath_, absoluteDataFolderPath);
-
     return env->NewStringUTF(simpleConverter.Convert(text).c_str());
 }
 

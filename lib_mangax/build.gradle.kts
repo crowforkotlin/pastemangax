@@ -26,7 +26,7 @@ android {
         buildConfigField("int", "VERSION_CODE", "${AppConfigs.version_code}")
 
         // 资源前缀（所有资源前缀必须添加）
-        resourcePrefix = AppConfigs.base_resource_prefix
+        resourcePrefix = AppConfigs.mangax_resource_prefix
 
         // 编译的SDK版本
         compileSdk = AppConfigs.compile_sdk_version

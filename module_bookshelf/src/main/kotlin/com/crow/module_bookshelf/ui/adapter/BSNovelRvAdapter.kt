@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.GenericTransitionOptions
@@ -16,12 +17,16 @@ import com.crow.mangax.copymanga.appDp10
 import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.mangax.copymanga.appChineseConvertEnable
+import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
 import com.crow.module_bookshelf.model.resp.bookshelf_novel.BookshelfNovelResults
+import kotlinx.coroutines.launch
 
 class BSNovelRvAdapter(
-    inline val onClick: (BookshelfNovelResults) -> Unit
+    private val mLifecycleScope: LifecycleCoroutineScope,
+    private val onClick: (BookshelfNovelResults) -> Unit
 ) : PagingDataAdapter<BookshelfNovelResults, BSNovelRvAdapter.BSViewHolder>(DiffCallback()) {
 
     /**
@@ -72,7 +77,11 @@ class BSNovelRvAdapter(
                 })
                 .into(binding.image)
 
-            binding.name.text = item.mNovel.mName
+            if (appChineseConvertEnable) {
+                mLifecycleScope.launch { binding.name.text = ChineseConverter.convert(item.mNovel.mName) }
+            } else {
+                binding.name.text = item.mNovel.mName
+            }
             binding.time.text = item.mNovel.mDatetimeUpdated
         }
     }

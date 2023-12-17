@@ -17,14 +17,14 @@ import com.crow.base.databinding.BaseTextviewBinding
  * @Description: ToolTipsView
  * @formatter:on
  **************************/
-class ToolTipsView(context: Context, layoutInflater: LayoutInflater) {
+class TooltipsView(context: Context, layoutInflater: LayoutInflater) {
 
     companion object {
 
-        private var mToolTipsView: ToolTipsView? = null
-        private fun getToolTipsView(): ToolTipsView {
-            mToolTipsView = mToolTipsView ?: ToolTipsView(app, LayoutInflater.from(app))
-            return mToolTipsView!!
+        private var mTooltipsView: TooltipsView? = null
+        private fun getToolTipsView(): TooltipsView {
+            mTooltipsView = mTooltipsView ?: TooltipsView(app, LayoutInflater.from(app))
+            return mTooltipsView!!
         }
 
         fun showToolTips(view: View, content: String, offsetX: Int = 0, offsetY: Int = 0) {
@@ -34,7 +34,7 @@ class ToolTipsView(context: Context, layoutInflater: LayoutInflater) {
             toolTipsView.popupWindow.showAsDropDown(view, offsetX, offsetY)
         }
 
-        fun showToolTipsByLongClick(view: TextView, offsetX: Int = 0, offsetY: Int = 0) {
+        fun showTipsWhenLongClick(view: TextView, offsetX: Int = 0, offsetY: Int = 0) {
             view.setOnLongClickListener {
                 val toolTipsView = getToolTipsView()
                 toolTipsView.binding.textview.text = view.text
@@ -44,7 +44,7 @@ class ToolTipsView(context: Context, layoutInflater: LayoutInflater) {
             }
         }
 
-        fun showToolTipsByLongClick(view: View, text: CharSequence, offsetX: Int = 0, offsetY: Int = 0) {
+        fun showTipsWhenLongClick(view: View, text: CharSequence, offsetX: Int = 0, offsetY: Int = 0) {
             view.setOnLongClickListener {
                 val toolTipsView = getToolTipsView()
                 toolTipsView.binding.textview.text = text.toString()

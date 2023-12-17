@@ -13,6 +13,7 @@ import com.crow.base.ui.view.event.BaseEvent.Companion.BASE_FLAG_TIME_500
 import com.crow.base.ui.view.event.click.BaseIEventInterval
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.materialswitch.MaterialSwitch
 
 /************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -22,8 +23,6 @@ import com.google.android.material.appbar.MaterialToolbar
  * @Description: Event Extension
  * @formatter:off
  **************************/
-
-
 
 
 // View 点击事件间隔 默认1秒
@@ -124,4 +123,9 @@ inline fun EditText.afterTextChanged(crossinline afterTextChanged: (String) -> U
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
     })
+}
+
+fun MaterialSwitch.setOnCheckedInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_500, msg: String? = null, iEven: BaseIEventInterval<MaterialSwitch>) {
+    val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance(flagTime)
+    setOnCheckedChangeListener { buttonView, isChecked -> iEven.onIntervalOk(baseEvent.getIntervalResult(this, msg, baseEvent) ?: return@setOnCheckedChangeListener) }
 }

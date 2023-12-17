@@ -40,6 +40,8 @@ object AppConfigs {
     // Base库资源前缀
     const val base_resource_prefix = "base"
 
+    const val mangax_resource_prefix = "mangax"
+
     // module home 资源前缀
     const val home_resource_prefix = "home"
 

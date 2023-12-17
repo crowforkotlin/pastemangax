@@ -48,7 +48,7 @@ class MainViewModel(val repository: AppRepository) : BaseMviViewModel<AppIntent>
 
     fun saveCatalogDarkModeEnable(darkMode: Int) {
         appIsDarkMode = darkMode == AppCompatDelegate.MODE_NIGHT_YES
-        SpNameSpace.CATALOG_NIGHT_MODE.getSharedPreferences().edit { putBoolean(SpNameSpace.Key.ENABLE_DARK, appIsDarkMode) }
+        SpNameSpace.CATALOG_CONFIG.getSharedPreferences().edit { putBoolean(SpNameSpace.Key.ENABLE_DARK, appIsDarkMode) }
     }
 
     suspend fun getReadedAppConfig(): AppConfigEntity? {
