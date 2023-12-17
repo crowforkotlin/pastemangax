@@ -33,7 +33,7 @@ class MainApplication : BaseApp() {
     override fun onCreate() {
         super.onCreate()
 
-        measureTimeMillis { AppConfigEntity.initialization() }.log()
+        AppConfigEntity.initialization()
 
         AppCompatDelegate.setDefaultNightMode(if(mDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
 
