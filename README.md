@@ -13,6 +13,8 @@
 
 [![Telegram](https://img.shields.io/badge/-telegram-red?color=white&logo=telegram&logoColor=blue)](https://t.me/+kFkVVuDOFsFiMzQ1)
 
+**```如果你需要Clone该项目，在Clone完成后请进入到该项目的根目录下并输入git submodule update --init --recursive更新子模块才可继续执行编译```**
+
 - ### **🔶前言**
     - **🟠数据来源于拷贝漫画 作者不对其中呈现的任何内容负责。**
     - **🔷项目介绍**
