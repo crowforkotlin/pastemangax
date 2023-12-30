@@ -12,7 +12,7 @@ import com.crow.module_book.model.entity.comic.reader.ReaderContent
 import com.crow.module_book.model.entity.comic.reader.ReaderInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderState
 import com.crow.module_book.model.intent.BookIntent
-import com.crow.module_book.model.resp.comic_page.Chapter
+import com.crow.module_book.model.resp.ComicPageResp
 import com.crow.module_book.network.BookRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -69,7 +69,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      *
      * ● 2023-09-01 00:51:58 周五 上午
      */
-    private val _mContent = MutableStateFlow(ReaderContent(emptyList(), null))
+    private val _mContent = MutableStateFlow(ReaderContent("", "", "", emptyList(), null))
     val mContent: StateFlow<ReaderContent> get() = _mContent
 
     /**
@@ -109,7 +109,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      */
     private suspend fun getComicPage(intent: BookIntent.GetComicPage, isNext: Boolean? = null) {
         val result = flowResult(repository.getComicPage(intent.pathword, intent.uuid), intent) { value ->
-            val readerContent = getReaderContent(value.mResults.mChapter)
+            val readerContent = getReaderContent(value.mResults)
             val _intent = if (isNext == null) {
                 intent.copy(comicpage = value.mResults)
             } else {
@@ -136,22 +136,27 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      *
      * ● 2023-09-02 19:51:53 周六 下午
      */
-    private fun getReaderContent(chapter: Chapter): ReaderContent {
-        return ReaderContent(
-            mPages = chapter.mWords
-                .zip(chapter.mContents)
-                .sortedBy { it.first }
-                .map { it.second }
-                .toMutableList(),
-            mInfo =  ReaderInfo(
-                mChapterIndex = chapter.mIndex,
-                mChapterID = chapter.mUuid,
-                mChapterName = chapter.mName,
-                mChapterCount = chapter.mCount,
-                mChapterUpdate = chapter.mDatetimeCreated,
-                mPrevUUID = chapter.mPrev,
-                mNextUUID = chapter.mNext
-            ))
+    private fun getReaderContent(resp: ComicPageResp): ReaderContent {
+        return resp.run {
+            ReaderContent(
+                mComicName = mComic.mName,
+                mComicUUID = mComic.mPathWord,
+                mComicPathword = mComic.mPathWord,
+                mPages = mChapter.mWords
+                    .zip(mChapter.mContents)
+                    .sortedBy { it.first }
+                    .map { it.second }
+                    .toMutableList(),
+                mChapterInfo =  ReaderInfo(
+                    mChapterIndex = mChapter.mIndex,
+                    mChapterID = mChapter.mUuid,
+                    mChapterName = mChapter.mName,
+                    mChapterCount = mChapter.mCount,
+                    mChapterUpdate = mChapter.mDatetimeCreated,
+                    mPrevUUID = mChapter.mPrev,
+                    mNextUUID = mChapter.mNext
+                ))
+        }
     }
 
 

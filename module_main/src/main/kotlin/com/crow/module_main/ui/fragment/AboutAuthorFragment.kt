@@ -23,6 +23,7 @@ import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentAboutBinding
 import com.crow.module_main.model.intent.AppIntent
+import com.crow.module_main.ui.compose.AboutScreen
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.crow.base.R as baseR
@@ -51,6 +52,8 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
 
+//        mBinding.composeView.setContent { AboutScreen() }
+
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())
 
         Glide.with(mContext)
@@ -58,15 +61,15 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
             .apply(RequestOptions().circleCrop().override(mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp36)))
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}
-                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { mBinding.mainAboutIcon.setImageDrawable(resource) }
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { mBinding.icon.setImageDrawable(resource) }
             })
 
         val builder = SpannableStringBuilder()
         builder.appendLine(mContext.getString(R.string.main_about_crow_email))
         builder.appendLine()
         builder.appendLine(mContext.getString(R.string.main_about_crow_help))
-        mBinding.mainAboutContent.text = builder
-        mBinding.mainAboutAppVersion.text = getString(R.string.main_about_app_version, getCurrentVersionName().split("_")[0])
+        mBinding.content.text = builder
+        mBinding.version.text = getString(R.string.main_about_app_version, getCurrentVersionName().split("_")[0])
     }
 
     override fun initObserver(savedInstanceState: Bundle?) {

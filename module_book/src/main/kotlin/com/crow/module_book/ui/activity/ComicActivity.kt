@@ -162,7 +162,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
     override fun initObserver(savedInstanceState: Bundle?) {
 
         mComicVM.uiState.onCollect(this) { state ->
-            if (state != null && state.mReaderContent.mInfo != null) {
+            if (state != null && state.mReaderContent.mChapterInfo != null) {
                 if (mBinding.comicInfoBar.isGone) mBinding.comicInfoBar.animateFadeIn()
                 mBinding.comicInfoBar.update(
                     currentPage = state.mCurrentPage,
@@ -170,9 +170,9 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                     percent = mComicVM.computePercent(
                         pageIndex = state.mCurrentPage,
                         totalPage = state.mTotalPages,
-                        info = state.mReaderContent.mInfo
+                        info = state.mReaderContent.mChapterInfo
                     ),
-                    info = state.mReaderContent.mInfo
+                    info = state.mReaderContent.mChapterInfo
                 )
             }
         }
@@ -187,7 +187,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                                     mIsNeedLoading = true
                                     return@doOnLoading
                                 }
-                                showLoadingAnim() { dialog -> dialog.applyWindow(dimAmount = 0.3f, isFullScreen = true) }
+                                showLoadingAnim { dialog -> dialog.applyWindow(dimAmount = 0.3f, isFullScreen = true) }
                             }
                             .doOnError { _, _ ->
                                 toast(getString(baseR.string.BaseLoadingError))

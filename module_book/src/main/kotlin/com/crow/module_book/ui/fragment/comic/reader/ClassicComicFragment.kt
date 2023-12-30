@@ -38,7 +38,7 @@ class ClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
      *
      * ● 2023-09-04 21:56:28 周一 下午
      */
-    private val mComicRvAdapter: ComicClassicRvAdapter = ComicClassicRvAdapter { reader ->
+    private val mAdapter: ComicClassicRvAdapter = ComicClassicRvAdapter { reader ->
         val isUUIDEmpty = reader.mUUID.isNullOrEmpty()
         val message = when {
             reader.mIsNext && isUUIDEmpty -> getString(R.string.book_no_next)
@@ -65,12 +65,13 @@ class ClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
      */
     override fun initView(savedInstanceState: Bundle?) {
 
-        mBinding.comicRv.adapter = mComicRvAdapter
+        mBinding.comicRv.adapter = mAdapter
         mBinding.comicRv.layoutManager = ComicLayoutManager(requireActivity() as ComicActivity)
 
         // 显示漫画页
         // showComicPage(mComicVM.mComicPage ?: return)
     }
+
 
     /**
      * ● 初始化监听器
@@ -79,7 +80,6 @@ class ClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
      */
     override fun initListener() {
         mBinding.comicRv.setOnScrollChangeListener { _, _, _, _, _ ->
-
             val reader = mComicVM.mContent.value
             mComicVM.updateUiState(ReaderState(
                 mReaderContent = reader,
@@ -95,7 +95,6 @@ class ClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
     }
 
     override fun initObserver(saveInstanceState: Bundle?) {
-
         mComicVM.mContent.onCollect(this) { reader ->
             if(reader.mPages.isNotEmpty()) {
                 showComicPage(reader)
@@ -107,16 +106,16 @@ class ClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
         // wait util complete
         async {
-            mComicRvAdapter.submitList(processedReaderPages(readerContent))
+            mAdapter.submitList(processedReaderPages(readerContent))
             yield()
         }.await()
 
     }
 
     private fun processedReaderPages(reader: ReaderContent): MutableList<Any> {
-        if (reader.mInfo == null) return mutableListOf()
-        val prevUUID = reader.mInfo.mPrevUUID
-        val nextUUID = reader.mInfo.mNextUUID
+        if (reader.mChapterInfo == null) return mutableListOf()
+        val prevUUID = reader.mChapterInfo.mPrevUUID
+        val nextUUID = reader.mChapterInfo.mNextUUID
         val prevInfo = if (prevUUID == null) getString(R.string.book_no_prev) else getString(R.string.book_prev)
         val nextInfo = if (nextUUID == null) getString(R.string.book_no_next) else getString(R.string.book_next)
         val pages = reader.mPages.toMutableList()

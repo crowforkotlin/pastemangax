@@ -176,8 +176,8 @@ class ComicRecyclerView : RecyclerView {
     override fun onScrolled(dx: Int, dy: Int) {
         super.onScrolled(dx, dy)
         val layoutManager = layoutManager
-        mLastVisibleItemPosition = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-        mFirstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+//        mLastVisibleItemPosition = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+//        mFirstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
     }
 
     override fun onScrollStateChanged(state: Int) {

@@ -1,6 +1,9 @@
 package com.crow.module_book.ui.helper
 
+import com.crow.base.app.app
+import com.crow.module_book.model.entity.comic.reader.ReaderInfo
 import com.crow.module_book.model.resp.ComicPageResp
+import com.crow.module_book.model.resp.comic_page.Content
 import kotlinx.coroutines.sync.Mutex
 
 /*************************
@@ -15,34 +18,38 @@ class ChapterLoader {
 
     enum class ChapterLoaderPolicy { MEMORY, DISK }
 
-    var mutex = Mutex()
+    companion object { private var PRELOAD_SIZE = 10 }
 
-    private val mPolicy = ChapterLoaderPolicy.MEMORY
+    private var mMutex = Mutex()
+
+    private val mPolicy = ChapterLoaderPolicy.DISK
 
     /**
      * ● 漫画内容
      *
      * ● 2023-06-28 22:08:26 周三 下午
      */
-    var mComicPage: ComicPageResp? = null
+    var mComicList: List<Content>? = null
         private set
 
-
-
-    suspend fun loadPreNextChapter(pages: ComicPageResp, isNext: Boolean) {
+    suspend fun loadPreNextChapter(readerInfo: ReaderInfo, comicList: List<Content>, position: Int, isNext: Boolean) {
         when(mPolicy) {
-            ChapterLoaderPolicy.MEMORY -> loadOnMemoryChapter(pages, isNext)
+            ChapterLoaderPolicy.MEMORY -> {}
             ChapterLoaderPolicy.DISK ->{
-
+                loadOnDiskChapter(readerInfo, comicList, position)
             }
         }
     }
 
+    private suspend fun loadOnDiskChapter(readerInfo: ReaderInfo, pages: List<Content>, isNext: Int) {
+        app.filesDir
+    }
+
     private suspend fun loadOnMemoryChapter(pages: ComicPageResp, isNext: Boolean) {
-        if (isNext) {
+        // TODO
+    }
 
-        } else {
-
-        }
+    private fun getComicCacheFile(readerInfo: ReaderInfo) {
+//       File(app.cacheDir, "comic/${readerInfo.m}")
     }
 }

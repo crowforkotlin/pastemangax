@@ -14,6 +14,7 @@ androidx-animation-graphics = "1.5.4"
 androidx-ui-util = "1.5.4"
 androidx-ui-tooling = "1.5.4"
 androidx-animation = "1.5.4"
+about-libraries = "10.9.2"
 
 [libraries]
 androidx-activity = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -33,6 +34,12 @@ accompanist-permissions = { module = "com.google.accompanist:accompanist-permiss
 accompanist-themeadapter = { module = "com.google.accompanist:accompanist-themeadapter-material3", version.ref = "accompanist" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 
+about-libraries = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "about-libraries" }
+about-libraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "about-libraries" }
+
 bom = { group = "dev.chrisbanes.compose", name = "compose-bom", version.ref = "compose-bom" }
 coil = { module = "io.coil-kt:coil-compose", version = "2.4.0"}
 glide = { module = "com.github.bumptech.glide:compose", version = "1.0.0-alpha.6"}
+
+[plugins]
+about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "about-libraries" }

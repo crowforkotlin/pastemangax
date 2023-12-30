@@ -2,7 +2,6 @@ package com.crow.module_book.ui.fragment.comic.reader
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -11,12 +10,11 @@ import com.crow.module_book.R
 import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderContent
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
-import com.crow.module_book.model.entity.comic.reader.ReaderState
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicClassicRvAdapter
+import com.crow.module_book.ui.adapter.comic.reader.layoutmanager.LoopLayoutManager
 import com.crow.module_book.ui.fragment.BookFragment
-import com.crow.module_book.ui.view.comic.rv.ComicLayoutManager
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -66,7 +64,7 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         mBinding.comicRv.adapter = mComicRvAdapter
-        mBinding.comicRv.layoutManager = ComicLayoutManager(requireActivity() as ComicActivity)
+        mBinding.comicRv.layoutManager = LoopLayoutManager(requireActivity() as ComicActivity)
 
         // 显示漫画页
         // showComicPage(mComicVM.mComicPage ?: return)
@@ -79,13 +77,12 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
      */
     override fun initListener() {
         mBinding.comicRv.setOnScrollChangeListener { _, _, _, _, _ ->
-
             val reader = mVM.mContent.value
-            mVM.updateUiState(ReaderState(
+            /*mVM.updateUiState(ReaderState(
                 mReaderContent = reader,
                 mTotalPages = reader.mPages.size + 2,
-                mCurrentPage = (mBinding.comicRv.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1
-            ))
+                mCurrentPage = (mBinding.comicRv.layoutManager as LoopLayoutManager).findLastVisibleItemPosition() + 1
+            ))*/
         }
     }
 
@@ -126,9 +123,9 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
     }
 
     private fun processedReaderPages(reader: ReaderContent): MutableList<Any> {
-        if (reader.mInfo == null) return mutableListOf()
-        val prevUUID = reader.mInfo.mPrevUUID
-        val nextUUID = reader.mInfo.mNextUUID
+        if (reader.mChapterInfo == null) return mutableListOf()
+        val prevUUID = reader.mChapterInfo.mPrevUUID
+        val nextUUID = reader.mChapterInfo.mNextUUID
         val prevInfo = if (prevUUID == null) getString(R.string.book_no_prev) else getString(R.string.book_prev)
         val nextInfo = if (nextUUID == null) getString(R.string.book_no_next) else getString(R.string.book_next)
         val pages = reader.mPages.toMutableList()

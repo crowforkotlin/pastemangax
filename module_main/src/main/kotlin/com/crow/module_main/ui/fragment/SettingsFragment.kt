@@ -9,21 +9,16 @@ import android.widget.LinearLayout
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.edit
 import androidx.core.view.forEach
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.tools.extensions.SpNameSpace
-import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
-import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
-import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
@@ -35,19 +30,19 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
-import com.crow.mangax.copymanga.entity.AppConfigEntity
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mHotAccurateDisplay
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mHotAccurateDisplay
 import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mUpdatePrefix
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.module_main.R
-import com.crow.mangax.R as mangaR
 import com.crow.module_main.databinding.MainFragmentSettingsBinding
 import com.crow.module_main.databinding.MainSettingsProxyLayoutBinding
 import com.crow.module_main.databinding.MainSettingsResolutionLayoutBinding
 import com.crow.module_main.databinding.MainSettingsSiteLayoutBinding
-import com.crow.module_main.model.entity.SettingSwitchEntity
 import com.crow.module_main.model.entity.SettingContentEntity
+import com.crow.module_main.model.entity.SettingSwitchEntity
 import com.crow.module_main.model.entity.SettingTitleEntity
 import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.ui.adapter.SettingsAdapter
@@ -59,6 +54,7 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
 import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
@@ -296,7 +292,6 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                 SettingSwitchEntity(mID = 6, mContent = "热度精准显示", mEnable = mHotAccurateDisplay),
             )
         )
-
         mVM.input(AppIntent.GetDynamicSite())
     }
 

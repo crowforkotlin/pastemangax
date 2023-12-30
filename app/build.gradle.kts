@@ -58,6 +58,9 @@ android {
             // 设置支持的SO库架构 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
             abiFilters += listOf(/*"x86", "x86_64", "armeabi-v7a",*/ "arm64-v8a")
         }
+
+        // 设置APK名
+        setProperty("archivesBaseName", "CopyMangaX-$versionName")
     }
 
     // 应用程序的构建类型
@@ -78,7 +81,6 @@ android {
                 AppConfigs.proguard_rules_pro
             )
 
-            setProperty("archivesBaseName", "CopyMangaX")
         }
 
         // 调试版本
@@ -110,7 +112,6 @@ android {
 
         // 指定编译器的命令行参数 可启用额外功能
         freeCompilerArgs = AppConfigs.free_compile_args
-
     }
 
     // （产品口味） 是一个抽象的概念，表示应用程序的不同版本
@@ -121,15 +122,18 @@ android {
 
         // 内部版本
         create(AppConfigs.flavor_internal) {
+
             // 指定维度
             dimension = AppConfigs.flavor_dimension
 
             // 版本名后缀
             versionNameSuffix = "_internal"
 
+            // .internal后缀
+            applicationIdSuffix = ".internal"
+
             // 是否使用线上环境
             buildConfigField("boolean", "IS_ONLINE_ENV", "true")
-
         }
 
         // 正式线上版本
@@ -139,7 +143,7 @@ android {
             dimension = AppConfigs.flavor_dimension
 
             // 版本名后缀
-            versionNameSuffix = "_online"
+            versionNameSuffix = versionName
 
             // 是否使用线上环境
             buildConfigField("boolean", "IS_ONLINE_ENV", "true")
@@ -164,7 +168,6 @@ android {
 }
 
 dependencies {
-
 
     // Glide编译器
     ksp(libs.glide.ksp)

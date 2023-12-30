@@ -27,6 +27,7 @@ import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.module_book.databinding.BookActivityComicRvBinding
 import com.crow.module_book.databinding.BookFragmentClassicIntentRvBinding
+import com.crow.module_book.model.entity.comic.reader.ReaderInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
 import com.crow.module_book.model.resp.comic_page.Content
 
@@ -44,6 +45,9 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
         private const val Body = 1
         private const val Footer = 2
     }
+
+    var mChapterName: String? = null
+    var mComicName: String? = null
 
     /**
      * ● Diff 回调
@@ -77,7 +81,6 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
                 item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${BaseUserConfig.RESOLUTION}x.")
                 else -> item.mImageUrl
             }
-
 
             binding.loading.isVisible = true
             binding.loadingText.isVisible = true
