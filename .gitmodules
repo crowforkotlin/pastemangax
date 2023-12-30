@@ -1,0 +1,4 @@
+[submodule "OpenCC"]
+    path = lib_mangax/src/main/jni/OpenCC
+    url = https://github.com/BYVoid/OpenCC.git
+    branch = master
