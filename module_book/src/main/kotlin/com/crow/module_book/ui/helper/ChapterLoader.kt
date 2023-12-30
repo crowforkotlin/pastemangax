@@ -51,5 +51,6 @@ class ChapterLoader {
 
     private fun getComicCacheFile(readerInfo: ReaderInfo) {
 //       File(app.cacheDir, "comic/${readerInfo.m}")
+
     }
 }
