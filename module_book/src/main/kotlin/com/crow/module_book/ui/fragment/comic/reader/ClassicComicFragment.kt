@@ -72,7 +72,6 @@ class ClassicComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
         // showComicPage(mComicVM.mComicPage ?: return)
     }
 
-
     /**
      * ● 初始化监听器
      *

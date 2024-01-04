@@ -1,5 +1,5 @@
-package com.crow.mangax.copymanga.glide
+package com.crow.mangax.copymanga.okhttp
 
-fun interface AppOnGlideProgressListener {
+fun interface AppProgressListener {
     fun doOnProgress(url: String, isComplete: Boolean, percentage: Int, bytesRead: Long, totalBytes: Long)
 }

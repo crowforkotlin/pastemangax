@@ -120,6 +120,7 @@ dependencies {
     api(libs.refresh.header.material)
     api(libs.glide)
     api(libs.glide.okhttp3.integration) { exclude(group = "glide-parent") }
+    api(libs.coil)
 
     api(platform(compose.bom))
     api(compose.androidx.activity)

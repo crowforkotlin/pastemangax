@@ -16,7 +16,7 @@ import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.entity.IBookAdapterColor
 import com.crow.mangax.copymanga.formatHotValue
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
@@ -65,16 +65,16 @@ class AnimeSearchPageAdapter(
 
         vh.binding.loading.isVisible = true
         vh.binding.loadingText.isVisible = true
-        vh.binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
-        vh.mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
+        vh.binding.loadingText.text = AppProgressFactory.PERCENT_0
+        vh.mAppGlideProgressFactory?.removeProgressListener()?.remove()
 
-        vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mCover) { _, _, percentage, _, _ ->
-            vh.binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage)
+        vh.mAppGlideProgressFactory = AppProgressFactory.createProgressListener(item.mCover) { _, _, percentage, _, _ ->
+            vh.binding.loadingText.text = AppProgressFactory.formateProgress(percentage)
         }
 
         Glide.with(vh.itemView.context)
             .load(item.mCover)
-            .addListener(vh.mAppGlideProgressFactory?.getRequestListener())
+            .addListener(vh.mAppGlideProgressFactory?.getGlideRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
                     vh.binding.loading.isInvisible = true

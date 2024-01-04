@@ -5,14 +5,13 @@ package com.crow.module_book.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.entity.Fragments
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
@@ -23,7 +22,6 @@ import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
-import com.crow.base.ui.view.atrr_text_layout.BaseAttrTextLayout
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
@@ -56,7 +54,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     }
 
     /** ● AppGlideFactory GLide 进度加载 */
-    protected var mAppGlideProgressFactory: AppGlideProgressFactory? = null
+    protected var mAppGlideProgressFactory: AppProgressFactory? = null
 
     /** ● 书架VM */
     protected val mBookVM by viewModel<BookViewModel>()
@@ -321,7 +319,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         // 设置成false是因为 当View重新创建的时候 可以重新添加章节选择器
         mIsTabAlreadyAdded = false
 
-        mAppGlideProgressFactory?.onCleanCache()?.onRemoveListener()
+        mAppGlideProgressFactory?.remove()?.removeProgressListener()
         mAppGlideProgressFactory = null
 
         mBaseEvent.remove(LOGIN_CHAPTER_HAS_BEEN_SETED)

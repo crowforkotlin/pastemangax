@@ -16,7 +16,7 @@ import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseLoadStateAdapter
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.entity.Fragments
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
@@ -377,7 +377,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     /** ● Lifecycle onDestroyView */
     override fun onDestroyView() {
         super.onDestroyView()
-        AppGlideProgressFactory.doReset()
+        AppProgressFactory.clear()
         parentFragmentManager.clearFragmentResultListener(COMIC)
         BaseEvent.getSIngleInstance().remove("DISCOVER_COMIC_FRAGMENT_POPULAR_ORDER")
         BaseEvent.getSIngleInstance().remove("DISCOVER_COMIC_FRAGMENT_UPDATE_ORDER")

@@ -20,7 +20,7 @@ class AppGlideProgressAppModule : AppGlideModule() {
         registry.replace(
             GlideUrl::class.java,
             InputStream::class.java,
-            OkHttpUrlLoader.Factory(KoinJavaComponent.get(OkHttpClient::class.java, named("ProgressGlide")))
+            OkHttpUrlLoader.Factory(KoinJavaComponent.get(OkHttpClient::class.java, named("ProgressOkHttp")))
         )
     }
 }

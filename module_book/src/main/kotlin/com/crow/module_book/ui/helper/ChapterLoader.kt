@@ -42,7 +42,7 @@ class ChapterLoader {
     }
 
     private suspend fun loadOnDiskChapter(readerInfo: ReaderInfo, pages: List<Content>, isNext: Int) {
-        app.filesDir
+//        app.filesDir.
     }
 
     private suspend fun loadOnMemoryChapter(pages: ComicPageResp, isNext: Boolean) {

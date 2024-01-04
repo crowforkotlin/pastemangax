@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -65,16 +65,16 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
             binding.loading.isVisible = true
             binding.loadingText.isVisible = true
-            binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
+            binding.loadingText.text = AppProgressFactory.PERCENT_0
             binding.retry.isVisible = false
-            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
-            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl!!) { _, _, percentage, _, _ ->
-                binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage)
+            mAppGlideProgressFactory?.removeProgressListener()?.remove()
+            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(item.mImageUrl!!) { _, _, percentage, _, _ ->
+                binding.loadingText.text = AppProgressFactory.formateProgress(percentage)
             }
 
             Glide.with(itemView.context)
                 .load(item.mImageUrl)
-                .addListener(mAppGlideProgressFactory?.getRequestListener({
+                .addListener(mAppGlideProgressFactory?.getGlideRequestListener({
                     binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
                     binding.retry.animateFadeIn()
                     binding.loading.animateFadeOut()

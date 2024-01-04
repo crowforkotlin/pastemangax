@@ -35,6 +35,7 @@ import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.module_book.databinding.BookActivityComicBinding
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.ui.fragment.comic.reader.ClassicComicFragment
@@ -92,6 +93,11 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      * ● 2023-07-07 23:55:09 周五 下午
      */
     override fun getViewBinding() = BookActivityComicBinding.inflate(layoutInflater)
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppProgressFactory.clear()
+    }
 
     /**
      * ● 初始化视图

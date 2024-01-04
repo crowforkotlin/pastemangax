@@ -17,7 +17,7 @@ import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.appDp10
 import com.crow.mangax.copymanga.entity.IBookAdapterColor
 import com.crow.mangax.copymanga.formatHotValue
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
@@ -58,15 +58,15 @@ class SearchComicRvAdapter(
 
         vh.binding.homeSearchRvLoading.isVisible = true
         vh.binding.homeSearchRvProgressText.isVisible = true
-        vh.binding.homeSearchRvProgressText.text = AppGlideProgressFactory.PERCENT_0
-        vh.mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
-        vh.mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
-            vh.binding.homeSearchRvProgressText.text = AppGlideProgressFactory.getProgressString(percentage)
+        vh.binding.homeSearchRvProgressText.text = AppProgressFactory.PERCENT_0
+        vh.mAppGlideProgressFactory?.removeProgressListener()?.remove()
+        vh.mAppGlideProgressFactory = AppProgressFactory.createProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
+            vh.binding.homeSearchRvProgressText.text = AppProgressFactory.formateProgress(percentage)
         }
 
         Glide.with(vh.itemView.context)
             .load(item.mImageUrl)
-            .listener(vh.mAppGlideProgressFactory?.getRequestListener())
+            .listener(vh.mAppGlideProgressFactory?.getGlideRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
                     vh.binding.homeSearchRvLoading.isInvisible = true

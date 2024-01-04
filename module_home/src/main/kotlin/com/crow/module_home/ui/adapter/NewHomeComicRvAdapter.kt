@@ -18,7 +18,7 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
 import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.formatHotValue
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
@@ -162,14 +162,14 @@ class NewHomeComicRvAdapter(
 
             binding.loading.isVisible = true
             binding.loadingText.isVisible = true
-            binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
-            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage) }
+            binding.loadingText.text = AppProgressFactory.PERCENT_0
+            mAppGlideProgressFactory?.removeProgressListener()?.remove()
+            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
 
             // 加载封面
             Glide.with(itemView)
                 .load(imageUrl)
-                .addListener(mAppGlideProgressFactory?.getRequestListener())
+                .addListener(mAppGlideProgressFactory?.getGlideRequestListener())
                 .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                     if (dataSource == com.bumptech.glide.load.DataSource.REMOTE) {
                         binding.loading.isInvisible = true

@@ -16,7 +16,7 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.NoTransition
 import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.mangax.copymanga.appComicCardHeight
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
@@ -68,12 +68,12 @@ class BSComicRvAdapter(
             }
             binding.loading.isVisible = true
             binding.loadingText.isVisible = true
-            binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
-            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mComic.mCover) { _, _, percentage, _, _ -> binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage) }
+            binding.loadingText.text = AppProgressFactory.PERCENT_0
+            mAppGlideProgressFactory?.removeProgressListener()?.remove()
+            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(item.mComic.mCover) { _, _, percentage, _, _ -> binding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
             Glide.with(itemView.context)
                 .load(item.mComic.mCover)
-                .listener(mAppGlideProgressFactory?.getRequestListener())
+                .listener(mAppGlideProgressFactory?.getGlideRequestListener())
                 .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                     if (dataSource == DataSource.REMOTE) {
                         binding.loading.isInvisible = true

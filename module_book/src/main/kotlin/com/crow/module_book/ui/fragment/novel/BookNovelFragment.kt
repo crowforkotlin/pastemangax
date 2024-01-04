@@ -21,7 +21,7 @@ import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.getSpannableString
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
@@ -78,10 +78,10 @@ class BookNovelFragment : BookFragment() {
     private fun showNovelInfoPage() {
         val novelInfoPage = mBookVM.mNovelInfoPage?.mNovel ?: return
         mBookVM.findReadedBookChapterOnDB(novelInfoPage.mName, BookType.NOVEL)
-        mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(novelInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppGlideProgressFactory.getProgressString(percentage) }
+        mAppGlideProgressFactory = AppProgressFactory.createProgressListener(novelInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
         Glide.with(this)
             .load(novelInfoPage.mCover)
-            .addListener(mAppGlideProgressFactory?.getRequestListener())
+            .addListener(mAppGlideProgressFactory?.getGlideRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
                     mBinding.bookInfoLoading.isInvisible = true

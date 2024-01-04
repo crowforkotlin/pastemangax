@@ -20,7 +20,7 @@ import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.formatHotValue
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
@@ -99,7 +99,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      *
      * ● 2023-10-12 01:11:44 周四 上午
      */
-    private var mAppGlideProgressFactory: AppGlideProgressFactory? = null
+    private var mAppGlideProgressFactory: AppProgressFactory? = null
 
     /**
      * ● 章节适配器
@@ -250,11 +250,11 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
 
         val anim = info.mCartoon
 
-        mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(anim.mCover) { _, _, percentage, _, _ -> mBinding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage) }
+        mAppGlideProgressFactory = AppProgressFactory.createProgressListener(anim.mCover) { _, _, percentage, _, _ -> mBinding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
 
         Glide.with(this)
             .load(anim.mCover)
-            .addListener(mAppGlideProgressFactory?.getRequestListener())
+            .addListener(mAppGlideProgressFactory?.getGlideRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
                     mBinding.loading.isInvisible = true

@@ -100,4 +100,6 @@ glide-ksp = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "
 glide-annotations = { group = "com.github.bumptech.glide", name = "annotations", version.ref = "glide" }
 glide-okhttp3-integration = { group = "com.github.bumptech.glide", name = "okhttp3-integration", version.ref = "glide" }
 
+coil = { module = "io.coil-kt:coil", version = "2.5.0"}
+
 crow-component-AttrTextLayout = { module = "com.kotlincrow.android.component:AttrTextLayout", version = "1.0" }

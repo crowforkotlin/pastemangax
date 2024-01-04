@@ -22,7 +22,7 @@ import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.getSpannableString
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
@@ -38,7 +38,6 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
-import com.crow.mangax.copymanga.tryConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_book.R
 import com.crow.module_book.model.entity.BookChapterEntity
@@ -87,11 +86,11 @@ class BookComicFragment : BookFragment() {
         // 在DB中查找已读章节
         mBookVM.findReadedBookChapterOnDB(comicInfoPage.mName, BookType.COMIC)
 
-        mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(comicInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppGlideProgressFactory.getProgressString(percentage) }
+        mAppGlideProgressFactory = AppProgressFactory.createProgressListener(comicInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
 
         Glide.with(this)
             .load(comicInfoPage.mCover)
-            .addListener(mAppGlideProgressFactory?.getRequestListener())
+            .addListener(mAppGlideProgressFactory?.getGlideRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
                     mBinding.bookInfoLoading.isInvisible = true

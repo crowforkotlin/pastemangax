@@ -1,4 +1,4 @@
-package com.crow.mangax.copymanga.glide
+package com.crow.mangax.copymanga.okhttp
 
 import android.os.Handler
 import android.os.Looper
@@ -10,7 +10,13 @@ import okio.ForwardingSource
 import okio.Source
 import okio.buffer
 
-class AppGlideProgressResponseBody (
+/**
+ * ● Okhttp ResponseBody
+ *
+ * ● 2024-01-05 01:29:15 周五 上午
+ * @author crowforkotlin
+ */
+class AppProgressResponseBody (
     private val url: String,
     private val internalProgressListener: InternalProgressListener,
     private val responseBody: ResponseBody

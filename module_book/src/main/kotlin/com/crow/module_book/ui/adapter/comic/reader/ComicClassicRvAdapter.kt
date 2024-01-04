@@ -1,5 +1,7 @@
 package com.crow.module_book.ui.adapter.comic.reader
 
+import android.animation.ObjectAnimator
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,22 +14,25 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.GenericTransitionOptions
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.bumptech.glide.request.transition.NoTransition
+import coil.decode.DataSource
+import coil.imageLoader
+import coil.request.ImageRequest
+import coil.request.ImageResult
+import coil.request.SuccessResult
+import coil.target.Target
+import coil.transition.CrossfadeTransition
+import coil.transition.Transition
+import coil.transition.TransitionTarget
+import com.crow.base.app.app
+import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.mangax.copymanga.BaseUserConfig
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
-import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.module_book.databinding.BookActivityComicRvBinding
 import com.crow.module_book.databinding.BookFragmentClassicIntentRvBinding
-import com.crow.module_book.model.entity.comic.reader.ReaderInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
 import com.crow.module_book.model.resp.comic_page.Content
 
@@ -84,12 +89,27 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
 
             binding.loading.isVisible = true
             binding.loadingText.isVisible = true
-            binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
+            binding.loadingText.text = AppProgressFactory.PERCENT_0
             binding.retry.isGone = true
-            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
-            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage) }
+            mAppGlideProgressFactory?.removeProgressListener()?.remove()
+            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
             itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.MATCH_PARENT }
-            Glide.with(itemView.context)
+
+            val request = ImageRequest.Builder(itemView.context)
+                .data(imageUrl)
+                .listener(
+                    onSuccess = { request, result ->
+                        binding.loading.isInvisible = true
+                        binding.loadingText.isInvisible = true
+                        itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
+                    }
+                )
+
+                .target(binding.image)
+                .build()
+            app.imageLoader.enqueue(request)
+//            binding.image.load(imageUrl)
+            /*Glide.with(itemView.context)
                 .load(imageUrl)
                 .addListener(
                     mAppGlideProgressFactory?.getRequestListener(
@@ -123,7 +143,7 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
                     }
                     transition
                 })
-                .into(binding.image)
+                .into(binding.image)*/
         }
     }
 
