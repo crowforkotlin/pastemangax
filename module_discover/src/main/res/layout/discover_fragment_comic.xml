@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Base.Theme.BG"
+    style="@style/MangaX.Theme.BG"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,7 +12,7 @@
         android:id="@+id/topbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold"
+        app:titleTextAppearance="@style/MangaX.TextAppearance.Material3.ActionBar.Title.Bold"
         tools:title="@string/discover_comic" />
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout

@@ -53,6 +53,7 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.qualifier.named
 import kotlin.properties.Delegates
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 /*************************
@@ -97,10 +98,10 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
      * ● 2023-10-29 21:00:35 周日 下午
      * @author crowforkotlin
      */
-    private var  mSubtitlePrefix: String by Delegates.observable(app.applicationContext.getString(baseR.string.base_all)) { _, _, new ->
+    private var  mSubtitlePrefix: String by Delegates.observable(app.applicationContext.getString(mangaR.string.mangax_all)) { _, _, new ->
         mBinding.topbar.subtitle = getString(R.string.discover_subtitle, new, mSubtitleSuffix)
     }
-    private var  mSubtitleSuffix: String by Delegates.observable(app.applicationContext.getString(baseR.string.base_all)) { _, _, new ->
+    private var  mSubtitleSuffix: String by Delegates.observable(app.applicationContext.getString(mangaR.string.mangax_all)) { _, _, new ->
         mBinding.topbar.subtitle = getString(R.string.discover_subtitle, mSubtitlePrefix, new)
     }
 
@@ -135,7 +136,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         bundle.putSerializable(BaseStrings.NAME, name)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(
-            id = baseR.id.app_main_fcv,
+            id = mangaR.id.app_main_fcv,
             hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
             addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
             tag = tag,
@@ -218,7 +219,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                     }
 
                     if (toolbar.subtitle.isNullOrEmpty()) {
-                        mSubtitlePrefix = getString(baseR.string.base_all)
+                        mSubtitlePrefix = getString(mangaR.string.mangax_all)
                     }
 
                     // subtitle textview
@@ -267,7 +268,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                 job = viewLifecycleOwner.lifecycleScope.launch {
                     var theme  = mVM.mComicTagResp!!.theme.toMutableList()
                     if (theme.size > 25) { theme = theme.subList(0, 25) }
-                    theme.add(0, Theme(null, 0, 0, null, getString(baseR.string.base_all), ""))
+                    theme.add(0, Theme(null, 0, 0, null, getString(mangaR.string.mangax_all), ""))
                     theme.forEach {
                         val chip = Chip(mContext)
                         chip.text = it.mName
@@ -288,7 +289,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                 job = viewLifecycleOwner.lifecycleScope.launch {
                     var top = mVM.mComicTagResp!!.top.toMutableList()
                     if (top.size > 25) { top = top.subList(0, 25) }
-                    top.add(0, Top(getString(baseR.string.base_all), ""))
+                    top.add(0, Top(getString(mangaR.string.mangax_all), ""))
                     top.forEach {
                         val chip = Chip(mContext)
                         chip.textSize = chipTextSize
@@ -353,7 +354,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                                 mBinding.list.animateFadeOutWithEndInVisibility()
                             }
 
-                            if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+                            if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.base_loading_error_need_refresh))
                         }
                         .doOnResult {
                             // 错误提示 可见
@@ -366,7 +367,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                 is DiscoverIntent.GetComicTag -> {
                     if (intent.showDialog) {
                         intent.mViewState
-                            .doOnError { _, _ -> toast(getString(baseR.string.BaseLoadingError)) }
+                            .doOnError { _, _ -> toast(getString(baseR.string.base_loading_error)) }
                             .doOnResult { onSelectMenu(intent.type ?: return@doOnResult) }
                     }
                 }

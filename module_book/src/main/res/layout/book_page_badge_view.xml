@@ -9,7 +9,7 @@
     android:visibility="gone"
     app:cardBackgroundColor="#4D000000"
     app:cardCornerRadius="10dp"
-    app:strokeColor="@color/base_grey_400_40"
+    app:strokeColor="@color/mangax_grey_400_40"
     app:strokeWidth="1dp">
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@color/base_white"
+            android:textColor="@color/mangax_white"
             android:minWidth="@dimen/base_dp28"
             android:textSize="@dimen/base_sp12"
             android:textStyle="bold"
@@ -32,7 +32,7 @@
         <TextView
             android:id="@+id/badge_split"
             android:gravity="center"
-            android:textColor="@color/base_white"
+            android:textColor="@color/mangax_white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/base_sp12"
@@ -41,7 +41,7 @@
 
         <TextView
             android:id="@+id/badge_total"
-            android:textColor="@color/base_white"
+            android:textColor="@color/mangax_white"
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/base_white"
+            android:textColor="@color/mangax_white"
             android:textSize="@dimen/base_sp12"
             android:textStyle="bold"
             tools:text="\t\t12:30" />

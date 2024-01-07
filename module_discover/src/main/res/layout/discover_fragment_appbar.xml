@@ -12,7 +12,7 @@
         android:id="@+id/discover_appbar_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold"
+        app:titleTextAppearance="@style/MangaX.TextAppearance.Material3.ActionBar.Title.Bold"
         tools:title="@string/discover_comic" />
 
 </com.google.android.material.appbar.AppBarLayout>

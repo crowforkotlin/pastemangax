@@ -57,7 +57,7 @@
         android:layout_gravity="center"
         android:indeterminate="true"
         android:visibility="gone"
-        app:indicatorColor="@color/base_light_blue_500"
+        app:indicatorColor="@color/mangax_light_blue_500"
         app:indicatorSize="@dimen/base_dp36"
         app:layout_constraintBottom_toTopOf="@+id/stript_guideline_hor_0.5"
         app:layout_constraintEnd_toEndOf="parent"

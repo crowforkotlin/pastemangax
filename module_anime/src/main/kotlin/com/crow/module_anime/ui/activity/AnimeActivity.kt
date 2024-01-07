@@ -10,7 +10,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import com.crow.mangax.copymanga.BaseStrings
 import com.crow.base.tools.extensions.immersionFullScreen
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.immersureFullView
@@ -22,6 +21,7 @@ import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.mangax.copymanga.BaseStrings
 import com.crow.module_anime.databinding.AnimeActivityBinding
 import com.crow.module_anime.model.intent.AnimeIntent
 import com.crow.module_anime.model.resp.video.AnimeVideoResp
@@ -111,7 +111,7 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
      * ● 2023-10-15 14:50:46 周日 下午
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        val error = getString(baseR.string.BaseLoadingError)
+        val error = getString(baseR.string.base_loading_error)
         mChapterUUIDS = toTypeEntity<List<String>>(intent.getStringExtra(ANIME_CHAPTER_UUIDS)) ?: return run { finishActivity(error) }
         mPathword = intent.getStringExtra(BaseStrings.PATH_WORD) ?: return run { finishActivity(error) }
         mName = intent.getStringExtra(BaseStrings.NAME) ?: return run { finishActivity(error) }
@@ -177,7 +177,7 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
     override fun initListener() {
 
         // PlayerView可见性监听
-        mBinding.playerView.setControllerVisibilityListener(PlayerView.ControllerVisibilityListener {  value ->
+        mBinding.playerView.setControllerVisibilityListener(PlayerView.ControllerVisibilityListener { value ->
             /*if (mBinding.playerView.isControllerFullyVisible) {
                 transitionBar(false)
             } else {

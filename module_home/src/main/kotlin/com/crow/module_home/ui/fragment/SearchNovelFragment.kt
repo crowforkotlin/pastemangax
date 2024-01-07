@@ -117,7 +117,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
                     .doOnError { _, msg ->
                         dismissLoadingAnim()
                         msg?.logError()
-                        toast(getString(com.crow.base.R.string.BaseUnknowError))
+                        toast(getString(com.crow.mangax.R.string.mangax_unknow_error))
                     }
                     .doOnResult {
                         if (!mTag) return@doOnResult

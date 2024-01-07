@@ -94,7 +94,6 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     val transition = if (dataSource == DataSource.REMOTE) {
                         binding.loading.isInvisible = true
                         binding.loadingText.isInvisible = true
-
                         DrawableCrossFadeTransition(300, true)
                     } else {
                         binding.loading.isInvisible = true

@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
-import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -109,8 +109,8 @@ class MineViewModel(private val repository: MineRepository) : BaseMviViewModel<M
     inline fun doLoadIcon(context: Context, needApply: Boolean = true, crossinline doOnReady: (resource: Drawable) -> Unit) {
         if (needApply) {
             Glide.with(context)
-                .load(if (mIconUrl == null) ContextCompat.getDrawable(context, baseR.drawable.base_icon_app) else BaseStrings.URL.MangaFuna.plus(mIconUrl))
-                .placeholder(baseR.drawable.base_icon_app)
+                .load(if (mIconUrl == null) ContextCompat.getDrawable(context, mangaR.drawable.base_icon_app) else BaseStrings.URL.MangaFuna.plus(mIconUrl))
+                .placeholder(mangaR.drawable.base_icon_app)
                 .apply(RequestOptions().circleCrop().override(context.dp2px(48f).toInt()))
                 .into(object : CustomTarget<Drawable>() {
                     override fun onLoadCleared(placeholder: Drawable?) {}
@@ -119,8 +119,8 @@ class MineViewModel(private val repository: MineRepository) : BaseMviViewModel<M
             return
         }
         Glide.with(context)
-            .load(if (mIconUrl == null) ContextCompat.getDrawable(context, baseR.drawable.base_icon_app) else BaseStrings.URL.MangaFuna.plus(mIconUrl))
-            .placeholder(baseR.drawable.base_icon_app)
+            .load(if (mIconUrl == null) ContextCompat.getDrawable(context, mangaR.drawable.base_icon_app) else BaseStrings.URL.MangaFuna.plus(mIconUrl))
+            .placeholder(mangaR.drawable.base_icon_app)
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { doOnReady(resource) }

@@ -15,9 +15,8 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.viewpager2.widget.ViewPager2
-import com.crow.base.R.string.BaseExitApp
+import com.crow.base.R.string.base_exit_app
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseStrings.ID
@@ -32,7 +31,6 @@ import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.isLatestVersion
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
@@ -186,7 +184,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             val item = mBinding.viewPager.currentItem
             if (item in 1..2) {
                 appEvent.doOnInterval(object : BaseIEventIntervalExt<BaseEvent> {
-                    override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) { toast(getString( BaseExitApp )) }
+                    override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) { toast(getString( base_exit_app )) }
                     override fun onIntervalFailure(gapTime: Long) {
                         requireActivity().finish()
                         exitProcess(0)

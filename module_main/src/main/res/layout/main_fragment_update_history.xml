@@ -2,14 +2,14 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Base.Theme.BG"
+    style="@style/MangaX.Theme.BG"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/update_appbar"
-        style="@style/Base.Theme.BG"
+        style="@style/MangaX.Theme.BG"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -18,9 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:navigationIcon="@drawable/base_ic_back_24dp"
-            app:navigationIconTint="@color/base_color_asc"
+            app:navigationIconTint="@color/mangax_color_asc"
             app:title="@string/mine_update_history_title"
-            app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold" />
+            app:titleTextAppearance="@style/MangaX.TextAppearance.Material3.ActionBar.Title.Bold" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

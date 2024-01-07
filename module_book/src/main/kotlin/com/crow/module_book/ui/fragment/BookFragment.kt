@@ -35,6 +35,7 @@ import com.crow.module_book.ui.viewmodel.BookViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 /*************************
@@ -62,7 +63,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     /** ● 漫画点击实体 */
     protected val mPathword: String by lazy {
         arguments?.getString(BaseStrings.PATH_WORD) ?: run {
-            toast(getString(baseR.string.BaseUnknowError))
+            toast(getString(mangaR.string.mangax_unknow_error))
             navigateUp()
             ""
         }
@@ -71,7 +72,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     /** ● 漫画点击实体 */
     protected val mName: String by lazy {
         arguments?.getString(BaseStrings.NAME) ?: run {
-            toast(getString(baseR.string.BaseUnknowError))
+            toast(getString(mangaR.string.mangax_unknow_error))
             navigateUp()
             ""
         }
@@ -128,7 +129,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
             // 发生错误 取消动画 退出界面 提示
             .doOnError { _, _ ->
 //                dismissLoadingAnim {}
-                toast(getString(baseR.string.BaseLoadingError))
+                toast(getString(baseR.string.base_loading_error))
 //                navigateUp()
             }
 
@@ -188,10 +189,10 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
      * @param invalidResp 失败的结果
      */
     protected fun processChapterFailureResult(invalidResp: String?) {
-        if (mBinding.bookInfoRefresh.isRefreshing) mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknowError))
+        if (mBinding.bookInfoRefresh.isRefreshing) mBinding.root.showSnackBar(invalidResp ?: getString(mangaR.string.mangax_unknow_error))
         else dismissLoadingAnim {
             mBinding.comicInfoErrorTips.animateFadeIn()
-            mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknowError))
+            mBinding.root.showSnackBar(invalidResp ?: getString(mangaR.string.mangax_unknow_error))
         }
     }
 
@@ -201,7 +202,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
      */
     protected fun navigateImage(fragment: Fragment) {
         val tag = Fragments.Image.name
-        parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv, this, fragment, tag, tag )
+        parentFragmentManager.navigateToWithBackStack(mangaR.id.app_main_fcv, this, fragment, tag, tag )
     }
 
     /**
@@ -251,7 +252,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
             mMultipleLineEnable = true
             mEnableAntiAlias = true
             mAnimationMode = BaseAttrTextLayout.ANIMATION_MOVE_Y
-            mFontColor = ContextCompat.getColor(mContext, baseR.color.base_color_asc)
+            mFontColor = ContextCompat.getColor(mContext, mangaR.color.base_color_asc)
             mGravity = BaseAttrTextLayout.GRAVITY_CENTER_START
             mScrollSpeed = 11
             mResidenceTime = 3 * 1000

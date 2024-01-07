@@ -1,8 +1,5 @@
 package com.crow.module_book.ui.adapter.comic.reader
 
-import android.animation.ObjectAnimator
-import android.graphics.drawable.Animatable
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -11,24 +8,21 @@ import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.decode.DataSource
 import coil.imageLoader
 import coil.request.ImageRequest
-import coil.request.ImageResult
-import coil.request.SuccessResult
-import coil.target.Target
-import coil.transition.CrossfadeTransition
-import coil.transition.Transition
-import coil.transition.TransitionTarget
 import com.crow.base.app.app
-import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.coroutine.launchDelay
+import com.crow.base.tools.extensions.BASE_ANIM_300L
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.log
 import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.module_book.databinding.BookActivityComicRvBinding
@@ -86,64 +80,43 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
                 item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${BaseUserConfig.RESOLUTION}x.")
                 else -> item.mImageUrl
             }
-
-            binding.loading.isVisible = true
-            binding.loadingText.isVisible = true
+            setLoadingState(false)
+            setRetryState(hide = true)
             binding.loadingText.text = AppProgressFactory.PERCENT_0
-            binding.retry.isGone = true
             mAppGlideProgressFactory?.removeProgressListener()?.remove()
             mAppGlideProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
-            itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.MATCH_PARENT }
-
+            updateItemViewHeight()
             val request = ImageRequest.Builder(itemView.context)
                 .data(imageUrl)
                 .listener(
                     onSuccess = { request, result ->
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
-                    }
+                        setLoadingState(true)
+                        setRetryState(hide = true)
+                        updateItemViewHeight()
+                    },
+                    onError = { request, result ->
+                        setLoadingState(hide = true)
+                        binding.retry.doOnClickInterval {
+                            setLoadingState(hide = false)
+                            setRetryState(hide = true)
+                            (itemView.context as LifecycleOwner).launchDelay(BASE_ANIM_300L) { onBind(position) }
+                        }
+                    },
                 )
-
                 .target(binding.image)
                 .build()
             app.imageLoader.enqueue(request)
-//            binding.image.load(imageUrl)
-            /*Glide.with(itemView.context)
-                .load(imageUrl)
-                .addListener(
-                    mAppGlideProgressFactory?.getRequestListener(
-                        failure = {
-                            binding.retry.alpha = 1f
-                            binding.retry.isVisible = true
-                            binding.loading.isInvisible = true
-                            binding.loadingText.isInvisible = true
-                            binding.retry.doOnClickInterval(false) {
-                                binding.retry.animateFadeOut().withEndAction {
-                                    onBind(position)
-                                }
-                            }
-                            false
-                        },
-                        ready = { _, _ ->
-                            itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
-                            false
-                         }
-                    )
-                )
-                .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                    val transition = if (dataSource == DataSource.REMOTE) {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        DrawableCrossFadeTransition(300, true)
-                    } else {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        NoTransition()
-                    }
-                    transition
-                })
-                .into(binding.image)*/
+        }
+
+        private fun setLoadingState(hide: Boolean) {
+            binding.loading.isInvisible = hide
+            binding.loadingText.isInvisible = hide
+        }
+        private fun setRetryState(hide: Boolean) {
+            binding.retry.isGone = hide
+        }
+        private fun updateItemViewHeight() {
+            itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
         }
     }
 

@@ -13,7 +13,7 @@
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/app_ic_launcher"
-        android:label="@string/BaseAppName"
+        android:label="@string/base_app_name"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/App.Theme.CopyManga.Splash">
@@ -48,7 +48,7 @@
         <activity
             android:name=".ui.activity.TestActivity"
             android:exported="true"
-            android:theme="@style/Base.Theme.Material3_Project"
+            android:theme="@style/MangaX.Theme.Material3_Project"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,6 +1,6 @@
 <resources>
 
-	<style name="Book.Theme.CopyManga" parent="Base.Theme.Material3_Project">
+	<style name="Book.Theme.CopyManga" parent="MangaX.Theme.Material3_Project">
 	</style>
 
 	<style name="Book.Theme.Chapter" parent="Widget.Material3.Button.ElevatedButton" />

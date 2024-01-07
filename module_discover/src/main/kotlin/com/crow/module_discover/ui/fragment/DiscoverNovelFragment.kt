@@ -29,6 +29,7 @@ import com.crow.module_discover.ui.viewmodel.DiscoverViewModel
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 /*************************
@@ -52,7 +53,7 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
     private fun navigateBookNovelInfo(pathword: String) {
         val bundle = Bundle()
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
-        requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(mangaR.id.app_main_fcv,
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
             get<Fragment>(named(Fragments.BookNovelInfo.name)).also { it.arguments = bundle }, Fragments.BookNovelInfo.name, Fragments.BookNovelInfo.name
         )
@@ -105,7 +106,7 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
                         .doOnError { code, msg ->
 
                             // 解析地址失败 且 Resumed的状态才提示
-                            if (code == BaseViewState.Error.UNKNOW_HOST && isResumed) mBinding.root.showSnackBar(msg ?: getString(com.crow.base.R.string.BaseLoadingError))
+                            if (code == BaseViewState.Error.UNKNOW_HOST && isResumed) mBinding.root.showSnackBar(msg ?: getString(baseR.string.base_loading_error))
                             if (mDiscoverNovelAdapter.itemCount == 0) {
                                 if (mDiscoverVM.mCurrentItem == 1) {
                                     mBinding.discoverNovelTipsError.animateFadeIn()

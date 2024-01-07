@@ -1,29 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="BaseAppName">CopyMangaX</string>
-    <string name="BaseAppName_CH">拷贝漫画</string>
-    <string name="BaseTodoTextView" translatable="false">This is TextView,Now Todo What......</string>
-    <string name="BaseLoading" translatable="false">加载中...</string>
-    <string name="BaseLoadingError">加载失败，请重试！</string>
-    <string name="BaseLoadingErrorNeedRefresh">加载失败，请刷新重试！</string>
-    <string name="BaseLoadingRetry">重新加载</string>
-    <string name="BaseRefreshScucess">"刷新成功~"</string>
-    <string name="BaseUnknowError">加载错误？请重试！</string>
-    <string name="BaseError">error : %s</string>
-    <string name="BaseUnknow">未知</string>
-    <string name="BaseConfirm"><b>确认</b></string>
-    <string name="BaseCancel"><b>取消</b></string>
-    <string name="BaseTips">提示</string>
-    <string name="BaseStillInDevelopment">"正在开发中…"</string>
+    <string name="base_app_name">CopyMangaX</string>
+    <string name="base_app_name_ch">拷贝漫画</string>
+    <string name="base_todo_textview" translatable="false">This is TextView,Now Todo What......</string>
+    <string name="base_loading" translatable="false">加载中...</string>
+    <string name="base_loading_error">加载失败，请重试！</string>
+    <string name="base_loading_error_need_refresh">加载失败，请刷新重试！</string>
+    <string name="base_unknow_error">加载错误？请重试！</string>
+    <string name="base_loading_retry">重新加载</string>
 
-    <string name="BaseCrashScreenTitle">哎呀！</string>
-    <string name="BaseCrashScreenDescription">%s 遇到意外错误。我们建议您 通过邮箱联系开发者（crowforkotlin@gmail.com） 分享崩溃日志。</string>
-    <string name="BaseCrashScreenRestartApplication">重新启动应用程序</string>
-    <string name="BaseCrashScreenShared">分享崩溃日志！</string>
-    <string name="BaseActionShare">Share</string>
+    <string name="base_crash_screen_title">哎呀！</string>
+    <string name="base_crash_screen_description">%s 遇到意外错误。我们建议您 通过邮箱联系开发者（crowforkotlin@gmail.com） 分享崩溃日志。</string>
+    <string name="base_crash_screen_restart_application">重新启动应用程序</string>
+    <string name="base_crash_screen_shared">分享崩溃日志！</string>
+    <string name="base_action_share">Share</string>
 
-
-    <string name="BaseExitApp">"再次返回将退出APP！"</string>
-
+    <string name="base_exit_app">"再次返回将退出APP！"</string>
 
 </resources>

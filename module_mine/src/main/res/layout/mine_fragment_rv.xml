@@ -13,7 +13,7 @@
 		android:layout_marginBottom="@dimen/base_dp20"
 		android:layout_marginStart="@dimen/base_dp20"
 		android:layout_height="@dimen/base_dp36"
-		android:contentDescription="@string/BaseTodoTextView"
+		android:contentDescription="@string/base_todo_textview"
 		android:src="@drawable/mine_ic_usr_24dp" />
 
 	<TextView
@@ -25,11 +25,11 @@
 		android:layout_marginTop="@dimen/base_dp20"
 		android:gravity="center_vertical"
 		android:layout_marginEnd="@dimen/base_dp20"
-		android:text="@string/BaseTodoTextView"
+		android:text="@string/base_todo_textview"
 		android:textSize="@dimen/base_sp16"
 		android:textStyle="bold"
 		app:drawableEndCompat="@drawable/mine_ic_enter_24dp"
-		app:drawableTint="@color/base_purple_8f6af1" />
+		app:drawableTint="@color/mangax_purple_8f6af1" />
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

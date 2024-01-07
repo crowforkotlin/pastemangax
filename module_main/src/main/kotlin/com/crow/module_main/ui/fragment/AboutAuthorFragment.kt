@@ -26,6 +26,7 @@ import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.ui.compose.AboutScreen
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 /*************************
@@ -57,7 +58,7 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())
 
         Glide.with(mContext)
-            .load(baseR.drawable.base_icon_crow)
+            .load(mangaR.drawable.base_icon_crow)
             .apply(RequestOptions().circleCrop().override(mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp36)))
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}

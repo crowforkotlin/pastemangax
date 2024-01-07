@@ -20,6 +20,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.yield
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
@@ -44,7 +45,7 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
             else -> null
         }
         if (reader.mUUID == null || message != null) {
-            return@ComicClassicRvAdapter toast(message ?: getString(baseR.string.BaseError, "uuid is null !"))
+            return@ComicClassicRvAdapter toast(message ?: getString(mangaR.string.mangax_error, "uuid is null !"))
         }
         mVM.input(BookIntent.GetComicPage(mVM.mPathword, reader.mUUID, enableLoading = true))
     }
@@ -143,7 +144,7 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
     }
 
     private fun onErrorComicPage() {
-        toast(getString(baseR.string.BaseLoadingError))
+        toast(getString(baseR.string.base_loading_error))
         BaseEvent.getSIngleInstance().setBoolean(BookFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }

@@ -1,10 +1,10 @@
 <resources>
 	<!-- Base application theme. -->
-	<style name="Main.Theme.CopyManga" parent="Base.Theme.Material3_Project">
+	<style name="Main.Theme.CopyManga" parent="MangaX.Theme.Material3_Project">
 	</style>
 
 	<style name="Main.Theme.CardView" parent="Widget.Material3.CardView.Elevated">
-		<item name="cardBackgroundColor">@color/base_white</item>
+		<item name="cardBackgroundColor">@color/mangax_white</item>
 	</style>
 
 	<style name="Main.Theme.Bottom.Text" parent="TextAppearance.Material3.LabelMedium">

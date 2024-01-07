@@ -9,7 +9,7 @@
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
-        style="@style/Base.Theme.BG"
+        style="@style/MangaX.Theme.BG"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -18,7 +18,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
-        style="@style/Base.Theme.BG"
+        style="@style/MangaX.Theme.BG"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:elevation="5dp"

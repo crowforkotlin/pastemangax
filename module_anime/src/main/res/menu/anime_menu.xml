@@ -18,12 +18,12 @@
     <item
         android:id="@+id/anime_update"
         app:showAsAction="never"
-        android:title="@string/base_update_time" />
+        android:title="@string/mangax_update_time" />
 
     <item
         android:id="@+id/anime_hot"
         app:showAsAction="never"
-        android:title="@string/base_hot" />
+        android:title="@string/mangax_hot" />
 
     <item
         android:id="@+id/anime_site"

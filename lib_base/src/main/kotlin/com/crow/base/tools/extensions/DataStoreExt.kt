@@ -58,14 +58,14 @@ object DBNameSpace {
     const val app = "preference.chapter.db"
 }
 
-val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(app.getString(R.string.BaseAppName))
+val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(app.getString(R.string.base_app_name))
 val Context.appConfigDataStore: DataStore<Preferences> by preferencesDataStore(
     app.getString(
-        R.string.BaseAppName
+        R.string.base_app_name
     ).plus(DataStoreAgent.APP_CONFIG.name)
 )
 val Context.appBookDataStore: DataStore<Preferences> by preferencesDataStore(
-    app.getString(R.string.BaseAppName).plus(DataStoreAgent.DATA_BOOK.name)
+    app.getString(R.string.base_app_name).plus(DataStoreAgent.DATA_BOOK.name)
 )
 
 suspend fun DataStore<Preferences>.getIntData(name: String) =

@@ -28,8 +28,9 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 import com.google.android.material.R as materialR
+import com.crow.base.R as baseR
 
 class ReaderInfoBarView @JvmOverloads constructor(
 	context: Context,

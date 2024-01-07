@@ -13,4 +13,4 @@
 	android:maxLines="1"
 	android:textSize="@dimen/base_sp16"
 	android:textStyle="bold"
-	tools:text="@string/BaseTodoTextView" />
+	tools:text="@string/base_todo_textview" />

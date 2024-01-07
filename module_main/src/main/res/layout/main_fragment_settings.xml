@@ -5,21 +5,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/Base.Theme.BG"
+    style="@style/MangaX.Theme.BG"
     tools:context="com.crow.module_main.ui.fragment.SettingsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/settings_appbar"
         android:layout_width="match_parent"
-        style="@style/Base.Theme.BG"
+        style="@style/MangaX.Theme.BG"
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/settings_toolbar"
             app:navigationIcon="@drawable/base_ic_back_24dp"
-            app:navigationIconTint="@color/base_color_asc"
+            app:navigationIconTint="@color/mangax_color_asc"
             app:title="@string/main_settings_titile"
-            app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold"
+            app:titleTextAppearance="@style/MangaX.TextAppearance.Material3.ActionBar.Title.Bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -30,7 +30,7 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/BaseAppName"
+        android:contentDescription="@string/base_app_name"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/main_fragment_settings_content_rv" />
 

@@ -9,8 +9,8 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
 import androidx.activity.addCallback
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -28,6 +28,7 @@ import com.crow.base.tools.extensions.immersionFullScreen
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.immersureFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
@@ -47,6 +48,7 @@ import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 
@@ -150,10 +152,10 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun initData() {
         mComicVM.mPathword = (intent.getStringExtra(BaseStrings.PATH_WORD) ?: "").also {
-            if (it.isEmpty()) finishActivity(getString(baseR.string.BaseError, "pathword is null or empty"))
+            if (it.isEmpty()) finishActivity(getString(mangaR.string.mangax_error, "pathword is null or empty"))
         }
         mComicVM.mUuid = (intent.getStringExtra(ComicViewModel.UUID) ?: "").also {
-            if (it.isEmpty()) finishActivity(getString(baseR.string.BaseError, "uuid is null or empty"))
+            if (it.isEmpty()) finishActivity(getString(mangaR.string.mangax_error, "uuid is null or empty"))
         }
         mComicVM.mPrevUuid = intent.getStringExtra(ComicViewModel.PREV_UUID)
         mComicVM.mNextUuid = intent.getStringExtra(ComicViewModel.NEXT_UUID)
@@ -196,7 +198,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                                 showLoadingAnim { dialog -> dialog.applyWindow(dimAmount = 0.3f, isFullScreen = true) }
                             }
                             .doOnError { _, _ ->
-                                toast(getString(baseR.string.BaseLoadingError))
+                                toast(getString(baseR.string.base_loading_error))
                                 dismissLoadingAnim { finishActivity() }
                             }
                             .doOnResult {
@@ -269,8 +271,9 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         if (fragment is ClassicComicFragment) {
             val rv = ((fragment.view as ComicFrameLayout)[0] as ComicRecyclerView)
             val childView = rv.findChildViewUnder(ev.x, ev.y)
-            if(childView is FrameLayout) {
+            if(childView is CoordinatorLayout) {
                 childView.forEach {
+            it.log()
                     if (fragment.isRemoving) return hasToolbar
                     if(it is MaterialButton) {
                         hasButton = hasGlobalPoint(it, ev.rawX.toInt(), ev.rawY.toInt())

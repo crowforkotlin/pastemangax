@@ -51,6 +51,7 @@ import com.crow.module_anime.ui.viewmodel.AnimeViewModel
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 /**
@@ -75,7 +76,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      */
     private val mPathword: String by lazy {
         arguments?.getString(BaseStrings.PATH_WORD) ?: run {
-            toast(getString(com.crow.base.R.string.BaseUnknowError))
+            toast(getString(com.crow.mangax.R.string.mangax_unknow_error))
             navigateUp()
             ""
         }
@@ -88,7 +89,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      */
     private val mName: String by lazy {
         arguments?.getString(BaseStrings.NAME) ?: run {
-            toast(getString(com.crow.base.R.string.BaseUnknowError))
+            toast(getString(com.crow.mangax.R.string.mangax_unknow_error))
             navigateUp()
             ""
         }
@@ -204,7 +205,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
                         .doOnSuccess { if (mBinding.refresh.isRefreshing) mBinding.refresh.finishRefresh() }
 
                         // 发生错误 取消动画 退出界面 提示
-                        .doOnError { _, _ -> toast(getString(baseR.string.BaseLoadingError)) }
+                        .doOnError { _, _ -> toast(getString(baseR.string.base_loading_error)) }
 
                         // 显示书页内容 根据意图类型 再次发送获取章节意图的请求
                         .doOnResult {

@@ -144,7 +144,7 @@ class BookNovelFragment : BookFragment() {
     private fun processAddNovelIntent(intent: BookIntent.AddNovelToBookshelf) {
         intent.mViewState
             .doOnLoading { showLoadingAnim() }
-            .doOnError { _, _ -> dismissLoadingAnim { toast(getString(com.crow.base.R.string.BaseUnknowError)) } }
+            .doOnError { _, _ -> dismissLoadingAnim { toast(getString(com.crow.mangax.R.string.mangax_unknow_error)) } }
             .doOnResult {
                 dismissLoadingAnim {
                     if (intent.isCollect == 1) {

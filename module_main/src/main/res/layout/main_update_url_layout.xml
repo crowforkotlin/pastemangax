@@ -45,7 +45,7 @@
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/base_dp10"
 		android:text="@string/main_update_cancel"
-		android:textColor="@color/base_black"
+		android:textColor="@color/mangax_black"
 		android:textStyle="bold"
 		app:backgroundTint="@color/mine_deep_purple_300"
 		app:iconTint="@null"

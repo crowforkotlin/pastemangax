@@ -53,7 +53,6 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
-import com.crow.base.R as baseR
 import com.crow.mangax.R as mangaR
 
 class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
@@ -136,7 +135,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
     private suspend fun initResolution() {
 
         // 获取APP的配置
-        val appConfig = mVM.getReadedAppConfig() ?: return run { toast(getString(baseR.string.BaseUnknowError)) }
+        val appConfig = mVM.getReadedAppConfig() ?: return run { toast(getString(mangaR.string.mangax_unknow_error)) }
 
         val binding = MainSettingsResolutionLayoutBinding.inflate(layoutInflater)
 
@@ -163,7 +162,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
     private suspend fun initSiteView() {
         // 获取APP的配置
-        val appConfig = mVM.getReadedAppConfig() ?: return run { toast(getString(baseR.string.BaseUnknowError)) }
+        val appConfig = mVM.getReadedAppConfig() ?: return run { toast(getString(mangaR.string.mangax_unknow_error)) }
 
         mSiteDialogBinding = MainSettingsSiteLayoutBinding.inflate(layoutInflater)
 
@@ -189,7 +188,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
             }
 
             // 否则 当前站点位置
-            else { settingsSiteCurrent.text = getString(R.string.main_site_current, getString(baseR.string.BaseUnknow)) }
+            else { settingsSiteCurrent.text = getString(R.string.main_site_current, getString(mangaR.string.mangax_unknow)) }
 
             // 设置 静态、动态站点的ScrollView最大高度为 屏幕高度像素 / 6
             (settingsSiteStaticScrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = mScreenHeight
@@ -252,7 +251,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
     private fun navigateToStyleableFragment() {
         with(Fragments.Styleable.name) {
             parentFragmentManager.navigateToWithBackStack(
-                id = baseR.id.app_main_fcv,
+                id = mangaR.id.app_main_fcv,
                 hideTarget = this@SettingsFragment,
                 addedTarget = get(named((this))),
                 tag = this,

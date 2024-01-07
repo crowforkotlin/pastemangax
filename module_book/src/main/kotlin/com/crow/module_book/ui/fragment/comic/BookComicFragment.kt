@@ -53,6 +53,7 @@ import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.core.qualifier.named
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 class BookComicFragment : BookFragment() {
@@ -151,7 +152,7 @@ class BookComicFragment : BookFragment() {
     private fun processAddComicIntent(intent: BookIntent.AddComicToBookshelf) {
         intent.mViewState
             .doOnLoading { showLoadingAnim() }
-            .doOnError { _, _ -> dismissLoadingAnim { toast(getString(baseR.string.BaseUnknowError)) } }
+            .doOnError { _, _ -> dismissLoadingAnim { toast(getString(mangaR.string.mangax_unknow_error)) } }
             .doOnResult {
                 dismissLoadingAnim {
                     if (intent.isCollect == 1) {

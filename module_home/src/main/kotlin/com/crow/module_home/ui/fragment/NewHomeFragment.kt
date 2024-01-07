@@ -32,7 +32,6 @@ import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.toJson
@@ -47,8 +46,6 @@ import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
-import com.crow.mangax.tools.language.ChineseConverter
-import com.crow.mangax.tools.language.ConversionType
 import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeFragmentNewBinding
 import com.crow.module_home.databinding.HomeFragmentSearchViewBinding
@@ -69,7 +66,7 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.qualifier.named
 import kotlin.system.exitProcess
-import kotlin.system.measureTimeMillis
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
@@ -168,7 +165,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         requireParentFragment()
             .parentFragmentManager
             .navigateToWithBackStack(
-                id = baseR.id.app_main_fcv,
+                id = mangaR.id.app_main_fcv,
                 hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
                 addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
                 tag = tag,
@@ -187,7 +184,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         bundle.putSerializable(BaseStrings.NAME, name)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(
-            id = baseR.id.app_main_fcv,
+            id = mangaR.id.app_main_fcv,
             hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
             addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
             tag = tag,
@@ -207,7 +204,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         requireParentFragment()
             .parentFragmentManager
             .navigateToWithBackStack(
-                id = baseR.id.app_main_fcv,
+                id = mangaR.id.app_main_fcv,
                 hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
                 addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
                 tag = tag,
@@ -264,7 +261,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      */
     private fun navigateSettings() {
         val name = Fragments.Settings.name
-        requireParentFragment().parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv,
+        requireParentFragment().parentFragmentManager.navigateToWithBackStack(mangaR.id.app_main_fcv,
             requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
             get(named(name)), name, name
         )
@@ -291,7 +288,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                 bgColor = ContextCompat.getColor(mContext, android.R.color.white)
                 tintColor = ContextCompat.getColor(mContext, android.R.color.black)
             }
-            toolbar.setNavigationIcon(baseR.drawable.base_ic_back_24dp)  // 设置SearchView toolbar导航图标
+            toolbar.setNavigationIcon(mangaR.drawable.base_ic_back_24dp)  // 设置SearchView toolbar导航图标
             toolbar.navigationIcon?.setTint(tintColor)
             toolbar.setBackgroundColor(bgColor)                                               // 设置SearchView toolbar背景色白，沉浸式
             binding.homeSearchVp.setBackgroundColor(bgColor)
@@ -435,7 +432,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             if (mBinding.searchView.isShowing) mBinding.searchView.hide()
             else {
                 appEvent.doOnInterval(object : BaseIEventIntervalExt<BaseEvent>{
-                    override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) { toast(getString(baseR.string.BaseExitApp)) }
+                    override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) { toast(getString(baseR.string.base_exit_app)) }
                     override fun onIntervalFailure(gapTime: Long) {
                         requireActivity().finish()
                         exitProcess(0)
@@ -510,7 +507,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                         .doOnResult { doLoadHomePage() }
                         .doOnError { _, _ ->
 
-                            toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+                            toast(getString(baseR.string.base_loading_error_need_refresh))
 
                             if (mDataRvAdapter.itemCount == 0) {
 
@@ -546,7 +543,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                 is HomeIntent.GetRecPageByRefresh -> {
                     intent.mViewState
                         .doOnError { _, _ ->
-                            toast(getString(baseR.string.BaseLoadingError))
+                            toast(getString(baseR.string.base_loading_error))
                             mRecRefresh?.isEnabled = true
                         }
                         .doOnResult {

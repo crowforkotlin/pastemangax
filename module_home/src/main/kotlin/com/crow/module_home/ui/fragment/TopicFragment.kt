@@ -7,7 +7,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.crow.base.R
+import com.crow.mangax.R as mangaR
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
@@ -40,7 +40,6 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
-import com.crow.base.R as baseR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -133,7 +132,7 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
         // Init mTopic, otherwise exit fragment
         runCatching { mTopic = toTypeEntity<Topices>(arguments?.getString(TOPIC)) ?: error("topic is null!") }
             .onFailure {
-                toast(getString(R.string.BaseUnknowError))
+                toast(getString(mangaR.string.mangax_unknow_error))
                 navigateUp()
             }
             .onSuccess {
@@ -262,7 +261,7 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
             mRefreshJob = lifecycleScope.launch {
                 delay(4000L)
                 layout.finishRefresh()
-                toast(getString(baseR.string.BaseUnknowError))
+                toast(getString(mangaR.string.mangax_unknow_error))
             }
             mAdapter.retry()
         }
@@ -286,7 +285,7 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
         bundle.putString(BaseStrings.PATH_WORD, pathword)
         bundle.putString(BaseStrings.NAME, name)
         parentFragmentManager.navigateToWithBackStack(
-            id = R.id.app_main_fcv,
+            id = mangaR.id.app_main_fcv,
             hideTarget = this,
             addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
             tag = tag,

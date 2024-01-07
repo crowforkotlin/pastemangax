@@ -3,13 +3,6 @@
 
     <style name="MangaX.Theme.Material3" parent="Theme.Material3.DayNight.NoActionBar" />
 
-    <style name="MangaX_LoadingAnim" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
-
     <style name="MangaX.TextAppearance.Material3.ActionBar.Title.Bold" parent="TextAppearance.Material3.TitleLarge">
         <item name="android:textColor">@macro/m3_comp_top_app_bar_small_headline_color</item>
         <item name="android:textStyle">bold</item>
@@ -18,6 +11,31 @@
     <style name="MangaX.TextAppearance.Material3.ActionBar.SubTitle.Bold" parent="TextAppearance.Material3.TitleSmall">
         <item name="android:textColor">@macro/m3_comp_top_app_bar_small_headline_color</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- ++++++++++++++++ -->
+
+    <style name="MangaX.Theme.Material3_Project" parent="Theme.Material3.DayNight.NoActionBar" >
+        <item name="android:textColor">@color/mangax_color_asc</item>
+        <item name="colorPrimary">@color/mangax_color_asc</item>
+        <item name="colorOnPrimary">@color/mangax_icon_desc</item>
+    </style>
+
+    <style name="MangaX.Theme.Button.Elevated.Icon" parent="Widget.Material3.Button.ElevatedButton.Icon" />
+    <style name="MangaX.Theme.Button.Icon.Text" parent="Widget.Material3.Button.IconButton" />
+    <style name="MangaX.Theme.Button.Icon.Tint" parent="Widget.Material3.Button.IconButton" />
+    <style name="MangaX.Theme.Button.Icon.Tint.Text" parent="Widget.Material3.Button.IconButton" />
+
+    <style name="MangaX.Theme.Button.Icon.Back" parent="Widget.Material3.Button.IconButton" >
+        <item name="iconTint">@color/mangax_black</item>
+    </style>
+
+    <style name="MangaX.Theme.BG" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:background">@color/mangax_bg</item>
+    </style>
+
+    <style name="MangaX.Tablayout.TextAppearance" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textSize">@dimen/base_sp12</item>
     </style>
 
 </resources>

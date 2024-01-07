@@ -2,23 +2,7 @@
 <resources>
     <color name="base_white">#FFFFFF</color>
     <color name="base_black">#000000</color>
-    <color name="base_red_A400">#d50000</color>
-    <color name="base_green_A400">#00c853</color>
-    <color name="base_background_panda">#D1D1D1</color>
-    <color name="base_buttonBackground">#BE9AE3</color>
-    <color name="base_buttonRipper">#7D3DEF</color>
-    <color name="base_titleError">#E1CA00</color>
-    <color name="base_textColor">#FFFFFF</color>
-
-    <color name="base_purple_8f6af1">#8f6af1</color>
-    <color name="base_download_bg">#d4e5ef</color>
-    
-    <color name="base_grey_400_40">#66BDBDBD</color>
     <color name="base_grey_500_75">#BF9E9E9E</color>
-    <color name="base_grey_500">#9e9e9e</color>
-
-    <color name="base_light_blue_500">#03a9f4</color>
-
-    <color name="base_loading_frame">#4D141414</color>
-
+    <color name="base_textColor">#FFFFFF</color>
+    <color name="base_blue_100">#bbdefb</color>
 </resources>

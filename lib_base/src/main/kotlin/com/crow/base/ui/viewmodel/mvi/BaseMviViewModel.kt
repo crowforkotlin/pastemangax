@@ -68,7 +68,7 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
             flow
                 .onStart { emitValueMoreoverDelayAfter(intent.also { it.mViewState = Loading }) }
                 .onCompletion { emitValueMoreoverDelayAfter(intent.also { it.mViewState = Success }) }
-                .catch { catch -> emitValueMoreoverDelayAfter(intent.also { it.mViewState = Error(if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, msg = catch.message ?: app.getString(R.string.BaseUnknowError)) })}
+                .catch { catch -> emitValueMoreoverDelayAfter(intent.also { it.mViewState = Error(if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, msg = catch.message ?: app.getString(R.string.base_unknow_error)) })}
                 .collect { emitValueMoreoverDelayAfter(result.onResult(it).also { event -> event.mViewState = Result }) }
         }
     }
@@ -84,7 +84,7 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
                 .onStart { trySendIntent(intent, Loading) }
                 .onCompletion { catch -> trySendIntent(intent, Success) { if (catch != null && !continuation.isCompleted) continuation.resumeWithException(catch) } }
                 .catch { catch ->
-                    trySendIntent(intent, Error (if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT , catch.message ?: app.getString(R.string.BaseUnknowError))) {
+                    trySendIntent(intent, Error (if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT , catch.message ?: app.getString(R.string.base_unknow_error))) {
                         if (!continuation.isCompleted) continuation.resumeWithException(catch)
                     }
                 }

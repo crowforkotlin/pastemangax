@@ -59,7 +59,7 @@ class BookStriptComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
     }
 
     private fun onErrorComicPage() {
-        toast(getString(R.string.BaseLoadingError))
+        toast(getString(R.string.base_loading_error))
         BaseEvent.getSIngleInstance().setBoolean(BookFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }

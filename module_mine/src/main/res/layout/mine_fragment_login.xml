@@ -4,7 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	style="@style/Base.Theme.BG"
+	style="@style/MangaX.Theme.BG"
 	tools:context=".ui.fragment.MineLoginFragment">
 
 	<TextView

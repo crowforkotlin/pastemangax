@@ -15,7 +15,7 @@
         android:layout_width="@dimen/base_dp20"
         android:layout_height="@dimen/base_dp20"
         android:layout_gravity="center"
-        android:tint="@color/base_color_asc"
+        android:tint="@color/mangax_color_asc"
         android:visibility="gone"
         tools:src="@drawable/main_ic_resolution_24dp" />
 
@@ -29,7 +29,7 @@
         android:layout_weight="1"
         android:gravity="center|start"
         android:maxLines="2"
-        android:textColor="@color/base_color_asc"
+        android:textColor="@color/mangax_color_asc"
         android:textSize="@dimen/base_sp14"
         android:textStyle="bold"
         tools:text="个性化" />
