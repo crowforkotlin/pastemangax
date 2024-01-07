@@ -1,28 +1,18 @@
 package com.crow.module_main.ui.adapter
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.bumptech.glide.GenericTransitionOptions
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.bumptech.glide.request.transition.NoTransition
 import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.formatHotValue
-import com.crow.mangax.copymanga.okhttp.AppProgressFactory
-import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.view.TooltipsView
 import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_main.databinding.MainHistoryRvBinding
 import com.crow.module_main.model.resp.comic_history.ComicHistoryResult
 import kotlinx.coroutines.launch
@@ -41,11 +31,14 @@ class ComicHistoryListAdapter(
     private val onClick: (name: String, pathword: String) -> Unit) :
 PagingDataAdapter<ComicHistoryResult, ComicHistoryListAdapter.HistoryVH>(DiffCallback()) {
 
-    inner class HistoryVH(binding: MainHistoryRvBinding) : BaseGlideLoadingViewHolder<MainHistoryRvBinding>(binding) {
+    inner class HistoryVH(binding: MainHistoryRvBinding) : MangaCoilVH<MainHistoryRvBinding>(binding) {
 
         init {
-            binding.card.layoutParams.width = appComicCardWidth
-            binding.card.layoutParams.height = appComicCardHeight
+            initComponent(binding.loading, binding.loadingText, binding.image)
+            binding.card.layoutParams.apply {
+                width = appComicCardWidth
+                height = appComicCardHeight
+            }
             itemView.doOnClickInterval {
                 val item = (getItem(absoluteAdapterPosition) ?: return@doOnClickInterval).mComic
                 onClick(item.mName, item.mPathWord)
@@ -54,47 +47,25 @@ PagingDataAdapter<ComicHistoryResult, ComicHistoryListAdapter.HistoryVH>(DiffCal
         }
 
         fun onBind(item: ComicHistoryResult) {
-            binding.loading.isVisible = true
-            binding.loadingText.isVisible = true
-            binding.loadingText.text = AppProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.removeProgressListener()?.remove()
-
-            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(item.mComic.mCover) { _, _, percentage, _, _ ->
-                binding.loadingText.text = AppProgressFactory.formateProgress(percentage)
-            }
-
-            Glide.with(itemView)
-                .load(item.mComic.mCover)
-                .addListener(mAppGlideProgressFactory?.getGlideRequestListener())
-                .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                    if (dataSource == DataSource.REMOTE) {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                    } else {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        NoTransition()
-                    }
-                })
-                .into(binding.image)
-
             val context = itemView.context
+            val comic = item.mComic
 
             if (mChineseConvert) {
                 mLifecycleScope.launch {
-                    binding.name.text = ChineseConverter.convert(item.mComic.mName)
+                    binding.name.text = ChineseConverter.convert(comic.mName)
                     binding.readed.text = ChineseConverter.convert(context.getString(bookR.string.book_readed_chapter, item.mLastChapterName))
-                    binding.lastest.text = ChineseConverter.convert(context.getString(bookR.string.BookComicNewChapter, item.mComic.mLastChapterName))
+                    binding.lastest.text = ChineseConverter.convert(context.getString(bookR.string.book_new_chapter, comic.mLastChapterName))
                 }
             } else {
-                binding.name.text = item.mComic.mName
+                binding.name.text = comic.mName
                 binding.readed.text = context.getString(bookR.string.book_readed_chapter, item.mLastChapterName)
-                binding.lastest.text = context.getString(bookR.string.BookComicNewChapter, item.mComic.mLastChapterName)
+                binding.lastest.text = context.getString(bookR.string.book_new_chapter, comic.mLastChapterName)
             }
-            binding.time.text = context.getString(bookR.string.BookComicUpdate, item.mComic.mDatetimeUpdated)
-            binding.author.text = context.getString(bookR.string.BookComicAuthor, item.mComic.mAuthor.joinToString { it.mName })
-            binding.hot.text = context.getString(bookR.string.BookComicHot, formatHotValue(item.mComic.mPopular))
+            binding.time.text = context.getString(bookR.string.book_update, comic.mDatetimeUpdated)
+            binding.author.text = context.getString(bookR.string.book_author, comic.mAuthor.joinToString { it.mName })
+            binding.hot.text = context.getString(bookR.string.book_hot, formatHotValue(comic.mPopular))
+
+            loadImage(comic.mCover)
         }
     }
 

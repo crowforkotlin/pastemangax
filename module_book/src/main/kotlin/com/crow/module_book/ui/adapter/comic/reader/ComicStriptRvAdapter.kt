@@ -20,7 +20,7 @@ import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_book.databinding.BookActivityComicButtonRvBinding
 import com.crow.module_book.databinding.BookActivityComicRvBinding
 import com.crow.module_book.model.resp.comic_page.Content
@@ -59,7 +59,7 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun submitList(contents: MutableList<Content?>) = mDiffer.submitList(contents)
 
-    inner class PageViewHolder(binding: BookActivityComicRvBinding) : BaseGlideLoadingViewHolder<BookActivityComicRvBinding>(binding) {
+    inner class PageViewHolder(binding: BookActivityComicRvBinding) : MangaCoilVH<BookActivityComicRvBinding>(binding) {
 
         fun onBind(item: Content) {
 
@@ -67,14 +67,14 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             binding.loadingText.isVisible = true
             binding.loadingText.text = AppProgressFactory.PERCENT_0
             binding.retry.isVisible = false
-            mAppGlideProgressFactory?.removeProgressListener()?.remove()
-            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(item.mImageUrl!!) { _, _, percentage, _, _ ->
+            mAppProgressFactory?.removeProgressListener()?.remove()
+            mAppProgressFactory = AppProgressFactory.createProgressListener(item.mImageUrl!!) { _, _, percentage, _, _ ->
                 binding.loadingText.text = AppProgressFactory.formateProgress(percentage)
             }
 
             Glide.with(itemView.context)
                 .load(item.mImageUrl)
-                .addListener(mAppGlideProgressFactory?.getGlideRequestListener({
+                .addListener(mAppProgressFactory?.getGlideRequestListener({
                     binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
                     binding.retry.animateFadeIn()
                     binding.loading.animateFadeOut()

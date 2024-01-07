@@ -162,9 +162,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/base_dp108"
                 android:layout_marginTop="@dimen/base_dp10"
-                android:layout_marginBottom="@dimen/base_dp20"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/dynamic_title"

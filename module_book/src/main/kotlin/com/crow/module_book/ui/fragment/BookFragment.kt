@@ -261,10 +261,10 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         mBinding.desc.text = more
         mBinding.name.text = mName
         mBinding.status.text = getString(R.string.BookComicStatus, more)
-        mBinding.author.text = getString(R.string.BookComicAuthor, more)
-        mBinding.hot.text = getString(R.string.BookComicHot, more)
-        mBinding.update.text = getString(R.string.BookComicUpdate, more)
-        mBinding.chapter.text = getString(R.string.BookComicNewChapter, more)
+        mBinding.author.text = getString(R.string.book_author, more)
+        mBinding.hot.text = getString(R.string.book_hot, more)
+        mBinding.update.text = getString(R.string.book_update, more)
+        mBinding.chapter.text = getString(R.string.book_new_chapter, more)
     }
 
     /** ● 处理章节结果

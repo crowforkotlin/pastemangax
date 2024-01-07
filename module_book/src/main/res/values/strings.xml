@@ -1,9 +1,9 @@
 <resources>
-	<string name="BookComicAuthor">作者：%s</string>
-	<string name="BookComicHot">热度：%s</string>
+	<string name="book_author">作者：%s</string>
+	<string name="book_hot">热度：%s</string>
 	<string name="BookComicStatus">状态：%s</string>
-	<string name="BookComicUpdate">更新时间：%s</string>
-	<string name="BookComicNewChapter">最新一章：%s</string>
+	<string name="book_update">更新时间：%s</string>
+	<string name="book_new_chapter">最新一章：%s</string>
 	<string name="book_comic_add_to_bookshelf">加入书架</string>
 	<string name="book_comic_remove_from_bookshelf">取消收藏</string>
 	<string name="BookComicDownLoad">下载章节</string>

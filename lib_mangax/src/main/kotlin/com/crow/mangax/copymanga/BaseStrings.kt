@@ -11,7 +11,6 @@ object BaseStrings {
     const val ENABLE_DELAY = "enable_delay"
     const val BACKPRESS = "onBackPress"
 
-
     object URL {
 
         fun setCopyMangaUrl(tld: String) { COPYMANGA = "https://api.copymanga$tld" }

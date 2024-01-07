@@ -1,6 +1,5 @@
 package com.crow.module_book.ui.fragment.comic
 
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -10,11 +9,8 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.GenericTransitionOptions
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.bumptech.glide.request.transition.NoTransition
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseStrings
@@ -24,7 +20,6 @@ import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.getSpannableString
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -89,25 +84,23 @@ class BookComicFragment : BookFragment() {
 
         mAppGlideProgressFactory = AppProgressFactory.createProgressListener(comicInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
 
-        Glide.with(this)
-            .load(comicInfoPage.mCover)
-            .addListener(mAppGlideProgressFactory?.getGlideRequestListener())
-            .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                if (dataSource == DataSource.REMOTE) {
-                    mBinding.bookInfoLoading.isInvisible = true
-                    mBinding.bookInfoProgressText.isInvisible = true
-                    DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                } else {
-                    mBinding.bookInfoLoading.isInvisible = true
-                    mBinding.bookInfoProgressText.isInvisible = true
-                    NoTransition()
-                }
-            })
-            .into(mBinding.bookInfoImage)
+        app.imageLoader.enqueue(
+            ImageRequest.Builder(mContext)
+                .listener(
+                    onSuccess = { _, _ ->
+                        mBinding.bookInfoLoading.isInvisible = true
+                        mBinding.bookInfoProgressText.isInvisible = true
+                    },
+                    onError = { _, _ -> mBinding.bookInfoProgressText.text = "-1%" },
+                )
+                .data(comicInfoPage.mCover)
+                .target(mBinding.bookInfoImage)
+                .build()
+        )
 
-        mBinding.author.text = getString(R.string.BookComicAuthor, comicInfoPage.mAuthor.joinToString { it.mName })
-        mBinding.hot.text = getString(R.string.BookComicHot, formatHotValue(comicInfoPage.mPopular))
-        mBinding.update.text = getString(R.string.BookComicUpdate, comicInfoPage.mDatetimeUpdated)
+        mBinding.author.text = getString(R.string.book_author, comicInfoPage.mAuthor.joinToString { it.mName })
+        mBinding.hot.text = getString(R.string.book_hot, formatHotValue(comicInfoPage.mPopular))
+        mBinding.update.text = getString(R.string.book_update, comicInfoPage.mDatetimeUpdated)
         val status = when (comicInfoPage.mStatus.mValue) {
             Status.LOADING -> getString(R.string.BookComicStatus, comicInfoPage.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_green), 3)
             Status.FINISH -> getString(R.string.BookComicStatus, comicInfoPage.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_red), 3)
@@ -115,7 +108,7 @@ class BookComicFragment : BookFragment() {
         }.toString()
         if (mChineseConvert) {
             lifecycleScope.launch {
-                mBinding.chapter.text = ChineseConverter.convert(getString(R.string.BookComicNewChapter, comicInfoPage.mLastChapter.mName))
+                mBinding.chapter.text = ChineseConverter.convert(getString(R.string.book_new_chapter, comicInfoPage.mLastChapter.mName))
                 mBinding.status.text = ChineseConverter.convert(status)
                 mBinding.name.text = ChineseConverter.convert(comicInfoPage.mName)
                 mBinding.desc.text = ChineseConverter.convert(comicInfoPage.mBrief.removeWhiteSpace())
@@ -129,7 +122,7 @@ class BookComicFragment : BookFragment() {
                 }
             }
         } else {
-            mBinding.chapter.text = getString(R.string.BookComicNewChapter, comicInfoPage.mLastChapter.mName)
+            mBinding.chapter.text = getString(R.string.book_new_chapter, comicInfoPage.mLastChapter.mName)
             mBinding.status.text = status
             mBinding.name.text = comicInfoPage.mName
             mBinding.desc.text = comicInfoPage.mBrief.removeWhiteSpace()

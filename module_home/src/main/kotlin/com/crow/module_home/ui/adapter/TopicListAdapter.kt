@@ -24,7 +24,7 @@ import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.px2sp
 import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_home.databinding.HomeTopicRvBinding
 import com.crow.module_home.model.resp.topic.TopicResult
 import com.google.android.material.chip.Chip
@@ -45,9 +45,11 @@ class TopicListAdapter(
 
     private val mChipTextSize = app.px2sp(app.resources.getDimension(R.dimen.base_sp12_5))
 
-    inner class HistoryVH(binding: HomeTopicRvBinding) : BaseGlideLoadingViewHolder<HomeTopicRvBinding>(binding) {
+    inner class HistoryVH(binding: HomeTopicRvBinding) : MangaCoilVH<HomeTopicRvBinding>(binding) {
 
         init {
+            initComponent(binding.loading, binding.loadingText, binding.image)
+
             binding.card.layoutParams.apply {
                 width = appComicCardWidth
                 height = appComicCardHeight
@@ -57,34 +59,6 @@ class TopicListAdapter(
         }
 
         fun onBind(item: TopicResult) {
-
-            binding.loading.isVisible = true
-
-            binding.loadingText.isVisible = true
-
-            binding.loadingText.text = AppProgressFactory.PERCENT_0
-
-            mAppGlideProgressFactory?.removeProgressListener()?.remove()
-
-            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(item.mCover) { _, _, percentage, _, _ -> binding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
-
-            Glide.with(itemView)
-                .load(item.mCover)
-                .addListener(mAppGlideProgressFactory?.getGlideRequestListener())
-                .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                    if (dataSource == DataSource.REMOTE) {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                    } else {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        NoTransition()
-                    }
-                })
-                .into(binding.image)
-
-
             if (mChineseConvert) {
                 mLifecycleScope.launch {
                     binding.chipGroup.removeAllViews()
@@ -106,10 +80,9 @@ class TopicListAdapter(
                 }
                 binding.name.text = item.mName
             }
-
-
             binding.author.text = item.mAuthor.joinToString { it.mName }
             binding.hot.text = formatHotValue(item.mPopular)
+            loadImage(item.mCover)
         }
     }
 

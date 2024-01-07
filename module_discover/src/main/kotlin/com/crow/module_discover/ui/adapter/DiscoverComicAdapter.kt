@@ -19,7 +19,7 @@ import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.base.ui.view.TooltipsView
 import com.crow.mangax.copymanga.tryConvert
 import com.crow.module_discover.databinding.DiscoverFragmentRvBinding
@@ -40,9 +40,11 @@ class DiscoverComicAdapter(
         }
     }
 
-    inner class LoadingViewHolder(binding: DiscoverFragmentRvBinding) : BaseGlideLoadingViewHolder<DiscoverFragmentRvBinding>(binding) {
+    inner class LoadingViewHolder(binding: DiscoverFragmentRvBinding) : MangaCoilVH<DiscoverFragmentRvBinding>(binding) {
 
         init {
+            initComponent(binding.loading, binding.loadingText, binding.image)
+
             binding.image.layoutParams.height = appComicCardHeight
 
             binding.card.doOnClickInterval { onClick(getItem(absoluteAdapterPosition) ?: return@doOnClickInterval) }
@@ -53,30 +55,7 @@ class DiscoverComicAdapter(
         }
 
         fun onBind(item: DiscoverComicHomeResult) {
-            binding.loading.isVisible = true
-            binding.loadingText.isVisible = true
-            binding.loadingText.text = AppProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.removeProgressListener()?.remove()
-
-            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
-                binding.loadingText.text = AppProgressFactory.formateProgress(percentage)
-            }
-
-            Glide.with(itemView.context)
-                .load(item.mImageUrl)
-                .addListener(mAppGlideProgressFactory?.getGlideRequestListener())
-                .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                    if (dataSource == DataSource.REMOTE) {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                    } else {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        NoTransition()
-                    }
-                })
-                .into(binding.image)
+            loadImage(item.mImageUrl)
             mLifecycleScope.tryConvert(item.mName, binding.name::setText)
             binding.author.text = item.mAuthor.joinToString { it.mName }
             binding.hot.text = formatHotValue(item.mPopular)

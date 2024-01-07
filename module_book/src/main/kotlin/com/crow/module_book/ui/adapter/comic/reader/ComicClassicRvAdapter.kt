@@ -6,24 +6,14 @@ import android.widget.FrameLayout
 import androidx.annotation.IntRange
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.imageLoader
-import coil.request.ImageRequest
-import com.crow.base.app.app
-import com.crow.base.tools.coroutine.launchDelay
-import com.crow.base.tools.extensions.BASE_ANIM_300L
-import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.copymanga.BaseUserConfig
-import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.log
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.module_book.databinding.BookActivityComicRvBinding
 import com.crow.module_book.databinding.BookFragmentClassicIntentRvBinding
@@ -71,41 +61,16 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
     private val mDiffer = AsyncListDiffer(this, mDiffCallback)
 
 
-    inner class BodyViewHolder(binding: BookActivityComicRvBinding) : BaseGlideLoadingViewHolder<BookActivityComicRvBinding>(binding) {
-        fun onBind(position: Int) {
-            val item = getItem(position) as Content
-            val imageUrl = when {
+    inner class BodyViewHolder(binding: BookActivityComicRvBinding) : MangaCoilVH<BookActivityComicRvBinding>(binding) {
+        init { initComponent(binding.loading, binding.loadingText, binding.image, binding.retry) }
+
+        fun onBind(item: Content) {
+            loadImageWithRetry(when {
                 item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${BaseUserConfig.RESOLUTION}x.")
                 item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${BaseUserConfig.RESOLUTION}x.")
                 item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${BaseUserConfig.RESOLUTION}x.")
                 else -> item.mImageUrl
-            }
-            setLoadingState(false)
-            setRetryState(hide = true)
-            binding.loadingText.text = AppProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.removeProgressListener()?.remove()
-            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
-            updateItemViewHeight()
-            val request = ImageRequest.Builder(itemView.context)
-                .data(imageUrl)
-                .listener(
-                    onSuccess = { request, result ->
-                        setLoadingState(true)
-                        setRetryState(hide = true)
-                        updateItemViewHeight()
-                    },
-                    onError = { request, result ->
-                        setLoadingState(hide = true)
-                        binding.retry.doOnClickInterval {
-                            setLoadingState(hide = false)
-                            setRetryState(hide = true)
-                            (itemView.context as LifecycleOwner).launchDelay(BASE_ANIM_300L) { onBind(position) }
-                        }
-                    },
-                )
-                .target(binding.image)
-                .build()
-            app.imageLoader.enqueue(request)
+            })
         }
 
         private fun setLoadingState(hide: Boolean) {
@@ -114,9 +79,6 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
         }
         private fun setRetryState(hide: Boolean) {
             binding.retry.isGone = hide
-        }
-        private fun updateItemViewHeight() {
-            itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
         }
     }
 
@@ -167,7 +129,7 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
 
     override fun onBindViewHolder(vh: RecyclerView.ViewHolder, position: Int) {
         when(vh) {
-            is BodyViewHolder -> vh.onBind(position)
+            is BodyViewHolder -> vh.onBind(getItem(position) as Content)
             is IntentViewHolder -> vh.onBind(position)
         }
     }

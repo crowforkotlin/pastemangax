@@ -18,8 +18,9 @@ import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
+import com.crow.mangax.copymanga.tryConvert
 import com.crow.mangax.tools.language.ChineseConverter
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
 import com.crow.module_bookshelf.model.resp.bookshelf_novel.BookshelfNovelResults
 import kotlinx.coroutines.launch
@@ -51,38 +52,18 @@ class BSNovelRvAdapter(
      * ● 2023-10-22 01:35:08 周日 上午
      * @author crowforkotlin
      */
-    inner class BSViewHolder(binding: BookshelfFragmentRvBinding) : BaseGlideLoadingViewHolder<BookshelfFragmentRvBinding>(binding) {
+    inner class BSViewHolder(binding: BookshelfFragmentRvBinding) : MangaCoilVH<BookshelfFragmentRvBinding>(binding) {
 
         init {
-            with(binding.image.layoutParams) {
-                width = appComicCardWidth - appDp10
-                height = appComicCardHeight
-            }
+            initComponent(binding.loading, binding.loadingText, binding.image)
+            binding.image.layoutParams.height = appComicCardHeight
             binding.image.doOnClickInterval { onClick(getItem(absoluteAdapterPosition) ?: return@doOnClickInterval) }
         }
         
         fun onBind(item: BookshelfNovelResults) {
-            binding.loading.isVisible = true
-            binding.loadingText.isVisible = true
-            mAppGlideProgressFactory?.removeProgressListener()?.remove()
-            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(item.mNovel.mCover) { _, _, percentage, _, _ -> binding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
-
-            Glide.with(itemView.context)
-                .load(item.mNovel.mCover)
-                .addListener(mAppGlideProgressFactory?.getGlideRequestListener())
-                .transition(GenericTransitionOptions<Drawable>().transition { _, _ ->
-                    binding.loading.isInvisible = true
-                    binding.loadingText.isInvisible = true
-                    DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                })
-                .into(binding.image)
-
-            if (mChineseConvert) {
-                mLifecycleScope.launch { binding.name.text = ChineseConverter.convert(item.mNovel.mName) }
-            } else {
-                binding.name.text = item.mNovel.mName
-            }
             binding.time.text = item.mNovel.mDatetimeUpdated
+            mLifecycleScope.tryConvert(item.mNovel.mName, binding.name::setText)
+            loadImage(item.mNovel.mCover)
         }
     }
 

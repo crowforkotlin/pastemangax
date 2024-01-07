@@ -19,7 +19,7 @@ import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.base.ui.view.TooltipsView
 import com.crow.mangax.copymanga.tryConvert
 import com.crow.module_anime.databinding.AnimeFragmentRvBinding
@@ -40,7 +40,7 @@ class AnimeDiscoverPageAdapter(
         }
     }
 
-    inner class LoadingViewHolder(binding: AnimeFragmentRvBinding) : BaseGlideLoadingViewHolder<AnimeFragmentRvBinding>(binding) {
+    inner class LoadingViewHolder(binding: AnimeFragmentRvBinding) : MangaCoilVH<AnimeFragmentRvBinding>(binding) {
         init {
             binding.image.layoutParams.height = appComicCardHeight
 
@@ -54,15 +54,15 @@ class AnimeDiscoverPageAdapter(
             binding.loading.isVisible = true
             binding.loadingText.isVisible = true
             binding.loadingText.text = AppProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.removeProgressListener()?.remove()
+            mAppProgressFactory?.removeProgressListener()?.remove()
 
-            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(item.mCover) { _, _, percentage, _, _ ->
+            mAppProgressFactory = AppProgressFactory.createProgressListener(item.mCover) { _, _, percentage, _, _ ->
                 binding.loadingText.text = AppProgressFactory.formateProgress(percentage)
             }
 
             Glide.with(itemView.context)
                 .load(item.mCover)
-                .addListener(mAppGlideProgressFactory?.getGlideRequestListener())
+                .addListener(mAppProgressFactory?.getGlideRequestListener())
                 .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                     if (dataSource == DataSource.REMOTE) {
                         binding.loading.isInvisible = true

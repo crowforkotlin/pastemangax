@@ -21,7 +21,7 @@ import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
 import com.crow.module_bookshelf.model.resp.bookshelf_comic.BookshelfComicResults
 import kotlinx.coroutines.launch
@@ -53,9 +53,10 @@ class BSComicRvAdapter(
      * ● 2023-10-22 01:29:27 周日 上午
      * @author crowforkotlin
      */
-    inner class BSViewHolder(binding: BookshelfFragmentRvBinding) : BaseGlideLoadingViewHolder<BookshelfFragmentRvBinding>(binding) {
+    inner class BSViewHolder(binding: BookshelfFragmentRvBinding) : MangaCoilVH<BookshelfFragmentRvBinding>(binding) {
 
         init {
+            initComponent(binding.loading, binding.loadingText, binding.image)
             binding.image.layoutParams.height = appComicCardHeight
             binding.image.doOnClickInterval { onClick(getItem(absoluteAdapterPosition) ?: return@doOnClickInterval) }
         }
@@ -66,26 +67,7 @@ class BSComicRvAdapter(
             } else {
                 binding.imageNew.isGone = true
             }
-            binding.loading.isVisible = true
-            binding.loadingText.isVisible = true
-            binding.loadingText.text = AppProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.removeProgressListener()?.remove()
-            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(item.mComic.mCover) { _, _, percentage, _, _ -> binding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
-            Glide.with(itemView.context)
-                .load(item.mComic.mCover)
-                .listener(mAppGlideProgressFactory?.getGlideRequestListener())
-                .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                    if (dataSource == DataSource.REMOTE) {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                    } else {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        NoTransition()
-                    }
-                })
-                .into(binding.image)
+            loadImage(item.mComic.mCover)
             mLifecycleScope.launch { binding.name.text = if (mChineseConvert) ChineseConverter.convert(item.mComic.mName) else item.mComic.mName }
             binding.time.text = item.mComic.mDatetimeUpdated
         }

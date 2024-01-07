@@ -21,7 +21,7 @@ import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_home.databinding.HomeFragmentSearchRvBinding
 import com.crow.module_home.model.resp.search.novel_result.SearchNovelResult
 
@@ -39,7 +39,7 @@ class SearchNovelRvAdapter(
         }
     }
 
-    inner class LoadingViewHolder(binding: HomeFragmentSearchRvBinding) : BaseGlideLoadingViewHolder<HomeFragmentSearchRvBinding>(binding)
+    inner class LoadingViewHolder(binding: HomeFragmentSearchRvBinding) : MangaCoilVH<HomeFragmentSearchRvBinding>(binding)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LoadingViewHolder {
         return LoadingViewHolder(HomeFragmentSearchRvBinding.inflate(LayoutInflater.from(parent.context), parent,false)).also { vh ->
@@ -60,14 +60,14 @@ class SearchNovelRvAdapter(
         vh.binding.homeSearchRvLoading.isVisible = true
         vh.binding.homeSearchRvProgressText.isVisible = true
         vh.binding.homeSearchRvProgressText.text = AppProgressFactory.PERCENT_0
-        vh.mAppGlideProgressFactory?.removeProgressListener()?.remove()
-        vh.mAppGlideProgressFactory = AppProgressFactory.createProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
+        vh.mAppProgressFactory?.removeProgressListener()?.remove()
+        vh.mAppProgressFactory = AppProgressFactory.createProgressListener(item.mImageUrl) { _, _, percentage, _, _ ->
             vh.binding.homeSearchRvProgressText.text = AppProgressFactory.formateProgress(percentage)
         }
 
         Glide.with(vh.itemView.context)
             .load(item.mImageUrl)
-            .listener(vh.mAppGlideProgressFactory?.getGlideRequestListener())
+            .listener(vh.mAppProgressFactory?.getGlideRequestListener())
             .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
                 if (dataSource == DataSource.REMOTE) {
                     vh.binding.homeSearchRvLoading.isInvisible = true

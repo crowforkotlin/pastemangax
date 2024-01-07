@@ -21,7 +21,7 @@ import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.base.ui.view.TooltipsView
 import com.crow.mangax.copymanga.tryConvert
 import com.crow.module_home.databinding.HomeFragmentComicRvBodyBinding
@@ -105,8 +105,11 @@ class NewHomeComicRvAdapter(
      *
      * ● 2023-09-17 19:36:15 周日 下午
      */
-    inner class HomeComicBodyVH(binding: HomeFragmentComicRvBodyBinding) : BaseGlideLoadingViewHolder<HomeFragmentComicRvBodyBinding>(binding) {
+    inner class HomeComicBodyVH(binding: HomeFragmentComicRvBodyBinding) : MangaCoilVH<HomeFragmentComicRvBodyBinding>(binding) {
         init {
+
+            initComponent(binding.loading, binding.loadingText, binding.image)
+
             // 漫画卡片高度
             binding.image.layoutParams.height = appComicCardHeight
 
@@ -160,32 +163,6 @@ class NewHomeComicRvAdapter(
         // 初始化卡片内部视图
         private fun initView(name: String, imageUrl: String, author: List<AuthorResult>, hot: Int, lastestChapter: String?) {
 
-            binding.loading.isVisible = true
-            binding.loadingText.isVisible = true
-            binding.loadingText.text = AppProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.removeProgressListener()?.remove()
-            mAppGlideProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
-
-            // 加载封面
-            Glide.with(itemView)
-                .load(imageUrl)
-                .addListener(mAppGlideProgressFactory?.getGlideRequestListener())
-                .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                    if (dataSource == com.bumptech.glide.load.DataSource.REMOTE) {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                    } else {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        NoTransition()
-                    }
-                })
-                .into(binding.image)
-
-            // 漫画名
-            mLifecycleScope.tryConvert(name, binding.name::setText)
-
             // 热度 ： 12.3456 W
             binding.hot.text = formatHotValue(hot)
 
@@ -193,11 +170,18 @@ class NewHomeComicRvAdapter(
             binding.author.text = if (binding.author.isVisible) author.joinToString { it.name } else null
 
             // 最新章节
-            if (lastestChapter == null) binding.lastestChapter.isVisible = false
-            else {
+            if (lastestChapter == null) {
+                binding.lastestChapter.isVisible = false
+            } else {
                 binding.lastestChapter.isVisible = true
                 binding.lastestChapter.text = lastestChapter
             }
+
+            // 漫画名
+            mLifecycleScope.tryConvert(name, binding.name::setText)
+
+            // 加载封面
+            loadImage(imageUrl)
         }
     }
 

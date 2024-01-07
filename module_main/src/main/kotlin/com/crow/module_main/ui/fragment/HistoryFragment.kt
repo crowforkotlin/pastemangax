@@ -74,7 +74,7 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
      * ● 2023-10-04 17:00:17 周三 下午
      */
     private val mNovelAdapter by lazy {
-        NovelHistoryListAdapter { name, pathword ->
+        NovelHistoryListAdapter(lifecycleScope) { name, pathword ->
             onNavigate(Fragments.BookNovelInfo.name, name, pathword)
         }
     }

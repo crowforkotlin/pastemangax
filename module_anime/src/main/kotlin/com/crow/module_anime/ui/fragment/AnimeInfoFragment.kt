@@ -8,6 +8,8 @@ import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -253,21 +255,19 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
 
         mAppGlideProgressFactory = AppProgressFactory.createProgressListener(anim.mCover) { _, _, percentage, _, _ -> mBinding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
 
-        Glide.with(this)
-            .load(anim.mCover)
-            .addListener(mAppGlideProgressFactory?.getGlideRequestListener())
-            .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                if (dataSource == DataSource.REMOTE) {
-                    mBinding.loading.isInvisible = true
-                    mBinding.loadingText.isInvisible = true
-                    DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                } else {
-                    mBinding.loading.isInvisible = true
-                    mBinding.loadingText.isInvisible = true
-                    NoTransition()
-                }
-            })
-            .into(mBinding.image)
+        app.imageLoader.enqueue(
+            ImageRequest.Builder(mContext)
+                .listener(
+                    onSuccess = { _, _ ->
+                        mBinding.loading.isInvisible = true
+                        mBinding.loadingText.isInvisible = true
+                    },
+                    onError = { _, _ -> mBinding.loadingText.text = "-1%" },
+                )
+                .data(anim.mCover)
+                .target(mBinding.image)
+                .build()
+        )
 
         mBinding.company.text = getString(R.string.anime_company, anim.mCompany.mName)
         mBinding.hot.text = getString(R.string.anime_hot, formatHotValue(anim.mPopular))
