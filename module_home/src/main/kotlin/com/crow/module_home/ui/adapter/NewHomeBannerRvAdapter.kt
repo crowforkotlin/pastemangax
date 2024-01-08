@@ -4,7 +4,6 @@ import android.view.LayoutInflater.from
 import android.view.ViewGroup
 import androidx.annotation.IntRange
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.module_home.databinding.HomeFragmentBannerRvItemBinding
 import com.crow.module_home.model.resp.homepage.Banner
@@ -65,9 +64,6 @@ class NewHomeBannerRvAdapter(val onTap: (String) -> Unit) : RecyclerView.Adapter
 
         // BannerData
         val banner = getItem(position)
-
-        // loadImage
-        Glide.with(vh.itemView).load(banner.mImgUrl).into(vh.binding.baneerImage)
 
         // setImageText
          vh.binding.bannerText.text = banner.mBrief

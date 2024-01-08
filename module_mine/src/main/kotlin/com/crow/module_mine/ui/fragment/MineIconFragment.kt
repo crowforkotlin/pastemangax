@@ -14,18 +14,22 @@ import androidx.activity.addCallback
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.setPadding
-import com.bumptech.glide.Glide
+import coil.imageLoader
+import coil.request.ImageRequest
+import com.crow.module_mine.ui.tools.CoilEngine
+import com.crow.base.app.app
+import com.crow.base.tools.coroutine.launchDelay
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.popAsyncWithClear
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.module_mine.R
 import com.crow.module_mine.databinding.MineFragmentIconBinding
-import com.crow.module_mine.ui.tools.GlideEngine
 import com.crow.module_mine.ui.viewmodel.MineViewModel
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
@@ -105,12 +109,19 @@ class MineIconFragment : BaseMviFragment<MineFragmentIconBinding>() {
                     PictureSelector.create(mContext)
                         .openGallery(SelectMimeType.ofImage())
                         .setSelectionMode(SelectModeConfig.SINGLE)
-                        .setImageEngine(GlideEngine.createGlideEngine())
+                        .setImageEngine(CoilEngine.INSTANCE)
                         .setCropEngine { fragment, srcUri, destinationUri, dataSource, requestCode ->
                             val uCrop = UCrop.of(srcUri, destinationUri, dataSource)
                             uCrop.setImageEngine(object : UCropImageEngine {
                                 override fun loadImage(context: Context?, url: Uri?, maxWidth: Int, maxHeight: Int, call: UCropImageEngine.OnCallbackListener<Bitmap>?) {}
-                                override fun loadImage(context: Context?, url: String?, imageView: ImageView?) { Glide.with(context!!).load(url).into(imageView!!) }
+                                override fun loadImage(context: Context, url: String, imageView: ImageView) {
+                                    app.imageLoader.enqueue(
+                                        ImageRequest.Builder(context)
+                                            .data(url)
+                                            .target(imageView)
+                                            .build()
+                                    )
+                                }
                             })
                             uCrop.withOptions(UCrop.Options().also { it.isDarkStatusBarBlack(true) })
                             uCrop.start(fragment.requireActivity(), fragment, requestCode)
@@ -119,7 +130,11 @@ class MineIconFragment : BaseMviFragment<MineFragmentIconBinding>() {
                             override fun onResult(result: ArrayList<LocalMedia?>?) {
                                 // val cutImgFile = File(result?.get(0)?.cutPath ?: return)
                             }
-                            override fun onCancel() {}
+                            override fun onCancel() {
+                                launchDelay(300L) {
+                                    mWindowInsets?.isAppearanceLightStatusBars = false
+                                }
+                            }
                         })
                 }
             }

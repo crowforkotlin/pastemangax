@@ -1,11 +1,5 @@
 package com.crow.mangax.copymanga.okhttp
 
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import com.crow.base.tools.extensions.log
-
 /**
  * ● Okhttp进度加载
  *
@@ -42,8 +36,8 @@ class AppProgressFactory private constructor (private val mUrl: String) {
          * ● 2024-01-05 01:37:19 周五 上午
          * @author crowforkotlin
          */
-        fun createProgressListener(url: String, appOnGlideProgressListener: AppProgressListener): AppProgressFactory {
-            return AppProgressFactory(url).setProgressListenerse { iUrl, isComplete, percentage, bytesRead, totalBytes -> appOnGlideProgressListener.doOnProgress(iUrl, isComplete, percentage, bytesRead, totalBytes) }
+        fun createProgressListener(url: String, progressListener: AppProgressListener): AppProgressFactory {
+            return AppProgressFactory(url).setProgressListenerse { iUrl, isComplete, percentage, bytesRead, totalBytes -> progressListener.doOnProgress(iUrl, isComplete, percentage, bytesRead, totalBytes) }
         }
 
         /**
@@ -104,25 +98,6 @@ class AppProgressFactory private constructor (private val mUrl: String) {
      * @author crowforkotlin
      */
     init { mProgressManagerMap[mUrl] = this }
-
-    /**
-     * ● Glide监听扩展
-     *
-     * ● 2024-01-05 01:43:11 周五 上午
-     * @author crowforkotlin
-     */
-    inline fun<T> getGlideRequestListener(crossinline failure: (catch: GlideException?) -> Boolean = { false }, crossinline ready: (resource: T, dataSource: DataSource?) -> Boolean= { _, _ -> false }): RequestListener<T> {
-        return object : RequestListener<T> {
-            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<T>, isFirstResource: Boolean) : Boolean {
-                removeProgressListener().remove()
-                return failure(e)
-            }
-            override fun onResourceReady(resource: T & Any, model: Any, target: Target<T>, dataSource: DataSource, isFirstResource: Boolean) : Boolean {
-                removeProgressListener().remove()
-                return ready(resource, dataSource)
-            }
-        }
-    }
 
     /**
      * ● 设置进度监听器

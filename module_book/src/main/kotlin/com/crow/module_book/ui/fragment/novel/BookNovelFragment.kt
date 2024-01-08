@@ -73,7 +73,7 @@ class BookNovelFragment : BookFragment() {
     private fun showNovelInfoPage() {
         val novelInfoPage = mBookVM.mNovelInfoPage?.mNovel ?: return
         mBookVM.findReadedBookChapterOnDB(novelInfoPage.mName, BookType.NOVEL)
-        mAppGlideProgressFactory = AppProgressFactory.createProgressListener(novelInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
+        mProgressFactory = AppProgressFactory.createProgressListener(novelInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
         app.imageLoader.enqueue(
             ImageRequest.Builder(mContext)
                 .listener(

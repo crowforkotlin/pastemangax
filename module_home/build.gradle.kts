@@ -76,8 +76,8 @@ dependencies {
     // 引入lib_mangax库
     implementation(project(":lib_mangax"))
 
-    // Glide Compose Alpha Version
-    implementation(compose.glide)
+    // Coil Compose Alpha Version
+    implementation(compose.coil)
 
     // pager for compose
     implementation(compose.accompanist.pager)

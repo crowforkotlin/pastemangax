@@ -21,7 +21,7 @@ val networkModule = module {
 
     val named_CopyMangaX = named("CopyMangaX")
     val named_HotMangaX = named("HotMangaX")
-    val named_ProgressGlide = named("ProgressOkHttp")
+    val named_Progress = named("ProgressOkHttp")
 
     /**
      * ● 默认Okhttp
@@ -58,10 +58,10 @@ val networkModule = module {
     }
 
     /**
-     * ● Glide进度加载 By Okhttp
+     * ● 进度加载 By Okhttp
      * ● 2023-06-16 21:41:59 周五 下午
      */
-    single(named_ProgressGlide) {
+    single(named_Progress) {
         OkHttpClient.Builder().apply {
             addInterceptor { chain ->
                 val request = chain.request()

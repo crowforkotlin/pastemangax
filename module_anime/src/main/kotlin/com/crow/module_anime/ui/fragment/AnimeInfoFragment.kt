@@ -96,11 +96,11 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
     }
 
     /**
-     * ● Glide进度加载工厂
+     * ● 进度加载工厂
      *
      * ● 2023-10-12 01:11:44 周四 上午
      */
-    private var mAppGlideProgressFactory: AppProgressFactory? = null
+    private var mProgressFactory: AppProgressFactory? = null
 
     /**
      * ● 章节适配器
@@ -265,7 +265,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
 
         val anim = info.mCartoon
 
-        mAppGlideProgressFactory = AppProgressFactory.createProgressListener(anim.mCover) { _, _, percentage, _, _ -> mBinding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
+        mProgressFactory = AppProgressFactory.createProgressListener(anim.mCover) { _, _, percentage, _, _ -> mBinding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
 
         app.imageLoader.enqueue(
             ImageRequest.Builder(mContext)

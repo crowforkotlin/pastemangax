@@ -54,8 +54,8 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         const val HIDDEN_CHANED = "HIDDEN_CHANGED"
     }
 
-    /** ● AppGlideFactory GLide 进度加载 */
-    protected var mAppGlideProgressFactory: AppProgressFactory? = null
+    /** ● AppProgressFactory 进度加载 */
+    protected var mProgressFactory: AppProgressFactory? = null
 
     /** ● 书架VM */
     protected val mBookVM by viewModel<BookViewModel>()
@@ -320,8 +320,8 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         // 设置成false是因为 当View重新创建的时候 可以重新添加章节选择器
         mIsTabAlreadyAdded = false
 
-        mAppGlideProgressFactory?.remove()?.removeProgressListener()
-        mAppGlideProgressFactory = null
+        mProgressFactory?.remove()?.removeProgressListener()
+        mProgressFactory = null
 
         mBaseEvent.remove(LOGIN_CHAPTER_HAS_BEEN_SETED)
     }

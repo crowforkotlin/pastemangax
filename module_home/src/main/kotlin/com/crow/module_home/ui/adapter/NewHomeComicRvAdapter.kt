@@ -10,14 +10,17 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.crow.mangax.copymanga.appComicCardHeight
-import com.crow.mangax.copymanga.formatHotValue
+import coil.imageLoader
+import coil.request.ImageRequest
+import com.crow.base.app.app
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.base.ui.view.TooltipsView
+import com.crow.mangax.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.tryConvert
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_home.databinding.HomeFragmentComicRvBodyBinding
 import com.crow.module_home.databinding.HomeFragmentComicRvHeaderBinding
 import com.crow.module_home.databinding.HomeFragmentComicRvRecRefreshBinding
@@ -124,7 +127,12 @@ class NewHomeComicRvAdapter(
                 is NewComic -> { initView(item.mComic.mName, item.mComic.mImageUrl, item.mComic.mAuthorResult, item.mComic.mPopular, item.mComic.mLastChapterName) }
                 is FinishComic -> { initView(item.mName, item.mImageUrl, item.mAuthorResult, item.mPopular, null) }
                 is Topices -> {
-                    Glide.with(itemView).load(item.mImageUrl).into(binding.image)
+                    app.imageLoader.enqueue(
+                        ImageRequest.Builder(itemView.context)
+                            .data(if(AppConfig.mCoverOrinal) getOrignalCover(item.mImageUrl) else item.mImageUrl)
+                            .target(binding.image)
+                            .build()
+                    )
                     binding.author.isVisible = true
                     binding.author.text = item.mDatetimeCreated
                     mLifecycleScope.tryConvert(item.mTitle, binding.name::setText)

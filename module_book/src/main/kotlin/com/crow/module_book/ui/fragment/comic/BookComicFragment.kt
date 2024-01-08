@@ -82,7 +82,7 @@ class BookComicFragment : BookFragment() {
         // 在DB中查找已读章节
         mBookVM.findReadedBookChapterOnDB(comicInfoPage.mName, BookType.COMIC)
 
-        mAppGlideProgressFactory = AppProgressFactory.createProgressListener(comicInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
+        mProgressFactory = AppProgressFactory.createProgressListener(comicInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
 
         app.imageLoader.enqueue(
             ImageRequest.Builder(mContext)

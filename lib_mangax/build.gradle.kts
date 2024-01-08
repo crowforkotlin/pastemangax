@@ -101,9 +101,6 @@ dependencies {
     // 引入App下libs文件下的所有Jar包
     api(fileTree("dir" to "libs", "include" to "*.jar"))
 
-    // Glide KSP
-    ksp(libs.glide.ksp)
-
     // Base 库
     implementation(project(":lib_base"))
 

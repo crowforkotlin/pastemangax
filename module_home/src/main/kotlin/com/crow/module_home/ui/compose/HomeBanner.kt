@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -51,9 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.integration.compose.CrossFade
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil.compose.AsyncImage
 import com.crow.base.R.color.base_grey_500_75
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.tools.language.ChineseConverter
@@ -143,7 +142,7 @@ fun Banner(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BannerItem(
     banner: Banner,
@@ -208,7 +207,7 @@ fun BannerItem(
                 )
             )
     ) {
-        GlideImage(
+        /*GlideImage(
             model = banner.mImgUrl,
             contentDescription = null,
             transition = CrossFade.Companion,
@@ -219,13 +218,10 @@ fun BannerItem(
                     drawContent()
                     drawRect(brush = Brush.verticalGradient(colors))
                 }
-        )
-
-
-        /*AsyncImage(
-            model = banner.mImgUrl, ,
+        )*/
+        AsyncImage(
+            model = banner.mImgUrl,
             contentDescription = null,
-
             contentScale = ContentScale.Crop,
             placeholder = ColorPainter(MaterialTheme.colorScheme.surface),
             modifier = Modifier
@@ -234,7 +230,7 @@ fun BannerItem(
                     drawContent()
                     drawRect(brush = Brush.verticalGradient(colors))
                 }
-        )*/
+        )
         DrawOutlineText(
             text = convertedText.value,
             textMaxLine = 3,

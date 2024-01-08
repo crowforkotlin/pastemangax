@@ -1,25 +1,15 @@
 
 package com.crow.module_book.ui.adapter.comic.reader
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.IntRange
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.GenericTransitionOptions
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.bumptech.glide.request.transition.NoTransition
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
-import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_book.databinding.BookActivityComicButtonRvBinding
 import com.crow.module_book.databinding.BookActivityComicRvBinding
@@ -63,46 +53,6 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         fun onBind(item: Content) {
 
-            binding.loading.isVisible = true
-            binding.loadingText.isVisible = true
-            binding.loadingText.text = AppProgressFactory.PERCENT_0
-            binding.retry.isVisible = false
-            mAppProgressFactory?.removeProgressListener()?.remove()
-            mAppProgressFactory = AppProgressFactory.createProgressListener(item.mImageUrl!!) { _, _, percentage, _, _ ->
-                binding.loadingText.text = AppProgressFactory.formateProgress(percentage)
-            }
-
-            Glide.with(itemView.context)
-                .load(item.mImageUrl)
-                .addListener(mAppProgressFactory?.getGlideRequestListener({
-                    binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
-                    binding.retry.animateFadeIn()
-                    binding.loading.animateFadeOut()
-                    binding.loadingText.animateFadeOut()
-                    binding.retry.doOnClickInterval(false) {
-                        binding.retry.animateFadeOut()
-                        binding.loading.animateFadeIn()
-                        binding.loadingText.animateFadeIn()
-                        onBind(item)
-                    }
-                    false
-                },  { _, dataSource ->
-                    binding.root.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
-                    false
-                }))
-                .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                    val transition = if (dataSource == DataSource.REMOTE) {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        DrawableCrossFadeTransition(300, true)
-                    } else {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        NoTransition()
-                    }
-                    transition
-                })
-                .into(binding.image)
         }
     }
 

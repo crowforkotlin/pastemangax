@@ -169,9 +169,6 @@ android {
 
 dependencies {
 
-    // Glide编译器
-    ksp(libs.glide.ksp)
-
     // 引入lib_base库
     implementation(project(":lib_base"))
 
