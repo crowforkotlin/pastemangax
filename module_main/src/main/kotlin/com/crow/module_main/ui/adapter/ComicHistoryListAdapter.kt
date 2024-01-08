@@ -10,7 +10,7 @@ import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.formatHotValue
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.view.TooltipsView
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_main.databinding.MainHistoryRvBinding
@@ -65,7 +65,7 @@ PagingDataAdapter<ComicHistoryResult, ComicHistoryListAdapter.HistoryVH>(DiffCal
             binding.author.text = context.getString(bookR.string.book_author, comic.mAuthor.joinToString { it.mName })
             binding.hot.text = context.getString(bookR.string.book_hot, formatHotValue(comic.mPopular))
 
-            loadImage(comic.mCover)
+            loadCoverImage(comic.mCover)
         }
     }
 

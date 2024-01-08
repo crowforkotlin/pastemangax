@@ -32,7 +32,7 @@ class AnimeSearchPageAdapter(
         init { initComponent(binding.loading, binding.loadingText, binding.image) }
 
         fun onBind(item: SearchResult) {
-            loadImage(item.mCover)
+            loadCoverImage(item.mCover)
             binding.name.text = item.mName
             binding.hot.text = formatHotValue(item.mPopular)
             binding.time.text = item.mYears

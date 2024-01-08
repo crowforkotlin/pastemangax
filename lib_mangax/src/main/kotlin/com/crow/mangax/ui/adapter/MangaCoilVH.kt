@@ -15,11 +15,21 @@ import com.crow.base.app.app
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 
 open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHolder(binding.root) {
+
+    companion object {
+        val mRegex = Regex("""\.(jpg|jpeg|png|gif|webp|jfif)(\.\d+x\d+\..+)""", RegexOption.IGNORE_CASE)
+
+        fun getOrignalCover(url: String): String {
+            return url.replace(mRegex, ".$1")
+        }
+    }
+
     var mAppProgressFactory: AppProgressFactory? = null
     protected lateinit var mLoading: CircularProgressIndicator
     protected lateinit var mLoadingText: TextView
@@ -67,7 +77,7 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
         )
     }
 
-    fun loadImage(imageUrl: String) {
+    fun loadCoverImage(imageUrl: String) {
         mLoading.isInvisible = false
         mLoadingText.isInvisible = false
         mLoadingText.text = AppProgressFactory.PERCENT_0
@@ -83,13 +93,9 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
                         mLoading.isInvisible = true
                         mLoadingText.isInvisible = true
                     },
-                    onError = { _, _ ->
-                          mLoadingText.text = "-1%"
-//                        mLoading.isInvisible = true
-//                        mLoadingText.isInvisible = true
-                    },
+                    onError = { _, _ -> mLoadingText.text = "-1%" },
                 )
-                .data(imageUrl)
+                .data(if(AppConfig.mCoverOrinal) getOrignalCover(imageUrl) else imageUrl)
                 .target(mImage)
                 .build()
         )

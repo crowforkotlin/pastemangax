@@ -9,7 +9,7 @@ import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.formatHotValue
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.copymanga.entity.AppConfigEntity
+import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_main.databinding.MainHistoryRvBinding
@@ -50,7 +50,7 @@ class NovelHistoryListAdapter(
 
             val novel = item.mBook
 
-            if (AppConfigEntity.mChineseConvert) {
+            if (AppConfig.mChineseConvert) {
                 mLifecycleScope.launch {
                     binding.name.text = ChineseConverter.convert(novel.mName)
                     binding.readed.text = ChineseConverter.convert(context.getString(bookR.string.book_readed_chapter, item.mLastChapterName))
@@ -65,7 +65,7 @@ class NovelHistoryListAdapter(
             binding.author.text = context.getString(bookR.string.book_author, novel.mAuthor.joinToString { it.mName })
             binding.hot.text = context.getString(bookR.string.book_hot, formatHotValue(novel.mPopular))
 
-            loadImage(novel.mCover)
+            loadCoverImage(novel.mCover)
         }
     }
 

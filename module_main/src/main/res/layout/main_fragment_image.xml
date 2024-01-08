@@ -6,7 +6,7 @@
 	android:background="@color/black">
 
 	<com.github.chrisbanes.photoview.PhotoView
-		android:id="@+id/main_image_photoview"
+		android:id="@+id/photoview"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" />
 
@@ -33,5 +33,26 @@
 		android:gravity="center"
 		android:textColor="@android:color/white"
 		android:textSize="@dimen/base_sp7" />
+
+	<com.google.android.material.progressindicator.CircularProgressIndicator
+		android:id="@+id/loading"
+		style="@style/Widget.Material3.CircularProgressIndicator.Small"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:indeterminate="true"
+		app:indicatorColor="@color/mangax_light_blue_500"
+		app:indicatorSize="@dimen/base_dp36"
+		app:trackCornerRadius="@dimen/base_dp99" />
+
+	<TextView
+		android:id="@+id/loading_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:textColor="@color/base_white"
+		android:text="@string/mangax_zero"
+		android:textSize="@dimen/base_sp10"
+		android:textStyle="bold" />
 
 </FrameLayout>

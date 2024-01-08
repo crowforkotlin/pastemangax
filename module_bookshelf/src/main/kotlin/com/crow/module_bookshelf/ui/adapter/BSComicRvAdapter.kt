@@ -1,25 +1,16 @@
 package com.crow.module_bookshelf.ui.adapter
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.bumptech.glide.GenericTransitionOptions
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.bumptech.glide.request.transition.NoTransition
 import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.mangax.copymanga.appComicCardHeight
-import com.crow.mangax.copymanga.okhttp.AppProgressFactory
-import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
@@ -67,7 +58,7 @@ class BSComicRvAdapter(
             } else {
                 binding.imageNew.isGone = true
             }
-            loadImage(item.mComic.mCover)
+            loadCoverImage(item.mComic.mCover)
             mLifecycleScope.launch { binding.name.text = if (mChineseConvert) ChineseConverter.convert(item.mComic.mName) else item.mComic.mName }
             binding.time.text = item.mComic.mDatetimeUpdated
         }

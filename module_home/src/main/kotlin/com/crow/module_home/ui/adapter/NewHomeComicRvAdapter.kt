@@ -2,23 +2,17 @@
 
 package com.crow.module_home.ui.adapter
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.IntRange
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.bumptech.glide.request.transition.NoTransition
 import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.formatHotValue
-import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.ui.adapter.MangaCoilVH
@@ -181,7 +175,7 @@ class NewHomeComicRvAdapter(
             mLifecycleScope.tryConvert(name, binding.name::setText)
 
             // 加载封面
-            loadImage(imageUrl)
+            loadCoverImage(imageUrl)
         }
     }
 

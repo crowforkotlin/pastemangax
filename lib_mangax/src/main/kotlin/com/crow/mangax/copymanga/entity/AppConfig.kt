@@ -1,6 +1,7 @@
 
 package com.crow.mangax.copymanga.entity
 
+import android.content.SharedPreferences
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseUserConfig
@@ -25,7 +26,7 @@ import com.squareup.moshi.Json
  * @property mResolution 分辨率 800、1200、1500
  * @constructor Create empty App config entity
  */
-data class AppConfigEntity(
+data class AppConfig(
 
     @Json(name = "App_FirstInit")
     val mAppFirstInit: Boolean = false,
@@ -79,30 +80,39 @@ data class AppConfigEntity(
         var mHotAccurateDisplay = false
             private set
 
+        var mCoverOrinal = false
+            private set
+
+        private var mAppConfig: AppConfig? =null
+
         fun initialization() {
             val sp = SpNameSpace.CATALOG_CONFIG.getSharedPreferences()
             mDarkMode = sp.getBoolean(SpNameSpace.Key.ENABLE_DARK, false)
             mChineseConvert = sp.getBoolean(SpNameSpace.Key.ENABLE_CHINESE_CONVERT, true)
             mHotAccurateDisplay = sp.getBoolean(SpNameSpace.Key.ENABLE_HOT_ACCURATE_DISPLAY, false)
             mUpdatePrefix = sp.getBoolean(SpNameSpace.Key.ENABLE_UPDATE_PREFIX, true)
+            mCoverOrinal = sp.getBoolean(SpNameSpace.Key.ENABLE_COVER_ORINAL, false)
         }
 
-        private var mAppConfigEntity: AppConfigEntity? =null
-
-        fun getInstance(): AppConfigEntity {
-            return mAppConfigEntity!!
+        fun getAppSP(): SharedPreferences {
+            return SpNameSpace.CATALOG_CONFIG.getSharedPreferences()
         }
 
-        suspend fun saveAppConfig(appConfigEntity: AppConfigEntity) {
-            app.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(appConfigEntity.also { mAppConfigEntity = it }))
+
+        fun getInstance(): AppConfig {
+            return mAppConfig!!
         }
 
-        suspend fun readAppConfig(): AppConfigEntity? {
-            return  toTypeEntity<AppConfigEntity>(app.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG)).also { mAppConfigEntity = it }
+        suspend fun saveAppConfig(appConfig: AppConfig) {
+            app.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(appConfig.also { mAppConfig = it }))
         }
 
-        fun readAppConfigSync(): AppConfigEntity? {
-            return toTypeEntity<AppConfigEntity>(app.appConfigDataStore.decode(DataStoreAgent.APP_CONFIG)).also { mAppConfigEntity = it }
+        suspend fun readAppConfig(): AppConfig? {
+            return  toTypeEntity<AppConfig>(app.appConfigDataStore.asyncDecode(DataStoreAgent.APP_CONFIG)).also { mAppConfig = it }
+        }
+
+        fun readAppConfigSync(): AppConfig? {
+            return toTypeEntity<AppConfig>(app.appConfigDataStore.decode(DataStoreAgent.APP_CONFIG)).also { mAppConfig = it }
         }
     }
 }

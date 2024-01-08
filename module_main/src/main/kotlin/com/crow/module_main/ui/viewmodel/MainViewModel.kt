@@ -3,8 +3,8 @@ package com.crow.module_main.ui.viewmodel
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.lifecycle.viewModelScope
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
-import com.crow.mangax.copymanga.entity.AppConfigEntity
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
@@ -28,22 +28,22 @@ import kotlin.coroutines.resume
 class MainViewModel(val repository: AppRepository) : BaseMviViewModel<AppIntent>() {
 
     /** ● app配置 设置粘性状态 （内部访问）*/
-    private var _mAppConfig = MutableStateFlow<AppConfigEntity?>(null)
+    private var _mAppConfig = MutableStateFlow<AppConfig?>(null)
 
     /** ● app配置 设置粘性状态 （ 公开）*/
-    val mAppConfig: StateFlow<AppConfigEntity?> get() = _mAppConfig
+    val mAppConfig: StateFlow<AppConfig?> get() = _mAppConfig
 
     /** ● 是否重启（内存重启、旋转、夜间模式切换） */
     var mIsRestarted: Boolean = false
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            _mAppConfig.value = AppConfigEntity.readAppConfig() ?: AppConfigEntity(true)
+            _mAppConfig.value = AppConfig.readAppConfig() ?: AppConfig(true)
         }
     }
 
-    fun saveAppConfig(appConfigEntity: AppConfigEntity = AppConfigEntity()) {
-        viewModelScope.launch { AppConfigEntity.saveAppConfig(appConfigEntity) }
+    fun saveAppConfig(appConfig: AppConfig = AppConfig()) {
+        viewModelScope.launch { AppConfig.saveAppConfig(appConfig) }
     }
 
     fun saveCatalogDarkModeEnable(darkMode: Int) {
@@ -57,10 +57,10 @@ class MainViewModel(val repository: AppRepository) : BaseMviViewModel<AppIntent>
         }
     }
 
-    suspend fun getReadedAppConfig(): AppConfigEntity? {
+    suspend fun getReadedAppConfig(): AppConfig? {
         return suspendCancellableCoroutine { continuation ->
             viewModelScope.launch {
-                runCatching { continuation.resume(AppConfigEntity.readAppConfig()) }.onFailure { continuation.resume(null) }
+                runCatching { continuation.resume(AppConfig.readAppConfig()) }.onFailure { continuation.resume(null) }
             }
         }
     }

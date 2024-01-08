@@ -7,7 +7,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.crow.mangax.copymanga.BaseUserConfig
-import com.crow.mangax.copymanga.entity.AppConfigEntity
+import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncDecode
 import com.crow.base.tools.extensions.toTypeEntity
@@ -29,7 +29,16 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import java.net.HttpURLConnection
 import kotlin.coroutines.resume
 
-class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIntent>(){
+class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIntent>() {
+
+    /**
+     * ● 封面
+     *
+     * ● 2024-01-08 22:55:28 周一 下午
+     * @author crowforkotlin
+     */
+    var mCover: String? = null
+        private set
 
     /**
      * ● PagingFlow
@@ -165,7 +174,9 @@ class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIn
 
     private fun onPageInfoIntent(intent: AnimeIntent.PageInfoIntent) {
         flowResult(intent, repository.getAnimeInfoPage(intent.pathword)) { resp ->
-            intent.copy(info = resp.mResults)
+            intent.copy(info = resp.mResults.also {
+                mCover = it.mCartoon.mCover
+            })
         }
     }
 
@@ -258,15 +269,15 @@ class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIn
 
     }
 
-    suspend fun getReadedAppConfig(): AppConfigEntity? {
+    suspend fun getReadedAppConfig(): AppConfig? {
         return suspendCancellableCoroutine { continuation ->
             viewModelScope.launch {
-                runCatching { continuation.resume(AppConfigEntity.readAppConfig()) }.onFailure { continuation.resume(null) }
+                runCatching { continuation.resume(AppConfig.readAppConfig()) }.onFailure { continuation.resume(null) }
             }
         }
     }
 
-    fun saveAppConfig(appConfigEntity: AppConfigEntity = AppConfigEntity()) {
-        viewModelScope.launch { AppConfigEntity.saveAppConfig(appConfigEntity) }
+    fun saveAppConfig(appConfig: AppConfig = AppConfig()) {
+        viewModelScope.launch { AppConfig.saveAppConfig(appConfig) }
     }
 }

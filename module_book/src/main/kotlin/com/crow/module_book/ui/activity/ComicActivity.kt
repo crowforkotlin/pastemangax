@@ -20,7 +20,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.hasGlobalPoint

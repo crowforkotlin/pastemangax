@@ -1,29 +1,16 @@
 package com.crow.module_bookshelf.ui.adapter
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.bumptech.glide.GenericTransitionOptions
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.crow.mangax.copymanga.appComicCardHeight
-import com.crow.mangax.copymanga.appComicCardWidth
-import com.crow.mangax.copymanga.appDp10
-import com.crow.mangax.copymanga.okhttp.AppProgressFactory
-import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
 import com.crow.mangax.copymanga.tryConvert
-import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
 import com.crow.module_bookshelf.model.resp.bookshelf_novel.BookshelfNovelResults
-import kotlinx.coroutines.launch
 
 class BSNovelRvAdapter(
     private val mLifecycleScope: LifecycleCoroutineScope,
@@ -63,7 +50,7 @@ class BSNovelRvAdapter(
         fun onBind(item: BookshelfNovelResults) {
             binding.time.text = item.mNovel.mDatetimeUpdated
             mLifecycleScope.tryConvert(item.mNovel.mName, binding.name::setText)
-            loadImage(item.mNovel.mCover)
+            loadCoverImage(item.mNovel.mCover)
         }
     }
 

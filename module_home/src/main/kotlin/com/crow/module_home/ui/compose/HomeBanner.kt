@@ -27,7 +27,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,13 +55,10 @@ import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.crow.base.R.color.base_grey_500_75
-import com.crow.base.tools.extensions.log
-import com.crow.mangax.copymanga.entity.AppConfigEntity
+import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_home.model.resp.homepage.Banner
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.absoluteValue
 import kotlin.math.sign
@@ -167,7 +163,7 @@ fun BannerItem(
     // 创建一个状态来保存转换后的文本
     val convertedText = remember { mutableStateOf(banner.mBrief) }
 
-    if (AppConfigEntity.mChineseConvert) {
+    if (AppConfig.mChineseConvert) {
         LaunchedEffect(banner.mBrief) {
             convertedText.value = ChineseConverter.convert(banner.mBrief)
         }

@@ -22,7 +22,7 @@ import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.BaseViewState
-import com.crow.mangax.copymanga.entity.AppConfigEntity
+import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.tools.language.ChineseConverter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDivider
@@ -60,7 +60,7 @@ private val formatter  = DecimalFormat("###,###.##", DecimalFormatSymbols(Locale
  * @author crowforkotlin
  */
 fun formatHotValue(value: Int): String {
-    return if(!AppConfigEntity.mHotAccurateDisplay)  {
+    return if(!AppConfig.mHotAccurateDisplay)  {
         return when {
             value >= 10_000_000 -> {
                 String.format("%.1fW", value / 10_000.0)
@@ -146,5 +146,5 @@ fun View.processTokenError(code: Int, msg: String?, doOnCancel: (MaterialAlertDi
 }
 
 inline fun LifecycleCoroutineScope.tryConvert(text: String, crossinline result: (String) -> Unit) {
-   if (AppConfigEntity.mChineseConvert) { launch { result(ChineseConverter.convert(text)) } } else result(text)
+   if (AppConfig.mChineseConvert) { launch { result(ChineseConverter.convert(text)) } } else result(text)
 }

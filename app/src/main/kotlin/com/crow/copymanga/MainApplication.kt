@@ -7,24 +7,18 @@ import coil.Coil
 import coil.EventListener
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import coil.drawable.CrossfadeDrawable
-import coil.request.ErrorResult
 import coil.request.ImageRequest
-import coil.request.ImageResult
 import coil.request.SuccessResult
 import coil.transition.CrossfadeTransition
-import coil.transition.Transition
-import coil.transition.TransitionTarget
 import com.crow.base.app.BaseApp
-import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.copymanga.model.di.factoryModule
 import com.crow.copymanga.model.di.fragmentModule
 import com.crow.copymanga.model.di.networkModule
 import com.crow.copymanga.model.di.servicesModule
 import com.crow.copymanga.model.di.singleModule
 import com.crow.copymanga.model.di.viewModelModule
-import com.crow.mangax.copymanga.entity.AppConfigEntity
+import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.tools.language.ChineseConverter
 import okhttp3.OkHttpClient
@@ -48,7 +42,7 @@ class MainApplication : BaseApp(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
 
-        AppConfigEntity.initialization()
+        AppConfig.initialization()
 
         AppCompatDelegate.setDefaultNightMode(if(mDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
 

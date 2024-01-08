@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.app
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.view.TooltipsView

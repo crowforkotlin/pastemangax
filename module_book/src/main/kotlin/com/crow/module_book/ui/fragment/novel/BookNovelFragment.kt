@@ -30,7 +30,7 @@ import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_book.R
 import com.crow.module_book.model.entity.BookChapterEntity
@@ -285,7 +285,7 @@ class BookNovelFragment : BookFragment() {
            navigateImage(get<Fragment>(named(Fragments.Image.name)).also { it.arguments =
                bundleOf(
                    BaseStrings.IMAGE_URL to mBookVM.mNovelInfoPage?.mNovel?.mCover,
-                   "name" to mBookVM.mNovelInfoPage?.mNovel?.mName
+                   BaseStrings.NAME to mBookVM.mNovelInfoPage?.mNovel?.mName
                )
            })
         }

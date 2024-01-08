@@ -19,7 +19,7 @@ import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseStrings.ID
 import com.crow.mangax.copymanga.appEvent
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.FlowBus
