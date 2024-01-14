@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isInvisible
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.crow.base.R
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.toast
@@ -11,7 +13,7 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderContent
-import com.crow.module_book.model.intent.BookIntent
+import com.crow.module_book.model.entity.comic.reader.ReaderState
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicStriptRvAdapter
 import com.crow.module_book.ui.fragment.BookFragment
@@ -19,8 +21,10 @@ import com.crow.module_book.ui.view.comic.rv.ComicLayoutManager
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import com.crow.base.R as baseR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -30,11 +34,11 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
  * @Description: BookStripComicFragment
  * @formatter:on
  **************************/
-class BookStriptComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
+class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
-    private val mComicVM by activityViewModel<ComicViewModel>()
+    private val mVM by activityViewModel<ComicViewModel>()
 
-    private val mComicStriptRvAdapter: ComicStriptRvAdapter by lazy { ComicStriptRvAdapter() }
+    private val mAdapter: ComicStriptRvAdapter by lazy { ComicStriptRvAdapter() }
 
     private val mWindowInsetsControllerCompat by lazy {
         WindowInsetsControllerCompat(
@@ -43,18 +47,16 @@ class BookStriptComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
         )
     }
 
-
     private val mBaseEvent  = BaseEvent.newInstance()
 
-    override fun getViewBinding(inflater: LayoutInflater) =
-        BookFragmentComicBinding.inflate(inflater)
+    override fun getViewBinding(inflater: LayoutInflater) = BookFragmentComicBinding.inflate(inflater)
 
     private suspend fun showComicPage(reader: ReaderContent) = coroutineScope {
         val setItemTask = async {
-            // mComicStriptRvAdapter.submitList(contents)
+//             mAdapter.submitList(reader.mPages)
             yield()
         }
-        if (mBinding.comicRv.isInvisible) mBinding.comicRv.animateFadeIn()
+        if (mBinding.list.isInvisible) mBinding.list.animateFadeIn()
         setItemTask.await()
     }
 
@@ -64,51 +66,63 @@ class BookStriptComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 
-    override fun initData(savedInstanceState: Bundle?) {
-        mComicVM.input(BookIntent.GetComicPage(mComicVM.mPathword ?: return, mComicVM.mUuid ?: return))
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
 
         // Set LayoutManager support zoom
-        mBinding.comicRv.layoutManager = ComicLayoutManager(requireActivity() as ComicActivity)
+        mBinding.list.layoutManager = ComicLayoutManager(requireActivity() as ComicActivity)
 
         // Set RvAdapter
-        mBinding.comicRv.adapter = mComicStriptRvAdapter
+        mBinding.list.adapter = mAdapter
 
         // Show ComicPage
         // showComicPage(mComicVM.mContents)
     }
 
     override fun initListener() {
-        mBinding.comicRv.setPreScrollListener { position ->
-            mComicVM.onScroll(position)
+        mBinding.list.setPreScrollListener { position ->
+            mVM.onScroll(position)
+            val reader = mVM.mContent.value
+            mVM.updateUiState(
+                ReaderState(
+                    mReaderContent = reader,
+                    mTotalPages = reader.mPages.size + 2,
+                    mCurrentPage = (mBinding.list.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1
+                )
+            )
         }
     }
 
     override fun onPause() {
         super.onPause()
-        mBinding.comicRv.stopScroll()
+        mBinding.list.stopScroll()
     }
 
     override fun initObserver(savedInstanceState: Bundle?) {
-
-        /*mComicVM.onOutput { intent ->
+        /*mVM.onOutput { intent ->
             when (intent) {
                 is BookIntent.GetComicPage -> {
-                    intent.mBaseViewState
+                    intent.mViewState
                         .doOnSuccess { mWindowInsetsControllerCompat.isAppearanceLightStatusBars = true }
                         .doOnError { _, _ ->
                             onErrorComicPage()
                             mBaseEvent.setBoolean("loaded", false)
                         }
-                        .doOnResult {
-                            viewLifecycleOwner.lifecycleScope.launch {
-                                showComicPage(intent.comicpage ?: return@launch)
-                            }
-                        }
                 }
             }
         }*/
+        lifecycleScope.launch {
+            mVM.mContent.collect {
+                mAdapter.submitList(it.mPages.toMutableList()) {
+                    if (mAdapter.itemCount != 0) {
+                        if (mBinding.list.tag == null) {
+                            mBinding.list.scrollBy(0, resources.getDimensionPixelSize(baseR.dimen.base_dp96))
+                        } else {
+                            mBinding.list.tag = Unit
+                        }
+                    }
+                }
+            }
+        }
     }
 }

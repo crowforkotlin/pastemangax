@@ -64,8 +64,8 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
      */
     override fun initView(savedInstanceState: Bundle?) {
 
-        mBinding.comicRv.adapter = mComicRvAdapter
-        mBinding.comicRv.layoutManager = LoopLayoutManager(requireActivity() as ComicActivity)
+        mBinding.list.adapter = mComicRvAdapter
+        mBinding.list.layoutManager = LoopLayoutManager(requireActivity() as ComicActivity)
 
         // 显示漫画页
         // showComicPage(mComicVM.mComicPage ?: return)
@@ -77,7 +77,7 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
      * ● 2023-09-04 21:56:59 周一 下午
      */
     override fun initListener() {
-        mBinding.comicRv.setOnScrollChangeListener { _, _, _, _, _ ->
+        mBinding.list.setOnScrollChangeListener { _, _, _, _, _ ->
             val reader = mVM.mContent.value
             /*mVM.updateUiState(ReaderState(
                 mReaderContent = reader,
@@ -95,7 +95,7 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
      */
     override fun onPause() {
         super.onPause()
-        mBinding.comicRv.stopScroll()
+        mBinding.list.stopScroll()
     }
 
     /**

@@ -9,8 +9,8 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.FrameLayout
 import androidx.activity.addCallback
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -28,7 +28,6 @@ import com.crow.base.tools.extensions.immersionFullScreen
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.immersureFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
@@ -39,7 +38,7 @@ import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.module_book.databinding.BookActivityComicBinding
 import com.crow.module_book.model.intent.BookIntent
-import com.crow.module_book.ui.fragment.comic.reader.ClassicComicFragment
+import com.crow.module_book.ui.fragment.comic.reader.ComicClassicFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
 import com.crow.module_book.ui.helper.GestureHelper
 import com.crow.module_book.ui.view.comic.rv.ComicFrameLayout
@@ -127,7 +126,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         if (savedInstanceState == null) {
 
             // CLASSIC 经典 （按钮点击下一章）
-            mComicCategory.apply(ComicCategories.Type.CLASSIC)
+            mComicCategory.apply(ComicCategories.Type.STRIPT)
         }
     }
 
@@ -268,12 +267,11 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         val hasToolbar = hasGlobalPoint(mBinding.comicToolbar, ev.rawX.toInt(), ev.rawY.toInt())
         var hasButton = false
         val fragment = supportFragmentManager.fragments.firstOrNull()
-        if (fragment is ClassicComicFragment) {
+        if (fragment is ComicClassicFragment) {
             val rv = ((fragment.view as ComicFrameLayout)[0] as ComicRecyclerView)
             val childView = rv.findChildViewUnder(ev.x, ev.y)
-            if(childView is CoordinatorLayout) {
+            if(childView is FrameLayout) {
                 childView.forEach {
-            it.log()
                     if (fragment.isRemoving) return hasToolbar
                     if(it is MaterialButton) {
                         hasButton = hasGlobalPoint(it, ev.rawX.toInt(), ev.rawY.toInt())
@@ -290,7 +288,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     private fun judgeIsClassicButton(ev: MotionEvent): Boolean {
         val fragment = supportFragmentManager.fragments.firstOrNull()
-        if (fragment is ClassicComicFragment) {
+        if (fragment is ComicClassicFragment) {
             super.dispatchTouchEvent(ev)
         }
         return true

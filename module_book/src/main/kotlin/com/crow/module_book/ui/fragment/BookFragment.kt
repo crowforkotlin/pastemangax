@@ -58,7 +58,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     protected var mProgressFactory: AppProgressFactory? = null
 
     /** ● 书架VM */
-    protected val mBookVM by viewModel<BookViewModel>()
+    protected val mVM by viewModel<BookViewModel>()
 
     /** ● 漫画点击实体 */
     protected val mPathword: String by lazy {
@@ -136,8 +136,8 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
             // 显示书页内容 根据意图类型 再次发送获取章节意图的请求
             .doOnResult {
                 onResult.run()
-                if (intent is BookIntent.GetComicInfoPage) mBookVM.input(BookIntent.GetComicChapter(intent.pathword))
-                else if (intent is BookIntent.GetNovelInfoPage) mBookVM.input(BookIntent.GetNovelChapter(intent.pathword))
+                if (intent is BookIntent.GetComicInfoPage) mVM.input(BookIntent.GetComicChapter(intent.pathword))
+                else if (intent is BookIntent.GetNovelInfoPage) mVM.input(BookIntent.GetNovelChapter(intent.pathword))
             }
 
     }
@@ -163,7 +163,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
             .doOnResult {
                 when(intent) {
                     is BookIntent.GetComicChapter -> showChapterPage(intent.comicChapter, intent.invalidResp)
-                    is BookIntent.GetNovelChapter ->showChapterPage(intent.novelChapter, intent.invalidResp)
+                    is BookIntent.GetNovelChapter -> showChapterPage(intent.novelChapter, intent.invalidResp)
                     else -> {}
                 }
             }
@@ -303,8 +303,8 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
                     if (!mIsTabAlreadyAdded) return@doOnInterval
                     mBinding.bookInfoRvChapterSelector.isEnabled = false
                     showLoadingAnim()
-                    mBookVM.reCountPos(tab.position)
-                    mBookVM.input(BookIntent.GetComicChapter(mPathword))
+                    mVM.reCountPos(tab.position)
+                    mVM.input(BookIntent.GetComicChapter(mPathword))
                 }
             }
         })

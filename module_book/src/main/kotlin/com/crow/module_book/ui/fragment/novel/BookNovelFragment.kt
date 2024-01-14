@@ -54,7 +54,7 @@ class BookNovelFragment : BookFragment() {
      */
     init {
         FlowBus.with<BookChapterEntity>(BaseEventEnum.UpdateChapter.name).register(this) {
-            mBookVM.updateBookChapterOnDB(it)
+            mVM.updateBookChapterOnDB(it)
         }
     }
 
@@ -71,8 +71,8 @@ class BookNovelFragment : BookFragment() {
      * ● 2023-06-15 22:57:28 周四 下午
      */
     private fun showNovelInfoPage() {
-        val novelInfoPage = mBookVM.mNovelInfoPage?.mNovel ?: return
-        mBookVM.findReadedBookChapterOnDB(novelInfoPage.mName, BookType.NOVEL)
+        val novelInfoPage = mVM.mNovelInfoPage?.mNovel ?: return
+        mVM.findReadedBookChapterOnDB(novelInfoPage.mName, BookType.NOVEL)
         mProgressFactory = AppProgressFactory.createProgressListener(novelInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
         app.imageLoader.enqueue(
             ImageRequest.Builder(mContext)
@@ -173,9 +173,9 @@ class BookNovelFragment : BookFragment() {
      */
     override fun onInitData() {
 
-        if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) mBookVM.input(BookIntent.GetNovelBrowserHistory(mPathword))
+        if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) mVM.input(BookIntent.GetNovelBrowserHistory(mPathword))
 
-        if (mBookVM.mNovelInfoPage == null) mBookVM.input(BookIntent.GetNovelInfoPage(mPathword))
+        if (mVM.mNovelInfoPage == null) mVM.input(BookIntent.GetNovelInfoPage(mPathword))
     }
 
     /**
@@ -210,10 +210,10 @@ class BookNovelFragment : BookFragment() {
      */
     override fun onRefresh() {
 
-        if (mBookVM.mNovelInfoPage == null) {
-            mBookVM.input(BookIntent.GetNovelInfoPage(mPathword))
+        if (mVM.mNovelInfoPage == null) {
+            mVM.input(BookIntent.GetNovelInfoPage(mPathword))
         }
-        mBookVM.input(BookIntent.GetNovelChapter(mPathword))
+        mVM.input(BookIntent.GetNovelChapter(mPathword))
     }
 
     /**
@@ -241,7 +241,7 @@ class BookNovelFragment : BookFragment() {
     override fun initObserver(savedInstanceState: Bundle?) {
         super.initObserver(savedInstanceState)
 
-        mBookVM.bookChapterEntity.onCollect(this) { chapter ->
+        mVM.mChapterEntity.onCollect(this) { chapter ->
             if (mBaseEvent.getBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED) == null && chapter != null && mBaseEvent.getBoolean(
                     HIDDEN_CHANED
                 ) != true) {
@@ -251,7 +251,7 @@ class BookNovelFragment : BookFragment() {
             }
         }
 
-        mBookVM.onOutput { intent ->
+        mVM.onOutput { intent ->
             when(intent) {
                 is BookIntent.GetNovelChapter -> doOnBookPageChapterIntent<NovelChapterResp>(intent)
                 is BookIntent.GetNovelInfoPage -> doOnBookPageIntent(intent) { showNovelInfoPage() }
@@ -284,19 +284,19 @@ class BookNovelFragment : BookFragment() {
         mBinding.bookInfoCardview.doOnClickInterval {
            navigateImage(get<Fragment>(named(Fragments.Image.name)).also { it.arguments =
                bundleOf(
-                   BaseStrings.IMAGE_URL to mBookVM.mNovelInfoPage?.mNovel?.mCover,
-                   BaseStrings.NAME to mBookVM.mNovelInfoPage?.mNovel?.mName
+                   BaseStrings.IMAGE_URL to mVM.mNovelInfoPage?.mNovel?.mCover,
+                   BaseStrings.NAME to mVM.mNovelInfoPage?.mNovel?.mName
                )
            })
         }
 
         mBinding.bookInfoAddToBookshelf.doOnClickInterval{
-            if (mBookVM.mNovelInfoPage == null) return@doOnClickInterval
+            if (mVM.mNovelInfoPage == null) return@doOnClickInterval
             if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty()) {
                 toast(getString(R.string.book_add_invalid))
                 return@doOnClickInterval
             }
-            mBookVM.input(BookIntent.AddNovelToBookshelf(mBookVM.mUuid ?: return@doOnClickInterval, if (mBinding.bookInfoAddToBookshelf.text == getString(R.string.book_comic_add_to_bookshelf)) 1 else 0))
+            mVM.input(BookIntent.AddNovelToBookshelf(mVM.mUuid ?: return@doOnClickInterval, if (mBinding.bookInfoAddToBookshelf.text == getString(R.string.book_comic_add_to_bookshelf)) 1 else 0))
         }
 
     }

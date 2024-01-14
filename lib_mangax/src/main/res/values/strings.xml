@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="mangax_loading" translatable="false">加载中...</string>
     <string name="mangax_retry">重新加载</string>
     <string name="mangax_refresh_success">"刷新成功~"</string>
     <string name="mangax_unknow_error">加载错误？请重试！</string>

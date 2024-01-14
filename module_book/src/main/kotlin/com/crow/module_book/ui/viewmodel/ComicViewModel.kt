@@ -5,18 +5,26 @@ import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.createCoroutineExceptionHandler
+import com.crow.base.tools.extensions.log
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
+import com.crow.module_book.R
 import com.crow.module_book.model.entity.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
 import com.crow.module_book.model.entity.comic.reader.ReaderContent
 import com.crow.module_book.model.entity.comic.reader.ReaderInfo
+import com.crow.module_book.model.entity.comic.reader.ReaderLoading
 import com.crow.module_book.model.entity.comic.reader.ReaderState
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.ComicPageResp
+import com.crow.module_book.model.resp.comic_page.Chapter
 import com.crow.module_book.network.BookRepository
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import com.crow.base.R as baseR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -32,8 +40,8 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         const val UUID = "uuid"
         const val PREV_UUID = "prev_uuid"
         const val NEXT_UUID = "next_uuid"
-        const val CHAPTER_LOADED_THRESHOLD = 2
-        const val CHAPTER_PRELOADED_INDEX = 2
+        const val CHAPTER_LOADED_THRESHOLD = 4
+        const val CHAPTER_PRELOADED_INDEX = 4
     }
 
     /**
@@ -50,19 +58,18 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      */
     lateinit var mUuid: String
 
-    /**
-     * ● 上一章漫画UID
-     *
-     * ● 2023-08-29 23:16:44 周二 下午
-     */
-    var mPrevUuid: String? = null
+
 
     /**
-     * ● 下一章漫画UID
+     * ● 下一章和上一章漫画UID
      *
      * ● 2023-08-29 23:16:17 周二 下午
      */
+    var mPrevUuid: String? = null
     var mNextUuid: String? = null
+    var mLoadingJob: Job? = null
+    private var mIsNext: Boolean = false
+
 
     /**
      * ● 漫画内容
@@ -142,11 +149,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
                 mComicName = mComic.mName,
                 mComicUUID = mComic.mPathWord,
                 mComicPathword = mComic.mPathWord,
-                mPages = mChapter.mWords
-                    .zip(mChapter.mContents)
-                    .sortedBy { it.first }
-                    .map { it.second }
-                    .toMutableList(),
+                mPages = getPages(),
                 mChapterInfo =  ReaderInfo(
                     mChapterIndex = mChapter.mIndex,
                     mChapterID = mChapter.mUuid,
@@ -159,6 +162,82 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         }
     }
 
+    private fun ComicPageResp.getPages(): MutableList<Any> {
+        var currentPages: MutableList<Any> = mContent.value.mPages.toMutableList()
+        val nextChapter = app.getString(R.string.book_next_val, mChapter.mName)
+        val lastChapter = app.getString(R.string.book_prev_val, mChapter.mName)
+        val noNextChapter = app.getString(R.string.book_no_next)
+        val noLastChapter = app.getString(R.string.book_no_prev)
+        val loading = app.getString(baseR.string.base_loading)
+        if (currentPages.isEmpty()) {
+            currentPages = createChapterPages()
+            currentPages.add(0, ReaderLoading(nextChapter, mPrevUuid, mNextUuid))
+            currentPages.add(ReaderLoading(lastChapter, mPrevUuid, mNextUuid))
+            if (mNextUuid == null) {
+                currentPages.add(ReaderLoading(noNextChapter, mPrevUuid, null))
+            } else {
+                currentPages.add(ReaderLoading(loading, mPrevUuid, mNextUuid))
+            }
+            if (mPrevUuid == null) {
+                currentPages.add(0, ReaderLoading(noLastChapter, null, mNextUuid))
+            } else {
+                currentPages.add(0, ReaderLoading(loading, mPrevUuid, mNextUuid))
+            }
+        } else {
+            if (mIsNext) {
+                mNextUuid = mChapter.mNext
+                if (mNextUuid == null) {
+                    val last = currentPages.last()
+                    if (last is ReaderLoading) {
+                        currentPages.removeLast()
+                        currentPages.add(ReaderLoading(nextChapter, mPrevUuid, mNextUuid))
+                        currentPages.addAll(createChapterPages())
+                        currentPages.add(ReaderLoading(lastChapter, mPrevUuid, mNextUuid))
+                        currentPages.add(ReaderLoading(noNextChapter, mPrevUuid, mNextUuid))
+                    }
+                } else {
+                    val last = currentPages.last()
+                    if (last is ReaderLoading) {
+                        currentPages.removeLast()
+                        currentPages.add(ReaderLoading(nextChapter, mPrevUuid, mNextUuid))
+                        currentPages.addAll(createChapterPages())
+                        currentPages.add(ReaderLoading(lastChapter, mPrevUuid, mNextUuid))
+                        currentPages.add(ReaderLoading(loading, mPrevUuid, mNextUuid))
+                    }
+                }
+            } else {
+                if (mPrevUuid == null) {
+                    mPrevUuid = mChapter.mPrev
+                    val first = currentPages.first()
+                    if (first is ReaderLoading) {
+                        currentPages.removeFirst()
+                        currentPages.add(0, ReaderLoading(lastChapter, mPrevUuid, mNextUuid))
+                        currentPages.addAll(0, createChapterPages())
+                        currentPages.add(0, ReaderLoading(nextChapter, mPrevUuid, mNextUuid))
+                        currentPages.add(0, ReaderLoading(noLastChapter, mPrevUuid, mNextUuid))
+                    }
+                } else {
+                    val first = currentPages.first()
+                    if (first is ReaderLoading) {
+                        currentPages.removeFirst()
+                        currentPages.add(0, first.copy(lastChapter, mPrevUuid, mNextUuid))
+                        currentPages.addAll(0, createChapterPages())
+                        currentPages.add(0, ReaderLoading(nextChapter, mPrevUuid, mNextUuid))
+                        currentPages.add(0, ReaderLoading(loading, mPrevUuid, mNextUuid))
+                    }
+                }
+            }
+        }
+        return currentPages
+    }
+
+    private fun ComicPageResp.createChapterPages(): MutableList<Any> {
+        return mChapter.mWords
+            .zip(mChapter.mContents)
+            .sortedBy { it.first }
+            .map { it.second }
+            .toMutableList()
+    }
 
     /**
      * ● 计算章节、页数累计和 的 百分比
@@ -180,8 +259,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      * ● 2023-08-29 22:19:57 周二 下午
      */
     fun onScroll(position: Int) {
-        // TODO Future
-/*
+
         if (position < CHAPTER_PRELOADED_INDEX) {
             loadPrevNextChapter(isNext = false)
         }
@@ -189,20 +267,17 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         if (position > mContent.value.mPages.size - CHAPTER_PRELOADED_INDEX) {
             loadPrevNextChapter(isNext = true)
         }
-*/
     }
 
-/*
     private fun loadPrevNextChapter(isNext: Boolean) {
         val prevJob = mLoadingJob
         mLoadingJob = launchJob {
             prevJob?.cancelAndJoin()
-            ensureActive()
-
-            val uuid = if (isNext) mNextUuid else mPrevUuid
-
-            getComicPage(BookIntent.GetComicPage(mPathword!!, uuid ?: return@launchJob,null), isNext)
+            if (isActive) {
+                mIsNext = isNext
+                val uuid = if (isNext) mNextUuid else mPrevUuid
+                getComicPage(BookIntent.GetComicPage(mPathword, uuid ?: return@launchJob,null), isNext)
+            }
         }
     }
-*/
 }

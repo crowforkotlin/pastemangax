@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <com.crow.module_book.ui.view.comic.rv.ComicRecyclerView
-        android:id="@+id/comic_rv"
+        android:id="@+id/list"
         tools:listitem="@layout/book_activity_comic_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

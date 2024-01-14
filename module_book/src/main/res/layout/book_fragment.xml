@@ -336,7 +336,7 @@
                     android:layout_marginTop="@dimen/base_dp10"
                     android:visibility="invisible"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="4"
+                    app:spanCount="3"
                     tools:listitem="@layout/book_fragment_chapter_rv"
                     tools:visibility="visible" />
 

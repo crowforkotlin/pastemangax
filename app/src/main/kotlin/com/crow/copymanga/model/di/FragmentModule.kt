@@ -4,7 +4,8 @@ import androidx.fragment.app.Fragment
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.module_anime.ui.fragment.AnimeInfoFragment
 import com.crow.module_book.ui.fragment.comic.BookComicFragment
-import com.crow.module_book.ui.fragment.comic.reader.ClassicComicFragment
+import com.crow.module_book.ui.fragment.comic.reader.ComicStriptFragment
+import com.crow.module_book.ui.fragment.comic.reader.ComicClassicFragment
 import com.crow.module_book.ui.fragment.comic.reader.PageComicFragment
 import com.crow.module_book.ui.fragment.novel.BookNovelFragment
 import com.crow.module_home.ui.fragment.TopicFragment
@@ -50,7 +51,7 @@ val fragmentModule = module {
     fragment<Fragment>(named(Fragments.History.name)) { HistoryFragment() }
     fragment<Fragment>(named(Fragments.AnimeInfo.name)) { AnimeInfoFragment() }
     fragment<Fragment>(named(Fragments.Topic.name)) { TopicFragment() }
-    fragment<Fragment>(named(Fragments.ComicClassic.name)) { ClassicComicFragment() }
+    fragment<Fragment>(named(Fragments.ComicClassic.name)) { ComicClassicFragment() }
     fragment<Fragment>(named(Fragments.ComicPage.name)) { PageComicFragment() }
-//    fragment<Fragment>(named(Fragments.ComicStript.name)) { BookStriptComicFragment() }
+    fragment<Fragment>(named(Fragments.ComicStript.name)) { ComicStriptFragment() }
 }

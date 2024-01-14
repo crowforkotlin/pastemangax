@@ -3,10 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/base_dp156"
+    android:layout_height="@dimen/base_dp96"
     android:background="@color/book_ant_10">
 
-    <androidx.constraintlayout.widget.Guideline
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="上一章节：第一话" />
+
+    <!--<androidx.constraintlayout.widget.Guideline
         android:id="@+id/stript_guideline_hor_0.5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,6 +76,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/stript_guideline_hor_0.5"
         app:trackCornerRadius="@dimen/base_dp99"
-        tools:visibility="visible" />
+        tools:visibility="visible" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
