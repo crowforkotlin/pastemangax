@@ -25,7 +25,7 @@ android {
         // 构建工具版本
         buildToolsVersion = AppConfigs.build_tools_version
 
-        // 标识应用程序ID （设备上的唯一标识符）s
+        // 标识应用程序ID （设备上的唯一标识符）
         applicationId = AppConfigs.application_id
 
         // 兼容最小版本的SDK
@@ -66,6 +66,21 @@ android {
     // 应用程序的构建类型
     buildTypes {
 
+        // 调试版本
+        debug {
+
+            versionNameSuffix = ".debug"
+
+            // 设置ApplicationID
+            applicationIdSuffix = ".debug"
+
+            // 关闭代码压缩
+            isMinifyEnabled = false
+
+            // 关闭资源深度压缩
+            isShrinkResources = false
+        }
+
         // 发行版本
         release {
 
@@ -80,17 +95,6 @@ android {
                 getDefaultProguardFile(AppConfigs.proguard_android_optimize_txt),
                 AppConfigs.proguard_rules_pro
             )
-
-        }
-
-        // 调试版本
-        debug {
-
-            // 关闭代码压缩
-            isMinifyEnabled = false
-
-            // 关闭资源深度压缩
-            isShrinkResources = false
         }
     }
 

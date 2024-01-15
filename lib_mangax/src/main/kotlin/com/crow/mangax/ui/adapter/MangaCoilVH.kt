@@ -85,7 +85,8 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
             removeProgressListener()
             remove()
         }
-        mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> mLoadingText.text = AppProgressFactory.formateProgress(percentage) }
+        val cover = if(AppConfig.mCoverOrinal) getOrignalCover(imageUrl) else imageUrl
+        mAppProgressFactory = AppProgressFactory.createProgressListener(cover) { _, _, percentage, _, _ -> mLoadingText.text = AppProgressFactory.formateProgress(percentage) }
         app.imageLoader.enqueue(
             ImageRequest.Builder(itemView.context)
                 .listener(
@@ -95,7 +96,7 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
                     },
                     onError = { _, _ -> mLoadingText.text = "-1%" },
                 )
-                .data(if(AppConfig.mCoverOrinal) getOrignalCover(imageUrl) else imageUrl)
+                .data(cover)
                 .target(mImage)
                 .build()
         )

@@ -89,18 +89,22 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
             val reader = mVM.mContent.value
             val pageID: Int
             val pagePos: Int
-            if(item is ReaderLoading) {
-                pageID = item.mID
-                pagePos = item.mPos
-            } else if (item is Content) {
-                pagePos = item.mPos
-                pageID = item.mID
-            } else {
-                error("unknow item type!")
+            when (item) {
+                is ReaderLoading -> {
+                    pageID = item.mID
+                    pagePos = item.mPos
+                }
+                is Content -> {
+                    pageID = item.mID
+                    pagePos = item.mPos
+                }
+                else -> {
+                    error("unknow item type!")
+                }
             }
             mVM.updateUiState(
                 ReaderState(
-                    mReaderContent = reader,
+                    mReaderContent = mVM.mReaderContents[pageID] ?: return@setPreScrollListener,
                     mTotalPages = mVM.mPagesSizeList[pageID],
                     mCurrentPage = pagePos
                 )

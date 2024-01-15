@@ -110,7 +110,6 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         super.onViewRecycled(vh)
         when(vh) {
             is PageViewHolder -> {  vh.binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT }
-//            is PageMoreViewHolder { vh.binding}
         }
     }
 
