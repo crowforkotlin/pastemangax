@@ -8,12 +8,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.crow.base.R
 import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.findCenterViewPosition
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderContent
+import com.crow.module_book.model.entity.comic.reader.ReaderLoading
 import com.crow.module_book.model.entity.comic.reader.ReaderState
+import com.crow.module_book.model.resp.comic_page.Content
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicStriptRvAdapter
 import com.crow.module_book.ui.fragment.BookFragment
@@ -81,13 +84,25 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     override fun initListener() {
         mBinding.list.setPreScrollListener { position ->
-            mVM.onScroll(position)
+            val item = mAdapter.getCurrentList()[position]
+            mVM.onScroll(position, item)
             val reader = mVM.mContent.value
+            val pageID: Int
+            val pagePos: Int
+            if(item is ReaderLoading) {
+                pageID = item.mID
+                pagePos = item.mPos
+            } else if (item is Content) {
+                pagePos = item.mPos
+                pageID = item.mID
+            } else {
+                error("unknow item type!")
+            }
             mVM.updateUiState(
                 ReaderState(
                     mReaderContent = reader,
-                    mTotalPages = reader.mPages.size + 2,
-                    mCurrentPage = (mBinding.list.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1
+                    mTotalPages = mVM.mPagesSizeList[pageID],
+                    mCurrentPage = pagePos
                 )
             )
         }
