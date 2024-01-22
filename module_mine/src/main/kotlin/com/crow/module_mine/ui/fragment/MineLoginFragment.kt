@@ -24,7 +24,7 @@ import com.crow.module_mine.model.MineIntent
 import com.crow.module_mine.ui.tools.updateLifecycleObserver
 import com.crow.module_mine.ui.viewmodel.MineViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 
 class MineLoginFragment() : BaseMviFragment<MineFragmentLoginBinding>(){
@@ -84,7 +84,7 @@ class MineLoginFragment() : BaseMviFragment<MineFragmentLoginBinding>(){
                     intent.mViewState
                         .doOnLoading { showLoadingAnim() }
                         .doOnSuccess { dismissLoadingAnim { doRevertLoginButton() } }
-                        .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: app.getString(baseR.string.BaseUnknowError)) }
+                        .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: app.getString(mangaR.string.mangax_unknow_error)) }
                         .doOnResult {
                             /* 两个结果 OK 和 Error
                             * OK：设置 mIsLoginSuccess = true 用于标记

@@ -1,9 +1,9 @@
 <resources>
 
-	<style name="App.Theme.CopyManga" parent="Base.Theme.Material3_Project">
+	<style name="App.Theme.CopyManga" parent="MangaX.Theme.Material3_Project">
 		<item name="android:statusBarColor">@android:color/transparent</item>
 		<item name="android:windowLightStatusBar">true</item>
-		<item name="android:textColor">@color/base_color_asc</item>
+		<item name="android:textColor">@color/mangax_color_asc</item>
 		<item name="android:windowTranslucentNavigation">true</item>
 	</style>
 

@@ -14,12 +14,12 @@
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/base_site_static"/>
+            android:text="@string/mangax_site_static"/>
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/base_site_static"/>
+            android:text="@string/mangax_site_static"/>
 
     </RadioGroup>
 

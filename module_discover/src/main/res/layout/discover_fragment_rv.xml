@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:strokeColor="@color/base_grey_400_40"
+        app:strokeColor="@color/mangax_grey_400_40"
         app:cardCornerRadius="@dimen/base_dp10"
         app:strokeWidth="@dimen/base_dp1">
 
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:adjustViewBounds="true"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/BaseTodoTextView"
+            android:contentDescription="@string/base_todo_textview"
             android:foreground="@drawable/base_bg_item_ripper"
             android:scaleType="centerCrop"
             tools:layout_height="@dimen/base_dp168"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="true"
-            app:indicatorColor="@color/base_light_blue_500"
+            app:indicatorColor="@color/mangax_light_blue_500"
             app:indicatorSize="@dimen/base_dp36"
             app:trackCornerRadius="@dimen/base_dp99" />
 
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/BaseZero"
+            android:text="@string/mangax_zero"
             android:textSize="@dimen/base_sp10"
             android:textStyle="bold" />
 

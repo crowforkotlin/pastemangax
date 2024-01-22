@@ -3,7 +3,7 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	style="@style/Base.Theme.BG"
+	style="@style/MangaX.Theme.BG"
 	android:layout_height="match_parent"
 	tools:context="com.crow.module_mine.ui.fragment.MineUpdateInfoFragment">
 
@@ -12,7 +12,7 @@
 		android:layout_width="@dimen/base_dp108"
 		android:layout_height="@dimen/base_dp108"
 		android:layout_marginTop="16dp"
-		android:contentDescription="@string/BaseTodoTextView"
+		android:contentDescription="@string/base_todo_textview"
 		android:foreground="?android:attr/selectableItemBackground"
 		android:scaleType="centerCrop"
 		app:layout_constraintEnd_toEndOf="parent"
@@ -39,7 +39,7 @@
 		android:layout_width="371dp"
 		android:layout_height="wrap_content"
 		android:layout_marginBottom="@dimen/base_dp60"
-		android:contentDescription="@string/BaseTodoTextView"
+		android:contentDescription="@string/base_todo_textview"
 		android:src="@drawable/mine_ic_exit_24dp"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"

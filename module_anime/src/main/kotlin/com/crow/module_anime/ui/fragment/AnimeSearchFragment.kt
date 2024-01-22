@@ -51,6 +51,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
 import java.util.Calendar
 import kotlin.properties.Delegates
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
@@ -93,7 +94,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
      *
      * ● 2023-10-10 02:20:34 周二 上午
      */
-    private var  mSubtitle: String by Delegates.observable(app.applicationContext.getString(baseR.string.base_all)) { _, _, new ->
+    private var  mSubtitle: String by Delegates.observable(app.applicationContext.getString(mangaR.string.mangax_all)) { _, _, new ->
         mBinding.topbar.subtitle = new
     }
 
@@ -225,7 +226,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     }
 
                     if (toolbar.subtitle.isNullOrEmpty()) {
-                        mSubtitle = getString(baseR.string.base_all)
+                        mSubtitle = getString(mangaR.string.mangax_all)
                     }
 
                     // subtitle textview
@@ -265,7 +266,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
                                 mBinding.list.animateFadeOutWithEndInVisibility()
                             }
 
-                            if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+                            if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.base_loading_error_need_refresh))
                         }
                         .doOnResult {
                             // 错误提示 可见
@@ -376,7 +377,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     val year = Calendar.getInstance().get(Calendar.YEAR)
                     repeat(22) {
                         val newYear = when (it) {
-                            0 -> getString(baseR.string.base_all)
+                            0 -> getString(mangaR.string.mangax_all)
                             1 -> year
                             else -> year - (it - 1)
                         }
@@ -387,7 +388,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
                             dialog.cancel()
                             mSubtitle = newYear.toString()
                             mToolbarSubtitle?.animateFadeIn()
-                            mVM.setYear(if (newYear.toString() == getString(baseR.string.base_all)) "" else newYear.toString())
+                            mVM.setYear(if (newYear.toString() == getString(mangaR.string.mangax_all)) "" else newYear.toString())
                             updateAnime()
                         }
                         binding.moreChipGroup.addView(chip)
@@ -417,7 +418,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         bundle.putSerializable(BaseStrings.NAME, name)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(
-            id = baseR.id.app_main_fcv,
+            id = mangaR.id.app_main_fcv,
             hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
             addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
             tag = tag,

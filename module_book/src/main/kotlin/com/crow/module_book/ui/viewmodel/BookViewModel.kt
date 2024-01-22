@@ -62,14 +62,13 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
      */
     private val mChapterDBDao by lazy { buildDatabase<BookChapterDB>(DBNameSpace.app).bookChapterDao() }
 
-
     /**
      * ● 书页章节实体数据
      *
      * ● 2023-06-28 22:23:46 周三 下午
      */
-    private var _bookChapterEntity = MutableStateFlow<BookChapterEntity?>(null)
-    val bookChapterEntity: StateFlow<BookChapterEntity?> get() = _bookChapterEntity
+    private var _mChapterEntity = MutableStateFlow<BookChapterEntity?>(null)
+    val mChapterEntity: StateFlow<BookChapterEntity?> get() = _mChapterEntity
 
     /**
      * ● 通过检查意图的类型并执行相应的代码来处理意图
@@ -108,10 +107,10 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
                     mChapterNextUUID = chapter.mChapterNextUUID
                 )
                 mChapterDBDao.update(snapshot)
-                _bookChapterEntity.value = snapshot
+                _mChapterEntity.value = snapshot
             } else {
                 mChapterDBDao.insertAll(chapter)
-                _bookChapterEntity.value = chapter
+                _mChapterEntity.value = chapter
             }
         }
     }
@@ -123,7 +122,7 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
      */
     fun findReadedBookChapterOnDB(bookName: String, bookType: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            _bookChapterEntity.value = mChapterDBDao.find(bookName, bookType)
+            _mChapterEntity.value = mChapterDBDao.find(bookName, bookType)
         }
     }
 
@@ -168,8 +167,8 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
     private fun getComicChapter(intent: BookIntent.GetComicChapter) {
         flowResult(intent, repository.getComicChapter(intent.pathword, mChapterStartIndex, 100)) { value ->
             if (value.mCode == HttpURLConnection.HTTP_OK) {
-                val mComicChapterPage = toTypeEntity<ComicChapterResp>(value.mResults)
-                intent.copy(comicChapter = mComicChapterPage)
+                val chapters = toTypeEntity<ComicChapterResp>(value.mResults)
+                intent.copy(comicChapter = chapters)
             } else {
                 intent.copy(
                     invalidResp = app.getString(

@@ -127,7 +127,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
                         .doOnSuccess { mBaseEvent.setBoolean(NewHomeFragment.SEARCH_TAG, false) }
                         .doOnError { _, _ ->
                             dismissLoadingAnim()
-                            toast(getString(com.crow.base.R.string.BaseUnknowError))
+                            toast(getString(com.crow.mangax.R.string.mangax_unknow_error))
                         }
                         .doOnResult {
                             if (!mTag) return@doOnResult

@@ -3,8 +3,8 @@ package com.crow.copymanga.model.di
 import androidx.multidex.BuildConfig
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseUserConfig
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
-import com.crow.mangax.copymanga.glide.AppGlideProgressResponseBody
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressResponseBody
 import com.crow.base.tools.extensions.baseMoshi
 import com.crow.base.tools.network.FlowCallAdapterFactory
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -21,7 +21,7 @@ val networkModule = module {
 
     val named_CopyMangaX = named("CopyMangaX")
     val named_HotMangaX = named("HotMangaX")
-    val named_ProgressGlide = named("ProgressGlide")
+    val named_Progress = named("ProgressOkHttp")
 
     /**
      * ● 默认Okhttp
@@ -58,20 +58,19 @@ val networkModule = module {
     }
 
     /**
-     * ● Glide进度加载 By Okhttp
+     * ● 进度加载 By Okhttp
      * ● 2023-06-16 21:41:59 周五 下午
      */
-    single(named_ProgressGlide) {
+    single(named_Progress) {
         OkHttpClient.Builder().apply {
             addInterceptor { chain ->
                 val request = chain.request()
                 val response = chain.proceed(request)
-                val appGlideProgressFactory = AppGlideProgressFactory.getGlideProgressFactory(request.url.toString())
-                if (appGlideProgressFactory == null) response
-                else {
-                    var body = response.body
-                    body = if (body != null) AppGlideProgressResponseBody(request.url.toString(), appGlideProgressFactory.mOnProgressListener, body) else body
-                    response.newBuilder().body(body).build()
+                val progressFactory = AppProgressFactory.getProgressFactory(request.url.toString())
+                if (progressFactory == null) {
+                    response
+                } else {
+                    response.newBuilder().body(AppProgressResponseBody(request.url.toString(), progressFactory.mRequestProgressListener, response.body)).build()
                 }
             }
             sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())

@@ -36,8 +36,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/base_ic_back_24dp"
-        app:subtitle="@string/BaseAppName"
-        app:title="@string/BaseAppName"
+        app:subtitle="@string/base_app_name"
+        app:title="@string/base_app_name"
         tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

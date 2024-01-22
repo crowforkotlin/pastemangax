@@ -7,10 +7,10 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentContainerView
 import androidx.viewbinding.ViewBinding
-import com.crow.base.R.id.app_main_fcv
+import com.crow.mangax.R.id.app_main_fcv
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseUserConfig
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeOut

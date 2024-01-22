@@ -26,7 +26,7 @@ import com.crow.mangax.copymanga.BaseStrings.ID
 import com.crow.mangax.copymanga.BaseStrings.URL.HotManga
 import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.mangax.copymanga.appEvent
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
@@ -39,7 +39,6 @@ import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2sp
@@ -77,6 +76,7 @@ import org.koin.core.qualifier.named
 import java.util.Calendar
 import kotlin.properties.Delegates
 import kotlin.system.exitProcess
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
@@ -138,7 +138,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
      *
      * ● 2023-10-10 02:20:34 周二 上午
      */
-    private var  mSubtitle: String by Delegates.observable(app.applicationContext.getString(baseR.string.base_all)) { _, _, new -> mBinding.topbar.subtitle = new }
+    private var  mSubtitle: String by Delegates.observable(app.applicationContext.getString(mangaR.string.mangax_all)) { _, _, new -> mBinding.topbar.subtitle = new }
 
     /**
      * ● 提示窗口VB
@@ -267,7 +267,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
             if (mBinding.searchView.isShowing) mBinding.searchView.hide()
             else {
                 appEvent.doOnInterval(object : BaseIEventIntervalExt<BaseEvent>{
-                   override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) { toast(getString(baseR.string.BaseExitApp)) }
+                   override fun onIntervalOk(baseEventEntity: BaseEventEntity<BaseEvent>) { toast(getString(baseR.string.base_exit_app)) }
                    override fun onIntervalFailure(gapTime: Long) {
                        requireActivity().finish()
                        exitProcess(0)
@@ -327,7 +327,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                 }
 
                 // 设置副标题
-                if (subtitle.isNullOrEmpty()) { mSubtitle = getString(baseR.string.base_all) }
+                if (subtitle.isNullOrEmpty()) { mSubtitle = getString(mangaR.string.mangax_all) }
 
                 // subtitle textview
                 mToolbarSubtitle = this::class.java.superclass.getDeclaredField("mSubtitleTextView").run {
@@ -366,7 +366,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                                 mBinding.list.animateFadeOutWithEndInVisibility()
                             }
 
-                            if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.BaseLoadingErrorNeedRefresh))
+                            if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.base_loading_error_need_refresh))
                         }
                         .doOnResult {
                             // 错误提示 可见
@@ -509,7 +509,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                 }
 
                 val config = mVM.getReadedAppConfig() ?: return@launch run {
-                    toast(getString(baseR.string.BaseUnknowError))
+                    toast(getString(mangaR.string.mangax_unknow_error))
                     mSiteDialog?.cancel()
                 }
                 staticGroup.setOnCheckedChangeListener { _, checkedId ->
@@ -601,7 +601,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                         val year = Calendar.getInstance().get(Calendar.YEAR)
                         repeat(22) {
                             val newYear = when (it) {
-                                0 -> getString(baseR.string.base_all)
+                                0 -> getString(mangaR.string.mangax_all)
                                 1 -> year
                                 else -> year - (it - 1)
                             }
@@ -612,7 +612,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                                 dialog.cancel()
                                 mSubtitle = newYear.toString()
                                 mToolbarSubtitle?.animateFadeIn()
-                                mVM.setYear(if (newYear.toString() == getString(baseR.string.base_all)) "" else newYear.toString())
+                                mVM.setYear(if (newYear.toString() == getString(mangaR.string.mangax_all)) "" else newYear.toString())
                                 updateAnime()
                             }
                             moreChipGroup.addView(chip)
@@ -644,7 +644,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         bundle.putSerializable(BaseStrings.NAME, name)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(
-            id = baseR.id.app_main_fcv,
+            id = mangaR.id.app_main_fcv,
             hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
             addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
             tag = tag,
@@ -733,7 +733,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     }
 
                     // 设置SearchView toolbar导航图标
-                    toolbar.setNavigationIcon(baseR.drawable.base_ic_back_24dp)
+                    toolbar.setNavigationIcon(mangaR.drawable.base_ic_back_24dp)
 
                     // 设置Navigation 颜色
                     toolbar.navigationIcon?.setTint(tintColor)

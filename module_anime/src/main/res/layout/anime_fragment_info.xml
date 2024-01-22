@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/Base.Theme.BG"
+    style="@style/MangaX.Theme.BG"
     tools:visibility="visible">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/back"
-        style="@style/Base.Theme.Button.Icon.Back"
+        style="@style/MangaX.Theme.Button.Icon.Back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
-        android:contentDescription="@string/BaseAppName"
+        android:contentDescription="@string/base_app_name"
         app:icon="@drawable/base_ic_back_24dp"
         app:iconSize="@dimen/base_dp17_5"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +63,7 @@
         app:cardElevation="@dimen/base_dp1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back"
-        app:strokeColor="@color/base_grey_400_40"
+        app:strokeColor="@color/mangax_grey_400_40"
         app:strokeWidth="@dimen/base_dp1">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="true"
-            app:indicatorColor="@color/base_light_blue_500"
+            app:indicatorColor="@color/mangax_light_blue_500"
             app:indicatorSize="@dimen/base_dp36"
             app:trackCornerRadius="@dimen/base_dp99" />
 
@@ -82,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/BaseZero"
+            android:text="@string/mangax_zero"
             android:textSize="@dimen/base_sp10"
             android:textStyle="bold" />
 
@@ -90,7 +90,7 @@
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/BaseTodoTextView"
+            android:contentDescription="@string/base_todo_textview"
             android:scaleType="centerCrop"
             tools:ignore="ImageContrastCheck"
             tools:layout_height="@dimen/base_dp168"
@@ -231,7 +231,7 @@
                         android:textSize="@dimen/base_sp12_5"
                         android:maxLines="10"
                         android:textStyle="bold"
-                        tools:text="@string/BaseTodoTextView" />
+                        tools:text="@string/base_todo_textview" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -265,7 +265,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/BaseLoadingErrorNeedRefresh"
+                android:text="@string/base_loading_error_need_refresh"
                 android:visibility="gone"
                 tools:visibility="visible" />
 

@@ -20,7 +20,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.hasGlobalPoint
@@ -35,9 +35,10 @@ import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.module_book.databinding.BookActivityComicBinding
 import com.crow.module_book.model.intent.BookIntent
-import com.crow.module_book.ui.fragment.comic.reader.ClassicComicFragment
+import com.crow.module_book.ui.fragment.comic.reader.ComicClassicFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
 import com.crow.module_book.ui.helper.GestureHelper
 import com.crow.module_book.ui.view.comic.rv.ComicFrameLayout
@@ -46,6 +47,7 @@ import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 
@@ -93,6 +95,11 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun getViewBinding() = BookActivityComicBinding.inflate(layoutInflater)
 
+    override fun onDestroy() {
+        super.onDestroy()
+        AppProgressFactory.clear()
+    }
+
     /**
      * ● 初始化视图
      *
@@ -119,7 +126,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         if (savedInstanceState == null) {
 
             // CLASSIC 经典 （按钮点击下一章）
-            mComicCategory.apply(ComicCategories.Type.CLASSIC)
+            mComicCategory.apply(ComicCategories.Type.STRIPT)
         }
     }
 
@@ -144,10 +151,10 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun initData() {
         mComicVM.mPathword = (intent.getStringExtra(BaseStrings.PATH_WORD) ?: "").also {
-            if (it.isEmpty()) finishActivity(getString(baseR.string.BaseError, "pathword is null or empty"))
+            if (it.isEmpty()) finishActivity(getString(mangaR.string.mangax_error, "pathword is null or empty"))
         }
         mComicVM.mUuid = (intent.getStringExtra(ComicViewModel.UUID) ?: "").also {
-            if (it.isEmpty()) finishActivity(getString(baseR.string.BaseError, "uuid is null or empty"))
+            if (it.isEmpty()) finishActivity(getString(mangaR.string.mangax_error, "uuid is null or empty"))
         }
         mComicVM.mPrevUuid = intent.getStringExtra(ComicViewModel.PREV_UUID)
         mComicVM.mNextUuid = intent.getStringExtra(ComicViewModel.NEXT_UUID)
@@ -162,7 +169,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
     override fun initObserver(savedInstanceState: Bundle?) {
 
         mComicVM.uiState.onCollect(this) { state ->
-            if (state != null && state.mReaderContent.mInfo != null) {
+            if (state != null && state.mReaderContent.mChapterInfo != null) {
                 if (mBinding.comicInfoBar.isGone) mBinding.comicInfoBar.animateFadeIn()
                 mBinding.comicInfoBar.update(
                     currentPage = state.mCurrentPage,
@@ -170,9 +177,9 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                     percent = mComicVM.computePercent(
                         pageIndex = state.mCurrentPage,
                         totalPage = state.mTotalPages,
-                        info = state.mReaderContent.mInfo
+                        info = state.mReaderContent.mChapterInfo
                     ),
-                    info = state.mReaderContent.mInfo
+                    info = state.mReaderContent.mChapterInfo
                 )
             }
         }
@@ -187,10 +194,10 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                                     mIsNeedLoading = true
                                     return@doOnLoading
                                 }
-                                showLoadingAnim() { dialog -> dialog.applyWindow(dimAmount = 0.3f, isFullScreen = true) }
+                                showLoadingAnim { dialog -> dialog.applyWindow(dimAmount = 0.3f, isFullScreen = true) }
                             }
                             .doOnError { _, _ ->
-                                toast(getString(baseR.string.BaseLoadingError))
+                                toast(getString(baseR.string.base_loading_error))
                                 dismissLoadingAnim { finishActivity() }
                             }
                             .doOnResult {
@@ -260,7 +267,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         val hasToolbar = hasGlobalPoint(mBinding.comicToolbar, ev.rawX.toInt(), ev.rawY.toInt())
         var hasButton = false
         val fragment = supportFragmentManager.fragments.firstOrNull()
-        if (fragment is ClassicComicFragment) {
+        if (fragment is ComicClassicFragment) {
             val rv = ((fragment.view as ComicFrameLayout)[0] as ComicRecyclerView)
             val childView = rv.findChildViewUnder(ev.x, ev.y)
             if(childView is FrameLayout) {
@@ -281,7 +288,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     private fun judgeIsClassicButton(ev: MotionEvent): Boolean {
         val fragment = supportFragmentManager.fragments.firstOrNull()
-        if (fragment is ClassicComicFragment) {
+        if (fragment is ComicClassicFragment) {
             super.dispatchTouchEvent(ev)
         }
         return true

@@ -4,7 +4,7 @@
     <application>
 
         <activity
-            android:theme="@style/Base.Theme.Material3_Project"
+            android:theme="@style/MangaX.Theme.Material3_Project"
             android:name=".ui.activity.CrashActivity" />
 
     </application>

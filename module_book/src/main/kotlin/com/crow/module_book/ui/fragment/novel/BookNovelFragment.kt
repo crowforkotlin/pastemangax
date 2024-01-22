@@ -1,7 +1,6 @@
 
 package com.crow.module_book.ui.fragment.novel
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -9,11 +8,8 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.GenericTransitionOptions
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.bumptech.glide.request.transition.NoTransition
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseStrings
@@ -21,9 +17,8 @@ import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.getSpannableString
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -35,7 +30,7 @@ import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_book.R
 import com.crow.module_book.model.entity.BookChapterEntity
@@ -59,7 +54,7 @@ class BookNovelFragment : BookFragment() {
      */
     init {
         FlowBus.with<BookChapterEntity>(BaseEventEnum.UpdateChapter.name).register(this) {
-            mBookVM.updateBookChapterOnDB(it)
+            mVM.updateBookChapterOnDB(it)
         }
     }
 
@@ -76,27 +71,25 @@ class BookNovelFragment : BookFragment() {
      * ● 2023-06-15 22:57:28 周四 下午
      */
     private fun showNovelInfoPage() {
-        val novelInfoPage = mBookVM.mNovelInfoPage?.mNovel ?: return
-        mBookVM.findReadedBookChapterOnDB(novelInfoPage.mName, BookType.NOVEL)
-        mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(novelInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppGlideProgressFactory.getProgressString(percentage) }
-        Glide.with(this)
-            .load(novelInfoPage.mCover)
-            .addListener(mAppGlideProgressFactory?.getRequestListener())
-            .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                if (dataSource == DataSource.REMOTE) {
-                    mBinding.bookInfoLoading.isInvisible = true
-                    mBinding.bookInfoProgressText.isInvisible = true
-                    DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                } else {
-                    mBinding.bookInfoLoading.isInvisible = true
-                    mBinding.bookInfoProgressText.isInvisible = true
-                    NoTransition()
-                }
-            })
-            .into(mBinding.bookInfoImage)
-        mBinding.author.text = getString(R.string.BookComicAuthor, novelInfoPage.mAuthor.joinToString { it.mName })
-        mBinding.hot.text = getString(R.string.BookComicHot, formatHotValue(novelInfoPage.mPopular))
-        mBinding.update.text = getString(R.string.BookComicUpdate, novelInfoPage.mDatetimeUpdated)
+        val novelInfoPage = mVM.mNovelInfoPage?.mNovel ?: return
+        mVM.findReadedBookChapterOnDB(novelInfoPage.mName, BookType.NOVEL)
+        mProgressFactory = AppProgressFactory.createProgressListener(novelInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
+        app.imageLoader.enqueue(
+            ImageRequest.Builder(mContext)
+                .listener(
+                    onSuccess = { _, _ ->
+                        mBinding.bookInfoLoading.isInvisible = true
+                        mBinding.bookInfoProgressText.isInvisible = true
+                    },
+                    onError = { _, _ -> mBinding.bookInfoProgressText.text = "-1%" },
+                )
+                .data(novelInfoPage.mCover)
+                .target(mBinding.bookInfoImage)
+                .build()
+        )
+        mBinding.author.text = getString(R.string.book_author, novelInfoPage.mAuthor.joinToString { it.mName })
+        mBinding.hot.text = getString(R.string.book_hot, formatHotValue(novelInfoPage.mPopular))
+        mBinding.update.text = getString(R.string.book_update, novelInfoPage.mDatetimeUpdated)
 
         val status = when (novelInfoPage.mStatus.mValue) {
             Status.LOADING -> getString(R.string.BookComicStatus, novelInfoPage.mStatus.mDisplay).getSpannableString(ContextCompat.getColor(mContext, R.color.book_green), 3)
@@ -105,7 +98,7 @@ class BookNovelFragment : BookFragment() {
         }.toString()
         if (mChineseConvert) {
             lifecycleScope.launch {
-                mBinding.chapter.text = ChineseConverter.convert(getString(R.string.BookComicNewChapter, novelInfoPage.mLastChapter.mName))
+                mBinding.chapter.text = ChineseConverter.convert(getString(R.string.book_new_chapter, novelInfoPage.mLastChapter.mName))
                 mBinding.status.text = ChineseConverter.convert(status)
                 mBinding.name.text = ChineseConverter.convert(novelInfoPage.mName)
                 mBinding.desc.text = ChineseConverter.convert(novelInfoPage.mBrief.removeWhiteSpace())
@@ -119,7 +112,7 @@ class BookNovelFragment : BookFragment() {
                 }
             }
         } else {
-            mBinding.chapter.text = getString(R.string.BookComicNewChapter, novelInfoPage.mLastChapter.mName)
+            mBinding.chapter.text = getString(R.string.book_new_chapter, novelInfoPage.mLastChapter.mName)
             mBinding.status.text = status
             mBinding.name.text = novelInfoPage.mName
             mBinding.desc.text = novelInfoPage.mBrief.removeWhiteSpace()
@@ -144,7 +137,7 @@ class BookNovelFragment : BookFragment() {
     private fun processAddNovelIntent(intent: BookIntent.AddNovelToBookshelf) {
         intent.mViewState
             .doOnLoading { showLoadingAnim() }
-            .doOnError { _, _ -> dismissLoadingAnim { toast(getString(com.crow.base.R.string.BaseUnknowError)) } }
+            .doOnError { _, _ -> dismissLoadingAnim { toast(getString(com.crow.mangax.R.string.mangax_unknow_error)) } }
             .doOnResult {
                 dismissLoadingAnim {
                     if (intent.isCollect == 1) {
@@ -180,9 +173,9 @@ class BookNovelFragment : BookFragment() {
      */
     override fun onInitData() {
 
-        if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) mBookVM.input(BookIntent.GetNovelBrowserHistory(mPathword))
+        if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) mVM.input(BookIntent.GetNovelBrowserHistory(mPathword))
 
-        if (mBookVM.mNovelInfoPage == null) mBookVM.input(BookIntent.GetNovelInfoPage(mPathword))
+        if (mVM.mNovelInfoPage == null) mVM.input(BookIntent.GetNovelInfoPage(mPathword))
     }
 
     /**
@@ -217,10 +210,10 @@ class BookNovelFragment : BookFragment() {
      */
     override fun onRefresh() {
 
-        if (mBookVM.mNovelInfoPage == null) {
-            mBookVM.input(BookIntent.GetNovelInfoPage(mPathword))
+        if (mVM.mNovelInfoPage == null) {
+            mVM.input(BookIntent.GetNovelInfoPage(mPathword))
         }
-        mBookVM.input(BookIntent.GetNovelChapter(mPathword))
+        mVM.input(BookIntent.GetNovelChapter(mPathword))
     }
 
     /**
@@ -248,7 +241,7 @@ class BookNovelFragment : BookFragment() {
     override fun initObserver(savedInstanceState: Bundle?) {
         super.initObserver(savedInstanceState)
 
-        mBookVM.bookChapterEntity.onCollect(this) { chapter ->
+        mVM.mChapterEntity.onCollect(this) { chapter ->
             if (mBaseEvent.getBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED) == null && chapter != null && mBaseEvent.getBoolean(
                     HIDDEN_CHANED
                 ) != true) {
@@ -258,7 +251,7 @@ class BookNovelFragment : BookFragment() {
             }
         }
 
-        mBookVM.onOutput { intent ->
+        mVM.onOutput { intent ->
             when(intent) {
                 is BookIntent.GetNovelChapter -> doOnBookPageChapterIntent<NovelChapterResp>(intent)
                 is BookIntent.GetNovelInfoPage -> doOnBookPageIntent(intent) { showNovelInfoPage() }
@@ -291,19 +284,19 @@ class BookNovelFragment : BookFragment() {
         mBinding.bookInfoCardview.doOnClickInterval {
            navigateImage(get<Fragment>(named(Fragments.Image.name)).also { it.arguments =
                bundleOf(
-                   BaseStrings.IMAGE_URL to mBookVM.mNovelInfoPage?.mNovel?.mCover,
-                   "name" to mBookVM.mNovelInfoPage?.mNovel?.mName
+                   BaseStrings.IMAGE_URL to mVM.mNovelInfoPage?.mNovel?.mCover,
+                   BaseStrings.NAME to mVM.mNovelInfoPage?.mNovel?.mName
                )
            })
         }
 
         mBinding.bookInfoAddToBookshelf.doOnClickInterval{
-            if (mBookVM.mNovelInfoPage == null) return@doOnClickInterval
+            if (mVM.mNovelInfoPage == null) return@doOnClickInterval
             if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty()) {
                 toast(getString(R.string.book_add_invalid))
                 return@doOnClickInterval
             }
-            mBookVM.input(BookIntent.AddNovelToBookshelf(mBookVM.mUuid ?: return@doOnClickInterval, if (mBinding.bookInfoAddToBookshelf.text == getString(R.string.book_comic_add_to_bookshelf)) 1 else 0))
+            mVM.input(BookIntent.AddNovelToBookshelf(mVM.mUuid ?: return@doOnClickInterval, if (mBinding.bookInfoAddToBookshelf.text == getString(R.string.book_comic_add_to_bookshelf)) 1 else 0))
         }
 
     }

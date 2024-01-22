@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.crow.base.R
+import com.crow.mangax.R as mangaR
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.getSpannableString
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -28,7 +28,7 @@ class MainAppUpdateRv(val mUrl: List<Url>) : RecyclerView.Adapter<MainAppUpdateR
 
     inner class ViewHolder(val rvBinding: MainUpdateUrlRvBinding) : RecyclerView.ViewHolder(rvBinding.root)
 
-    private val mPurple = ContextCompat.getColor(app, R.color.base_purple_8f6af1)
+    private val mPurple = ContextCompat.getColor(app, mangaR.color.mangax_purple_8f6af1)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(MainUpdateUrlRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also {  vh ->

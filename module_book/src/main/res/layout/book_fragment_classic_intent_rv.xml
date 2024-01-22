@@ -14,13 +14,13 @@
         android:textStyle="bold"
         android:paddingTop="@dimen/base_dp15"
         android:paddingBottom="@dimen/base_dp15"
-        android:textColor="@color/base_color_asc"
+        android:textColor="@color/mangax_color_asc"
         android:letterSpacing="0.8"
-        app:backgroundTint="@color/base_bg"
+        app:backgroundTint="@color/mangax_bg"
         app:cornerRadius="3dp"
         app:elevation="99dp"
         app:rippleColor="@color/base_grey_500_75"
-        app:strokeColor="@color/base_grey_400_40"
+        app:strokeColor="@color/mangax_grey_400_40"
         app:strokeWidth="1dp" />
 
 </FrameLayout>

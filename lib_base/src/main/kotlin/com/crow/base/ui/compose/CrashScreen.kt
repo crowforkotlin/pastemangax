@@ -43,18 +43,18 @@ fun CrashScreen(exception: Throwable?, onRestartClick: () -> Unit, onAcceptClick
     }
     InfoScreen(
         icon = Icons.Outlined.BugReport,
-        headingText = stringResource(R.string.BaseCrashScreenTitle),
+        headingText = stringResource(R.string.base_crash_screen_title),
         subtitleText = stringResource(
-            R.string.BaseCrashScreenDescription,
-            stringResource(R.string.BaseAppName)
+            R.string.base_crash_screen_description,
+            stringResource(R.string.base_app_name)
         ),
-        acceptText = stringResource(R.string.BaseCrashScreenShared),
+        acceptText = stringResource(R.string.base_crash_screen_shared),
         onAcceptClick = {
             scope.launch {
                 CrashLogUtil(context).dumpLogs()
             }
         },
-        rejectText = stringResource(R.string.BaseCrashScreenRestartApplication),
+        rejectText = stringResource(R.string.base_crash_screen_restart_application),
         onRejectClick = onRestartClick,
     ) {
         Box(

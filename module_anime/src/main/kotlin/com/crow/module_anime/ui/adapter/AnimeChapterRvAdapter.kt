@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_anime.databinding.AnimeFragmentChapterRvBinding
 import com.crow.module_anime.model.resp.chapter.AnimeChapterResult
 import kotlinx.coroutines.delay
@@ -25,7 +25,7 @@ class AnimeChapterRvAdapter(
     private var mClick: (position: Int, chapterResult: AnimeChapterResult) -> Unit
 ) : RecyclerView.Adapter<AnimeChapterRvAdapter.ChapterVH>() {
 
-    inner class ChapterVH(binding: AnimeFragmentChapterRvBinding) : BaseGlideLoadingViewHolder<AnimeFragmentChapterRvBinding>(binding) {
+    inner class ChapterVH(binding: AnimeFragmentChapterRvBinding) : MangaCoilVH<AnimeFragmentChapterRvBinding>(binding) {
         
         init {
             binding.play.doOnClickInterval { mClick(absoluteAdapterPosition, getItem(absoluteAdapterPosition)) }

@@ -2,20 +2,19 @@ package com.crow.module_mine.ui.viewmodel
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import coil.imageLoader
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
+import com.crow.base.app.app
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncClear
 import com.crow.base.tools.extensions.asyncDecode
 import com.crow.base.tools.extensions.dp2px
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.module_mine.model.MineIntent
 import com.crow.module_mine.model.resp.MineLoginResultsOkResp
 import com.crow.module_mine.model.resp.MineResultErrorResp
@@ -25,7 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
-import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -108,22 +107,23 @@ class MineViewModel(private val repository: MineRepository) : BaseMviViewModel<M
     // 加载Icon --- needApply : 是否需要适配固定大小
     inline fun doLoadIcon(context: Context, needApply: Boolean = true, crossinline doOnReady: (resource: Drawable) -> Unit) {
         if (needApply) {
-            Glide.with(context)
-                .load(if (mIconUrl == null) ContextCompat.getDrawable(context, baseR.drawable.base_icon_app) else BaseStrings.URL.MangaFuna.plus(mIconUrl))
-                .placeholder(baseR.drawable.base_icon_app)
-                .apply(RequestOptions().circleCrop().override(context.dp2px(48f).toInt()))
-                .into(object : CustomTarget<Drawable>() {
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { doOnReady(resource) }
-                })
+            app.imageLoader.enqueue(
+                ImageRequest.Builder(context)
+                    .data(if (mIconUrl == null) mangaR.drawable.base_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl)) // 加载的图片地址或占位符
+                    .placeholder(mangaR.drawable.base_icon_app) // 设置占位符
+                    .transformations(CircleCropTransformation()) // 应用圆形裁剪
+                    .size(context.dp2px(48f).toInt()) // 设置图片大小
+                    .target { doOnReady(it) }
+                    .build()
+            )
             return
         }
-        Glide.with(context)
-            .load(if (mIconUrl == null) ContextCompat.getDrawable(context, baseR.drawable.base_icon_app) else BaseStrings.URL.MangaFuna.plus(mIconUrl))
-            .placeholder(baseR.drawable.base_icon_app)
-            .into(object : CustomTarget<Drawable>() {
-                override fun onLoadCleared(placeholder: Drawable?) {}
-                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { doOnReady(resource) }
-            })
+        app.imageLoader.enqueue(
+            ImageRequest.Builder(context)
+                .data(if (mIconUrl == null) mangaR.drawable.base_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl)) // 加载的图片地址或占位符
+                .placeholder(mangaR.drawable.base_icon_app) // 设置占位符
+                .target { doOnReady(it) }
+                .build()
+        )
     }
 }

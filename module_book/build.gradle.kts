@@ -75,5 +75,4 @@ dependencies {
 
     // 引入lib_mangax库
     implementation(project(":lib_mangax"))
-
 }

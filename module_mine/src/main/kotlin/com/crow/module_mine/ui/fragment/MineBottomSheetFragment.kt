@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
-import com.crow.base.R.id.app_main_fcv
+import com.crow.mangax.R.id.app_main_fcv
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseUserConfig
@@ -26,7 +26,7 @@ import com.google.android.material.R.id.design_bottom_sheet
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.qualifier.named
-import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -51,7 +51,7 @@ class MineBottomSheetFragment : BaseMviBottomSheetDialogFragment<MineFragmentBin
         R.drawable.mine_ic_usr_24dp to app.getString(R.string.mine_login),
         R.drawable.mine_ic_reg_24dp to app.getString(R.string.mine_reg),
         R.drawable.mine_ic_history_24dp to app.getString(R.string.mine_browsing_history),
-        baseR.drawable.base_ic_download_24dp to app.getString(R.string.mine_download),
+        mangaR.drawable.base_ic_download_24dp to app.getString(R.string.mine_download),
         R.drawable.mine_ic_about_24dp to app.getString(R.string.mine_about),
         R.drawable.mine_ic_update_24dp to app.getString(R.string.mine_check_update),
         R.drawable.mine_ic_update_history_24dp to app.getString(R.string.mine_update_history_title)
@@ -94,7 +94,7 @@ class MineBottomSheetFragment : BaseMviBottomSheetDialogFragment<MineFragmentBin
                 0 -> if (content == getString(R.string.mine_info)) navigate(Fragments.MineInfo.name) else navigate(Fragments.Login.name)
                 1 -> navigate(Fragments.Reg.name)
                 2 -> navigate(Fragments.History.name)
-                3 -> toast(getString(baseR.string.BaseStillInDevelopment))
+                3 -> toast(getString(mangaR.string.mangax_dev_future))
                 4 -> navigate(Fragments.About.name)
                 5 -> FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).post(lifecycleScope, Unit)
                 6 -> navigate(Fragments.UpdateHistory.name)

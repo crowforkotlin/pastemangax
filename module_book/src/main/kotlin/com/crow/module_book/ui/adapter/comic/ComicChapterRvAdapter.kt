@@ -6,11 +6,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.app
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.view.TooltipsView
 import com.crow.module_book.R
+import com.crow.mangax.R as mangaR
 import com.crow.module_book.databinding.BookFragmentChapterRvBinding
 import com.crow.module_book.model.resp.comic_chapter.ComicChapterResult
 import kotlinx.coroutines.delay
@@ -49,7 +50,7 @@ class ComicChapterRvAdapter(
             mBtTextColor = ContextCompat.getColor(app, R.color.book_button_bg_white)
         } else {
             mBtSurfaceColor = ContextCompat.getColor(app, R.color.book_button_bg_white)
-            mBtTextColor = ContextCompat.getColor(app, com.crow.base.R.color.base_black)
+            mBtTextColor = ContextCompat.getColor(app, mangaR.color.mangax_black)
         }
     }
 

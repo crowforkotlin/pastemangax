@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/base_dp10"
-        android:text="@string/BaseLoadingRetry"
+        android:text="@string/base_loading_retry"
         android:textColor="@color/black"
         android:textSize="@dimen/base_sp13"
         android:textStyle="bold"

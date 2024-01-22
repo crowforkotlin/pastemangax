@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Main.Theme.CardView" parent="Base.Theme.Material3_Project">
+    <style name="Main.Theme.CardView" parent="MangaX.Theme.Material3_Project">
     </style>
 </resources>

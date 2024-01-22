@@ -1,29 +1,19 @@
 package com.crow.module_book.ui.adapter.comic.reader
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.IntRange
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.GenericTransitionOptions
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.bumptech.glide.request.transition.NoTransition
 import com.crow.mangax.copymanga.BaseUserConfig
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
-import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.module_book.databinding.BookActivityComicRvBinding
 import com.crow.module_book.databinding.BookFragmentClassicIntentRvBinding
@@ -44,6 +34,9 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
         private const val Body = 1
         private const val Footer = 2
     }
+
+    var mChapterName: String? = null
+    var mComicName: String? = null
 
     /**
      * ● Diff 回调
@@ -68,59 +61,24 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
     private val mDiffer = AsyncListDiffer(this, mDiffCallback)
 
 
-    inner class BodyViewHolder(binding: BookActivityComicRvBinding) : BaseGlideLoadingViewHolder<BookActivityComicRvBinding>(binding) {
-        fun onBind(position: Int) {
-            val item = getItem(position) as Content
-            val imageUrl = when {
+    inner class BodyViewHolder(binding: BookActivityComicRvBinding) : MangaCoilVH<BookActivityComicRvBinding>(binding) {
+        init { initComponent(binding.loading, binding.loadingText, binding.image, binding.retry) }
+
+        fun onBind(item: Content) {
+            loadImageWithRetry(when {
                 item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${BaseUserConfig.RESOLUTION}x.")
                 item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${BaseUserConfig.RESOLUTION}x.")
                 item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${BaseUserConfig.RESOLUTION}x.")
                 else -> item.mImageUrl
-            }
+            })
+        }
 
-
-            binding.loading.isVisible = true
-            binding.loadingText.isVisible = true
-            binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
-            binding.retry.isGone = true
-            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
-            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage) }
-            itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.MATCH_PARENT }
-            Glide.with(itemView.context)
-                .load(imageUrl)
-                .addListener(
-                    mAppGlideProgressFactory?.getRequestListener(
-                        failure = {
-                            binding.retry.alpha = 1f
-                            binding.retry.isVisible = true
-                            binding.loading.isInvisible = true
-                            binding.loadingText.isInvisible = true
-                            binding.retry.doOnClickInterval(false) {
-                                binding.retry.animateFadeOut().withEndAction {
-                                    onBind(position)
-                                }
-                            }
-                            false
-                        },
-                        ready = { _, _ ->
-                            itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
-                            false
-                         }
-                    )
-                )
-                .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                    val transition = if (dataSource == DataSource.REMOTE) {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        DrawableCrossFadeTransition(300, true)
-                    } else {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        NoTransition()
-                    }
-                    transition
-                })
-                .into(binding.image)
+        private fun setLoadingState(hide: Boolean) {
+            binding.loading.isInvisible = hide
+            binding.loadingText.isInvisible = hide
+        }
+        private fun setRetryState(hide: Boolean) {
+            binding.retry.isGone = hide
         }
     }
 
@@ -171,7 +129,7 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
 
     override fun onBindViewHolder(vh: RecyclerView.ViewHolder, position: Int) {
         when(vh) {
-            is BodyViewHolder -> vh.onBind(position)
+            is BodyViewHolder -> vh.onBind(getItem(position) as Content)
             is IntentViewHolder -> vh.onBind(position)
         }
     }

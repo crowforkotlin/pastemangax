@@ -152,7 +152,7 @@ class MineRegFragment : BaseMviFragment<MineFragmentRegBinding>() {
                         .doOnError { _, msg ->
                             dismissLoadingAnim { doRevertRegButton() }
                             toast(msg ?: app.getString(
-                                com.crow.base.R.string.BaseUnknowError))
+                                com.crow.mangax.R.string.mangax_unknow_error))
                         }
                         .doOnResult {
                             /* 两个结果 OK 和 Error
@@ -182,7 +182,7 @@ class MineRegFragment : BaseMviFragment<MineFragmentRegBinding>() {
                     intent.mViewState
                         .doOnSuccess { dismissLoadingAnim { doRevertRegButton() } }
                         .doOnError { _, msg -> mBinding.root.showSnackBar(msg ?: app.getString(
-                            com.crow.base.R.string.BaseUnknowError)) }
+                            com.crow.mangax.R.string.mangax_unknow_error)) }
                         .doOnResult {
                             /* 两个结果 OK 和 Error
                             * OK：设置 mIsRegSuccess = true 用于标记

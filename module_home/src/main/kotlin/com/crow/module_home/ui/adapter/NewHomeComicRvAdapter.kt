@@ -2,28 +2,25 @@
 
 package com.crow.module_home.ui.adapter
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.IntRange
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.GenericTransitionOptions
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.bumptech.glide.request.transition.NoTransition
-import com.crow.mangax.copymanga.appComicCardHeight
-import com.crow.mangax.copymanga.formatHotValue
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import coil.imageLoader
+import coil.request.ImageRequest
+import com.crow.base.app.app
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
 import com.crow.base.ui.view.TooltipsView
+import com.crow.mangax.copymanga.appComicCardHeight
+import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.tryConvert
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_home.databinding.HomeFragmentComicRvBodyBinding
 import com.crow.module_home.databinding.HomeFragmentComicRvHeaderBinding
 import com.crow.module_home.databinding.HomeFragmentComicRvRecRefreshBinding
@@ -105,8 +102,11 @@ class NewHomeComicRvAdapter(
      *
      * ● 2023-09-17 19:36:15 周日 下午
      */
-    inner class HomeComicBodyVH(binding: HomeFragmentComicRvBodyBinding) : BaseGlideLoadingViewHolder<HomeFragmentComicRvBodyBinding>(binding) {
+    inner class HomeComicBodyVH(binding: HomeFragmentComicRvBodyBinding) : MangaCoilVH<HomeFragmentComicRvBodyBinding>(binding) {
         init {
+
+            initComponent(binding.loading, binding.loadingText, binding.image)
+
             // 漫画卡片高度
             binding.image.layoutParams.height = appComicCardHeight
 
@@ -127,7 +127,12 @@ class NewHomeComicRvAdapter(
                 is NewComic -> { initView(item.mComic.mName, item.mComic.mImageUrl, item.mComic.mAuthorResult, item.mComic.mPopular, item.mComic.mLastChapterName) }
                 is FinishComic -> { initView(item.mName, item.mImageUrl, item.mAuthorResult, item.mPopular, null) }
                 is Topices -> {
-                    Glide.with(itemView).load(item.mImageUrl).into(binding.image)
+                    app.imageLoader.enqueue(
+                        ImageRequest.Builder(itemView.context)
+                            .data(if(AppConfig.mCoverOrinal) getOrignalCover(item.mImageUrl) else item.mImageUrl)
+                            .target(binding.image)
+                            .build()
+                    )
                     binding.author.isVisible = true
                     binding.author.text = item.mDatetimeCreated
                     mLifecycleScope.tryConvert(item.mTitle, binding.name::setText)
@@ -160,32 +165,6 @@ class NewHomeComicRvAdapter(
         // 初始化卡片内部视图
         private fun initView(name: String, imageUrl: String, author: List<AuthorResult>, hot: Int, lastestChapter: String?) {
 
-            binding.loading.isVisible = true
-            binding.loadingText.isVisible = true
-            binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
-            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
-            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage) }
-
-            // 加载封面
-            Glide.with(itemView)
-                .load(imageUrl)
-                .addListener(mAppGlideProgressFactory?.getRequestListener())
-                .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                    if (dataSource == com.bumptech.glide.load.DataSource.REMOTE) {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                    } else {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        NoTransition()
-                    }
-                })
-                .into(binding.image)
-
-            // 漫画名
-            mLifecycleScope.tryConvert(name, binding.name::setText)
-
             // 热度 ： 12.3456 W
             binding.hot.text = formatHotValue(hot)
 
@@ -193,11 +172,18 @@ class NewHomeComicRvAdapter(
             binding.author.text = if (binding.author.isVisible) author.joinToString { it.name } else null
 
             // 最新章节
-            if (lastestChapter == null) binding.lastestChapter.isVisible = false
-            else {
+            if (lastestChapter == null) {
+                binding.lastestChapter.isVisible = false
+            } else {
                 binding.lastestChapter.isVisible = true
                 binding.lastestChapter.text = lastestChapter
             }
+
+            // 漫画名
+            mLifecycleScope.tryConvert(name, binding.name::setText)
+
+            // 加载封面
+            loadCoverImage(imageUrl)
         }
     }
 

@@ -11,8 +11,9 @@ import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.setPadding
 import androidx.lifecycle.LifecycleCoroutineScope
-import com.crow.base.R
 import com.crow.base.app.app
+import com.crow.mangax.R
+import com.crow.base.R as baseR
 import com.crow.mangax.copymanga.resp.BaseContentInvalidResp
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2dp
@@ -21,7 +22,7 @@ import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.BaseViewState
-import com.crow.mangax.copymanga.entity.AppConfigEntity
+import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.tools.language.ChineseConverter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDivider
@@ -47,7 +48,7 @@ val appComicCardHeight: Int by lazy {
     (width.toFloat() / (3.0 - width.toFloat() / height.toFloat())).toInt()
 }
 val appComicCardWidth: Int by lazy { (appComicCardHeight / 1.25).toInt() }
-val appDp10 by lazy { app.px2dp(app.resources.getDimensionPixelSize(R.dimen.base_dp10).toFloat()).toInt() }
+val appDp10 by lazy { app.px2dp(app.resources.getDimensionPixelSize(baseR.dimen.base_dp10).toFloat()).toInt() }
 
 val appEvent = BaseEvent.newInstance(BaseEvent.BASE_FLAG_TIME_1000 shl 1)
 
@@ -59,7 +60,7 @@ private val formatter  = DecimalFormat("###,###.##", DecimalFormatSymbols(Locale
  * @author crowforkotlin
  */
 fun formatHotValue(value: Int): String {
-    return if(AppConfigEntity.mHotAccurateDisplay)  {
+    return if(!AppConfig.mHotAccurateDisplay)  {
         return when {
             value >= 10_000_000 -> {
                 String.format("%.1fW", value / 10_000.0)
@@ -119,31 +120,31 @@ fun View.processTokenError(code: Int, msg: String?, doOnCancel: (MaterialAlertDi
                 val linear = LinearLayoutCompat(context)
                 val divider = MaterialDivider(context)
                 val textView = TextView(context)
-                val dp10 = resources.getDimensionPixelSize(R.dimen.base_dp10)
+                val dp10 = resources.getDimensionPixelSize(baseR.dimen.base_dp10)
                 linear.layoutParams = LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                 linear.orientation = LinearLayoutCompat.VERTICAL
-                divider.layoutParams = LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, context.px2dp(resources.getDimensionPixelSize(R.dimen.base_dp1).toFloat()).toInt()).also {
+                divider.layoutParams = LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, context.px2dp(resources.getDimensionPixelSize(baseR.dimen.base_dp1).toFloat()).toInt()).also {
                     it.setMargins(0, dp10, 0, 0)
                 }
-                textView.text = context.getString(R.string.BaseTokenError)
+                textView.text = context.getString(R.string.mangax_token_error)
                 textView.textSize = 18f
-                textView.setPadding(context.resources.getDimensionPixelSize(R.dimen.base_dp20))
+                textView.setPadding(context.resources.getDimensionPixelSize(baseR.dimen.base_dp20))
                 textView.typeface = Typeface.DEFAULT_BOLD
                 textView.gravity = Gravity.CENTER or Gravity.CENTER_VERTICAL
                 linear.addView(divider)
                 linear.addView(textView)
                 dialog.setView(linear)
-                dialog.setTitle(context.getString(R.string.BaseTips))
-                dialog.setPositiveButton(context.getString(R.string.BaseConfirm)) { _, _ -> doOnConfirm(dialog) }
-                dialog.setNegativeButton(context.getString(R.string.BaseCancel)) { _, _ -> doOnCancel(dialog) }
+                dialog.setTitle(context.getString(R.string.mangax_tips))
+                dialog.setPositiveButton(context.getString(R.string.mangax_confirm)) { _, _ -> doOnConfirm(dialog) }
+                dialog.setNegativeButton(context.getString(R.string.mangax_cancel)) { _, _ -> doOnCancel(dialog) }
             }
         }
         .onFailure {
-            if (code == BaseViewState.Error.UNKNOW_HOST) this.showSnackBar(msg ?: app.getString(R.string.BaseLoadingError))
-            else toast(app.getString(R.string.BaseUnknowError))
+            if (code == BaseViewState.Error.UNKNOW_HOST) this.showSnackBar(msg ?: app.getString(baseR.string.base_loading_error))
+            else toast(app.getString(R.string.mangax_unknow_error))
         }
 }
 
 inline fun LifecycleCoroutineScope.tryConvert(text: String, crossinline result: (String) -> Unit) {
-   if (AppConfigEntity.mChineseConvert) { launch { result(ChineseConverter.convert(text)) } } else result(text)
+   if (AppConfig.mChineseConvert) { launch { result(ChineseConverter.convert(text)) } } else result(text)
 }

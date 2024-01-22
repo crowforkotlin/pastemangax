@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.R
+import com.crow.mangax.R as mangaR
 import com.crow.mangax.copymanga.BaseLoadStateAdapter
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.entity.Fragments
@@ -73,7 +74,7 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
      * ● 2023-10-04 17:00:17 周三 下午
      */
     private val mNovelAdapter by lazy {
-        NovelHistoryListAdapter { name, pathword ->
+        NovelHistoryListAdapter(lifecycleScope) { name, pathword ->
             onNavigate(Fragments.BookNovelInfo.name, name, pathword)
         }
     }
@@ -104,7 +105,7 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
         bundle.putString(BaseStrings.PATH_WORD, pathword)
         bundle.putString(BaseStrings.NAME, name)
         parentFragmentManager.navigateToWithBackStack(
-            id = R.id.app_main_fcv,
+            id = mangaR.id.app_main_fcv,
             hideTarget = this,
             addedTarget = get<Fragment>(named(tag)).also { it.arguments = bundle },
             tag = tag,
@@ -202,7 +203,7 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
                             mBinding.root.processTokenError(code, msg) {
                                 val tag = Fragments.Login.name
                                 parentFragmentManager.navigateToWithBackStack(
-                                    id = R.id.app_main_fcv,
+                                    id = mangaR.id.app_main_fcv,
                                     hideTarget = this,
                                     addedTarget = get(named(tag)),
                                     tag = tag,

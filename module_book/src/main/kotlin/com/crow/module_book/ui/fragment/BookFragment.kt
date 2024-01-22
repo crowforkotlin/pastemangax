@@ -5,14 +5,13 @@ package com.crow.module_book.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.entity.Fragments
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
@@ -23,7 +22,6 @@ import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
-import com.crow.base.ui.view.atrr_text_layout.BaseAttrTextLayout
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
@@ -37,6 +35,7 @@ import com.crow.module_book.ui.viewmodel.BookViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 /*************************
@@ -55,16 +54,16 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         const val HIDDEN_CHANED = "HIDDEN_CHANGED"
     }
 
-    /** ● AppGlideFactory GLide 进度加载 */
-    protected var mAppGlideProgressFactory: AppGlideProgressFactory? = null
+    /** ● AppProgressFactory 进度加载 */
+    protected var mProgressFactory: AppProgressFactory? = null
 
     /** ● 书架VM */
-    protected val mBookVM by viewModel<BookViewModel>()
+    protected val mVM by viewModel<BookViewModel>()
 
     /** ● 漫画点击实体 */
     protected val mPathword: String by lazy {
         arguments?.getString(BaseStrings.PATH_WORD) ?: run {
-            toast(getString(baseR.string.BaseUnknowError))
+            toast(getString(mangaR.string.mangax_unknow_error))
             navigateUp()
             ""
         }
@@ -73,7 +72,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     /** ● 漫画点击实体 */
     protected val mName: String by lazy {
         arguments?.getString(BaseStrings.NAME) ?: run {
-            toast(getString(baseR.string.BaseUnknowError))
+            toast(getString(mangaR.string.mangax_unknow_error))
             navigateUp()
             ""
         }
@@ -130,15 +129,15 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
             // 发生错误 取消动画 退出界面 提示
             .doOnError { _, _ ->
 //                dismissLoadingAnim {}
-                toast(getString(baseR.string.BaseLoadingError))
+                toast(getString(baseR.string.base_loading_error))
 //                navigateUp()
             }
 
             // 显示书页内容 根据意图类型 再次发送获取章节意图的请求
             .doOnResult {
                 onResult.run()
-                if (intent is BookIntent.GetComicInfoPage) mBookVM.input(BookIntent.GetComicChapter(intent.pathword))
-                else if (intent is BookIntent.GetNovelInfoPage) mBookVM.input(BookIntent.GetNovelChapter(intent.pathword))
+                if (intent is BookIntent.GetComicInfoPage) mVM.input(BookIntent.GetComicChapter(intent.pathword))
+                else if (intent is BookIntent.GetNovelInfoPage) mVM.input(BookIntent.GetNovelChapter(intent.pathword))
             }
 
     }
@@ -164,7 +163,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
             .doOnResult {
                 when(intent) {
                     is BookIntent.GetComicChapter -> showChapterPage(intent.comicChapter, intent.invalidResp)
-                    is BookIntent.GetNovelChapter ->showChapterPage(intent.novelChapter, intent.invalidResp)
+                    is BookIntent.GetNovelChapter -> showChapterPage(intent.novelChapter, intent.invalidResp)
                     else -> {}
                 }
             }
@@ -190,10 +189,10 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
      * @param invalidResp 失败的结果
      */
     protected fun processChapterFailureResult(invalidResp: String?) {
-        if (mBinding.bookInfoRefresh.isRefreshing) mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknowError))
+        if (mBinding.bookInfoRefresh.isRefreshing) mBinding.root.showSnackBar(invalidResp ?: getString(mangaR.string.mangax_unknow_error))
         else dismissLoadingAnim {
             mBinding.comicInfoErrorTips.animateFadeIn()
-            mBinding.root.showSnackBar(invalidResp ?: getString(baseR.string.BaseUnknowError))
+            mBinding.root.showSnackBar(invalidResp ?: getString(mangaR.string.mangax_unknow_error))
         }
     }
 
@@ -203,7 +202,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
      */
     protected fun navigateImage(fragment: Fragment) {
         val tag = Fragments.Image.name
-        parentFragmentManager.navigateToWithBackStack(baseR.id.app_main_fcv, this, fragment, tag, tag )
+        parentFragmentManager.navigateToWithBackStack(mangaR.id.app_main_fcv, this, fragment, tag, tag )
     }
 
     /**
@@ -253,7 +252,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
             mMultipleLineEnable = true
             mEnableAntiAlias = true
             mAnimationMode = BaseAttrTextLayout.ANIMATION_MOVE_Y
-            mFontColor = ContextCompat.getColor(mContext, baseR.color.base_color_asc)
+            mFontColor = ContextCompat.getColor(mContext, mangaR.color.base_color_asc)
             mGravity = BaseAttrTextLayout.GRAVITY_CENTER_START
             mScrollSpeed = 11
             mResidenceTime = 3 * 1000
@@ -262,10 +261,10 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         mBinding.desc.text = more
         mBinding.name.text = mName
         mBinding.status.text = getString(R.string.BookComicStatus, more)
-        mBinding.author.text = getString(R.string.BookComicAuthor, more)
-        mBinding.hot.text = getString(R.string.BookComicHot, more)
-        mBinding.update.text = getString(R.string.BookComicUpdate, more)
-        mBinding.chapter.text = getString(R.string.BookComicNewChapter, more)
+        mBinding.author.text = getString(R.string.book_author, more)
+        mBinding.hot.text = getString(R.string.book_hot, more)
+        mBinding.update.text = getString(R.string.book_update, more)
+        mBinding.chapter.text = getString(R.string.book_new_chapter, more)
     }
 
     /** ● 处理章节结果
@@ -304,8 +303,8 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
                     if (!mIsTabAlreadyAdded) return@doOnInterval
                     mBinding.bookInfoRvChapterSelector.isEnabled = false
                     showLoadingAnim()
-                    mBookVM.reCountPos(tab.position)
-                    mBookVM.input(BookIntent.GetComicChapter(mPathword))
+                    mVM.reCountPos(tab.position)
+                    mVM.input(BookIntent.GetComicChapter(mPathword))
                 }
             }
         })
@@ -321,8 +320,8 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         // 设置成false是因为 当View重新创建的时候 可以重新添加章节选择器
         mIsTabAlreadyAdded = false
 
-        mAppGlideProgressFactory?.onCleanCache()?.onRemoveListener()
-        mAppGlideProgressFactory = null
+        mProgressFactory?.remove()?.removeProgressListener()
+        mProgressFactory = null
 
         mBaseEvent.remove(LOGIN_CHAPTER_HAS_BEEN_SETED)
     }

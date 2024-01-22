@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -51,11 +52,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.integration.compose.CrossFade
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil.compose.AsyncImage
 import com.crow.base.R.color.base_grey_500_75
-import com.crow.base.tools.extensions.log
+import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_home.model.resp.homepage.Banner
 import kotlinx.coroutines.delay
 import kotlin.coroutines.cancellation.CancellationException
@@ -142,7 +142,7 @@ fun Banner(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BannerItem(
     banner: Banner,
@@ -159,6 +159,14 @@ fun BannerItem(
         Color.Transparent,
         MaterialTheme.colorScheme.surface
     )
+    // 创建一个状态来保存转换后的文本
+    val convertedText = remember { mutableStateOf(banner.mBrief) }
+
+    if (AppConfig.mChineseConvert) {
+        LaunchedEffect(banner.mBrief) {
+            convertedText.value = ChineseConverter.convert(banner.mBrief)
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -193,10 +201,13 @@ fun BannerItem(
                 onClick = { bannerClick(banner) },
                 onLongClick = null,
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(true, color = Color(ContextCompat.getColor(LocalContext.current, base_grey_500_75)))
+                indication = rememberRipple(
+                    true,
+                    color = Color(ContextCompat.getColor(LocalContext.current, base_grey_500_75))
+                )
             )
     ) {
-        GlideImage(
+        /*GlideImage(
             model = banner.mImgUrl,
             contentDescription = null,
             transition = CrossFade.Companion,
@@ -207,13 +218,10 @@ fun BannerItem(
                     drawContent()
                     drawRect(brush = Brush.verticalGradient(colors))
                 }
-        )
-
-
-/*        AsyncImage(
-            model = banner.mImgUrl, ,
+        )*/
+        AsyncImage(
+            model = banner.mImgUrl,
             contentDescription = null,
-
             contentScale = ContentScale.Crop,
             placeholder = ColorPainter(MaterialTheme.colorScheme.surface),
             modifier = Modifier
@@ -222,10 +230,9 @@ fun BannerItem(
                     drawContent()
                     drawRect(brush = Brush.verticalGradient(colors))
                 }
-        )*/
-
+        )
         DrawOutlineText(
-            text = banner.mBrief,
+            text = convertedText.value,
             textMaxLine = 3,
             modifier = Modifier
                 .wrapContentSize()

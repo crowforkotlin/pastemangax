@@ -5,7 +5,6 @@ import android.graphics.Typeface
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
@@ -15,7 +14,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.IntRange
-import androidx.compose.ui.unit.TextUnit
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -25,14 +23,14 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.crow.base.app.app
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.setOnCheckedInterval
-import com.crow.module_main.databinding.MainFragmentSettingsSwitchRvBinding
 import com.crow.module_main.model.entity.SettingContentEntity
 import com.crow.module_main.model.entity.SettingSwitchEntity
 import com.crow.module_main.model.entity.SettingTitleEntity
 import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.materialswitch.MaterialSwitch
-import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 import com.crow.module_home.R as homeR
+import com.crow.base.R as baseR
 
 class SettingsAdapter(
     private val onClick: (pos: Int) -> Unit,
@@ -199,7 +197,7 @@ class SettingsAdapter(
             it.marginEnd = mDp20
             it.gravity = Gravity.CENTER
         }
-        imageView.imageTintList = ContextCompat.getColorStateList(context, baseR.color.base_color_asc)
+        imageView.imageTintList = ContextCompat.getColorStateList(context, mangaR.color.mangax_color_asc)
 
         textView.layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).also {
             it.marginEnd = mDp5
@@ -209,7 +207,7 @@ class SettingsAdapter(
         textView.typeface = Typeface.DEFAULT_BOLD
         textView.maxLines = 1
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mSp12_5)
-        textView.setTextColor(ContextCompat.getColor(context, baseR.color.base_color_asc))
+        textView.setTextColor(ContextCompat.getColor(context, mangaR.color.mangax_color_asc))
 
         linearLayout.addView(imageView)
         linearLayout.addView(textView)
@@ -235,7 +233,7 @@ class SettingsAdapter(
             it.marginEnd = mDp20
             it.gravity = Gravity.CENTER
         }
-        imageView.imageTintList = ContextCompat.getColorStateList(context, baseR.color.base_color_asc)
+        imageView.imageTintList = ContextCompat.getColorStateList(context, mangaR.color.mangax_color_asc)
 
         switch.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).also {
             it.weight = 1f
@@ -245,7 +243,7 @@ class SettingsAdapter(
         switch.maxLines = 1
         switch.ellipsize = TextUtils.TruncateAt.END
         switch.setTextSize(TypedValue.COMPLEX_UNIT_PX, mSp12_5)
-        switch.setTextColor(ContextCompat.getColor(context, baseR.color.base_color_asc))
+        switch.setTextColor(ContextCompat.getColor(context, mangaR.color.mangax_color_asc))
 
         linearLayout.addView(imageView)
         linearLayout.addView(switch)

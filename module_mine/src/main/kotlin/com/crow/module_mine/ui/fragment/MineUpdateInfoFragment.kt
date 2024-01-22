@@ -27,7 +27,7 @@ import com.crow.module_mine.ui.viewmodel.MineViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 
 /*************************
@@ -75,7 +75,7 @@ class MineUpdateInfoFragment : BaseMviFragment<MineFragmentInfoBinding>() {
 
         // 头像 点击事件
         mBinding.userUpdateInfoIcon.doOnClickInterval {
-            parentFragmentManager.navigateToWithBackStack<MineIconFragment>(baseR.id.app_main_fcv, this, null, Fragments.Icon.name, Fragments.Icon.name)
+            parentFragmentManager.navigateToWithBackStack<MineIconFragment>(mangaR.id.app_main_fcv, this, null, Fragments.Icon.name, Fragments.Icon.name)
         }
 
         // 退出账号 点击事件
@@ -127,7 +127,7 @@ class MineUpdateInfoFragment : BaseMviFragment<MineFragmentInfoBinding>() {
                     .doOnResult {
                         dismissLoadingAnim {
                             if (intent.mineUpdateInfoResp == null) {
-                                toast(getString(baseR.string.BaseUnknowError))
+                                toast(getString(mangaR.string.mangax_unknow_error))
                                 return@dismissLoadingAnim
                             }
 

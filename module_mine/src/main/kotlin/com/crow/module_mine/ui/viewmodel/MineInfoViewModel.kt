@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -37,11 +37,11 @@ class MineInfoViewModel : BaseMviViewModel<MineIntent>() {
         }
     }
 
-    private fun String.getDate() = runCatching {timestamp(this) }.getOrElse { app.getString(baseR.string.BaseUnknowError) }
+    private fun String.getDate() = runCatching {timestamp(this) }.getOrElse { app.getString(mangaR.string.mangax_unknow_error) }
 
     fun setData(userInfo: MineLoginResultsOkResp) {
         mUserUpdateInfoData.add(R.drawable.mine_ic_time_24dp to app.getString(R.string.mine_datetime_created, userInfo.mDatetimeCreated.getDate()))
-        mUserUpdateInfoData.add(baseR.drawable.base_ic_download_24dp to app.getString(R.string.mine_download_count, userInfo.mDownloads.toString()))
+        mUserUpdateInfoData.add(mangaR.drawable.base_ic_download_24dp to app.getString(R.string.mine_download_count, userInfo.mDownloads.toString()))
         mUserUpdateInfoData.add(R.drawable.mine_ic_email_24dp to app.getString(R.string.mine_email, userInfo.mEmail.ifEmpty { "暂无" }))
     }
 

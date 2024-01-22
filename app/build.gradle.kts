@@ -25,7 +25,7 @@ android {
         // 构建工具版本
         buildToolsVersion = AppConfigs.build_tools_version
 
-        // 标识应用程序ID （设备上的唯一标识符）s
+        // 标识应用程序ID （设备上的唯一标识符）
         applicationId = AppConfigs.application_id
 
         // 兼容最小版本的SDK
@@ -58,10 +58,28 @@ android {
             // 设置支持的SO库架构 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
             abiFilters += listOf(/*"x86", "x86_64", "armeabi-v7a",*/ "arm64-v8a")
         }
+
+        // 设置APK名
+        setProperty("archivesBaseName", "CopyMangaX-$versionName")
     }
 
     // 应用程序的构建类型
     buildTypes {
+
+        // 调试版本
+        debug {
+
+            versionNameSuffix = ".debug"
+
+            // 设置ApplicationID
+            applicationIdSuffix = ".debug"
+
+            // 关闭代码压缩
+            isMinifyEnabled = false
+
+            // 关闭资源深度压缩
+            isShrinkResources = false
+        }
 
         // 发行版本
         release {
@@ -77,18 +95,6 @@ android {
                 getDefaultProguardFile(AppConfigs.proguard_android_optimize_txt),
                 AppConfigs.proguard_rules_pro
             )
-
-            setProperty("archivesBaseName", "CopyMangaX")
-        }
-
-        // 调试版本
-        debug {
-
-            // 关闭代码压缩
-            isMinifyEnabled = false
-
-            // 关闭资源深度压缩
-            isShrinkResources = false
         }
     }
 
@@ -110,7 +116,6 @@ android {
 
         // 指定编译器的命令行参数 可启用额外功能
         freeCompilerArgs = AppConfigs.free_compile_args
-
     }
 
     // （产品口味） 是一个抽象的概念，表示应用程序的不同版本
@@ -121,15 +126,18 @@ android {
 
         // 内部版本
         create(AppConfigs.flavor_internal) {
+
             // 指定维度
             dimension = AppConfigs.flavor_dimension
 
             // 版本名后缀
             versionNameSuffix = "_internal"
 
+            // .internal后缀
+            applicationIdSuffix = ".internal"
+
             // 是否使用线上环境
             buildConfigField("boolean", "IS_ONLINE_ENV", "true")
-
         }
 
         // 正式线上版本
@@ -139,7 +147,7 @@ android {
             dimension = AppConfigs.flavor_dimension
 
             // 版本名后缀
-            versionNameSuffix = "_online"
+            versionNameSuffix = versionName
 
             // 是否使用线上环境
             buildConfigField("boolean", "IS_ONLINE_ENV", "true")
@@ -164,10 +172,6 @@ android {
 }
 
 dependencies {
-
-
-    // Glide编译器
-    ksp(libs.glide.ksp)
 
     // 引入lib_base库
     implementation(project(":lib_base"))

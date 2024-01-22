@@ -15,7 +15,7 @@
         android:layout_width="@dimen/base_dp20"
         android:layout_height="@dimen/base_dp20"
         android:layout_gravity="center"
-        android:tint="@color/base_color_asc"
+        android:tint="@color/mangax_color_asc"
         tools:src="@drawable/main_ic_resolution_24dp" />
 
     <TextView
@@ -26,7 +26,7 @@
         android:layout_marginStart="@dimen/base_dp20"
         android:gravity="center_vertical"
         android:maxLines="2"
-        android:textColor="@color/base_color_asc"
+        android:textColor="@color/mangax_color_asc"
         android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
         tools:text="个性化" />

@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Base.Theme.BG"
+    style="@style/MangaX.Theme.BG"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,7 +16,7 @@
         app:menu="@menu/home_appbar_menu"
         app:navigationIcon="@drawable/home_ic_user_24dp"
         app:title="@string/home_homepage"
-        app:titleTextAppearance="@style/Base.TextAppearance.Material3.ActionBar.Title.Bold" />
+        app:titleTextAppearance="@style/MangaX.TextAppearance.Material3.ActionBar.Title.Bold" />
 
     <com.google.android.material.search.SearchView
         android:id="@+id/search_view"

@@ -1,18 +1,16 @@
 package com.crow.module_anime.ui.fragment
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
+import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.GenericTransitionOptions
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.bumptech.glide.request.transition.NoTransition
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseUserConfig
@@ -20,12 +18,12 @@ import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.formatHotValue
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
-import com.crow.base.tools.extensions.BASE_ANIM_200L
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.px2sp
@@ -37,7 +35,7 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_anime.R
 import com.crow.module_anime.databinding.AnimeFragmentInfoBinding
@@ -50,7 +48,10 @@ import com.crow.module_anime.ui.adapter.AnimeChapterRvAdapter
 import com.crow.module_anime.ui.viewmodel.AnimeViewModel
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
+import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 /**
@@ -75,7 +76,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      */
     private val mPathword: String by lazy {
         arguments?.getString(BaseStrings.PATH_WORD) ?: run {
-            toast(getString(com.crow.base.R.string.BaseUnknowError))
+            toast(getString(com.crow.mangax.R.string.mangax_unknow_error))
             navigateUp()
             ""
         }
@@ -88,18 +89,18 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      */
     private val mName: String by lazy {
         arguments?.getString(BaseStrings.NAME) ?: run {
-            toast(getString(com.crow.base.R.string.BaseUnknowError))
+            toast(getString(com.crow.mangax.R.string.mangax_unknow_error))
             navigateUp()
             ""
         }
     }
 
     /**
-     * ● Glide进度加载工厂
+     * ● 进度加载工厂
      *
      * ● 2023-10-12 01:11:44 周四 上午
      */
-    private var mAppGlideProgressFactory: AppGlideProgressFactory? = null
+    private var mProgressFactory: AppProgressFactory? = null
 
     /**
      * ● 章节适配器
@@ -188,6 +189,20 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
 
         // 返回
         mBinding.back.doOnClickInterval { navigateUp() }
+
+        // 卡片
+        mBinding.cardview.doOnClickInterval {
+            if (mVM.mCover == null) {
+                toast(getString(baseR.string.base_loading_error))
+            } else {
+                navigateImage(get<Fragment>(named(Fragments.Image.name)).also {
+                    it.arguments = bundleOf(
+                        BaseStrings.IMAGE_URL to mVM.mCover,
+                        BaseStrings.NAME to mName
+                    )
+                })
+            }
+        }
     }
 
     /**
@@ -204,7 +219,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
                         .doOnSuccess { if (mBinding.refresh.isRefreshing) mBinding.refresh.finishRefresh() }
 
                         // 发生错误 取消动画 退出界面 提示
-                        .doOnError { _, _ -> toast(getString(baseR.string.BaseLoadingError)) }
+                        .doOnError { _, _ -> toast(getString(baseR.string.base_loading_error)) }
 
                         // 显示书页内容 根据意图类型 再次发送获取章节意图的请求
                         .doOnResult {
@@ -250,23 +265,21 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
 
         val anim = info.mCartoon
 
-        mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(anim.mCover) { _, _, percentage, _, _ -> mBinding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage) }
+        mProgressFactory = AppProgressFactory.createProgressListener(anim.mCover) { _, _, percentage, _, _ -> mBinding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
 
-        Glide.with(this)
-            .load(anim.mCover)
-            .addListener(mAppGlideProgressFactory?.getRequestListener())
-            .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                if (dataSource == DataSource.REMOTE) {
-                    mBinding.loading.isInvisible = true
-                    mBinding.loadingText.isInvisible = true
-                    DrawableCrossFadeTransition(BASE_ANIM_200L.toInt(), true)
-                } else {
-                    mBinding.loading.isInvisible = true
-                    mBinding.loadingText.isInvisible = true
-                    NoTransition()
-                }
-            })
-            .into(mBinding.image)
+        app.imageLoader.enqueue(
+            ImageRequest.Builder(mContext)
+                .listener(
+                    onSuccess = { _, _ ->
+                        mBinding.loading.isInvisible = true
+                        mBinding.loadingText.isInvisible = true
+                    },
+                    onError = { _, _ -> mBinding.loadingText.text = "-1%" },
+                )
+                .data(anim.mCover)
+                .target(mBinding.image)
+                .build()
+        )
 
         mBinding.company.text = getString(R.string.anime_company, anim.mCompany.mName)
         mBinding.hot.text = getString(R.string.anime_hot, formatHotValue(anim.mPopular))
@@ -302,6 +315,19 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
             }
         }
     }
+
+    /**
+     * ● 导航至图片Fragment
+     *
+     * ● 2024-01-08 22:51:45 周一 下午
+     * @author crowforkotlin
+     */
+    private fun navigateImage(fragment: Fragment) {
+        val tag = Fragments.Image.name
+        parentFragmentManager.navigateToWithBackStack(mangaR.id.app_main_fcv, this, fragment, tag, tag )
+    }
+
+
 
     /**
      * ● 返回上一个界面

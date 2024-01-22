@@ -54,7 +54,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
-import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -180,7 +180,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
             doOnConfirm = {
                 val tag = Fragments.Login.name
                 requireParentFragment().parentFragmentManager.navigateToWithBackStack(
-                    id = baseR.id.app_main_fcv,
+                    id = mangaR.id.app_main_fcv,
                     hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
                     addedTarget = get(named(tag)),
                     tag = tag,
@@ -242,7 +242,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
         bundle.putSerializable(BaseStrings.NAME, name)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(
-            id = baseR.id.app_main_fcv,
+            id = mangaR.id.app_main_fcv,
             hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
             addedTarget= get<Fragment>(named(tag)).also { it.arguments = bundle },
             tag = tag,

@@ -34,7 +34,7 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
      * @author crowforkotlin
      */
     enum class Type(@IdRes val id: Int) {
-//        STRIPT(R.string.book_comic_stript),
+        STRIPT(R.string.book_comic_stript),
         CLASSIC(R.string.book_comic_classic),
         PAGE_RIGHT(R.string.book_comic_page_right),
         PAGE_LEFT(R.string.book_comic_page_left)
@@ -49,7 +49,7 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
      */
     fun apply(type: Type) {
         when (type) {
-//            Type.STRIPT -> mActivity.supportFragmentManager.navigateByAdd(host.id, mActivity.get(named(Fragments.ComicStript.name)))
+            Type.STRIPT -> mActivity.supportFragmentManager.navigate(host.id, mActivity.get(named(Fragments.ComicStript.name)))
             Type.CLASSIC -> mActivity.supportFragmentManager.navigate(host.id, mActivity.get(named(Fragments.ComicClassic.name)))
             Type.PAGE_LEFT, Type.PAGE_RIGHT -> { mActivity.supportFragmentManager.navigate(host.id, mActivity.get<Fragment>(named(Fragments.ComicPage.name)).also { it.arguments = bundleOf("CATEGORIES" to type.id) }) }
         }

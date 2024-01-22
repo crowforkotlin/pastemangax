@@ -24,7 +24,7 @@ fun Uri.toShareIntent(context: Context, type: String = "image/*", message: Strin
         flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
     }
 
-    return Intent.createChooser(shareIntent, context.getString(R.string.BaseActionShare)).apply {
+    return Intent.createChooser(shareIntent, context.getString(R.string.base_action_share)).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK
     }
 }

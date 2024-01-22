@@ -1,28 +1,20 @@
 
 package com.crow.module_book.ui.adapter.comic.reader
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.IntRange
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.GenericTransitionOptions
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
-import com.bumptech.glide.request.transition.NoTransition
-import com.crow.mangax.copymanga.glide.AppGlideProgressFactory
-import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.ui.adapter.BaseGlideLoadingViewHolder
+import com.crow.base.tools.extensions.log
+import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_book.databinding.BookActivityComicButtonRvBinding
 import com.crow.module_book.databinding.BookActivityComicRvBinding
+import com.crow.module_book.model.entity.comic.reader.ReaderInfo
+import com.crow.module_book.model.entity.comic.reader.ReaderLoading
 import com.crow.module_book.model.resp.comic_page.Content
 
 
@@ -37,88 +29,69 @@ import com.crow.module_book.model.resp.comic_page.Content
 class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        private const val LoadingView = 0
-        private const val ContentView = 1
+        private const val LOADING_VIEW = 0
+        private const val CONTENT_VIEW = 1
     }
 
-    private val mDiffCallback: DiffUtil.ItemCallback<Content> = object : DiffUtil.ItemCallback<Content>() {
-        override fun areItemsTheSame(oldItem: Content, newItem: Content): Boolean {
-            return oldItem == newItem
+    private val mDiffCallback: DiffUtil.ItemCallback<Any> = object : DiffUtil.ItemCallback<Any>() {
+        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+            return if (oldItem is ReaderLoading && newItem is ReaderLoading) {
+                false
+            } else if(oldItem is Content && newItem is Content) {
+                oldItem.mImageUrl == newItem.mImageUrl
+            } else false
         }
 
-        override fun areContentsTheSame(oldItem: Content, newItem: Content): Boolean {
-            return oldItem.mImageUrl == newItem.mImageUrl
+        override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+            return if (oldItem is ReaderLoading && newItem is ReaderLoading) {
+                oldItem == newItem
+            } else if (oldItem is Content && newItem is Content) {
+                oldItem == newItem
+            } else false
         }
     }
 
     private val mDiffer = AsyncListDiffer(this, mDiffCallback)
 
+    private var mReaderInfo: ReaderInfo? = null
+        private set
+
     private fun getItem(@IntRange(from = 0) position: Int) = mDiffer.currentList[position]
 
     fun getCurrentList() = mDiffer.currentList
 
-    fun submitList(contents: MutableList<Content?>) = mDiffer.submitList(contents)
+    fun submitList(contents: MutableList<Any?>, runnable: Runnable) = mDiffer.submitList(contents) {
+       runnable.run()
+    }
 
-    inner class PageViewHolder(binding: BookActivityComicRvBinding) : BaseGlideLoadingViewHolder<BookActivityComicRvBinding>(binding) {
+    inner class PageViewHolder(binding: BookActivityComicRvBinding) : MangaCoilVH<BookActivityComicRvBinding>(binding) {
+
+       init {
+           initComponent(binding.loading, binding.loadingText, binding.image, binding.retry)
+       }
 
         fun onBind(item: Content) {
-
-            binding.loading.isVisible = true
-            binding.loadingText.isVisible = true
-            binding.loadingText.text = AppGlideProgressFactory.PERCENT_0
-            binding.retry.isVisible = false
-            mAppGlideProgressFactory?.onRemoveListener()?.onCleanCache()
-            mAppGlideProgressFactory = AppGlideProgressFactory.createGlideProgressListener(item.mImageUrl!!) { _, _, percentage, _, _ ->
-                binding.loadingText.text = AppGlideProgressFactory.getProgressString(percentage)
-            }
-
-            Glide.with(itemView.context)
-                .load(item.mImageUrl)
-                .addListener(mAppGlideProgressFactory?.getRequestListener({
-                    binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
-                    binding.retry.animateFadeIn()
-                    binding.loading.animateFadeOut()
-                    binding.loadingText.animateFadeOut()
-                    binding.retry.doOnClickInterval(false) {
-                        binding.retry.animateFadeOut()
-                        binding.loading.animateFadeIn()
-                        binding.loadingText.animateFadeIn()
-                        onBind(item)
-                    }
-                    false
-                },  { _, dataSource ->
-                    binding.root.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
-                    false
-                }))
-                .transition(GenericTransitionOptions<Drawable>().transition { dataSource, _ ->
-                    val transition = if (dataSource == DataSource.REMOTE) {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-
-                        DrawableCrossFadeTransition(300, true)
-                    } else {
-                        binding.loading.isInvisible = true
-                        binding.loadingText.isInvisible = true
-                        NoTransition()
-                    }
-                    transition
-                })
-                .into(binding.image)
+            loadImageWithRetry(when {
+                item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${BaseUserConfig.RESOLUTION}x.")
+                item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${BaseUserConfig.RESOLUTION}x.")
+                item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${BaseUserConfig.RESOLUTION}x.")
+                else -> item.mImageUrl
+            })
         }
     }
 
     inner class PageMoreViewHolder(val binding: BookActivityComicButtonRvBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun onBind(position: Int) {
-
+        fun onBind(item: ReaderLoading) {
+            binding.text.text = item.mMessage
         }
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            LoadingView ->PageMoreViewHolder(BookActivityComicButtonRvBinding.inflate(LayoutInflater.from(parent.context), parent,false))
-            ContentView -> PageViewHolder(BookActivityComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            LOADING_VIEW -> PageMoreViewHolder(BookActivityComicButtonRvBinding.inflate(LayoutInflater.from(parent.context), parent,false))
+            CONTENT_VIEW -> PageViewHolder(BookActivityComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> error("Unknown view type!")
         }
     }
@@ -127,7 +100,8 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
         return when(getItem(position)) {
-            is Content -> ContentView
+            is Content -> CONTENT_VIEW
+            is ReaderLoading -> LOADING_VIEW
             else -> error("Unknown view type!")
         }
     }
@@ -142,7 +116,10 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(vh: RecyclerView.ViewHolder, position: Int) {
         when(vh) {
             is PageViewHolder -> vh.onBind(getItem(position) as Content)
+            is PageMoreViewHolder -> vh.onBind(getItem(position) as ReaderLoading)
         }
     }
+
+    fun updateReaderInfo(info: ReaderInfo) { mReaderInfo = info }
 
 }

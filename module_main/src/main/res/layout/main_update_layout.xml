@@ -68,7 +68,7 @@
 			android:autoLink="web"
 			android:textSize="@dimen/base_sp14"
 			android:textStyle="bold"
-			tools:text="@string/BaseTodoTextView" />
+			tools:text="@string/base_todo_textview" />
 
 	</androidx.core.widget.NestedScrollView>
 
@@ -77,11 +77,11 @@
 		style="@style/Widget.Material3.Button.ElevatedButton"
 		app:layout_constraintHorizontal_bias="0"
 		android:layout_width="wrap_content"
-		app:rippleColor="@color/base_grey_500"
+		app:rippleColor="@color/mangax_grey_500"
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/base_dp10"
 		android:text="@string/main_update_cancel"
-		android:textColor="@color/base_black"
+		android:textColor="@color/mangax_black"
 		android:textStyle="bold"
 		app:backgroundTint="@color/mine_deep_purple_300"
 		app:iconTint="@null"
@@ -96,8 +96,8 @@
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/base_dp10"
 		android:text="@string/main_update_go"
-		android:textColor="@color/base_black"
-		app:rippleColor="@color/base_grey_500"
+		android:textColor="@color/mangax_black"
+		app:rippleColor="@color/mangax_grey_500"
 		android:textStyle="bold"
 		app:backgroundTint="@color/mine_deep_purple_300"
 		app:icon="@drawable/mine_ic_air_plane_24dp"
@@ -108,12 +108,12 @@
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/main_update_history"
-		style="@style/Base.Theme.Button.Icon.Tint"
+		style="@style/MangaX.Theme.Button.Icon.Tint"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		app:icon="@drawable/mine_ic_update_history_24dp"
 		app:iconTint="@null"
-		app:rippleColor="@color/base_grey_500"
+		app:rippleColor="@color/mangax_grey_500"
 		app:backgroundTint="@color/mine_deep_purple_300"
 		app:layout_constraintEnd_toEndOf="@+id/main_update_go"
 		app:layout_constraintTop_toTopOf="@+id/main_update_title" />

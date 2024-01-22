@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="mangax_bg">#1C1B20</color>
+    <color name="mangax_color_asc">#FFFFFF</color>
+    <color name="mangax_icon_desc">#000000</color>
+
+    <color name="mangax_book_red">#EF5350</color>
+    <color name="mangax_book_grey">#616161</color>
+    <color name="mangax_book_purple">#9C27B0</color>
+    <color name="mangax_book_green">#4CAF50</color>
+    <color name="mangax_book_indigo">#3F51B5</color>
+</resources>

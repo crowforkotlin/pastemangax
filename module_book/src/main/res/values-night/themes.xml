@@ -4,7 +4,7 @@
 	</style>
 
 	<style name="Book.Theme.Chapter" parent="Widget.Material3.Button.ElevatedButton">
-		<item name="android:textColor">@color/base_white</item>
+		<item name="android:textColor">@color/mangax_white</item>
 	</style>
 
 

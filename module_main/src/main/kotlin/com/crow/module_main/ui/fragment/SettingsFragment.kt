@@ -8,22 +8,18 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.material.contentColorFor
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.edit
 import androidx.core.view.forEach
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.tools.extensions.SpNameSpace
-import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
-import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
 import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
-import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
@@ -35,19 +31,21 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
-import com.crow.mangax.copymanga.entity.AppConfigEntity
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mHotAccurateDisplay
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mDarkMode
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mChineseConvert
-import com.crow.mangax.copymanga.entity.AppConfigEntity.Companion.mUpdatePrefix
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mCoverOrinal
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mHotAccurateDisplay
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mUpdatePrefix
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.module_main.R
-import com.crow.mangax.R as mangaR
 import com.crow.module_main.databinding.MainFragmentSettingsBinding
 import com.crow.module_main.databinding.MainSettingsProxyLayoutBinding
 import com.crow.module_main.databinding.MainSettingsResolutionLayoutBinding
 import com.crow.module_main.databinding.MainSettingsSiteLayoutBinding
-import com.crow.module_main.model.entity.SettingSwitchEntity
 import com.crow.module_main.model.entity.SettingContentEntity
+import com.crow.module_main.model.entity.SettingSwitchEntity
 import com.crow.module_main.model.entity.SettingTitleEntity
 import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.ui.adapter.SettingsAdapter
@@ -58,7 +56,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
-import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
@@ -131,6 +129,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
             5 -> mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_CHINESE_CONVERT, switch.isChecked)
             6 -> mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_HOT_ACCURATE_DISPLAY, switch.isChecked)
             7 -> mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_UPDATE_PREFIX, switch.isChecked)
+            8 -> mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_COVER_ORINAL, switch.isChecked)
         }
         toast(getString(mangaR.string.mangax_restart_effect))
     }
@@ -140,7 +139,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
     private suspend fun initResolution() {
 
         // 获取APP的配置
-        val appConfig = mVM.getReadedAppConfig() ?: return run { toast(getString(baseR.string.BaseUnknowError)) }
+        val appConfig = mVM.getReadedAppConfig() ?: return run { toast(getString(mangaR.string.mangax_unknow_error)) }
 
         val binding = MainSettingsResolutionLayoutBinding.inflate(layoutInflater)
 
@@ -167,7 +166,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
     private suspend fun initSiteView() {
         // 获取APP的配置
-        val appConfig = mVM.getReadedAppConfig() ?: return run { toast(getString(baseR.string.BaseUnknowError)) }
+        val appConfig = mVM.getReadedAppConfig() ?: return run { toast(getString(mangaR.string.mangax_unknow_error)) }
 
         mSiteDialogBinding = MainSettingsSiteLayoutBinding.inflate(layoutInflater)
 
@@ -193,7 +192,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
             }
 
             // 否则 当前站点位置
-            else { settingsSiteCurrent.text = getString(R.string.main_site_current, getString(baseR.string.BaseUnknow)) }
+            else { settingsSiteCurrent.text = getString(R.string.main_site_current, getString(mangaR.string.mangax_unknow)) }
 
             // 设置 静态、动态站点的ScrollView最大高度为 屏幕高度像素 / 6
             (settingsSiteStaticScrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = mScreenHeight
@@ -256,7 +255,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
     private fun navigateToStyleableFragment() {
         with(Fragments.Styleable.name) {
             parentFragmentManager.navigateToWithBackStack(
-                id = baseR.id.app_main_fcv,
+                id = mangaR.id.app_main_fcv,
                 hideTarget = this@SettingsFragment,
                 addedTarget = get(named((this))),
                 tag = this,
@@ -283,20 +282,21 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
     }
 
     override fun initData(savedInstanceState: Bundle?) {
+        val config = AppConfig.getAppSP()
         mAdapter.submitList(
             mutableListOf(
-                SettingTitleEntity(mID = 0,mTitle = getString(R.string.main_settings_title_basic)),
+                SettingTitleEntity(mID = -1,mTitle = getString(R.string.main_settings_title_basic)),
                 SettingContentEntity(mID = 0, mResource = R.drawable.main_ic_personalise_24dp, mContent = getString(R.string.main_settings_style)),
                 SettingContentEntity(mID = 1, mResource = R.drawable.main_ic_site_24dp, mContent = getString(R.string.main_settings_site)),
                 SettingContentEntity(mID = 2, mResource = R.drawable.main_ic_proxy_24dp, mContent = getString(R.string.main_settings_proxy)),
                 SettingContentEntity(mID = 3, mResource = R.drawable.main_ic_resolution_24dp, mContent = getString(R.string.main_settings_resolution)),
                 SettingTitleEntity(mID = 4, mTitle = getString(R.string.main_settings_title_genric)),
-                SettingSwitchEntity(mID = 5, mContent = "繁体转简体", mEnable = mChineseConvert),
-                SettingSwitchEntity(mID = 6, mContent = "热度精准显示", mEnable = mHotAccurateDisplay),
-                SettingSwitchEntity(mID = 7, mContent = "书架更新前置", mEnable = mUpdatePrefix),
+                SettingSwitchEntity(mID = 5, mContent = "繁体转简体", mEnable = config.getBoolean(SpNameSpace.Key.ENABLE_CHINESE_CONVERT, mChineseConvert)),
+                SettingSwitchEntity(mID = 7, mContent = "书架更新前置", mEnable = config.getBoolean(SpNameSpace.Key.ENABLE_UPDATE_PREFIX, mUpdatePrefix)),
+                SettingSwitchEntity(mID = 6, mContent = "热度精准显示", mEnable = config.getBoolean(SpNameSpace.Key.ENABLE_HOT_ACCURATE_DISPLAY, mHotAccurateDisplay)),
+                SettingSwitchEntity(mID = 8, mContent = "封面原图显示", mEnable = config.getBoolean(SpNameSpace.Key.ENABLE_COVER_ORINAL, mCoverOrinal)),
             )
         )
-
         mVM.input(AppIntent.GetDynamicSite())
     }
 

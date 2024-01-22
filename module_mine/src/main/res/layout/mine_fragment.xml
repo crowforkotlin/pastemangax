@@ -21,7 +21,7 @@
 		android:elevation="@dimen/base_dp1"
 		android:layout_marginStart="@dimen/base_dp20"
 		android:layout_marginTop="@dimen/base_dp20"
-		android:contentDescription="@string/BaseTodoTextView"
+		android:contentDescription="@string/base_todo_textview"
 		android:foreground="?android:attr/selectableItemBackground"
 		android:scaleType="centerCrop"
 		android:src="@drawable/base_icon_app"

@@ -9,7 +9,7 @@
     app:cardBackgroundColor="@color/home_light_blue_500"
     app:cardCornerRadius="20dp"
     app:elevation="1dp"
-    app:strokeColor="@color/base_grey_400_40"
+    app:strokeColor="@color/mangax_grey_400_40"
     app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +21,7 @@
             android:id="@+id/main_styleable_rv_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/base_white"
+            android:textColor="@color/mangax_white"
             android:textSize="@dimen/base_sp24"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/main_styleable_rv_switch"
@@ -38,7 +38,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:trackDecorationTint="@color/base_icon_desc" />
+            app:trackDecorationTint="@color/mangax_icon_desc" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

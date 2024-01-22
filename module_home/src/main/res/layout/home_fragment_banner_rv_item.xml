@@ -9,7 +9,7 @@
     android:layout_margin="@dimen/base_dp10"
     app:cardCornerRadius="@dimen/base_dp20"
     app:cardElevation="@dimen/base_dp1"
-    app:strokeColor="@color/base_grey_400_40"
+    app:strokeColor="@color/mangax_grey_400_40"
     app:strokeWidth="@dimen/base_dp1"
     tools:layout_height="@dimen/base_dp192">
 
@@ -17,7 +17,7 @@
         android:id="@+id/baneer_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/BaseTodoTextView"
+        android:contentDescription="@string/base_todo_textview"
         android:foreground="@drawable/base_bg_item_ripper"
         android:scaleType="centerCrop" />
 
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/home_bg_banner_shadow"
-        android:contentDescription="@string/BaseTodoTextView"
+        android:contentDescription="@string/base_todo_textview"
         android:scaleType="centerCrop" />
 
     <TextView
@@ -38,9 +38,9 @@
         android:maxLength="99"
         android:maxLines="3"
         android:textColor="#FFFFFF"
-        android:textColorHighlight="@color/base_purple_8f6af1"
+        android:textColorHighlight="@color/mangax_purple_8f6af1"
         android:textSize="@dimen/base_sp16"
         android:textStyle="bold"
-        tools:text="@string/BaseTodoTextView" />
+        tools:text="@string/base_todo_textview" />
 
 </com.google.android.material.card.MaterialCardView>

@@ -1,6 +1,7 @@
 plugins {
     alias(app.plugins.android.library)
     alias(app.plugins.android.kotlin)
+    alias(compose.plugins.about.libraries)
 }
 
 android {
@@ -10,6 +11,9 @@ android {
 
         // 开启 ViewBinding
         viewBinding = true
+
+        // 开启 Compose
+        compose = true
     })
 
     // 应用程序的默认配置信息
@@ -47,6 +51,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    // 配置Compose 选项
+    composeOptions {
+
+        // 设置 Kotlin Compose 编译器扩展的版本 （Important）
+        kotlinCompilerExtensionVersion = compose.versions.compiler.get()
+    }
+
     // 配置 Kotlin 编译器
     kotlinOptions {
 
@@ -65,6 +76,9 @@ dependencies {
 
     // 引入lib_mangax库
     implementation(project(":lib_mangax"))
+
+    implementation(compose.about.libraries)
+    implementation(compose.about.libraries.core)
 
     api(project(":module_home"))
     api(project(":module_discover"))

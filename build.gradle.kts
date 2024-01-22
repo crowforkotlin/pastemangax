@@ -4,5 +4,6 @@ plugins {
     alias(app.plugins.android.application) apply false
     alias(app.plugins.android.library) apply false
     alias(app.plugins.android.kotlin) apply false
+    alias(compose.plugins.about.libraries) apply false
 }
 true // Needed to make the Suppress annotation work for the plugins block

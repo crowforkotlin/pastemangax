@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:strokeColor="@color/base_grey_400_40"
+        app:strokeColor="@color/mangax_grey_400_40"
         app:strokeWidth="@dimen/base_dp1">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="true"
-            app:indicatorColor="@color/base_light_blue_500"
+            app:indicatorColor="@color/mangax_light_blue_500"
             app:indicatorSize="@dimen/base_dp36"
             app:trackCornerRadius="@dimen/base_dp99" />
 
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/BaseZero"
+            android:text="@string/mangax_zero"
             android:textSize="@dimen/base_sp10"
             android:textStyle="bold" />
 

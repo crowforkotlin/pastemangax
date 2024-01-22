@@ -1,18 +1,17 @@
 package com.crow.module_main.ui.fragment
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import androidx.activity.addCallback
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.crow.mangax.copymanga.entity.Fragments
+import coil.imageLoader
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
+import com.crow.base.app.app
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.dp2px
 import com.crow.base.tools.extensions.getCurrentVersionName
 import com.crow.base.tools.extensions.getNavigationBarHeight
 import com.crow.base.tools.extensions.getStatusBarHeight
@@ -20,12 +19,13 @@ import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentAboutBinding
 import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.ui.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -51,22 +51,25 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
 
+//        mBinding.composeView.setContent { AboutScreen() }
+
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())
 
-        Glide.with(mContext)
-            .load(baseR.drawable.base_icon_crow)
-            .apply(RequestOptions().circleCrop().override(mContext.resources.getDimensionPixelSize(baseR.dimen.base_dp36)))
-            .into(object : CustomTarget<Drawable>() {
-                override fun onLoadCleared(placeholder: Drawable?) {}
-                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) { mBinding.mainAboutIcon.setImageDrawable(resource) }
-            })
+        app.imageLoader.enqueue(
+            ImageRequest.Builder(mContext)
+                .data(mangaR.drawable.base_icon_crow) // 加载的图片地址或占位符
+                .transformations(CircleCropTransformation()) // 应用圆形裁剪
+                .size(mContext.dp2px(36f).toInt()) // 设置图片大小
+                .target(mBinding.icon)
+                .build()
+        )
 
         val builder = SpannableStringBuilder()
         builder.appendLine(mContext.getString(R.string.main_about_crow_email))
         builder.appendLine()
         builder.appendLine(mContext.getString(R.string.main_about_crow_help))
-        mBinding.mainAboutContent.text = builder
-        mBinding.mainAboutAppVersion.text = getString(R.string.main_about_app_version, getCurrentVersionName().split("_")[0])
+        mBinding.content.text = builder
+        mBinding.version.text = getString(R.string.main_about_app_version, getCurrentVersionName().split("_")[0])
     }
 
     override fun initObserver(savedInstanceState: Bundle?) {

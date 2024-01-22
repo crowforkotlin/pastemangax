@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Base.Theme.BG"
+    style="@style/MangaX.Theme.BG"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.crow.module_book.ui.fragment.BookFragment"
@@ -10,12 +10,12 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_back"
-        style="@style/Base.Theme.Button.Icon.Back"
+        style="@style/MangaX.Theme.Button.Icon.Back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_dp10"
         android:layout_marginTop="@dimen/base_dp10"
-        android:contentDescription="@string/BaseAppName"
+        android:contentDescription="@string/base_app_name"
         app:icon="@drawable/base_ic_back_24dp"
         app:iconSize="@dimen/base_dp17_5"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
         app:cardElevation="@dimen/base_dp1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/book_info_back"
-        app:strokeColor="@color/base_grey_400_40"
+        app:strokeColor="@color/mangax_grey_400_40"
         app:strokeWidth="@dimen/base_dp1">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="true"
-            app:indicatorColor="@color/base_light_blue_500"
+            app:indicatorColor="@color/mangax_light_blue_500"
             app:indicatorSize="@dimen/base_dp36"
             app:trackCornerRadius="@dimen/base_dp99" />
 
@@ -83,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/BaseZero"
+            android:text="@string/mangax_zero"
             android:textSize="@dimen/base_sp10"
             android:textStyle="bold" />
 
@@ -91,7 +91,7 @@
             android:id="@+id/book_info_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/BaseTodoTextView"
+            android:contentDescription="@string/base_todo_textview"
             android:scaleType="centerCrop"
             tools:ignore="ImageContrastCheck"
             tools:layout_height="@dimen/base_dp168"
@@ -112,7 +112,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
         app:layout_constraintTop_toTopOf="@id/book_info_cardview"
-        tools:text="@string/BaseTodoTextView" />
+        tools:text="@string/base_todo_textview" />
 
     <TextView
         android:id="@+id/author"
@@ -128,7 +128,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
         app:layout_constraintTop_toBottomOf="@+id/status"
-        tools:text="@string/BaseTodoTextView" />
+        tools:text="@string/base_todo_textview" />
 
     <TextView
         android:id="@+id/hot"
@@ -144,7 +144,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
         app:layout_constraintTop_toBottomOf="@+id/author"
-        tools:text="@string/BaseTodoTextView" />
+        tools:text="@string/base_todo_textview" />
 
     <TextView
         android:id="@+id/update"
@@ -160,7 +160,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
         app:layout_constraintTop_toBottomOf="@+id/hot"
-        tools:text="@string/BaseTodoTextView" />
+        tools:text="@string/base_todo_textview" />
 
     <TextView
         android:id="@+id/chapter"
@@ -176,11 +176,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
         app:layout_constraintTop_toBottomOf="@+id/update"
-        tools:text="@string/BaseTodoTextView" />
+        tools:text="@string/base_todo_textview" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_add_to_bookshelf"
-        style="@style/Base.Theme.Button.Icon.Tint.Text"
+        style="@style/MangaX.Theme.Button.Icon.Tint.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0.25"
@@ -197,7 +197,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_download"
-        style="@style/Base.Theme.Button.Icon.Tint.Text"
+        style="@style/MangaX.Theme.Button.Icon.Tint.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/base_dp10"
@@ -217,7 +217,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_readnow"
         android:layout_width="wrap_content"
-       style="@style/Base.Theme.Button.Icon.Tint.Text"
+       style="@style/MangaX.Theme.Button.Icon.Tint.Text"
         android:layout_height="wrap_content"
         android:minWidth="@dimen/base_dp48"
         android:minHeight="@dimen/base_dp48"
@@ -286,7 +286,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/book_info_theme_chip"
-                        tools:text="@string/BaseTodoTextView" />
+                        tools:text="@string/base_todo_textview" />
                     <!--<com.crow.base.ui.view.atrr_text_layout.BaseAttrTextLayout
                         android:id="@+id/desc"
                         android:layout_width="match_parent"
@@ -322,11 +322,11 @@
                     android:layout_marginTop="@dimen/base_dp10"
                     android:layout_marginEnd="@dimen/base_dp5"
                     android:background="@android:color/transparent"
-                    android:contentDescription="@string/BaseAppName"
+                    android:contentDescription="@string/base_app_name"
                     android:visibility="gone"
                     app:tabIndicatorFullWidth="true"
                     app:tabMode="scrollable"
-                    app:tabTextAppearance="@style/Base.Tablayout.TextAppearance"
+                    app:tabTextAppearance="@style/MangaX.Tablayout.TextAppearance"
                     tools:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -336,7 +336,7 @@
                     android:layout_marginTop="@dimen/base_dp10"
                     android:visibility="invisible"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="4"
+                    app:spanCount="3"
                     tools:listitem="@layout/book_fragment_chapter_rv"
                     tools:visibility="visible" />
 
@@ -347,7 +347,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/BaseLoadingErrorNeedRefresh"
+                android:text="@string/base_loading_error_need_refresh"
                 android:textSize="@dimen/base_sp14"
                 android:textStyle="bold"
                 android:visibility="gone"

@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/textview"
-        tools:text="@string/BaseTodoTextView"
+        tools:text="@string/base_todo_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
