@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,7 @@ import com.crow.base.app.app
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.error
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.google.android.material.button.MaterialButton
@@ -61,8 +63,10 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
                         itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
                     },
                     onError = { _, _ ->
+                        "CoilVH onError".error()
                         mLoading.isInvisible = true
                         mLoadingText.isInvisible = true
+                        mRetry?.isVisible = true
                         mRetry?.doOnClickInterval {
                             mLoading.isInvisible = false
                             mLoadingText.isInvisible = false

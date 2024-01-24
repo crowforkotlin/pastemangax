@@ -10,8 +10,8 @@ import com.crow.mangax.copymanga.BaseLoadStateAdapter
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
+import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.repeatOnLifecycle
@@ -111,7 +111,7 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
                                 if (mDiscoverVM.mCurrentItem == 1) {
                                     mBinding.discoverNovelTipsError.animateFadeIn()
                                     // mBinding.discoverNovelAppbar.discoverAppbarTagText.animateFadeOutWithEndInVisibility()
-                                    mBinding.discoverNovelRv.animateFadeOutWithEndInVisibility()
+                                    mBinding.discoverNovelRv.animateFadeOutInVisibility()
                                     // mBinding.discoverNovelAppbar.discoverAppbarTextPos.animateFadeOut().withEndAction { mBinding.discoverNovelRv.isInvisible = true }
                                 } else {
                                     mBinding.discoverNovelTipsError.isVisible = true
@@ -129,7 +129,7 @@ class DiscoverNovelFragment : BaseMviFragment<DiscoverFragmentNovelBinding>() {
 
                                 // 若VP 显示的是当前页 则动画淡入 否则直接显示
                                 if (mDiscoverVM.mCurrentItem == 1) {
-                                    mBinding.discoverNovelTipsError.animateFadeOutWithEndInVisible()
+                                    mBinding.discoverNovelTipsError.animateFadeOutGone()
                                     // mBinding.discoverNovelAppbar.discoverAppbarTagText.animateFadeIn()
                                     // mBinding.discoverNovelAppbar.discoverAppbarTextPos.animateFadeIn()
                                     mBinding.discoverNovelRv.animateFadeIn()

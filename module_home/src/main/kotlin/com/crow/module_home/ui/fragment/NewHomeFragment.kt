@@ -29,7 +29,7 @@ import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.navigateIconClickGap
@@ -531,7 +531,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                                 }
 
                                 // 发现页 “漫画” 淡出
-                                mBinding.homeRv.animateFadeOutWithEndInVisibility()
+                                mBinding.homeRv.animateFadeOutInVisibility()
 
                                 // 取消刷新
                                 mBinding.homeRefresh.finishRefresh()

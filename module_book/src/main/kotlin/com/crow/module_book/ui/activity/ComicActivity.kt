@@ -2,6 +2,7 @@ package com.crow.module_book.ui.activity
 
 import android.os.Build
 import android.os.Bundle
+import android.transition.Fade
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.transition.TransitionSet
@@ -19,8 +20,7 @@ import androidx.core.view.get
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
+import androidx.lifecycle.lifecycleScope
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.hasGlobalPoint
@@ -35,11 +35,15 @@ import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
+import com.crow.mangax.copymanga.tryConvert
 import com.crow.module_book.databinding.BookActivityComicBinding
 import com.crow.module_book.model.intent.BookIntent
-import com.crow.module_book.ui.fragment.comic.reader.ComicClassicFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
+import com.crow.module_book.ui.fragment.comic.reader.ComicClassicFragment
+import com.crow.module_book.ui.fragment.comic.reader.ComicStriptFragment
 import com.crow.module_book.ui.helper.GestureHelper
 import com.crow.module_book.ui.view.comic.rv.ComicFrameLayout
 import com.crow.module_book.ui.view.comic.rv.ComicRecyclerView
@@ -47,8 +51,8 @@ import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 
 class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper.GestureListener {
@@ -107,16 +111,19 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun initView(savedInstanceState: Bundle?) {
 
+        val dp5 = resources.getDimensionPixelSize(baseR.dimen.base_dp5)
+
         // 全屏
         immersionFullScreen(mWindowInsetsCompat)
 
         // 沉浸式边距
         immersionPadding(mBinding.root) { view, insets, _ ->
-            mBinding.comicToolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
+            mBinding.topAppbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
             view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 rightMargin = insets.right
             }
+            mBinding.bottomAppbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin =  dp5 + insets.bottom }
         }
 
         // 沉浸式状态栏和工具栏
@@ -139,7 +146,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
 
         mGestureHelper =  GestureHelper(this, this)
 
-        mBinding.comicToolbar.navigateIconClickGap {
+        mBinding.topAppbar.navigateIconClickGap {
             finishActivity()
         }
     }
@@ -170,8 +177,8 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
 
         mComicVM.uiState.onCollect(this) { state ->
             if (state != null && state.mReaderContent.mChapterInfo != null) {
-                if (mBinding.comicInfoBar.isGone) mBinding.comicInfoBar.animateFadeIn()
-                mBinding.comicInfoBar.update(
+                if (mBinding.infobar.isGone) mBinding.infobar.animateFadeIn()
+                mBinding.infobar.update(
                     currentPage = state.mCurrentPage,
                     totalPage = state.mTotalPages,
                     percent = mComicVM.computePercent(
@@ -204,8 +211,8 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                                 dismissLoadingAnim()
                                 val page = intent.comicpage
                                 if (page != null) {
-                                    mBinding.comicToolbar.title = page.mComic.mName
-                                    mBinding.comicToolbar.subtitle = page.mChapter.mName
+                                    lifecycleScope.tryConvert(page.mComic.mName, mBinding.topAppbar::setTitle)
+                                    lifecycleScope.tryConvert(page.mChapter.mName, mBinding.topAppbar::setSubtitle)
                                 }
                             }
                     }
@@ -245,7 +252,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      * ● 2023-07-07 23:56:56 周五 下午
      */
     override fun onTouch(area: Int, ev: MotionEvent) {
-        transitionBar(mBinding.comicToolbar.isVisible)
+        transitionBar(mBinding.topAppbar.isVisible)
     }
 
     /**
@@ -264,10 +271,10 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      * ● 2023-09-04 01:30:21 周一 上午
      */
     private fun hasGlobalPoint(ev: MotionEvent): Boolean {
-        val hasToolbar = hasGlobalPoint(mBinding.comicToolbar, ev.rawX.toInt(), ev.rawY.toInt())
+        val hasToolbar = hasGlobalPoint(mBinding.topAppbar, ev.rawX.toInt(), ev.rawY.toInt())
         var hasButton = false
         val fragment = supportFragmentManager.fragments.firstOrNull()
-        if (fragment is ComicClassicFragment) {
+        if (fragment is ComicClassicFragment || fragment is ComicStriptFragment) {
             val rv = ((fragment.view as ComicFrameLayout)[0] as ComicRecyclerView)
             val childView = rv.findChildViewUnder(ev.x, ev.y)
             if(childView is FrameLayout) {
@@ -318,10 +325,12 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
     private fun transitionBar(isHide: Boolean) {
         val transition = TransitionSet()
             .setDuration(BASE_ANIM_300L)
-            .addTransition(Slide(Gravity.TOP))
-            .addTarget(mBinding.comicToolbar)
+            .addTransition(Slide(Gravity.TOP).addTarget(mBinding.topAppbar))
+            .addTransition(Slide(Gravity.BOTTOM).addTarget(mBinding.bottomAppbar))
+            .addTransition(Fade().addTarget(mBinding.infobar))
         TransitionManager.beginDelayedTransition(mBinding.root, transition)
-        mBinding.comicToolbar.isGone = isHide
+        mBinding.topAppbar.isGone = isHide
+        mBinding.bottomAppbar.isGone = isHide
         mWindowInsetsCompat.isAppearanceLightStatusBars = !mDarkMode
         mWindowInsetsCompat.isAppearanceLightNavigationBars = !mDarkMode
         if (isHide) {
@@ -338,7 +347,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      * ● 2023-09-02 19:12:24 周六 下午
      */
     private fun immersionBarStyle() {
-        (mBinding.comicToolbar.background as MaterialShapeDrawable).apply {
+        (mBinding.topAppbar.background as MaterialShapeDrawable).apply {
             elevation = resources.getDimension(baseR.dimen.base_dp3)
             alpha = 242
             val color = ColorUtils.setAlphaComponent(resolvedTintColor, alpha)

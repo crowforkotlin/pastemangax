@@ -21,7 +21,7 @@ import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
@@ -263,7 +263,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
                                 mBaseErrorViewStub.loadLayout(visible = true, animation = true)
 
                                 // 发现页 “漫画” 淡出
-                                mBinding.list.animateFadeOutWithEndInVisibility()
+                                mBinding.list.animateFadeOutInVisibility()
                             }
 
                             if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.base_loading_error_need_refresh))

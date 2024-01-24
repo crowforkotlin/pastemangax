@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.crow.base.tools.extensions.logError
+import com.crow.base.tools.extensions.error
 import com.crow.base.tools.extensions.setState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -42,7 +42,7 @@ open class BaseViewModel : ViewModel(), IBaseViewModel {
         } catch (e: Exception) {
             _Base_viewState.setState(BaseViewState.Error(msg = e.localizedMessage))
             failureEvent.onFailure(e)
-            "[flowLaunch] : $e".logError()
+            "[flowLaunch] : $e".error()
         }
     }
 
@@ -57,7 +57,7 @@ open class BaseViewModel : ViewModel(), IBaseViewModel {
                 .collect { successEvent.onSuccess(it) }
         } catch (e: Exception) {
             _Base_viewState.setState(BaseViewState.Error(msg = e.localizedMessage))
-            "[flowLaunch] : $e".logError()
+            "[flowLaunch] : $e".error()
         }
     }
 }

@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.crow.module_book.ui.view.comic.reader.ReaderInfoBarView
-        android:id="@+id/comic_infoBar"
+        android:id="@+id/infobar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
@@ -27,7 +27,7 @@
         tools:visibility="visible" />
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/comic_toolbar"
+        android:id="@+id/top_appbar"
         style="@style/Widget.Material3.Toolbar.Surface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,6 +39,36 @@
         app:subtitle="@string/base_app_name"
         app:title="@string/base_app_name"
         tools:visibility="visible" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bottom_appbar"
+        style="?materialCardViewElevatedStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/base_dp5"
+        android:visibility="gone"
+        app:layout_insetEdge="bottom"
+        tools:visibility="visible">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:menu="@menu/menu_reader_bottom">
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stepSize="1"
+                android:valueFrom="0"
+                app:labelBehavior="floating"
+                app:tickVisible="false" />
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

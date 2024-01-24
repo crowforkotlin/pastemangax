@@ -5,17 +5,18 @@ import android.view.LayoutInflater
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.crow.base.R
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.findCenterViewPosition
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
+import com.crow.base.ui.viewmodel.doOnError
 import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderContent
 import com.crow.module_book.model.entity.comic.reader.ReaderLoading
 import com.crow.module_book.model.entity.comic.reader.ReaderState
+import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.comic_page.Content
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicStriptRvAdapter
@@ -41,7 +42,11 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     private val mVM by activityViewModel<ComicViewModel>()
 
-    private val mAdapter: ComicStriptRvAdapter by lazy { ComicStriptRvAdapter() }
+    private val mAdapter: ComicStriptRvAdapter by lazy {
+        ComicStriptRvAdapter { uuid, isNext ->
+            mVM.input(BookIntent.GetComicPage(mVM.mPathword, uuid, isNext))
+        }
+    }
 
     private val mWindowInsetsControllerCompat by lazy {
         WindowInsetsControllerCompat(
@@ -83,10 +88,8 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
     }
 
     override fun initListener() {
-        mBinding.list.setPreScrollListener { position ->
+        mBinding.list.setPreScrollListener { dx, dy, position ->
             val item = mAdapter.getCurrentList()[position]
-            mVM.onScroll(position, item)
-            val reader = mVM.mContent.value
             val pageID: Int
             val pagePos: Int
             when (item) {
@@ -99,13 +102,14 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                     pagePos = item.mPos
                 }
                 else -> {
-                    error("unknow item type!")
+                    kotlin.error("unknow item type!")
                 }
             }
+            mVM.onScroll(dx, dy, position)
             mVM.updateUiState(
                 ReaderState(
                     mReaderContent = mVM.mReaderContents[pageID] ?: return@setPreScrollListener,
-                    mTotalPages = mVM.mPagesSizeList[pageID],
+                    mTotalPages = mVM.mPageSizeMapper[pageID] ?: return@setPreScrollListener,
                     mCurrentPage = pagePos
                 )
             )
@@ -118,18 +122,15 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
     }
 
     override fun initObserver(savedInstanceState: Bundle?) {
-        /*mVM.onOutput { intent ->
+        mVM.onOutput { intent ->
             when (intent) {
                 is BookIntent.GetComicPage -> {
                     intent.mViewState
-                        .doOnSuccess { mWindowInsetsControllerCompat.isAppearanceLightStatusBars = true }
-                        .doOnError { _, _ ->
-                            onErrorComicPage()
-                            mBaseEvent.setBoolean("loaded", false)
-                        }
+                        .doOnError { _, _ -> mVM.processErrorRequestPage(intent.isNext) }
                 }
             }
-        }*/
+        }
+
         lifecycleScope.launch {
             mVM.mContent.collect {
                 mAdapter.submitList(it.mPages.toMutableList()) {

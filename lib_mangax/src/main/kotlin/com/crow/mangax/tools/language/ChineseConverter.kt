@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.Executors
@@ -76,4 +77,8 @@ object ChineseConverter {
     private external fun convert(text: String, configFile: String, absoluteDataFolderPath: String): String
 
     private external fun nativeConvert(text: String, filePath: String): String
+
+    fun cancel() {
+       mConvertScope.cancel()
+    }
 }

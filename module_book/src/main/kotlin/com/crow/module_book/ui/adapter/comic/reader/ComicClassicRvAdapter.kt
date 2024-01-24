@@ -15,7 +15,7 @@ import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.base.ui.view.event.BaseEvent
-import com.crow.module_book.databinding.BookActivityComicRvBinding
+import com.crow.module_book.databinding.BookComicRvBinding
 import com.crow.module_book.databinding.BookFragmentClassicIntentRvBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
 import com.crow.module_book.model.resp.comic_page.Content
@@ -61,7 +61,7 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
     private val mDiffer = AsyncListDiffer(this, mDiffCallback)
 
 
-    inner class BodyViewHolder(binding: BookActivityComicRvBinding) : MangaCoilVH<BookActivityComicRvBinding>(binding) {
+    inner class BodyViewHolder(binding: BookComicRvBinding) : MangaCoilVH<BookComicRvBinding>(binding) {
         init { initComponent(binding.loading, binding.loadingText, binding.image, binding.retry) }
 
         fun onBind(item: Content) {
@@ -104,7 +104,7 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
         return when (viewType) {
             Header ->IntentViewHolder(BookFragmentClassicIntentRvBinding.inflate(LayoutInflater.from(parent.context), parent,false), false)
             Footer ->IntentViewHolder(BookFragmentClassicIntentRvBinding.inflate(LayoutInflater.from(parent.context), parent,false), true)
-            Body -> BodyViewHolder(BookActivityComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Body -> BodyViewHolder(BookComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> error("Unknown view type!")
         }
     }

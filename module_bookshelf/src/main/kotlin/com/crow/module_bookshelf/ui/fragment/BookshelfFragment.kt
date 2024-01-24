@@ -24,7 +24,7 @@ import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
 import com.crow.base.tools.extensions.ifNull
@@ -135,9 +135,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         if (mBinding.tips.tag != null) return
         mBinding.tips.tag = null
         mViewStub.loadLayout(visible = true, animation = true)
-        if (mBinding.count.isVisible) mBinding.count.animateFadeOutWithEndInVisibility()          // 隐藏 计数
-        if (mBinding.comicList.isVisible) mBinding.comicList.animateFadeOutWithEndInVisibility()  // 隐藏 漫画 Rv
-        if (mBinding.novelList.isVisible) mBinding.novelList.animateFadeOutWithEndInVisibility()    // 隐藏 轻小说 Rv
+        if (mBinding.count.isVisible) mBinding.count.animateFadeOutInVisibility()          // 隐藏 计数
+        if (mBinding.comicList.isVisible) mBinding.comicList.animateFadeOutInVisibility()  // 隐藏 漫画 Rv
+        if (mBinding.novelList.isVisible) mBinding.novelList.animateFadeOutInVisibility()    // 隐藏 轻小说 Rv
     }
 
     /**
@@ -449,7 +449,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
                         else if (mViewStub.isVisible()) { mViewStub.loadLayout(visible = false, animation = true) }
 
                         // 轻小说适配器淡出 动画结束时隐藏
-                        mBinding.novelList.animateFadeOutWithEndInVisibility()
+                        mBinding.novelList.animateFadeOutInVisibility()
 
                         // 漫画适配器淡入 动画结束时显示
                         mBinding.comicList.animateFadeIn()
@@ -479,7 +479,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
                         else if (mViewStub.isVisible()) { mViewStub.loadLayout(visible = false, animation = true) }
 
-                        mBinding.comicList.animateFadeOutWithEndInVisibility()
+                        mBinding.comicList.animateFadeOutInVisibility()
                         mBinding.novelList.animateFadeIn()
 
                         if (mBinding.count.isVisible) { mBinding.count.animateFadeOut() }

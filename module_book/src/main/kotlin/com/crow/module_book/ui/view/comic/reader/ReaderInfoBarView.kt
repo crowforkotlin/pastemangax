@@ -18,7 +18,7 @@ import androidx.core.content.res.use
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.crow.base.tools.extensions.logError
+import com.crow.base.tools.extensions.error
 import com.crow.base.tools.extensions.measureDimension
 import com.crow.base.tools.extensions.resolveDp
 import com.crow.module_book.R
@@ -28,7 +28,6 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.crow.mangax.R as mangaR
 import com.google.android.material.R as materialR
 import com.crow.base.R as baseR
 
@@ -218,6 +217,6 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		val resId = resources.getIdentifier(name, "dimen", "com.android.systemui")
 		resources.getDimensionPixelOffset(resId)
 	}.onFailure {
-		it.stackTraceToString().logError()
+		it.stackTraceToString().error()
 	}.getOrDefault(fallback)
 }

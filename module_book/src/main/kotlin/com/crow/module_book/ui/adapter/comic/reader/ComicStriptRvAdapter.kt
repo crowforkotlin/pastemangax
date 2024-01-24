@@ -3,16 +3,22 @@ package com.crow.module_book.ui.adapter.comic.reader
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
 import android.widget.FrameLayout
 import androidx.annotation.IntRange
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.crow.base.tools.extensions.log
+import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOutGone
+import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.info
 import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.mangax.ui.adapter.MangaCoilVH
-import com.crow.module_book.databinding.BookActivityComicButtonRvBinding
-import com.crow.module_book.databinding.BookActivityComicRvBinding
+import com.crow.module_book.databinding.BookComicLoadingRvBinding
+import com.crow.module_book.databinding.BookComicRvBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderLoading
 import com.crow.module_book.model.resp.comic_page.Content
@@ -26,7 +32,7 @@ import com.crow.module_book.model.resp.comic_page.Content
  * @Description: ComicInfoChapterRvAdapter
  * @formatter:on
  **************************/
-class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ComicStriptRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val LOADING_VIEW = 0
@@ -36,7 +42,11 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val mDiffCallback: DiffUtil.ItemCallback<Any> = object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
             return if (oldItem is ReaderLoading && newItem is ReaderLoading) {
-                false
+                if (newItem.mMessage == null && oldItem.mMessage == null) {
+                    oldItem.mStateComplete == newItem.mStateComplete
+                } else {
+                    oldItem.mMessage == newItem.mMessage
+                }
             } else if(oldItem is Content && newItem is Content) {
                 oldItem.mImageUrl == newItem.mImageUrl
             } else false
@@ -64,7 +74,7 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
        runnable.run()
     }
 
-    inner class PageViewHolder(binding: BookActivityComicRvBinding) : MangaCoilVH<BookActivityComicRvBinding>(binding) {
+    inner class PageViewHolder(binding: BookComicRvBinding) : MangaCoilVH<BookComicRvBinding>(binding) {
 
        init {
            initComponent(binding.loading, binding.loadingText, binding.image, binding.retry)
@@ -80,18 +90,57 @@ class ComicStriptRvAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    inner class PageMoreViewHolder(val binding: BookActivityComicButtonRvBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class PageMoreViewHolder(val binding: BookComicLoadingRvBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        private var mRetryAnimator: ViewPropertyAnimator? = null
+        private var mLoadingAnimator: ViewPropertyAnimator? = null
+
+        init {
+            binding.retry.doOnClickInterval {
+                (getItem(absoluteAdapterPosition) as ReaderLoading).apply {
+                    mRetryAnimator?.cancel()
+                    mLoadingAnimator?.cancel()
+                    mRetryAnimator = binding.retry.animateFadeOutGone()
+                    mLoadingAnimator = binding.loading.animateFadeIn()
+                    val isNext = mLoadNext == true
+                    if (isNext) {
+                        onRetry(mNextUUID ?: return@doOnClickInterval, isNext)
+                    } else {
+                        onRetry(mPrevUUID ?: return@doOnClickInterval, isNext)
+                    }
+                }
+            }
+        }
 
         fun onBind(item: ReaderLoading) {
-            binding.text.text = item.mMessage
+            val message = item.mMessage
+            binding.retry.isGone.info()
+            if (message == null) {
+                if (binding.retry.isGone) {
+                    mRetryAnimator?.cancel()
+                    mRetryAnimator = binding.retry.animateFadeIn()
+                }
+                binding.text.text = null
+            } else {
+                if (binding.retry.isVisible) {
+                    mRetryAnimator?.cancel()
+                    mRetryAnimator = binding.retry.animateFadeOutGone()
+                }
+                binding.text.text = message
+            }
+            if (binding.loading.isVisible) {
+                mLoadingAnimator?.cancel()
+                mLoadingAnimator = binding.loading.animateFadeOutGone()
+            }
+
         }
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            LOADING_VIEW -> PageMoreViewHolder(BookActivityComicButtonRvBinding.inflate(LayoutInflater.from(parent.context), parent,false))
-            CONTENT_VIEW -> PageViewHolder(BookActivityComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            LOADING_VIEW -> PageMoreViewHolder(BookComicLoadingRvBinding.inflate(LayoutInflater.from(parent.context), parent,false))
+            CONTENT_VIEW -> PageViewHolder(BookComicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> error("Unknown view type!")
         }
     }

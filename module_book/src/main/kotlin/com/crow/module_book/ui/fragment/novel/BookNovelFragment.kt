@@ -20,7 +20,7 @@ import com.crow.mangax.copymanga.getSpannableString
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.px2dp
@@ -193,7 +193,7 @@ class BookNovelFragment : BookFragment() {
 
             if (!mBinding.bookInfoRefresh.isRefreshing) { dismissLoadingAnim() }
 
-            if (mBinding.comicInfoErrorTips.isVisible) mBinding.comicInfoErrorTips.animateFadeOutWithEndInVisibility()
+            if (mBinding.comicInfoErrorTips.isVisible) mBinding.comicInfoErrorTips.animateFadeOutInVisibility()
 
             if (!mBinding.bookInfoLinearChapter.isVisible)  mBinding.bookInfoLinearChapter.animateFadeIn()
 

@@ -35,8 +35,8 @@ import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
+import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.navigateToWithBackStack
@@ -363,7 +363,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                                 mBaseErrorViewStub.loadLayout(visible = true, animation = true)
 
                                 // 发现页 “漫画” 淡出
-                                mBinding.list.animateFadeOutWithEndInVisibility()
+                                mBinding.list.animateFadeOutInVisibility()
                             }
 
                             if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.base_loading_error_need_refresh))
@@ -414,7 +414,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                         .doOnError { _, _ ->
                            mSiteBinding?.let { binding ->
                                if (binding.lottie.isVisible) {
-                                   binding.lottie.animateFadeOutWithEndInVisible()
+                                   binding.lottie.animateFadeOutGone()
                                    binding.list.animateFadeOut()
                                    binding.reload.animateFadeIn()
                                }
@@ -452,10 +452,10 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                                     root.finishRefresh()
                                     BaseEvent.getSIngleInstance().setBoolean("ANIME_FRAGMENT_SEARCH_FLAG", false)
                                 }
-                                if (mSearchAdapter.itemCount == 0) tips.animateFadeIn() else if (tips.isVisible) tips.animateFadeOutWithEndInVisible()
+                                if (mSearchAdapter.itemCount == 0) tips.animateFadeIn() else if (tips.isVisible) tips.animateFadeOutGone()
                             }
                             .doOnResult {
-                                if (tips.isVisible) tips.animateFadeOutWithEndInVisible()
+                                if (tips.isVisible) tips.animateFadeOutGone()
                                 if (list.isInvisible) list.animateFadeIn()
                             }
                     }

@@ -136,6 +136,7 @@ android {
             // .internal后缀
             applicationIdSuffix = ".internal"
 
+
             // 是否使用线上环境
             buildConfigField("boolean", "IS_ONLINE_ENV", "true")
         }

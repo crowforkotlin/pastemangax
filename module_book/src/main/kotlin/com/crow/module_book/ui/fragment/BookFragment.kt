@@ -14,7 +14,7 @@ import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.navigateToWithBackStack
@@ -151,7 +151,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
         intent.mViewState
             .doOnError { _, _ ->
                 if (mBinding.bookInfoRvChapter.adapter?.itemCount == 0) {
-                    if (mBinding.bookInfoLinearChapter.isVisible) mBinding.bookInfoLinearChapter.animateFadeOutWithEndInVisibility()
+                    if (mBinding.bookInfoLinearChapter.isVisible) mBinding.bookInfoLinearChapter.animateFadeOutInVisibility()
                 }
                 if (mBinding.bookInfoRefresh.isRefreshing) processChapterErrorResult()
                 dismissLoadingAnim { processChapterErrorResult() }
@@ -180,7 +180,7 @@ abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
     protected fun processChapterErrorResult() {
         if (!mBinding.comicInfoErrorTips.isVisible) {
             mBinding.comicInfoErrorTips.animateFadeIn()
-            mBinding.bookInfoRvChapter.animateFadeOutWithEndInVisibility()
+            mBinding.bookInfoRvChapter.animateFadeOutInVisibility()
         } else mBinding.comicInfoErrorTips.animateFadeIn()
     }
 

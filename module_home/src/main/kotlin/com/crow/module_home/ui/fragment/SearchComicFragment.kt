@@ -10,7 +10,7 @@ import com.crow.mangax.copymanga.BaseLoadStateAdapter
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.repeatOnLifecycle
@@ -54,7 +54,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
 
         val keyword = mSearchView?.text.toString().ifEmpty {
             mBinding.homeSearchComicTips.text = getString(R.string.home_search_tips)
-            if (mBinding.homeSearchComicRv.isVisible) mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
+            if (mBinding.homeSearchComicRv.isVisible) mBinding.homeSearchComicRv.animateFadeOutInVisibility()
             mBinding.homeSearchComicTips.animateFadeIn()
             return
         }
@@ -134,7 +134,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
                             dismissLoadingAnim()
                             if (intent.searchComicResp!!.mTotal == 0) {
                                 if (mBinding.homeSearchComicTips.isGone) {
-                                    mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
+                                    mBinding.homeSearchComicRv.animateFadeOutInVisibility()
                                     mBinding.homeSearchComicTips.animateFadeIn()
                                 }
                             } else {

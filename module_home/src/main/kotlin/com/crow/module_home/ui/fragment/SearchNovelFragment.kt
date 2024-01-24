@@ -8,9 +8,9 @@ import androidx.paging.LoadState
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnInterval
-import com.crow.base.tools.extensions.logError
+import com.crow.base.tools.extensions.error
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
@@ -54,7 +54,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
 
         val keyword = mSearchView?.text.toString().ifEmpty {
             mBinding.homeSearchNovelTips.text = getString(R.string.home_search_tips)
-            if(mBinding.homeSearchNovelRv.isVisible) mBinding.homeSearchNovelRv.animateFadeOutWithEndInVisibility()
+            if(mBinding.homeSearchNovelRv.isVisible) mBinding.homeSearchNovelRv.animateFadeOutInVisibility()
             mBinding.homeSearchNovelTips.animateFadeIn()
             return
         }
@@ -116,7 +116,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
                     .doOnSuccess { mBaseEvent.setBoolean(NewHomeFragment.SEARCH_TAG, false) }
                     .doOnError { _, msg ->
                         dismissLoadingAnim()
-                        msg?.logError()
+                        msg?.error()
                         toast(getString(com.crow.mangax.R.string.mangax_unknow_error))
                     }
                     .doOnResult {
@@ -124,7 +124,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
                         dismissLoadingAnim()
                         if (intent.searchNovelResp!!.mTotal == 0) {
                             if (mBinding.homeSearchNovelTips.isGone) {
-                                mBinding.homeSearchNovelRv.animateFadeOutWithEndInVisibility()
+                                mBinding.homeSearchNovelRv.animateFadeOutInVisibility()
                                 mBinding.homeSearchNovelTips.animateFadeIn()
                             }
                             return@doOnResult

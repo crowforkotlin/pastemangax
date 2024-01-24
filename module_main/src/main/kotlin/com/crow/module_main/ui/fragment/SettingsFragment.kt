@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.material.contentColorFor
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.forEach
 import androidx.core.view.isInvisible
@@ -16,8 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
+import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
@@ -202,7 +201,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
             settingsSiteDynamicReload.doOnClickInterval {
                 mVM.input(AppIntent.GetDynamicSite())
                 settingsSiteLoadingLottie.animateFadeIn()
-                settingsSiteDynamicReload.animateFadeOutWithEndInVisibility()
+                settingsSiteDynamicReload.animateFadeOutInVisibility()
             }
 
             // 静态站点按钮组点击事件：根据CheckedID设置全局URL的后缀、保存APP配置、延时关闭DIALOG
@@ -377,7 +376,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                                 }
 
                                 // 加载动画淡出 动态站点Title、RadioGroup 淡入
-                                mSiteDialogBinding?.settingsSiteLoadingLottie?.animateFadeOutWithEndInVisible()
+                                mSiteDialogBinding?.settingsSiteLoadingLottie?.animateFadeOutGone()
                                 mSiteDialogBinding?.settingsSiteDynamicTitle?.animateFadeIn()
                                 mSiteDialogBinding?.settingsSiteDynamicRadioGroup?.animateFadeIn()
                             }

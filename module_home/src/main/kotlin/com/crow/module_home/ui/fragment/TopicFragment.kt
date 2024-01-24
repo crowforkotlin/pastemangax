@@ -13,7 +13,7 @@ import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.notNull
@@ -196,7 +196,7 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
                         }
                         .doOnError { _, _ ->
                             if (mError.isGone()) mError.loadLayout(visible = true, animation = true)
-                            if (mBinding.list.isVisible)  mBinding.list.animateFadeOutWithEndInVisibility()
+                            if (mBinding.list.isVisible)  mBinding.list.animateFadeOutInVisibility()
                         }
                         .doOnResult {
                             intent.topicResp.notNull {

@@ -85,4 +85,9 @@ class MainApplication : BaseApp(), ImageLoaderFactory {
         super.attachBaseContext(base)
         MultiDex.install(this)
     }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        ChineseConverter.cancel()
+    }
 }
