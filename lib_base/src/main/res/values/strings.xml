@@ -7,7 +7,7 @@
     <string name="base_loading_error">加载失败，请重试！</string>
     <string name="base_loading_error_need_refresh">加载失败，请刷新重试！</string>
     <string name="base_unknow_error">加载错误？请重试！</string>
-    <string name="base_loading_retry">重新加载</string>
+    <string name="base_retry">重新加载</string>
 
     <string name="base_crash_screen_title">哎呀！</string>
     <string name="base_crash_screen_description">%s 遇到意外错误。我们建议您 通过邮箱联系开发者（crowforkotlin@gmail.com） 分享崩溃日志。</string>

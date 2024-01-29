@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.crow.base.R
 import com.crow.base.app.app
 import com.crow.base.tools.extensions.logger
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.base.ui.viewmodel.BaseViewState.Error
 import com.crow.base.ui.viewmodel.BaseViewState.Loading
@@ -78,13 +79,13 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
      *
      * ● 2023-08-31 21:41:13 周四 下午
      */
-    suspend fun <T> flowResult(flow: Flow<T>, intent: I? = null, context: CoroutineContext = Dispatchers.Main, result: BaseMviFlowResult<I, T>) = suspendCancellableCoroutine { continuation ->
+    suspend fun <T> flowResult(flow: Flow<T>, intent: I? = null, context: CoroutineContext = Dispatchers.Main,  result: BaseMviFlowResult<I, T>) = suspendCancellableCoroutine { continuation ->
         viewModelScope.launch(context) {
             flow
                 .onStart { trySendIntent(intent, Loading) }
                 .onCompletion { catch -> trySendIntent(intent, Success) { if (catch != null && !continuation.isCompleted) continuation.resumeWithException(catch) } }
                 .catch { catch ->
-                    trySendIntent(intent, Error (if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT , catch.message ?: app.getString(R.string.base_unknow_error))) {
+                    trySendIntent(intent, Error (if (catch is ViewStateException) Error.UNKNOW_HOST else Error.DEFAULT, catch.message ?: app.getString(R.string.base_unknow_error))) {
                         if (!continuation.isCompleted) continuation.resumeWithException(catch)
                     }
                 }

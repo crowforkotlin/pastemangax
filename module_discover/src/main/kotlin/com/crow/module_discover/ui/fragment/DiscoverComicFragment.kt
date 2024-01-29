@@ -1,9 +1,14 @@
 package com.crow.module_discover.ui.fragment
 
+import android.content.Context
 import android.graphics.Typeface
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.get
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
@@ -322,7 +327,9 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         mAdapter = DiscoverComicAdapter(lifecycleScope) { navigateBookComicInfo(it.mName, it.mPathWord) }
 
         // 设置适配器
-        mBinding.list.adapter = mAdapter.withLoadStateFooter(BaseLoadStateAdapter { mAdapter.retry() })
+        mBinding.list.adapter = mAdapter.withLoadStateFooter(BaseLoadStateAdapter {
+
+            mAdapter.retry() })
 
         // 设置加载动画独占1行，漫画卡片3行
         (mBinding.list.layoutManager as GridLayoutManager).apply {

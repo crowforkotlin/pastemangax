@@ -10,6 +10,7 @@
     android:layout_marginEnd="@dimen/base_dp4"
     android:ellipsize="end"
     android:maxLines="1"
+    app:cornerRadius="@dimen/base_dp7_5"
     android:textStyle="bold"
     android:textAlignment="center"
     android:textSize="@dimen/base_sp10"

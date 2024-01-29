@@ -45,7 +45,8 @@ class ComicStriptRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit)
                 if (newItem.mMessage == null && oldItem.mMessage == null) {
                     oldItem.mStateComplete == newItem.mStateComplete
                 } else {
-                    oldItem.mMessage == newItem.mMessage
+                   oldItem.mMessage == newItem.mMessage
+                   false
                 }
             } else if(oldItem is Content && newItem is Content) {
                 oldItem.mImageUrl == newItem.mImageUrl
@@ -114,7 +115,6 @@ class ComicStriptRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit)
 
         fun onBind(item: ReaderLoading) {
             val message = item.mMessage
-            binding.retry.isGone.info()
             if (message == null) {
                 if (binding.retry.isGone) {
                     mRetryAnimator?.cancel()

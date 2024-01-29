@@ -79,11 +79,14 @@ object AppConfigs {
     // 目标支持版本 Android 13 T
     const val target_sdk_version = 29
 
-    // 应用版本号
-    const val version_code = 14
+    val version_code get() = version_code_release
+    val version_name get() = version_name_release
 
-    // 应用版本名
-    const val version_name = "1.3.2"
+    const val version_code_internal = 100000
+    const val version_name_internal = "内部版本1.0"
+    const val version_code_release = 14
+    const val version_name_release = "1.3.2"
+
 
     // jvm版本
     const val jvm_target = "11"

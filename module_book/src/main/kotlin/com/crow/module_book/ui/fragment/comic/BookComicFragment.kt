@@ -28,6 +28,7 @@ import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.px2sp
 import com.crow.base.tools.extensions.removeWhiteSpace
 import com.crow.base.tools.extensions.startActivity
+import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
@@ -37,6 +38,7 @@ import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_book.R
 import com.crow.module_book.model.entity.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
+import com.crow.module_book.model.entity.comic.ComicActivityInfo
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.ComicChapterResp
 import com.crow.module_book.model.resp.comic_info.Status
@@ -236,13 +238,15 @@ class BookComicFragment : BookFragment() {
 
         // 漫画
         mAdapter = ComicChapterRvAdapter { comic  ->
-
             mContext.startActivity<ComicActivity> {
-                putExtra(ComicViewModel.PREV_UUID, comic.prev)
-                putExtra(ComicViewModel.NEXT_UUID, comic.next)
-                putExtra(ComicViewModel.UUID, comic.uuid)
-                putExtra(BaseStrings.PATH_WORD, comic.comicPathWord)
-                mVM.mChapterEntity
+                putExtra(ComicActivity.INFO, toJson(ComicActivityInfo(
+                    mTitle = mName,
+                    mSubTitle = comic.name,
+                    mPathword = comic.comicPathWord,
+                    mUuid = comic.uuid,
+                    mNext = comic.next,
+                    mPrev = comic.prev
+                )))
             }
             if (Build.VERSION.SDK_INT >= 34) {
                 requireActivity().overrideActivityTransition(AppCompatActivity.OVERRIDE_TRANSITION_CLOSE, android.R.anim.fade_in, android.R.anim.fade_out)

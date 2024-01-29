@@ -81,7 +81,6 @@
                 android:id="@+id/static_group"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-
                 android:layout_marginTop="@dimen/base_dp10"
                 app:layout_constraintEnd_toEndOf="@+id/settings_site_tips"
                 app:layout_constraintStart_toStartOf="@+id/settings_site_tips"
@@ -188,7 +187,7 @@
                 style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/mangax_retry"
+                android:text="@string/base_retry"
                 android:textColor="@color/black"
                 android:visibility="invisible"
                 app:backgroundTint="@color/base_blue_100"

@@ -25,7 +25,11 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
      * ● 2023-11-05 02:25:16 周日 上午
      * @author crowforkotlin
      */
-    companion object { const val CATEGORIES = "CATEGORIES" }
+    companion object {
+        const val CATEGORIES = "CATEGORIES"
+        var CURRENT_TYPE = Type.STRIPT
+            private set
+    }
 
     /**
      * ● 类型
@@ -48,6 +52,7 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
      * @author crowforkotlin
      */
     fun apply(type: Type) {
+        CURRENT_TYPE = type
         when (type) {
             Type.STRIPT -> mActivity.supportFragmentManager.navigate(host.id, mActivity.get(named(Fragments.ComicStript.name)))
             Type.CLASSIC -> mActivity.supportFragmentManager.navigate(host.id, mActivity.get(named(Fragments.ComicClassic.name)))

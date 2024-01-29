@@ -17,9 +17,8 @@
 	<string name="main_resolution_tips" translatable="false">默认分辨率为1500！ 如果漫画加载较慢 可以选择分辨率为800！</string>
 	<string name="main_resolution_title" translatable="false">漫画分辨率</string>
 
-	<string name="main_proxy_title" translatable="false">路线设置</string>
 	<string name="main_proxy_tips" translatable="false">接口API访问均是海外，图片CDN可能会变化，请谨慎使用</string>
-	<string name="main_proxy_domestic_route" translatable="false">国内路线（请勿使用梯子、可能会导致无法访问）</string>
+	<string name="main_proxy_domestic_route" translatable="false">国内路线（使用梯子可能会导致无法访问）</string>
 	<string name="main_proxy_overseas_route" translatable="false">港台、海外路线</string>
 
 	<string name="main_site_current" translatable="false">当前站点：%s</string>

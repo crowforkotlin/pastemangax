@@ -36,12 +36,13 @@
 
 	<com.google.android.material.progressindicator.CircularProgressIndicator
 		android:id="@+id/loading"
+app:trackThickness="@dimen/base_dp3"
 		style="@style/Widget.Material3.CircularProgressIndicator.Small"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:indeterminate="true"
-		app:indicatorColor="@color/mangax_light_blue_500"
+		app:indicatorColor="@color/mangax_color_asc"
 		app:indicatorSize="@dimen/base_dp36"
 		app:trackCornerRadius="@dimen/base_dp99" />
 

@@ -6,7 +6,10 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.R
+import com.crow.base.tools.coroutine.launchDelay
+import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.info
 import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -44,7 +47,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     private val mAdapter: ComicStriptRvAdapter by lazy {
         ComicStriptRvAdapter { uuid, isNext ->
-            mVM.input(BookIntent.GetComicPage(mVM.mPathword, uuid, isNext))
+            launchDelay(BASE_ANIM_300L) { mVM.input(BookIntent.GetComicPage(mVM.mPathword, uuid, isNext)) }
         }
     }
 
@@ -102,7 +105,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                     pagePos = item.mPos
                 }
                 else -> {
-                    kotlin.error("unknow item type!")
+                    error("unknow item type!")
                 }
             }
             mVM.onScroll(dx, dy, position)
@@ -134,6 +137,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
         lifecycleScope.launch {
             mVM.mContent.collect {
                 mAdapter.submitList(it.mPages.toMutableList()) {
+                    mVM.mLoadingJob?.cancel()
                     if (mAdapter.itemCount != 0) {
                         if (mBinding.list.tag == null) {
                             mBinding.list.scrollBy(0, resources.getDimensionPixelSize(baseR.dimen.base_dp96))

@@ -21,25 +21,33 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
+import com.crow.base.kt.BaseNotNullVar
+import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.hasGlobalPoint
 import com.crow.base.tools.extensions.immersionFullScreen
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.immersureFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
+import com.crow.base.tools.extensions.info
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.onCollect
+import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.activity.BaseMviActivity
+import com.crow.base.ui.view.BaseErrorViewStub
+import com.crow.base.ui.view.baseErrorViewStub
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
-import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.copymanga.tryConvert
 import com.crow.module_book.databinding.BookActivityComicBinding
+import com.crow.module_book.model.entity.comic.ComicActivityInfo
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
 import com.crow.module_book.ui.fragment.comic.reader.ComicClassicFragment
@@ -50,19 +58,26 @@ import com.crow.module_book.ui.view.comic.rv.ComicRecyclerView
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.shape.MaterialShapeDrawable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.crow.base.R as baseR
-import com.crow.mangax.R as mangaR
 
 
 class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper.GestureListener {
+
+    companion object {
+        const val INFO = "INFO"
+        const val TITLE = "TITLE"
+        const val SUB_TITLE = "SUB_TITLE"
+    }
 
     /**
      * ● 漫画VM
      *
      * ● 2023-07-07 23:53:41 周五 下午
      */
-    private val mComicVM by viewModel<ComicViewModel>()
+    private val mVM by viewModel<ComicViewModel>()
 
     /**
      * ● WindowInset For immersure or systembar
@@ -86,11 +101,14 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
     private lateinit var mGestureHelper: GestureHelper
 
     /**
-     * ● 是否需要加载（默认为true）
+     * ● ErrorViewStub
      *
-     * ● 2023-09-04 01:35:45 周一 上午
+     * ● 2024-01-27 23:47:49 周六 下午
+     * @author crowforkotlin
      */
-    private var mIsNeedLoading = true
+    private var mBaseErrorViewStub by BaseNotNullVar<BaseErrorViewStub>(true)
+
+    private var mInit = false
 
     /**
      * ● 获取ViewBinding
@@ -113,6 +131,15 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
 
         val dp5 = resources.getDimensionPixelSize(baseR.dimen.base_dp5)
 
+        // 初始化viewstub
+        mBaseErrorViewStub = baseErrorViewStub(mBinding.error, lifecycle) {
+            mBaseErrorViewStub.loadLayout(visible = false, animation = true)
+            mBinding.loading.animateFadeIn()
+            launchDelay(BASE_ANIM_300L) {
+                mVM.input(BookIntent.GetComicPage(mVM.mPathword, mVM.mUuid))
+            }
+        }
+
         // 全屏
         immersionFullScreen(mWindowInsetsCompat)
 
@@ -132,8 +159,13 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         // 内存重启 后 savedInstanceState不为空 防止重复添加Fragment
         if (savedInstanceState == null) {
 
-            // CLASSIC 经典 （按钮点击下一章）
-            mComicCategory.apply(ComicCategories.Type.STRIPT)
+            mBinding.loading.isVisible = true
+
+            lifecycleScope.launch {
+
+                mComicCategory.apply(ComicCategories.Type.STRIPT)
+                delay(5000)
+            }
         }
     }
 
@@ -156,16 +188,16 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      *
      * ● 2023-07-07 23:55:54 周五 下午
      */
-    override fun initData() {
-        mComicVM.mPathword = (intent.getStringExtra(BaseStrings.PATH_WORD) ?: "").also {
-            if (it.isEmpty()) finishActivity(getString(mangaR.string.mangax_error, "pathword is null or empty"))
+    override fun initData(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null) {
+            val info = toTypeEntity<ComicActivityInfo>(intent.getStringExtra(INFO)) ?: return finishActivity(getString(baseR.string.base_unknow_error))
+            mVM.mComicInfo = info
+            mVM.mNextUuid = info.mNext
+            mVM.mPrevUuid = info.mPrev
+            mBinding.topAppbar.title = info.mTitle
+            mBinding.topAppbar.subtitle = info.mSubTitle
+            mVM.input(BookIntent.GetComicPage(info.mPathword, info.mUuid))
         }
-        mComicVM.mUuid = (intent.getStringExtra(ComicViewModel.UUID) ?: "").also {
-            if (it.isEmpty()) finishActivity(getString(mangaR.string.mangax_error, "uuid is null or empty"))
-        }
-        mComicVM.mPrevUuid = intent.getStringExtra(ComicViewModel.PREV_UUID)
-        mComicVM.mNextUuid = intent.getStringExtra(ComicViewModel.NEXT_UUID)
-        mComicVM.input(BookIntent.GetComicPage(mComicVM.mPathword, mComicVM.mUuid, enableLoading = true))
     }
 
     /**
@@ -175,13 +207,13 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun initObserver(savedInstanceState: Bundle?) {
 
-        mComicVM.uiState.onCollect(this) { state ->
+        mVM.uiState.onCollect(this) { state ->
             if (state != null && state.mReaderContent.mChapterInfo != null) {
                 if (mBinding.infobar.isGone) mBinding.infobar.animateFadeIn()
                 mBinding.infobar.update(
                     currentPage = state.mCurrentPage,
                     totalPage = state.mTotalPages,
-                    percent = mComicVM.computePercent(
+                    percent = mVM.computePercent(
                         pageIndex = state.mCurrentPage,
                         totalPage = state.mTotalPages,
                         info = state.mReaderContent.mChapterInfo
@@ -191,32 +223,35 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
             }
         }
 
-        mComicVM.onOutput { intent ->
+        mVM.onOutput { intent ->
             when(intent) {
                 is BookIntent.GetComicPage -> {
-                    if (intent.enableLoading) {
+                    if (!mInit) {
                         intent.mViewState
-                            .doOnLoading{
-                                if (!mIsNeedLoading) {
-                                    mIsNeedLoading = true
-                                    return@doOnLoading
-                                }
-                                showLoadingAnim { dialog -> dialog.applyWindow(dimAmount = 0.3f, isFullScreen = true) }
-                            }
-                            .doOnError { _, _ ->
-                                toast(getString(baseR.string.base_loading_error))
-                                dismissLoadingAnim { finishActivity() }
-                            }
+                            .doOnError { _, _ -> showErrorPage() }
                             .doOnResult {
-                                dismissLoadingAnim()
                                 val page = intent.comicpage
                                 if (page != null) {
+                                    mInit = true
+                                    mBinding.loading.animateFadeOutGone()
                                     lifecycleScope.tryConvert(page.mComic.mName, mBinding.topAppbar::setTitle)
                                     lifecycleScope.tryConvert(page.mChapter.mName, mBinding.topAppbar::setSubtitle)
+                                } else {
+                                    showErrorPage()
                                 }
                             }
+
                     }
                 }
+            }
+        }
+    }
+
+    private fun showErrorPage() {
+        launchDelay(BASE_ANIM_300L) {
+            mBinding.loading.animateFadeOut().withEndAction {
+                mBinding.loading.isGone = true
+                mBaseErrorViewStub.loadLayout(visible = true, animation = true)
             }
         }
     }
@@ -228,10 +263,6 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (mComicVM.mOrientation != resources.configuration.orientation) {
-            mComicVM.mOrientation = resources.configuration.orientation
-            mIsNeedLoading = false
-        }
         immersureFullView(window)
         immerureCutoutCompat(window)
     }
@@ -271,9 +302,17 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      * ● 2023-09-04 01:30:21 周一 上午
      */
     private fun hasGlobalPoint(ev: MotionEvent): Boolean {
-        val hasToolbar = hasGlobalPoint(mBinding.topAppbar, ev.rawX.toInt(), ev.rawY.toInt())
+        val rawX = ev.rawX.toInt()
+        val rawY = ev.rawY.toInt()
+        var hasRetry =false
+        val hasToolbar = hasGlobalPoint(mBinding.topAppbar, rawX, rawY)
         var hasButton = false
         val fragment = supportFragmentManager.fragments.firstOrNull()
+        mBaseErrorViewStub.mVsBinding?.let { binding ->
+            if (mBaseErrorViewStub.isVisible()) {
+                hasRetry = hasGlobalPoint(binding.retry, rawX, rawY)
+            }
+        }
         if (fragment is ComicClassicFragment || fragment is ComicStriptFragment) {
             val rv = ((fragment.view as ComicFrameLayout)[0] as ComicRecyclerView)
             val childView = rv.findChildViewUnder(ev.x, ev.y)
@@ -281,24 +320,12 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                 childView.forEach {
                     if (fragment.isRemoving) return hasToolbar
                     if(it is MaterialButton) {
-                        hasButton = hasGlobalPoint(it, ev.rawX.toInt(), ev.rawY.toInt())
+                        hasButton = hasGlobalPoint(it, rawX, rawY)
                     }
                 }
             }
         }
-        return hasToolbar || hasButton
-    }
-    /**
-     * ● 判断是否是 Classic中的Button
-     *
-     * ● 2023-09-03 23:25:45 周日 下午
-     */
-    private fun judgeIsClassicButton(ev: MotionEvent): Boolean {
-        val fragment = supportFragmentManager.fragments.firstOrNull()
-        if (fragment is ComicClassicFragment) {
-            super.dispatchTouchEvent(ev)
-        }
-        return true
+        return hasToolbar || hasButton || hasRetry
     }
 
     /**

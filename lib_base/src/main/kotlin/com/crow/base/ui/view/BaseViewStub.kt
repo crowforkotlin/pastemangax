@@ -34,6 +34,8 @@ abstract class BaseViewStub<VB : ViewBinding>(
      */
     var mView: View? = null
 
+    var mVsBinding: VB? = null
+
     /**
      * ● 为当前Lifecycle 添加观察此对象
      *
@@ -56,6 +58,7 @@ abstract class BaseViewStub<VB : ViewBinding>(
         when (event) {
             Lifecycle.Event.ON_DESTROY -> {
                 mView = null
+                mVsBinding = null
                 mLifecycle.removeObserver(this)
             }
 
@@ -72,7 +75,11 @@ abstract class BaseViewStub<VB : ViewBinding>(
     fun loadLayout(visible: Boolean, animation: Boolean = false) {
         if (mView == null) {
             mView = mViewStub.inflate()
-            mView?.let { view -> mOnBinding.onBinding(view, bindViewBinding(view)) }
+            mView?.let { view ->
+                val binding = bindViewBinding(view)
+                mVsBinding = binding
+                mOnBinding.onBinding(view, binding)
+            }
             if (animation) {
                 if (isVisible()) mView?.animateFadeIn()
                 else {

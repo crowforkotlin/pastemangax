@@ -90,7 +90,10 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
 
             binding.comicNext.setOnClickListener {
                 BaseEvent.getSIngleInstance().doOnInterval {
-                    onPrevNext(getItem(absoluteAdapterPosition) as ReaderPrevNextInfo)
+                    val pos = absoluteAdapterPosition
+                    if (pos in 0..<itemCount) {
+                        onPrevNext(getItem(pos) as ReaderPrevNextInfo)
+                    }
                 }
             }
         }
@@ -112,6 +115,7 @@ class ComicClassicRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Recy
     override fun getItemCount(): Int = mDiffer.currentList.size
 
     override fun getItemViewType(position: Int): Int {
+
         return when(position) {
             0 -> Header
             itemCount - 1 -> Footer

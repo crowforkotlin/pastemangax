@@ -9,12 +9,13 @@
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loading"
+        app:trackThickness="@dimen/base_dp3"
         style="@style/Widget.Material3.CircularProgressIndicator.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true"
-        app:indicatorColor="@color/mangax_light_blue_500"
+        app:indicatorColor="@color/base_white"
         app:indicatorSize="@dimen/base_dp36"
         app:trackCornerRadius="@dimen/base_dp99" />
 
@@ -36,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/mangax_retry"
+        android:text="@string/base_retry"
         android:visibility="gone"
         tools:visibility="visible" />
 

@@ -2,20 +2,23 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content">
+	android:layout_height="wrap_content"
+	xmlns:tools="http://schemas.android.com/tools">
 
 	<com.google.android.material.button.MaterialButton
-		android:id="@+id/base_loading_retry"
-		style="@style/Widget.Material3.Button.TonalButton"
+		android:id="@+id/retry"
+		style="@style/Widget.Material3.Button.ElevatedButton"
+		tools:visibility="visible"
+		app:cornerRadius="@dimen/base_dp7_5"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
-		android:text="@string/base_loading_retry"
+		android:text="@string/base_retry"
 		android:textStyle="bold"
 		android:visibility="invisible" />
 
 	<com.airbnb.lottie.LottieAnimationView
-		android:id="@+id/base_loading_lottie"
+		android:id="@+id/loading"
 		android:layout_width="@dimen/base_dp164"
 		android:layout_height="@dimen/base_dp164"
 		android:layout_gravity="center"

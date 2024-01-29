@@ -195,7 +195,7 @@ class NewHomeComicRvAdapter(
     inner class HomeComicRecRefreshVH(val binding: HomeFragmentComicRvRecRefreshBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun onBind() {
-            binding.homeComicRvRecRefresh.doOnClickInterval { mOnRefresh(binding.homeComicRvRecRefresh) }
+            binding.refresh.doOnClickInterval { mOnRefresh(binding.refresh) }
         }
     }
 

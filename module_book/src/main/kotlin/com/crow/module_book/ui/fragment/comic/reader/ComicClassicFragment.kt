@@ -3,27 +3,28 @@ package com.crow.module_book.ui.fragment.comic.reader
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.crow.base.tools.coroutine.launchDelay
+import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
+import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.module_book.R
 import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderContent
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderState
 import com.crow.module_book.model.intent.BookIntent
+import com.crow.module_book.model.resp.comic_page.Chapter
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicClassicRvAdapter
 import com.crow.module_book.ui.fragment.BookFragment
 import com.crow.module_book.ui.view.comic.rv.ComicLayoutManager
 import com.crow.module_book.ui.viewmodel.ComicViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.yield
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 class ComicClassicFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
@@ -32,7 +33,7 @@ class ComicClassicFragment : BaseMviFragment<BookFragmentComicBinding>() {
      *
      * ● 2023-09-01 22:22:54 周五 下午
      */
-    private val mComicVM by activityViewModel<ComicViewModel>()
+    private val mVM by activityViewModel<ComicViewModel>()
 
     /**
      * ● 漫画RV
@@ -49,7 +50,7 @@ class ComicClassicFragment : BaseMviFragment<BookFragmentComicBinding>() {
         if (reader.mUUID == null || message != null) {
             return@ComicClassicRvAdapter toast(message ?: getString(mangaR.string.mangax_error, "uuid is null !"))
         }
-        mComicVM.input(BookIntent.GetComicPage(mComicVM.mPathword, reader.mUUID, enableLoading = true))
+        mVM.input(BookIntent.GetComicPage(mVM.mPathword, reader.mUUID, enableLoading = true))
     }
 
     /**
@@ -79,14 +80,7 @@ class ComicClassicFragment : BaseMviFragment<BookFragmentComicBinding>() {
      * ● 2023-09-04 21:56:59 周一 下午
      */
     override fun initListener() {
-        mBinding.list.setOnScrollChangeListener { _, _, _, _, _ ->
-            val reader = mComicVM.mContent.value
-            mComicVM.updateUiState(ReaderState(
-                mReaderContent = reader,
-                mTotalPages = reader.mPages.size + 2,
-                mCurrentPage = (mBinding.list.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1
-            ))
-        }
+        mBinding.list.setPreScrollListener { _, _, _ -> updateUiState() }
     }
 
     override fun onPause() {
@@ -95,30 +89,32 @@ class ComicClassicFragment : BaseMviFragment<BookFragmentComicBinding>() {
     }
 
     override fun initObserver(saveInstanceState: Bundle?) {
-        mComicVM.mContent.onCollect(this) { reader ->
-            if(reader.mPages.isNotEmpty()) {
-                showComicPage(reader)
+        mVM.onOutput { intent ->
+            when(intent) {
+                is BookIntent.GetComicPage -> {
+                    intent.mViewState
+                        .doOnResult {
+                            intent.comicpage?.let { resp ->
+                                launchDelay(BASE_ANIM_300L) { updateUiState() }
+                            }
+                        }
+                }
+            }
+        }
+        mVM.mPages.onCollect(this) { pages ->
+            if(pages != null) {
+                mAdapter.submitList(processedReaderPages(pages))
             }
         }
     }
 
-    private suspend fun showComicPage(readerContent: ReaderContent) = coroutineScope {
-
-        // wait util complete
-        async {
-            mAdapter.submitList(processedReaderPages(readerContent))
-            yield()
-        }.await()
-
-    }
-
-    private fun processedReaderPages(reader: ReaderContent): MutableList<Any> {
-        if (reader.mChapterInfo == null) return mutableListOf()
-        val prevUUID = reader.mChapterInfo.mPrevUUID
-        val nextUUID = reader.mChapterInfo.mNextUUID
+    private fun processedReaderPages(chapter: Chapter): MutableList<Any> {
+        val prevUUID = chapter.mPrev
+        val nextUUID = chapter.mNext
         val prevInfo = if (prevUUID == null) getString(R.string.book_no_prev) else getString(R.string.book_prev)
         val nextInfo = if (nextUUID == null) getString(R.string.book_no_next) else getString(R.string.book_next)
-        val pages = reader.mPages.toMutableList()
+        val pages = mutableListOf<Any>()
+        pages.addAll(chapter.mContents.toMutableList())
         pages.add(0, ReaderPrevNextInfo(
             mUUID = prevUUID,
             mInfo = prevInfo,
@@ -136,5 +132,14 @@ class ComicClassicFragment : BaseMviFragment<BookFragmentComicBinding>() {
         toast(getString(baseR.string.base_loading_error))
         BaseEvent.getSIngleInstance().setBoolean(BookFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
         requireActivity().onBackPressedDispatcher.onBackPressed()
+    }
+
+    private fun updateUiState() {
+        val reader: ReaderContent = mVM.mContent.value
+        mVM.updateUiState(ReaderState(
+            mReaderContent = reader,
+            mTotalPages = reader.mPages.size + 1,
+            mCurrentPage = (mBinding.list.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1
+        ))
     }
 }

@@ -2,21 +2,30 @@ package com.crow.module_book.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.crow.base.app.app
+import com.crow.base.kt.BaseNotNullVar
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.createCoroutineExceptionHandler
+import com.crow.base.tools.extensions.error
 import com.crow.base.tools.extensions.info
+import com.crow.base.tools.extensions.toTypeEntity
+import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
+import com.crow.mangax.copymanga.resp.BaseResultResp
 import com.crow.module_book.R
 import com.crow.module_book.model.entity.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
+import com.crow.module_book.model.entity.comic.ComicActivityInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderContent
 import com.crow.module_book.model.entity.comic.reader.ReaderInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderLoading
 import com.crow.module_book.model.entity.comic.reader.ReaderState
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.ComicPageResp
+import com.crow.module_book.model.resp.comic_page.Chapter
 import com.crow.module_book.network.BookRepository
+import com.crow.module_book.ui.activity.ComicActivity
+import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +33,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 import com.crow.base.R as baseR
 
 /*************************
@@ -45,26 +56,14 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     /**
-     * ● 漫画关键字
+     * ● 漫画信息
      *
-     * ● 2023-06-28 22:04:54 周三 下午
+     * ● 2024-01-28 00:25:53 周日 上午
+     * @author crowforkotlin
      */
-    lateinit var mPathword: String
-
-    /**
-     * ● 漫画UID
-     *
-     * ● 2023-06-28 22:04:58 周三 下午
-     */
-    lateinit var mUuid: String
-
-
-
-    /**
-     * ● 下一章和上一章漫画UID
-     *
-     * ● 2023-08-29 23:16:17 周二 下午
-     */
+    var mComicInfo: ComicActivityInfo by BaseNotNullVar(true)
+    val mPathword: String get() = mComicInfo.mPathword
+    val mUuid: String get() = mComicInfo.mUuid
     var mPrevUuid: String? = null
     var mNextUuid: String? = null
     var mLoadingJob: Job? = null
@@ -78,6 +77,9 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      */
     private val _mContent = MutableStateFlow(ReaderContent("", "", "", emptyList(), null))
     val mContent: StateFlow<ReaderContent> get() = _mContent
+
+    private val _mPages = MutableStateFlow<Chapter?>(null)
+    val mPages: StateFlow<Chapter?> get() = _mPages
 
     /**
      * ● ChapterPageID to ReaderContent
@@ -95,13 +97,6 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      */
     private val _uiState = MutableStateFlow<ReaderState?>(null)
     val uiState : StateFlow<ReaderState?> get() = _uiState
-
-    /**
-     * ● 旋转角度
-     *
-     * ● 2023-09-04 01:33:44 周一 上午
-     */
-    var mOrientation = app.resources.configuration.orientation
 
     /**
      * ● 页面大小列表
@@ -141,27 +136,38 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      * ● 2023-06-28 22:17:41 周三 下午
      */
     private suspend fun getComicPage(intent: BookIntent.GetComicPage, isNext: Boolean? = null) {
-        val result = flowResult(repository.getComicPage(intent.pathword, intent.uuid), intent) { value ->
-            val readerContent = getReaderContent(value.mResults)
-            val _intent = if (isNext == null) {
-                intent.copy(comicpage = value.mResults)
-            } else {
-                intent.copy(comicpage = value.mResults)
+        return suspendCancellableCoroutine { continuation ->
+            viewModelScope.launch {
+                runCatching {
+                    flowResult(repository.getComicPage(intent.pathword, intent.uuid), intent) { value ->
+                        if (value.mCode == 210) {
+                            val regex = "\\d+".toRegex()
+                            val matches = regex.find(value.mMessage)
+                            toast(matches?.value?.run { "请求频率太快了，请等待${this}秒后重试" } ?: value.mMessage)
+                            intent.copy(comicpage = null)
+                        } else {
+                            val result = toTypeEntity<ComicPageResp>(value.mResults) ?: kotlin.error(app.getString(baseR.string.base_unknow_error))
+                            val readerContent = getReaderContent(result)
+                            val chapter = result.mChapter
+                            FlowBus.with<BookChapterEntity>(BaseEventEnum.UpdateChapter.name).post(
+                                BookChapterEntity(
+                                    mBookName = result.mComic.mName,
+                                    mChapterType = BookType.COMIC,
+                                    mChapterName = chapter.mName,
+                                    mChapterUUID = chapter.mUuid,
+                                    mChapterNextUUID = chapter.mNext,
+                                    mChapterPrevUUID = chapter.mPrev
+                                )
+                            )
+                            _mContent.value = readerContent
+                            _mPages.value = chapter
+                            intent.copy(comicpage = result)
+                        }
+                    }
+                }
+                    .onFailure { continuation.resume(Unit) }
             }
-            _mContent.value = readerContent
-            _intent
         }
-        val chapter = result.mResults.mChapter
-        FlowBus.with<BookChapterEntity>(BaseEventEnum.UpdateChapter.name).post(
-            BookChapterEntity(
-                mBookName = result.mResults.mComic.mName,
-                mChapterType = BookType.COMIC,
-                mChapterName = chapter.mName,
-                mChapterUUID = chapter.mUuid,
-                mChapterNextUUID = chapter.mNext,
-                mChapterPrevUUID = chapter.mPrev
-            )
-        )
     }
 
     /**
@@ -316,16 +322,15 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         if (dy < 0 && position - 4 < CHAPTER_PRELOADED_INDEX) {
             loadPrevNextChapter(isNext = false)
         }
-        if (dy > 0 && position + 4 > mContent.value.mPages.size - CHAPTER_PRELOADED_INDEX) {
+        else if (dy > 0 && position + 4 > mContent.value.mPages.size - CHAPTER_PRELOADED_INDEX) {
             loadPrevNextChapter(isNext = true)
         }
     }
 
     private fun loadPrevNextChapter(isNext: Boolean) {
-        "mNext : $mNextUuid \t mPrev : $mPrevUuid".info()
         val prevJob = mLoadingJob
         mLoadingJob = launchJob {
-            prevJob?.cancelAndJoin()
+            prevJob?.join()
             if (isActive) {
                 mIsNext = isNext
                 val uuid = if (isNext) mNextUuid else mPrevUuid
@@ -335,7 +340,6 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     fun processErrorRequestPage(isNext: Boolean?) {
-        "RETRY $isNext".info()
         val content = mContent.value
         val pages = content.mPages.toMutableList()
         if (pages.isEmpty()) return
@@ -344,14 +348,13 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
             if (last is ReaderLoading) {
                 pages.removeLast()
                 pages.add(last.copy(mMessage = null, mLoadNext = true, mStateComplete = !last.mStateComplete))
-                "now : ${pages.last()} \t old : $last".info()
                 _mContent.value = content.copy(mPages = pages)
             }
         } else {
            val first = content.mPages.first()
             if (first is ReaderLoading) {
                 pages.removeFirst()
-                pages.add(first.copy(mMessage = null, mLoadNext = false))
+                pages.add(0, first.copy(mMessage = null, mLoadNext = false, mStateComplete = !first.mStateComplete))
                 _mContent.value = content.copy(mPages = pages)
             }
         }

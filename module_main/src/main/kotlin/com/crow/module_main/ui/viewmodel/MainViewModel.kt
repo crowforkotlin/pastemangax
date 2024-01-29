@@ -8,6 +8,8 @@ import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseUserConfig
 import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.network.AppRepository
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +40,12 @@ class MainViewModel(val repository: AppRepository) : BaseMviViewModel<AppIntent>
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            _mAppConfig.value = AppConfig.readAppConfig() ?: AppConfig(true)
+            val config = AppConfig.readAppConfig() ?: AppConfig(true)
+            BaseStrings.URL.COPYMANGA = config.mCopyMangaSite
+            BaseStrings.URL.HotManga = config.mHotMangaSite
+            BaseUserConfig.CURRENT_ROUTE = config.mRoute
+            BaseUserConfig.RESOLUTION = config.mResolution
+            _mAppConfig.value = config
         }
     }
 

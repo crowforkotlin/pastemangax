@@ -209,7 +209,7 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
      *
      * ● 2023-10-15 14:50:19 周日 下午
      */
-    override fun initData() {
+    override fun initData(savedInstanceState: Bundle?) {
 
         mVM.input(AnimeIntent.AnimeVideoIntent(mPathword, mChapterUUIDS[mPos]))
     }
