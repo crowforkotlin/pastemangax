@@ -9,8 +9,7 @@ import com.crow.base.R
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.info
-import com.crow.base.tools.extensions.log
+import com.crow.base.tools.extensions.findCenterViewPosition
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
@@ -18,12 +17,12 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderContent
 import com.crow.module_book.model.entity.comic.reader.ReaderLoading
-import com.crow.module_book.model.entity.comic.reader.ReaderState
+import com.crow.module_book.model.entity.comic.reader.ReaderUiState
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.comic_page.Content
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicStriptRvAdapter
-import com.crow.module_book.ui.fragment.BookFragment
+import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.view.comic.rv.ComicLayoutManager
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import kotlinx.coroutines.async
@@ -73,7 +72,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     private fun onErrorComicPage() {
         toast(getString(R.string.base_loading_error))
-        BaseEvent.getSIngleInstance().setBoolean(BookFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
+        BaseEvent.getSIngleInstance().setBoolean(InfoFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 
@@ -85,35 +84,65 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
         // Set RvAdapter
         mBinding.list.adapter = mAdapter
-
-        // Show ComicPage
-        // showComicPage(mComicVM.mContents)
     }
 
     override fun initListener() {
-        mBinding.list.setPreScrollListener { dx, dy, position ->
-            val item = mAdapter.getCurrentList()[position]
-            val pageID: Int
-            val pagePos: Int
+
+        parentFragmentManager.setFragmentResultListener(ComicActivity.SLIDE, this) { key, bundle ->
+            val pos = bundle.getInt(key)
+            val itemCenterPos = mBinding.list.findCenterViewPosition()
+            val list = mAdapter.getCurrentList()
+            val item = list[itemCenterPos]
+            list[itemCenterPos]
+            val index = list.indexOf(item)
+            val chapterPageID: Int
+            val chapterPagePos: Int
             when (item) {
                 is ReaderLoading -> {
-                    pageID = item.mID
-                    pagePos = item.mPos
+                    chapterPageID = item.mChapterID
+                    chapterPagePos = item.mChapterPagePos
                 }
                 is Content -> {
-                    pageID = item.mID
-                    pagePos = item.mPos
+                    chapterPageID = item.mChapterID
+                    chapterPagePos = item.mChapterPagePos
                 }
                 else -> {
                     error("unknow item type!")
                 }
             }
-            mVM.onScroll(dx, dy, position)
+            mBinding.list.scrollToPosition(index - chapterPagePos + pos)
             mVM.updateUiState(
-                ReaderState(
-                    mReaderContent = mVM.mReaderContents[pageID] ?: return@setPreScrollListener,
-                    mTotalPages = mVM.mPageSizeMapper[pageID] ?: return@setPreScrollListener,
-                    mCurrentPage = pagePos
+                ReaderUiState(
+                    mReaderContent = mVM.mReaderContents[chapterPageID] ?: return@setFragmentResultListener,
+                    mTotalPages = mVM.mPageSizeMapper[chapterPageID] ?: return@setFragmentResultListener,
+                    mCurrentPage = chapterPagePos
+                )
+            )
+        }
+
+        mBinding.list.setPreScrollListener { dx, dy, position ->
+            val item = mAdapter.getCurrentList()[position]
+            val chapterPageID: Int
+            val chapterPagePos: Int
+            when (item) {
+                is ReaderLoading -> {
+                    chapterPageID = item.mChapterID
+                    chapterPagePos = item.mChapterPagePos
+                }
+                is Content -> {
+                    chapterPageID = item.mChapterID
+                    chapterPagePos = item.mChapterPagePos
+                }
+                else -> {
+                    error("unknow item type!")
+                }
+            }
+            mVM.onScroll(dy, position)
+            mVM.updateUiState(
+                ReaderUiState(
+                    mReaderContent = mVM.mReaderContents[chapterPageID] ?: return@setPreScrollListener,
+                    mTotalPages = mVM.mPageSizeMapper[chapterPageID] ?: return@setPreScrollListener,
+                    mCurrentPage = chapterPagePos
                 )
             )
         }

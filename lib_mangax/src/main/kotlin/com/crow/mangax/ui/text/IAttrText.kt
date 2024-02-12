@@ -11,7 +11,7 @@ import android.graphics.Region
 import android.util.Log
 import kotlin.math.sqrt
 
-interface IAttrText {
+internal interface IAttrText {
 
     companion object {
 
@@ -21,21 +21,29 @@ interface IAttrText {
          * ● 2023-12-22 15:13:15 周五 下午
          * @author crowforkotlin
          */
-        const val DEBUG = true
-        const val DEBUG_TEXT = false
-        const val DEBUG_ANIMATION = false
+        internal const val DEBUG = false
+        internal const val DEBUG_TEXT = false
+        internal const val DEBUG_ANIMATION = false
 
         internal const val TAG = "IAttrTextExt-Crow"
-        internal const val DEBUG_STROKE_WIDTH = 1f
+        internal const val DEBUG_STROKE_WIDTH = 8f
         internal val mDebugYelloPaint by lazy { Paint().also { it.strokeWidth = DEBUG_STROKE_WIDTH; it.color = Color.YELLOW } }
         internal val mDebugBluePaint by lazy { Paint().also { it.strokeWidth = DEBUG_STROKE_WIDTH; it.color = Color.BLUE } }
+
+        /**
+         * ● 绘制时间16MS
+         *
+         * ● 2024-01-30 15:43:47 周二 下午
+         * @author crowforkotlin
+         */
+        internal const val DRAW_VIEW_MIN_DURATION = 16L
     }
 
-    var mAnimationTop: Boolean
-    var mAnimationLeft: Boolean
-    var mAnimationMode: Short
-    var mMarginRow: Float
-    var mSizeUnitStrategy: Short
+    var mTextAnimationTopEnable: Boolean
+    var mTextAnimationLeftEnable: Boolean
+    var mTextAnimationMode: Short
+    var mTextRowMargin: Float
+    var mTextSizeUnitStrategy: Short
 
     /**
      * ● 获取文本高度：ascent绝对值 + descent
@@ -238,7 +246,7 @@ interface IAttrText {
      * ● 2023-12-25 16:39:20 周一 下午
      * @author crowforkotlin
      */
-    fun Any?.debugLog(tag: String = TAG,level: Int = Log.DEBUG) {
+    fun Any?.debugLog(tag: String = TAG, level: Int = Log.DEBUG) {
         debug { Log.println(level, tag, this.toString()) }
     }
 

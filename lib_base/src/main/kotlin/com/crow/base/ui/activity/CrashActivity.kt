@@ -28,9 +28,7 @@ class CrashActivity : BaseActivity() {
             CopyMangaXTheme {
                 CrashScreen(
                     exception = BaseAppExceptionHandler.getThrowableFromIntent(intent),
-                    onAcceptClick = {
-                        moveTaskToBack(true)
-                    },
+                    onAcceptClick = { moveTaskToBack(true) },
                     onRestartClick = {
                         finish()
                         exitProcess(0)

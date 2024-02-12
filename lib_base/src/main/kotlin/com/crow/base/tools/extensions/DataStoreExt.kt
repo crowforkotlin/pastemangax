@@ -56,7 +56,8 @@ object SpNameSpace {
 }
 
 object DBNameSpace {
-    const val app = "preference.chapter.db"
+    const val CHAPTER_DB = "preference.chapter.db"
+    const val CHAPTER_PAGES_DB = "preference.chapter.pages.db"
 }
 
 val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(app.getString(R.string.base_app_name))

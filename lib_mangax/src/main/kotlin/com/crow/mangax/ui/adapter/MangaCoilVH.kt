@@ -17,6 +17,7 @@ import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.error
+import com.crow.base.tools.extensions.log
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.google.android.material.button.MaterialButton
@@ -56,6 +57,8 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
         app.imageLoader.enqueue(
             ImageRequest.Builder(itemView.context)
                 .listener(
+                    onStart = {
+                    },
                     onSuccess = { _, _ ->
                         mLoading.isInvisible = true
                         mLoadingText.isInvisible = true

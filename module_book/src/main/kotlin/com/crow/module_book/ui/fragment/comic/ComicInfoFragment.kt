@@ -44,7 +44,7 @@ import com.crow.module_book.model.resp.ComicChapterResp
 import com.crow.module_book.model.resp.comic_info.Status
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.ComicChapterRvAdapter
-import com.crow.module_book.ui.fragment.BookFragment
+import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
@@ -53,7 +53,7 @@ import org.koin.core.qualifier.named
 import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
-class BookComicFragment : BookFragment() {
+class ComicInfoFragment : InfoFragment() {
 
     /**
      * ● Regist FlowBus

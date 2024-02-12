@@ -135,7 +135,7 @@ class ComicRecyclerView : RecyclerView {
 
     companion object {
         private const val ANIMATOR_DURATION_TIME = 200
-        private const val MIN_SCALE_FACTOR = 1f
+        private const val MIN_SCALE_FACTOR = 0.5f
         private const val MAX_SCALE_FACTOR = 3f
     }
 

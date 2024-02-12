@@ -52,7 +52,7 @@
         tools:visibility="visible">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar_bottom"
+            android:id="@+id/bottom_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:menu="@menu/menu_reader_bottom">
@@ -62,7 +62,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:stepSize="1"
-                android:valueFrom="0"
                 app:labelBehavior="floating"
                 app:tickVisible="false" />
 
@@ -80,15 +79,15 @@
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loading"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true"
+        android:visibility="gone"
         app:indicatorColor="@color/base_white"
         app:trackCornerRadius="@dimen/base_dp10"
-        app:trackThickness="@dimen/base_dp3" />
+        app:trackThickness="@dimen/base_dp3"
+        tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

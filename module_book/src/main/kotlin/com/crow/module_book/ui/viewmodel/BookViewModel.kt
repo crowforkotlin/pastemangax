@@ -60,7 +60,7 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
      *
      * ● 2023-06-28 22:23:19 周三 下午
      */
-    private val mChapterDBDao by lazy { buildDatabase<BookChapterDB>(DBNameSpace.app).bookChapterDao() }
+    private val mChapterDBDao by lazy { buildDatabase<BookChapterDB>(DBNameSpace.CHAPTER_DB).bookChapterDao() }
 
     /**
      * ● 书页章节实体数据

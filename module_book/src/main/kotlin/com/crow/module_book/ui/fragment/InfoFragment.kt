@@ -47,7 +47,7 @@ import com.crow.base.R as baseR
  * @formatter:on
  **************************/
 
-abstract class BookFragment : BaseMviFragment<BookFragmentBinding>() {
+abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
 
     companion object {
         const val LOGIN_CHAPTER_HAS_BEEN_SETED = "LOGIN_CHAPTER_HAS_BEEN_SETED"

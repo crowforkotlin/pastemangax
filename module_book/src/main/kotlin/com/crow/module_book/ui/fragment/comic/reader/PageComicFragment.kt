@@ -14,7 +14,7 @@ import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicClassicRvAdapter
 import com.crow.module_book.ui.adapter.comic.reader.layoutmanager.LoopLayoutManager
-import com.crow.module_book.ui.fragment.BookFragment
+import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -145,7 +145,7 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     private fun onErrorComicPage() {
         toast(getString(baseR.string.base_loading_error))
-        BaseEvent.getSIngleInstance().setBoolean(BookFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
+        BaseEvent.getSIngleInstance().setBoolean(InfoFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 }

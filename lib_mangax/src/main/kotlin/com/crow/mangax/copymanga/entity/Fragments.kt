@@ -28,4 +28,5 @@ enum class Fragments {
     ComicClassic,
     ComicPage,
     ComicStript,
+    ComicBottom
 }

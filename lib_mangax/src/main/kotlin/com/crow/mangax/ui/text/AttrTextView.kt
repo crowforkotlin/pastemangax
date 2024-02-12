@@ -20,6 +20,10 @@ import com.crow.mangax.ui.text.AttrTextLayout.Companion.ANIMATION_CONTINUATION_E
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.ANIMATION_CONTINUATION_ERASE_Y
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.ANIMATION_CONTINUATION_OVAL
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.ANIMATION_CONTINUATION_RHOMBUS
+import com.crow.mangax.ui.text.AttrTextLayout.Companion.ANIMATION_MOVE_X_DRAW
+import com.crow.mangax.ui.text.AttrTextLayout.Companion.ANIMATION_MOVE_X_HIGH_BRUSH_DRAW
+import com.crow.mangax.ui.text.AttrTextLayout.Companion.ANIMATION_MOVE_Y_DRAW
+import com.crow.mangax.ui.text.AttrTextLayout.Companion.ANIMATION_MOVE_Y_HIGH_BRUSH_DRAW
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_BOTTOM_CENTER
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_BOTTOM_END
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_BOTTOM_START
@@ -29,7 +33,11 @@ import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_CENTER_START
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_TOP_CENTER
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_TOP_END
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_TOP_START
-import com.crow.mangax.ui.text.AttrTextLayout.Companion.STRATEGY_DIMENSION_PX
+import com.crow.mangax.ui.text.AttrTextLayout.Companion.STRATEGY_DIMENSION_PX_OR_DEFAULT
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.properties.Delegates
@@ -45,7 +53,7 @@ import kotlin.properties.Delegates
  * @author: crowforkotlin
  * @formatter:on
  */
-class AttrTextView(context: Context) : View(context), IAttrText {
+internal class AttrTextView internal constructor(context: Context) : View(context), IAttrText {
 
     companion object {
 
@@ -83,12 +91,52 @@ class AttrTextView(context: Context) : View(context), IAttrText {
     lateinit var mTextPaint : TextPaint
 
     /**
+     * ● 高刷延时时间
+     *
+     * ● 2024-02-01 11:16:58 周四 上午
+     * @author crowforkotlin
+     */
+    private var mHighBrushDuration = 0L
+
+    /**
+     * ● 高刷方向 是否为 Top和Left
+     *
+     * ● 2024-02-01 11:14:08 周四 上午
+     * @author crowforkotlin
+     */
+    private var mHighBrushTopOrLeft = false
+
+    /**
+     * ● 高刷PX像素个数
+     *
+     * ● 2024-02-01 11:14:36 周四 上午
+     * @author crowforkotlin
+     */
+    private var mHighBrushPixelCount = 0
+
+    /**
+     * ● 高刷新绘制任务
+     *
+     * ● 2024-01-30 15:40:31 周二 下午
+     * @author crowforkotlin
+     */
+    private var mHighBrushJob: Job?= null
+
+    /**
      * ● 文本X坐标
      *
      * ● 2023-10-31 14:08:08 周二 下午
      * @author crowforkotlin
      */
     private var mTextX : Float = 0f
+
+    /**
+     * ● XY轴量值
+     *
+     * ● 2024-01-29 17:03:09 周一 下午
+     * @author crowforkotlin
+     */
+    private var mTextAxisValue: Float = 0f
 
     /**
      * ● 文本Y坐标
@@ -121,7 +169,8 @@ class AttrTextView(context: Context) : View(context), IAttrText {
      * ● 2023-10-31 14:06:16 周二 下午
      * @author crowforkotlin
      */
-    var mListPosition : Int by Delegates.observable(0) { _, oldPosition, newPosition -> onVariableChanged(FLAG_REFRESH, oldPosition, newPosition, skipSameCheck = true) }
+    var mListPosition : Int by Delegates.observable(0) { _, oldPosition, newPosition -> onVariableChanged(
+        FLAG_REFRESH, oldPosition, newPosition, skipSameCheck = true) }
 
     /**
      * ● 视图对齐方式 -- 上中下
@@ -129,7 +178,8 @@ class AttrTextView(context: Context) : View(context), IAttrText {
      * ● 2023-10-31 15:24:43 周二 下午
      * @author crowforkotlin
      */
-    var mGravity: Byte by Delegates.observable(GRAVITY_TOP_START) { _, oldSize, newSize -> onVariableChanged(FLAG_REFRESH, oldSize, newSize) }
+    var mGravity: Byte by Delegates.observable(GRAVITY_TOP_START) { _, oldSize, newSize -> onVariableChanged(
+        FLAG_REFRESH, oldSize, newSize) }
 
     /**
      * ● 是否开启换行
@@ -137,7 +187,8 @@ class AttrTextView(context: Context) : View(context), IAttrText {
      * ● 2023-10-31 17:31:20 周二 下午
      * @author crowforkotlin
      */
-    var mMultiLineEnable: Boolean by Delegates.observable(false) { _, oldValue, newValue -> onVariableChanged(FLAG_REFRESH, oldValue, newValue) }
+    var mMultiLineEnable: Boolean by Delegates.observable(false) { _, oldValue, newValue -> onVariableChanged(
+        FLAG_REFRESH, oldValue, newValue) }
 
     /**
      * ● 动画时间比率
@@ -164,13 +215,20 @@ class AttrTextView(context: Context) : View(context), IAttrText {
     var mIsCurrentView: Boolean = false
 
     /**
+     * ● UI SCOPE
+     *
+     * ● 2024-02-01 14:11:58 周四 下午
+     * @author crowforkotlin
+     */
+    var mScope: CoroutineScope? = null
+
+    /**
      * ● 动画模式
      *
      * ● 2023-12-19 18:57:03 周二 下午
      * @author crowforkotlin
      */
-    override var mAnimationMode: Short = 0
-
+    override var mTextAnimationMode: Short = 0
 
     /**
      * ● 动画X方向
@@ -178,7 +236,7 @@ class AttrTextView(context: Context) : View(context), IAttrText {
      * ● 2023-11-02 14:53:24 周四 下午
      * @author crowforkotlin
      */
-    override var mAnimationLeft: Boolean = false
+    override var mTextAnimationLeftEnable: Boolean = false
 
     /**
      * ● 动画Y方向
@@ -186,7 +244,7 @@ class AttrTextView(context: Context) : View(context), IAttrText {
      * ● 2023-11-02 14:53:45 周四 下午
      * @author crowforkotlin
      */
-    override var mAnimationTop: Boolean = false
+    override var mTextAnimationTopEnable: Boolean = false
 
     /**
      * ● 文本的行间距
@@ -194,7 +252,7 @@ class AttrTextView(context: Context) : View(context), IAttrText {
      * ● 2023-12-25 15:17:16 周一 下午
      * @author crowforkotlin
      */
-    override var mMarginRow: Float = 0f
+    override var mTextRowMargin: Float = 0f
 
     /**
      * ● 当前尺寸大小策略 默认PX
@@ -202,19 +260,7 @@ class AttrTextView(context: Context) : View(context), IAttrText {
      * ● 2023-12-26 11:37:20 周二 上午
      * @author crowforkotlin
      */
-    override var mSizeUnitStrategy: Short = STRATEGY_DIMENSION_PX
-
-    /**
-     * ● 设置硬件加速渲染
-     *
-     * ● 2023-11-10 15:16:42 周五 下午
-     * @author crowforkotlin
-     */
-    init {
-
-        // 设置View使用硬件加速渲染绘制， 不然Animation移动View会造成绘制的内容抖动
-        setLayerType(LAYER_TYPE_HARDWARE, null)
-    }
+    override var mTextSizeUnitStrategy: Short = STRATEGY_DIMENSION_PX_OR_DEFAULT
 
     /**
      * ● 绘制文本
@@ -225,57 +271,113 @@ class AttrTextView(context: Context) : View(context), IAttrText {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        // 执行动画
-        drawAnimation(canvas)
-
         // 文本列表长度
         val textListSize = mList.size
 
+        // 列表为空
+        if (mList.isEmpty()) return
+
         // 文本长度是否无效？
-        val isLengthInvalid = mListPosition > textListSize - 1
+        val text = if (mListPosition !in 0..< textListSize) { mList.last() } else mList[mListPosition]
 
-        // 画笔未初始化 长度是否无效 列表位置是否小于0
-        if (!::mTextPaint.isInitialized || isLengthInvalid || mListPosition < 0) return
-
-        // 获取文本
-        val text = if (isLengthInvalid) { mList.last() } else mList[mListPosition]
+        // 执行动画
+        val isDrawBrushAnimation = drawAnimation(canvas)
 
         // 设置X和Y的坐标 ，Paint绘制的文本在descent位置 进行相对应的计算即可
         when(mGravity) {
             GRAVITY_TOP_START -> {
-                mTextY = abs(mTextPaint.fontMetrics.ascent)
-                drawTopText(canvas, text, textListSize) { mTextX = 0f }
+                drawTopText(canvas, text, textListSize,
+                    onInitializaTextY = { tryLayoutHighBrushY(it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(0f) }
+                )
             }
             GRAVITY_TOP_CENTER -> {
-                mTextY = abs(mTextPaint.fontMetrics.ascent)
-                drawTopText(canvas, text, textListSize) { mTextX = (width shr 1) - it / 2f }
+                drawTopText(canvas, text, textListSize,
+                    onInitializaTextY = { tryLayoutHighBrushY(it) },
+                    onInitializaTextX = { tryLayoutHighBrushX((width shr 1) - it / 2f) }
+                )
             }
             GRAVITY_TOP_END -> {
-                mTextY = abs(mTextPaint.fontMetrics.ascent)
-                drawTopText(canvas, text, textListSize) { mTextX = width - it }
+                drawTopText(canvas, text, textListSize,
+                    onInitializaTextY = { tryLayoutHighBrushY(it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(width - it) }
+                )
             }
             GRAVITY_CENTER_START -> {
-                drawCenterText(canvas, text, textListSize) { mTextX = 0f }
+                drawCenterText(canvas, text, textListSize,
+                    onInitializaTextY = { tryLayoutHighBrushY(it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(0f) }
+                )
             }
             GRAVITY_CENTER -> {
-                drawCenterText(canvas, text, textListSize) { mTextX = (width shr 1) - it / 2f }
+                drawCenterText(canvas, text, textListSize,
+                    onInitializaTextY = { tryLayoutHighBrushY(it) },
+                    onInitializaTextX = { tryLayoutHighBrushX((width shr 1) - it / 2f) }
+                )
             }
             GRAVITY_CENTER_END -> {
-                drawCenterText(canvas, text, textListSize) { mTextX = width - it }
+                drawCenterText(canvas, text, textListSize,
+                    onInitializaTextY = { tryLayoutHighBrushY(it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(width - it) }
+                )
             }
             GRAVITY_BOTTOM_START -> {
-                mTextY = height - calculateBaselineOffsetY(mTextPaint.fontMetrics)
-                drawBottomText(canvas, text, textListSize) { mTextX = 0f }
+                drawBottomText(canvas, text, textListSize,
+                    onInitializaTextY = { tryLayoutHighBrushY(it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(0f) }
+                )
             }
             GRAVITY_BOTTOM_CENTER -> {
-                mTextY = height - calculateBaselineOffsetY(mTextPaint.fontMetrics)
-                drawBottomText(canvas, text, textListSize) { mTextX =  (width shr 1) - it /  2f }
+                drawBottomText(canvas, text, textListSize,
+                    onInitializaTextY = { tryLayoutHighBrushY(it) },
+                    onInitializaTextX = { tryLayoutHighBrushX((width shr 1) - it /  2f) }
+                )
             }
             GRAVITY_BOTTOM_END -> {
-                mTextY = height - calculateBaselineOffsetY(mTextPaint.fontMetrics)
-                drawBottomText(canvas, text, textListSize) { mTextX = width - it }
+                drawBottomText(canvas, text, textListSize,
+                    onInitializaTextY = { tryLayoutHighBrushY(it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(width - it) }
+                )
             }
         }
+
+        // 如果执行的是高刷新绘制动画并且任务正在阻塞中
+        if (isDrawBrushAnimation && mHighBrushJob?.isCompleted == false) invalidateHighBrushAnimation(mHighBrushDuration )
+    }
+
+    /**
+     * ● 布局高刷Y轴位置
+     *
+     * ● 2024-02-01 11:15:21 周四 上午
+     * @author crowforkotlin
+     */
+    private fun tryLayoutHighBrushY(originY: Float) : Float {
+        var y = originY
+        if (mTextAnimationMode == ANIMATION_MOVE_Y_HIGH_BRUSH_DRAW) {
+            drawView(
+                onCurrent = { y +=((if(mTextAnimationTopEnable) height.toFloat() else -height.toFloat())) + mTextAxisValue },
+                onNext = { y += mTextAxisValue }
+            )
+        }
+        return y
+    }
+
+    /**
+     * ● 布局高刷X轴位置
+     *
+     * ● 2024-02-01 11:15:40 周四 上午
+     * @author crowforkotlin
+     */
+    private fun tryLayoutHighBrushX(originX: Float)  {
+        if (mTextAnimationMode == ANIMATION_MOVE_X_HIGH_BRUSH_DRAW) {
+            drawView(
+                onCurrent = { mTextX = (if(mTextAnimationLeftEnable) width + originX else -(width - originX)) + mTextAxisValue },
+                onNext = {
+                    mTextX =  originX + mTextAxisValue
+                }
+            )
+        }
+        else mTextX = originX
     }
 
     /**
@@ -284,9 +386,9 @@ class AttrTextView(context: Context) : View(context), IAttrText {
      * ● 2023-12-22 15:21:59 周五 下午
      * @author crowforkotlin
      */
-    private fun drawAnimation(canvas: Canvas) {
+    private fun drawAnimation(canvas: Canvas) : Boolean{
         if (mAnimationStartTime > 0) {
-            when(mAnimationMode) {
+            when(mTextAnimationMode) {
                 ANIMATION_CONTINUATION_ERASE_X -> {
                     val widthFloat = width.toFloat()
                     val heightFloat = height.toFloat()
@@ -351,6 +453,86 @@ class AttrTextView(context: Context) : View(context), IAttrText {
                         )
                     }
                 }
+                ANIMATION_MOVE_X_DRAW -> {
+                    drawView(
+                        onCurrent = {
+                            val dx = if (mTextAnimationLeftEnable) width - mAnimationTimeFraction * width else -width + mAnimationTimeFraction * width
+                            canvas.translate(dx, 0f)
+                        },
+                        onNext = {
+                            val dx = if (mTextAnimationLeftEnable) mAnimationTimeFraction * -width else mAnimationTimeFraction * width
+                            canvas.translate(dx, 0f)
+                        }
+                    )
+                }
+                ANIMATION_MOVE_Y_DRAW -> {
+                    drawView(
+                        onCurrent = {
+                            val dy = if (mTextAnimationTopEnable) height - mAnimationTimeFraction * height else -height + mAnimationTimeFraction * height
+                            canvas.translate(0f, dy)
+                        },
+                        onNext = {
+                            val dy = if (mTextAnimationTopEnable) mAnimationTimeFraction * -height else mAnimationTimeFraction * height
+                            canvas.translate(0f, dy)
+                        }
+                    )
+                }
+                ANIMATION_MOVE_X_HIGH_BRUSH_DRAW, ANIMATION_MOVE_Y_HIGH_BRUSH_DRAW -> return true
+            }
+        }
+        return false
+    }
+
+    /**
+     * ● 启动高刷绘制动画
+     *
+     * ● 2024-01-30 15:41:27 周二 下午
+     * @author crowforkotlin
+     */
+    internal suspend fun launchHighBrushDrawAnimation(scope: CoroutineScope, isX: Boolean, duration: Long = IAttrText.DRAW_VIEW_MIN_DURATION) {
+        mTextAxisValue = 0f
+        if (isX) {
+            launchHighBrushSuspendAnimation(scope, width, mTextAnimationLeftEnable, duration)
+        } else {
+            launchHighBrushSuspendAnimation(scope, height, mTextAnimationTopEnable, duration)
+        }
+    }
+
+    /**
+     * ● 高刷动画 挂起任务
+     *
+     * ● 2024-02-01 11:17:55 周四 上午
+     * @author crowforkotlin
+     */
+    private suspend fun launchHighBrushSuspendAnimation(scope: CoroutineScope, count: Int, isTopOrLeft: Boolean, duration: Long) {
+        mHighBrushPixelCount = count
+        mHighBrushTopOrLeft = isTopOrLeft
+        mHighBrushDuration = duration
+        invalidateHighBrushAnimation(duration = 0)
+        mHighBrushJob =  scope.launch { delay(Long.MAX_VALUE) }
+        mHighBrushJob?.join()
+    }
+
+    /**
+     * ● 更新高刷动画
+     *
+     * ● 2024-02-01 14:15:20 周四 下午
+     * @author crowforkotlin
+     */
+    private fun invalidateHighBrushAnimation(duration: Long) {
+        if (mHighBrushTopOrLeft) {
+            mTextAxisValue --
+            if (mTextAxisValue > -mHighBrushPixelCount) {
+                if (duration == 0L) invalidate() else mScope?.scope(duration) { invalidate() }
+            } else {
+                mHighBrushJob?.cancel()
+            }
+        } else {
+            mTextAxisValue ++
+            if (mTextAxisValue < mHighBrushPixelCount) {
+                if (duration == 0L) invalidate() else mScope?.scope(duration) { invalidate() }
+            } else {
+                mHighBrushJob?.cancel()
             }
         }
     }
@@ -361,26 +543,30 @@ class AttrTextView(context: Context) : View(context), IAttrText {
      * ● 2023-11-04 17:53:43 周六 下午
      * @author crowforkotlin
      */
-    private inline fun drawTopText(canvas: Canvas, text: Pair<String, Float>, textListSize: Int, onIniTextX: (Float) -> Unit) {
+    private inline fun drawTopText(canvas: Canvas, text: Pair<String, Float>, textListSize: Int, onInitializaTextY: (Float) -> Float, onInitializaTextX: (Float) -> Unit) {
+        val fontMetrics = mTextPaint.fontMetrics
         if (mMultiLineEnable && textListSize > 1) {
+            val height = height
             val heightHalf = height shr 1
-            val textHeight = getTextHeight(mTextPaint.fontMetrics)
-            val marginRow = if (mMarginRow >= heightHalf) heightHalf.toFloat() else mMarginRow
-            val textHeightWithMargin = textHeight + marginRow
-            val maxLine =  if (height < textHeightWithMargin) 1 else (measuredHeight / (textHeightWithMargin)).toInt()
-            var listStartPos = mListPosition * maxLine
-            val textYIncremenet = textHeight + marginRow
-            repeat(maxLine) {
-                if (listStartPos < mList.size) {
-                    val currentText = mList[listStartPos]
-                    onIniTextX(currentText.second)
+            val textHeight = getTextHeight(fontMetrics)
+            val textMarginRow = if (mTextRowMargin >= heightHalf) heightHalf.toFloat() else mTextRowMargin
+            val textYIncremenet = textHeight + textMarginRow
+            val textHeightWithMargin = textHeight + textMarginRow
+            val textMaxLine =  if (height < textHeightWithMargin) 1 else (height / textHeightWithMargin).toInt()
+            var textStartPos = mListPosition * textMaxLine
+            mTextY = onInitializaTextY(abs(fontMetrics.ascent))
+            repeat(textMaxLine) {
+                if (textStartPos < mList.size) {
+                    val currentText = mList[textStartPos]
+                    onInitializaTextX(currentText.second)
                     canvas.drawText(currentText.first)
-                    listStartPos ++
+                    textStartPos ++
                     mTextY += textYIncremenet
                 } else return
             }
         } else {
-            onIniTextX(text.second)
+            mTextY = onInitializaTextY(abs(fontMetrics.ascent))
+            onInitializaTextX(text.second)
             canvas.drawText(text.first)
         }
     }
@@ -391,36 +577,39 @@ class AttrTextView(context: Context) : View(context), IAttrText {
      * ● 2023-11-04 17:54:09 周六 下午
      * @author crowforkotlin
      */
-    private inline fun drawCenterText(canvas: Canvas, text: Pair<String, Float>, textListSize: Int, onInitializaTextX: (Float) -> Unit) {
-        val screenHeightHalf = height shr 1
+    private inline fun drawCenterText(canvas: Canvas, text: Pair<String, Float>, textListSize: Int, onInitializaTextY: (Float) -> Float, onInitializaTextX: (Float) -> Unit) {
+        val height = height
+        val heightHalf = height shr 1
         val fontMetrics = mTextPaint.fontMetrics
-        val textHeight = getTextHeight(fontMetrics)
-        val baseLineOffsetY = calculateBaselineOffsetY(fontMetrics)
-        var halfMarginRow = mMarginRow / 2f
+        val textBaseLineOffsetY = calculateBaselineOffsetY(fontMetrics)
         if (mMultiLineEnable && textListSize > 1) {
-            val textHeightWithMargin = textHeight + mMarginRow
-            val maxRow = if (height < textHeightWithMargin) 1 else min((height / (textHeightWithMargin)).toInt(), textListSize)
-            var listStartPos = (mListPosition * maxRow).let { if (it >= textListSize) it - maxRow else it }
-            val validRow = if (listStartPos + maxRow <= textListSize) maxRow else textListSize - listStartPos
-            val halfCount = validRow shr 1
-            if (maxRow == 1 || validRow == 1) halfMarginRow = 0f
-            mTextY = if (validRow % 2 == 0) { // 考虑到 偶数、奇数 行居中的效果
-                (screenHeightHalf - (textHeightWithMargin * if(validRow < TEXT_HEIGHT_VALID_ROW) 0 else halfCount - 1)) - baseLineOffsetY - halfMarginRow + ROW_DEVIATION
-            } else {
-                (screenHeightHalf - (textHeightWithMargin * if(validRow < TEXT_HEIGHT_VALID_ROW) 0 else halfCount)) + baseLineOffsetY - ROW_DEVIATION
-            }
-            repeat(validRow) {
-                if (listStartPos < textListSize) {
-                    val currentText = mList[listStartPos]
+            val textHeight = getTextHeight(fontMetrics)
+            var textMarginRowHalf = mTextRowMargin / 2f
+            val textHeightWithMargin = textHeight + mTextRowMargin
+            val textMaxRow = if (height < textHeightWithMargin) 1 else min((height / (textHeightWithMargin)).toInt(), textListSize)
+            var textStartPos = (mListPosition * textMaxRow).let { if (it >= textListSize) it - textMaxRow else it }
+            val textValidRow = if (textStartPos + textMaxRow <= textListSize) textMaxRow else textListSize - textStartPos
+            val textValidRowHalf = textValidRow shr 1
+            if (textMaxRow == 1 || textValidRow == 1) textMarginRowHalf = 0f
+            mTextY = onInitializaTextY(
+                if (textValidRow % 2 == 0) { // 考虑到 偶数、奇数 行居中的效果
+                    (heightHalf - (textHeightWithMargin * if(textValidRow < TEXT_HEIGHT_VALID_ROW) 0 else textValidRowHalf - 1)) - textBaseLineOffsetY - textMarginRowHalf + ROW_DEVIATION
+                } else {
+                    (heightHalf - (textHeightWithMargin * if(textValidRow < TEXT_HEIGHT_VALID_ROW) 0 else textValidRowHalf)) + textBaseLineOffsetY - ROW_DEVIATION
+                }
+            )
+            repeat(textValidRow) {
+                if (textStartPos < textListSize) {
+                    val currentText: Pair<String, Float> = mList[textStartPos]
                     onInitializaTextX(currentText.second)
                     canvas.drawText(currentText.first)
-                    listStartPos ++
+                    textStartPos ++
                     mTextY += textHeightWithMargin
                 } else return
             }
         } else {
+            mTextY = onInitializaTextY(heightHalf + textBaseLineOffsetY)
             onInitializaTextX(text.second)
-            mTextY = screenHeightHalf + baseLineOffsetY
             canvas.drawText(text.first)
         }
     }
@@ -431,29 +620,31 @@ class AttrTextView(context: Context) : View(context), IAttrText {
      * ● 2023-11-04 17:54:00 周六 下午
      * @author crowforkotlin
      */
-    private inline fun drawBottomText(canvas: Canvas, text: Pair<String, Float>, textListSize: Int, onIniTextX: (Float) -> Unit) {
+    private inline fun drawBottomText(canvas: Canvas, text: Pair<String, Float>, textListSize: Int, onInitializaTextY: (Float) -> Float, onInitializaTextX: (Float) -> Unit) {
         if (mMultiLineEnable && textListSize > 1) {
+            val height = height
             val heightHalf = height shr 1
-            val marginRow = if (mMarginRow >= heightHalf) heightHalf.toFloat() else mMarginRow
+            val textMarginRow = if (mTextRowMargin >= heightHalf) heightHalf.toFloat() else mTextRowMargin
             val textHeight = getTextHeight(mTextPaint.fontMetrics)
-            val textHeightWithMargin = textHeight + marginRow
-            val maxLine =  if (height < textHeightWithMargin) 1 else (measuredHeight / textHeightWithMargin).toInt()
-            val listSize = mList.size
-            val startPos = (mListPosition + 1) * maxLine
-            val endPos = mListPosition * maxLine
-            var pos = if (listSize >= startPos) startPos - 1 else listSize - 1
-            val textYIncrement = textHeight + marginRow
-            repeat(maxLine) {
-                if (pos >= endPos) {
-                    val currentText = mList[pos]
-                    onIniTextX(currentText.second)
+            val textHeightWithMargin = textHeight + textMarginRow
+            val textMaxLine =  if (height < textHeightWithMargin) 1 else (measuredHeight / textHeightWithMargin).toInt()
+            var textStartPos = (mListPosition + 1) * textMaxLine
+            val textEndPos = mListPosition * textMaxLine
+            val textYIncrement = textHeight + textMarginRow
+            textStartPos = if (textListSize >= textStartPos) textStartPos - 1 else textListSize - 1
+            mTextY = onInitializaTextY(height - calculateBaselineOffsetY(mTextPaint.fontMetrics))
+            repeat(textMaxLine) {
+                if (textStartPos >= textEndPos) {
+                    val currentText: Pair<String, Float> = mList[textStartPos]
+                    onInitializaTextX(currentText.second)
                     canvas.drawText(currentText.first)
-                    pos --
+                    textStartPos --
                     mTextY -= textYIncrement
                 } else return
             }
         } else {
-            onIniTextX(text.second)
+            mTextY = onInitializaTextY(height - calculateBaselineOffsetY(mTextPaint.fontMetrics))
+            onInitializaTextX(text.second)
             canvas.drawText(text.first)
         }
     }
@@ -470,7 +661,7 @@ class AttrTextView(context: Context) : View(context), IAttrText {
         val paint = TextPaint()
         paint.color = Color.GREEN
         paint.strokeWidth = IAttrText.DEBUG_STROKE_WIDTH
-        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_ATOP)
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
         canvas.drawLine(0f, (height / 2).toFloat(), width.toFloat(), (height / 2).toFloat(), paint)
         canvas.drawLine(width / 2f, 0f, width / 2f, height.toFloat(), paint)
 

@@ -39,6 +39,7 @@ import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
+import com.crow.base.tools.extensions.info
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2sp
@@ -405,16 +406,15 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     intent.mViewState
                         .doOnLoading {
                             mSiteBinding?.let { binding ->
-                                if (binding.lottie.isGone) {
-                                    binding.lottie.resumeAnimation()
-                                    binding.lottie.animateFadeIn()
+                                if (binding.loading?.isGone == true) {
+                                    binding.loading.animateFadeIn()
                                 }
                             }
                         }
                         .doOnError { _, _ ->
                            mSiteBinding?.let { binding ->
-                               if (binding.lottie.isVisible) {
-                                   binding.lottie.animateFadeOutGone()
+                               if (binding.loading?.isVisible == true) {
+                                   binding.loading.animateFadeOutGone()
                                    binding.list.animateFadeOut()
                                    binding.reload.animateFadeIn()
                                }
@@ -424,6 +424,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                             mSiteDialog?.let {  dialog ->
                                 mSiteBinding?.let { binding ->
                                     val sites = (intent.siteResp?.mApi?.flatMap { it.map {  site -> site } } ?: return@doOnResult).toMutableList()
+                                    sites.info()
                                     if (binding.list.isInvisible) {
                                         binding.list.animateFadeIn()
                                     }
@@ -433,8 +434,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                                     }
                                         .also { adapter ->
                                             mAnimeSiteJob = lifecycleScope.launch {
-                                                binding.lottie.pauseAnimation()
-                                                binding.lottie.isGone = true
+                                                binding.loading?.isGone = true
                                                 adapter.doNotify(sites, BASE_ANIM_100L shl 1)
                                             }
                                         }
@@ -492,7 +492,6 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
                 mVM.input(AnimeIntent.AnimeSiteIntent())
 
-                title.text = getString(R.string.anime_site_setting)
                 close.doOnClickInterval { mSiteDialog?.cancel() }
                 reload.doOnClickInterval {
                     reload.animateFadeOut()
@@ -740,6 +739,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
                     // 设置SearchView toolbar背景色白，沉浸式
                     toolbar.setBackgroundColor(bgColor)
+
+                    // listFrame设置背景色
+                    binding.listFrame.setBackgroundColor(bgColor)
 
                     // 关闭状态栏空格间距
                     setStatusBarSpacerEnabled(false)

@@ -3,11 +3,12 @@ package com.crow.copymanga.model.di
 import androidx.fragment.app.Fragment
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.module_anime.ui.fragment.AnimeInfoFragment
-import com.crow.module_book.ui.fragment.comic.BookComicFragment
+import com.crow.module_book.ui.fragment.comic.ComicBottomSheetFragment
+import com.crow.module_book.ui.fragment.comic.ComicInfoFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicStriptFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicClassicFragment
 import com.crow.module_book.ui.fragment.comic.reader.PageComicFragment
-import com.crow.module_book.ui.fragment.novel.BookNovelFragment
+import com.crow.module_book.ui.fragment.novel.NovelInfoFragment
 import com.crow.module_home.ui.fragment.TopicFragment
 import com.crow.module_main.ui.fragment.AboutAuthorFragment
 import com.crow.module_main.ui.fragment.ContainerFragment
@@ -36,6 +37,7 @@ import org.koin.dsl.module
  **************************/
 val fragmentModule = module {
     fragment<BottomSheetDialogFragment>(named(Fragments.User.name)) { MineBottomSheetFragment() }
+    fragment<BottomSheetDialogFragment>(named(Fragments.ComicBottom.name)) { ComicBottomSheetFragment() }
     fragment<Fragment>(named(Fragments.Container.name)) { ContainerFragment() }
     fragment<Fragment>(named(Fragments.MineInfo.name)) { MineUpdateInfoFragment() }
     fragment<Fragment>(named(Fragments.Login.name)) { MineLoginFragment() }
@@ -43,8 +45,8 @@ val fragmentModule = module {
     fragment<Fragment>(named(Fragments.Icon.name)) { MineIconFragment() }
     fragment<Fragment>(named(Fragments.About.name)) { AboutAuthorFragment() }
     fragment<Fragment>(named(Fragments.Settings.name)) { SettingsFragment() }
-    fragment<Fragment>(named(Fragments.BookComicInfo.name)) { BookComicFragment() }
-    fragment<Fragment>(named(Fragments.BookNovelInfo.name)) { BookNovelFragment() }
+    fragment<Fragment>(named(Fragments.BookComicInfo.name)) { ComicInfoFragment() }
+    fragment<Fragment>(named(Fragments.BookNovelInfo.name)) { NovelInfoFragment() }
     fragment<Fragment>(named(Fragments.Image.name)) { ImageFragment() }
     fragment<Fragment>(named(Fragments.Styleable.name)) { StyleableFragment() }
     fragment<Fragment>(named(Fragments.UpdateHistory.name)) { UpdateHistoryFragment() }

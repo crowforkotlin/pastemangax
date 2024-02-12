@@ -14,12 +14,12 @@ import com.crow.module_book.R
 import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderContent
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
-import com.crow.module_book.model.entity.comic.reader.ReaderState
+import com.crow.module_book.model.entity.comic.reader.ReaderUiState
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.comic_page.Chapter
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicClassicRvAdapter
-import com.crow.module_book.ui.fragment.BookFragment
+import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.view.comic.rv.ComicLayoutManager
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -130,13 +130,13 @@ class ComicClassicFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     private fun onErrorComicPage() {
         toast(getString(baseR.string.base_loading_error))
-        BaseEvent.getSIngleInstance().setBoolean(BookFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
+        BaseEvent.getSIngleInstance().setBoolean(InfoFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 
     private fun updateUiState() {
         val reader: ReaderContent = mVM.mContent.value
-        mVM.updateUiState(ReaderState(
+        mVM.updateUiState(ReaderUiState(
             mReaderContent = reader,
             mTotalPages = reader.mPages.size + 1,
             mCurrentPage = (mBinding.list.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1

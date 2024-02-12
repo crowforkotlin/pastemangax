@@ -39,13 +39,13 @@ import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.NovelChapterResp
 import com.crow.module_book.model.resp.comic_info.Status
 import com.crow.module_book.ui.adapter.novel.NovelChapterRvAdapter
-import com.crow.module_book.ui.fragment.BookFragment
+import com.crow.module_book.ui.fragment.InfoFragment
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.core.qualifier.named
 
-class BookNovelFragment : BookFragment() {
+class NovelInfoFragment : InfoFragment() {
 
     /**
      * ● Regist FlowBus

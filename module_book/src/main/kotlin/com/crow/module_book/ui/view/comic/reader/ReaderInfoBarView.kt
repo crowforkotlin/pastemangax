@@ -9,6 +9,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.Shader
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import android.view.WindowInsets
@@ -75,6 +77,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		val insetEnd = getSystemUiDimensionOffset("status_bar_padding_end", fallbackInset) + insetCorner
 		val isRtl = layoutDirection == LAYOUT_DIRECTION_RTL
 		paint.strokeWidth = context.resources.resolveDp(2f)
+		paint.setShadowLayer(2f, 1f, 1f, Color.GRAY)
 		insetLeft = if (isRtl) insetEnd else insetStart
 		insetRight = if (isRtl) insetStart else insetEnd
 		insetTop = minOf(insetLeft, insetRight)
@@ -140,11 +143,8 @@ class ReaderInfoBarView @JvmOverloads constructor(
 			info.mChapterCount,
 			currentPage,
 			totalPage,
-		) + if (percent in 0f..1f) {
-			"     " + context.getString(R.string.book_reader_percent_pattern, (percent * 100).format())
-		} else {
-			""
-		}
+			if(percent in 0f..1f) (percent * 100).format() else ""
+		)
 		updateTextSize()
 		invalidate()
 	}
