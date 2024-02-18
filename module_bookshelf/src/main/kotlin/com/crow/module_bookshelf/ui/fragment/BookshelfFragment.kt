@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseLoadStateAdapter
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.processTokenError
 import com.crow.mangax.copymanga.ui.view.BaseTapScrollRecyclerView
@@ -154,7 +154,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         }
 
         // Token为空不处理 Token错误校验
-        else if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty()) {
+        else if (MangaXAccountConfig.mAccountToken.isEmpty()) {
             if (isResumed) {
                 toast(getString(R.string.bookshelf_identity_expired))
                 lifecycleScope.launch {
@@ -399,7 +399,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
         mBinding.refresh.setOnRefreshListener { layout ->
 
             // 尚未登录
-            if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty()) {
+            if (MangaXAccountConfig.mAccountToken.isEmpty()) {
                 toast(getString(R.string.bookshelf_identity_expired))
                 layout.finishRefresh()
                 return@setOnRefreshListener
@@ -428,7 +428,7 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
         // 按钮组 点击事件 （漫画、轻小说）
         mBinding.buttonGroup.addOnButtonCheckedListener { _, checkedId, buttonChecked ->
-            if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty()) toast(getString(R.string.bookshelf_identity_expired))
+            if (MangaXAccountConfig.mAccountToken.isEmpty()) toast(getString(R.string.bookshelf_identity_expired))
             when (checkedId) {
 
                 R.id.comic -> {

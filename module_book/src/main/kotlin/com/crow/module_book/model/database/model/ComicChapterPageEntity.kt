@@ -1,4 +1,4 @@
-package com.crow.module_book.model.entity.comic
+package com.crow.module_book.model.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

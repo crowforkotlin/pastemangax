@@ -5,6 +5,9 @@ package com.crow.mangax.tools.language
 import android.content.Context
 import com.crow.base.app.app
 import com.crow.base.tools.extensions.copyFolder
+import com.crow.base.tools.extensions.log
+import com.crow.mangax.ui.text.errorLog
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -71,14 +74,13 @@ object ChineseConverter {
      * @author crowforkotlin
      */
     suspend fun convert(text: String, conversionType: ConversionType = ConversionType.HK2S): String {
-        return mConvertScope.async { nativeConvert(text, "${app.filesDir.absolutePath}/opencc_data/${conversionType.value}") }.await()
+        text.log()
+        return mConvertScope.async(CoroutineExceptionHandler { coroutineContext, throwable -> throwable.stackTraceToString().errorLog()  }) { nativeConvert(text, "${app.filesDir.absolutePath}/opencc_data/${conversionType.value}") }.await()
     }
 
     private external fun convert(text: String, configFile: String, absoluteDataFolderPath: String): String
 
     private external fun nativeConvert(text: String, filePath: String): String
 
-    fun cancel() {
-       mConvertScope.cancel()
-    }
+    fun cancel() { mConvertScope.cancel() }
 }

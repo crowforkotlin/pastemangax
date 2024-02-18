@@ -14,8 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.info
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_book.databinding.BookComicLoadingRvBinding
 import com.crow.module_book.databinding.BookComicRvBinding
@@ -83,9 +82,9 @@ class ComicStriptRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit)
 
         fun onBind(item: Content) {
             loadImageWithRetry(when {
-                item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${BaseUserConfig.RESOLUTION}x.")
-                item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${BaseUserConfig.RESOLUTION}x.")
-                item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${BaseUserConfig.RESOLUTION}x.")
+                item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${MangaXAccountConfig.mResolution}x.")
+                item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${MangaXAccountConfig.mResolution}x.")
+                item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${MangaXAccountConfig.mResolution}x.")
                 else -> item.mImageUrl
             })
         }
@@ -105,9 +104,9 @@ class ComicStriptRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit)
                     mLoadingAnimator = binding.loading.animateFadeIn()
                     val isNext = mLoadNext == true
                     if (isNext) {
-                        onRetry(mNextUUID ?: return@doOnClickInterval, isNext)
+                        onRetry(mNextUuid ?: return@doOnClickInterval, isNext)
                     } else {
-                        onRetry(mPrevUUID ?: return@doOnClickInterval, isNext)
+                        onRetry(mPrevUuid ?: return@doOnClickInterval, isNext)
                     }
                 }
             }

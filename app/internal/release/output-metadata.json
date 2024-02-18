@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 100000,
-      "versionName": "内部版本1.0_internal",
+      "versionCode": 100001,
+      "versionName": "测试版1.1_internal",
       "outputFile": "CopyMangaX-1.3.2-internal-release.apk"
     }
   ],

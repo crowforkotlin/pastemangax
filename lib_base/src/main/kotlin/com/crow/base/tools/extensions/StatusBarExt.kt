@@ -7,6 +7,7 @@ package com.crow.base.tools.extensions
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Insets
 import android.os.Build
 import android.view.View
@@ -151,4 +152,13 @@ fun immerureCutoutCompat(window: Window) {
     }
 }
 
-fun immersureFullView(window: Window, fitView: Boolean = false) = WindowCompat.setDecorFitsSystemWindows(window, fitView)
+fun immersionFullView(window: Window, fitView: Boolean = false) = WindowCompat.setDecorFitsSystemWindows(window, fitView)
+
+fun immersionEdgeToEdge(window: Window, statusBarLight: Boolean, navigationBarLight: Boolean) {
+    window.statusBarColor = Color.TRANSPARENT
+    window.navigationBarColor = Color.TRANSPARENT
+    WindowCompat.getInsetsController(window, window.decorView).apply {
+        isAppearanceLightNavigationBars = !navigationBarLight
+        isAppearanceLightStatusBars = !statusBarLight
+    }
+}

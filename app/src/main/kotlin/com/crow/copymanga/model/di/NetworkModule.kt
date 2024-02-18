@@ -2,7 +2,7 @@ package com.crow.copymanga.model.di
 
 import androidx.multidex.BuildConfig
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.copymanga.okhttp.AppProgressResponseBody
 import com.crow.base.tools.extensions.baseMoshi
@@ -98,8 +98,8 @@ val networkModule = module {
                 chain.proceed(chain.request().newBuilder()
                     .addHeader("User-Agent", "Kotlin/1.9.10 (kotlin:io)")
                     .addHeader("Platform", "1")
-                    .addHeader("Authorization","Token ${BaseUserConfig.CURRENT_USER_TOKEN}")
-                    .addHeader("region", BaseUserConfig.CURRENT_ROUTE)
+                    .addHeader("Authorization","Token ${MangaXAccountConfig.mAccountToken}")
+                    .addHeader("region", MangaXAccountConfig.mRoute)
                     .build()
                 )
             })
@@ -132,8 +132,8 @@ val networkModule = module {
                 chain.proceed(chain.request().newBuilder()
                     .addHeader("User-Agent", "Kotlin/1.9.10 (kotlin:io)")
                     .addHeader("Platform", "1")
-                    .addHeader("Authorization","Token ${BaseUserConfig.HOTMANGA_TOKEN}")
-                    .addHeader("region", BaseUserConfig.CURRENT_ROUTE)
+                    .addHeader("Authorization","Token ${MangaXAccountConfig.mHotMangaToken}")
+                    .addHeader("region", MangaXAccountConfig.mRoute)
                     .build()
                 )
             })

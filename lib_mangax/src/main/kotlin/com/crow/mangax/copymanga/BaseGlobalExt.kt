@@ -49,7 +49,6 @@ val appComicCardHeight: Int by lazy {
 }
 val appComicCardWidth: Int by lazy { (appComicCardHeight / 1.25).toInt() }
 val appDp10 by lazy { app.px2dp(app.resources.getDimensionPixelSize(baseR.dimen.base_dp10).toFloat()).toInt() }
-
 val appEvent = BaseEvent.newInstance(BaseEvent.BASE_FLAG_TIME_1000 shl 1)
 
 private val formatter  = DecimalFormat("###,###.##", DecimalFormatSymbols(Locale.US).also { it.groupingSeparator = '.' })

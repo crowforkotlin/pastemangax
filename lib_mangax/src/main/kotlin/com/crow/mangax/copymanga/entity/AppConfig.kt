@@ -4,7 +4,7 @@ package com.crow.mangax.copymanga.entity
 import android.content.SharedPreferences
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.appConfigDataStore
@@ -38,10 +38,10 @@ data class AppConfig(
     val mCopyMangaSite: String = BaseStrings.URL.COPYMANGA,
 
     @Json(name = "Route")
-    val mRoute: String = BaseUserConfig.CURRENT_ROUTE,
+    val mRoute: String = MangaXAccountConfig.mRoute,
 
     @Json(name = "Resolution")
-    val mResolution: Int = BaseUserConfig.RESOLUTION,
+    val mResolution: Int = MangaXAccountConfig.mResolution,
 ) {
     companion object {
 

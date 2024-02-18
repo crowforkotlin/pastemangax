@@ -1,8 +1,12 @@
 package com.crow.mangax.ui.adapter
 
+import android.graphics.Rect
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.doOnLayout
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -12,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import coil.imageLoader
 import coil.request.ImageRequest
+import coil.size.Precision
+import coil.size.Scale
 import com.crow.base.app.app
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
@@ -22,6 +28,8 @@ import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHolder(binding.root) {
 
@@ -53,17 +61,24 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
         mLoadingText.text = AppProgressFactory.PERCENT_0
         mAppProgressFactory?.removeProgressListener()?.remove()
         mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> mLoadingText.text = AppProgressFactory.formateProgress(percentage) }
-        itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.MATCH_PARENT }
+        itemView.post {
+            itemView.post {
+                itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.MATCH_PARENT }
+            }
+        }
         app.imageLoader.enqueue(
             ImageRequest.Builder(itemView.context)
                 .listener(
-                    onStart = {
-                    },
-                    onSuccess = { _, _ ->
+                    onSuccess = { _, a ->
                         mLoading.isInvisible = true
                         mLoadingText.isInvisible = true
                         mRetry?.isGone = true
-                        itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
+                        itemView.post {
+                            itemView.post {
+                                itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
+                            }
+                        }
+
                     },
                     onError = { _, _ ->
                         "CoilVH onError".error()

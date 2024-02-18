@@ -4,6 +4,7 @@ package com.crow.module_home.ui.fragment
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import androidx.core.content.ContextCompat
@@ -34,6 +35,8 @@ import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
+import com.crow.base.tools.extensions.setCenterAnimWithFadeOut
+import com.crow.base.tools.extensions.setSlideAnimation
 import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toast
 import com.crow.base.tools.extensions.withLifecycle
@@ -470,7 +473,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
         // MaterialToolBar NavigateIcon 点击事件
         mBinding.homeToolbar.navigateIconClickGap(flagTime = BaseEvent.BASE_FLAG_TIME_500 shl 1) {
             mBinding.homeRv.stopScroll()
-            get<BottomSheetDialogFragment>(named(Fragments.User.name)).show(requireParentFragment().parentFragmentManager, null)
+            get<BottomSheetDialogFragment>(named(Fragments.Mine.name)).show(requireParentFragment().parentFragmentManager, null)
         }
 
         // 刷新

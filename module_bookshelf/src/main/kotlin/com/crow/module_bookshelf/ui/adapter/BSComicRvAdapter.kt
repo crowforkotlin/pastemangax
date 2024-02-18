@@ -7,7 +7,7 @@ import androidx.core.view.isInvisible
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
@@ -53,7 +53,7 @@ class BSComicRvAdapter(
         }
 
         fun onBind(item: BookshelfComicResults) {
-            if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) {
+            if (MangaXAccountConfig.mAccountToken.isNotEmpty()) {
                 binding.imageNew.isInvisible = (item.mLastBrowse?.mLastBrowseName == item.mComic.mLastChapterName)
             } else {
                 binding.imageNew.isGone = true

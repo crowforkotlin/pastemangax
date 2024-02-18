@@ -6,7 +6,7 @@ import com.crow.module_anime.ui.fragment.AnimeInfoFragment
 import com.crow.module_book.ui.fragment.comic.ComicBottomSheetFragment
 import com.crow.module_book.ui.fragment.comic.ComicInfoFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicStriptFragment
-import com.crow.module_book.ui.fragment.comic.reader.ComicClassicFragment
+import com.crow.module_book.ui.fragment.comic.reader.ComicStandardFragment
 import com.crow.module_book.ui.fragment.comic.reader.PageComicFragment
 import com.crow.module_book.ui.fragment.novel.NovelInfoFragment
 import com.crow.module_home.ui.fragment.TopicFragment
@@ -36,7 +36,7 @@ import org.koin.dsl.module
  * @formatter:on
  **************************/
 val fragmentModule = module {
-    fragment<BottomSheetDialogFragment>(named(Fragments.User.name)) { MineBottomSheetFragment() }
+    fragment<BottomSheetDialogFragment>(named(Fragments.Mine.name)) { MineBottomSheetFragment() }
     fragment<BottomSheetDialogFragment>(named(Fragments.ComicBottom.name)) { ComicBottomSheetFragment() }
     fragment<Fragment>(named(Fragments.Container.name)) { ContainerFragment() }
     fragment<Fragment>(named(Fragments.MineInfo.name)) { MineUpdateInfoFragment() }
@@ -53,7 +53,7 @@ val fragmentModule = module {
     fragment<Fragment>(named(Fragments.History.name)) { HistoryFragment() }
     fragment<Fragment>(named(Fragments.AnimeInfo.name)) { AnimeInfoFragment() }
     fragment<Fragment>(named(Fragments.Topic.name)) { TopicFragment() }
-    fragment<Fragment>(named(Fragments.ComicClassic.name)) { ComicClassicFragment() }
+    fragment<Fragment>(named(Fragments.ComicClassic.name)) { ComicStandardFragment() }
     fragment<Fragment>(named(Fragments.ComicPage.name)) { PageComicFragment() }
     fragment<Fragment>(named(Fragments.ComicStript.name)) { ComicStriptFragment() }
 }

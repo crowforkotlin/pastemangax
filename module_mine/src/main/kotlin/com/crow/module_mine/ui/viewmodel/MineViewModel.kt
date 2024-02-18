@@ -14,7 +14,7 @@ import com.crow.base.tools.extensions.dp2px
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.module_mine.model.MineIntent
 import com.crow.module_mine.model.resp.MineLoginResultsOkResp
 import com.crow.module_mine.model.resp.MineResultErrorResp
@@ -92,7 +92,7 @@ class MineViewModel(private val repository: MineRepository) : BaseMviViewModel<M
     fun doClearUserInfo() {
         viewModelScope.launch {
             DataStoreAgent.DATA_USER.asyncClear()
-            BaseUserConfig.CURRENT_USER_TOKEN = ""
+            MangaXAccountConfig.mAccountToken = ""
             mIconUrl = null
             _userInfo.emit(null)
         }

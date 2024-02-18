@@ -1,16 +1,14 @@
 package com.crow.module_mine.ui.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
-import com.crow.mangax.R.id.app_main_fcv
 import com.crow.base.app.app
-import com.crow.mangax.copymanga.BaseEventEnum
-import com.crow.mangax.copymanga.BaseUserConfig
-import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.navigateToWithBackStack
@@ -18,11 +16,18 @@ import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviBottomSheetDialogFragment
+import com.crow.mangax.R.id.app_main_fcv
+import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.MangaXAccountConfig
+import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.module_mine.R
 import com.crow.module_mine.databinding.MineFragmentBinding
 import com.crow.module_mine.ui.adapter.MineRvAdapter
 import com.crow.module_mine.ui.viewmodel.MineViewModel
 import com.google.android.material.R.id.design_bottom_sheet
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.qualifier.named
@@ -73,13 +78,32 @@ class MineBottomSheetFragment : BaseMviBottomSheetDialogFragment<MineFragmentBin
 
     override fun getViewBinding(inflater: LayoutInflater) = MineFragmentBinding.inflate(inflater)
 
+
     override fun onStart() {
         super.onStart()
 
-        // 设置BottomSheet的 高度
-        dialog?.findViewById<View>(design_bottom_sheet)?.apply {
-            layoutParams!!.height = ViewGroup.LayoutParams.MATCH_PARENT
-            layoutParams!!.width = ViewGroup.LayoutParams.MATCH_PARENT
+        dialog?.let { dialog ->
+            // 配置行为
+            (dialog as BottomSheetDialog).apply {
+                dismissWithAnimation = true
+                behavior.saveFlags = BottomSheetBehavior.SAVE_ALL
+            }
+
+            // 沉浸式
+            dialog.window?.let { window ->
+                window.statusBarColor = Color.TRANSPARENT
+                window.navigationBarColor = Color.TRANSPARENT
+                WindowCompat.getInsetsController(window, window.decorView).apply {
+                    isAppearanceLightStatusBars = false
+                    isAppearanceLightNavigationBars = !AppConfig.mDarkMode
+                }
+            }
+
+            // 设置BottomSheet的 高度
+            dialog.findViewById<View>(design_bottom_sheet)?.apply {
+                layoutParams!!.height = ViewGroup.LayoutParams.MATCH_PARENT
+                layoutParams!!.width = ViewGroup.LayoutParams.MATCH_PARENT
+            }
         }
     }
 
@@ -144,7 +168,7 @@ class MineBottomSheetFragment : BaseMviBottomSheetDialogFragment<MineFragmentBin
             // 导航至头像Fragment Token不为空则跳转
             parentFragmentManager.navigateToWithBackStack<MineIconFragment>(
                 app_main_fcv, this,
-                bundleOf("iconUrl" to if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) mUserVM.mIconUrl else null),
+                bundleOf("iconUrl" to if (MangaXAccountConfig.mAccountToken.isNotEmpty()) mUserVM.mIconUrl else null),
                 Fragments.Icon.name, Fragments.Icon.name
             )
         }

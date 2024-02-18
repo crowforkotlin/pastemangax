@@ -2,6 +2,7 @@
 package com.crow.module_book.ui.fragment.novel
 
 import android.os.Bundle
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
@@ -13,7 +14,7 @@ import coil.request.ImageRequest
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.getSpannableString
@@ -33,7 +34,7 @@ import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_book.R
-import com.crow.module_book.model.entity.BookChapterEntity
+import com.crow.module_book.model.database.model.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.NovelChapterResp
@@ -63,7 +64,7 @@ class NovelInfoFragment : InfoFragment() {
      *
      * ● 2023-06-15 22:57:42 周四 下午
      */
-    private var mNovelChapterRvAdapter: NovelChapterRvAdapter? = null
+    private var mAdapter: NovelChapterRvAdapter? = null
 
     /**
      * ● 显示轻小说信息页面
@@ -72,7 +73,7 @@ class NovelInfoFragment : InfoFragment() {
      */
     private fun showNovelInfoPage() {
         val novelInfoPage = mVM.mNovelInfoPage?.mNovel ?: return
-        mVM.findReadedBookChapterOnDB(novelInfoPage.mName, BookType.NOVEL)
+        mVM.findReadedBookChapterOnDB(novelInfoPage.mUuid, BookType.NOVEL)
         mProgressFactory = AppProgressFactory.createProgressListener(novelInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
         app.imageLoader.enqueue(
             ImageRequest.Builder(mContext)
@@ -162,7 +163,7 @@ class NovelInfoFragment : InfoFragment() {
 
         // 开启协程 数据交给适配器去做出调整
         viewLifecycleOwner.lifecycleScope.launch {
-            mNovelChapterRvAdapter?.doNotify(novelChapterResp.mList.toMutableList())
+            mAdapter?.doNotify(novelChapterResp.mList.toMutableList())
         }
     }
 
@@ -173,7 +174,7 @@ class NovelInfoFragment : InfoFragment() {
      */
     override fun onInitData() {
 
-        if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) mVM.input(BookIntent.GetNovelBrowserHistory(mPathword))
+        if (MangaXAccountConfig.mAccountToken.isNotEmpty()) mVM.input(BookIntent.GetNovelBrowserHistory(mPathword))
 
         if (mVM.mNovelInfoPage == null) mVM.input(BookIntent.GetNovelInfoPage(mPathword))
     }
@@ -226,11 +227,14 @@ class NovelInfoFragment : InfoFragment() {
         // 初始化父View
         super.initView(savedInstanceState)
 
-        // 初始化适配器
-        mNovelChapterRvAdapter = NovelChapterRvAdapter { toast("很抱歉暂未开发完成...") }
 
         // 设置适配器
-        mBinding.bookInfoRvChapter.adapter = mNovelChapterRvAdapter!!
+        mBinding.bookInfoRvChapter.adapter = mAdapter!!
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        mAdapter = NovelChapterRvAdapter { toast("很抱歉暂未开发完成...") }
+        super.onViewCreated(view, savedInstanceState)
     }
 
     /**
@@ -246,8 +250,8 @@ class NovelInfoFragment : InfoFragment() {
                     HIDDEN_CHANED
                 ) != true) {
                 toast(getString(R.string.book_readed_chapter, chapter.mChapterName))
-                mNovelChapterRvAdapter?.mChapterName = chapter.mChapterName
-                mNovelChapterRvAdapter?.notifyItemRangeChanged(0, mNovelChapterRvAdapter?.itemCount ?: return@onCollect)
+                mAdapter?.mChapterName = chapter.mChapterName
+                mAdapter?.notifyItemRangeChanged(0, mAdapter?.itemCount ?: return@onCollect)
             }
         }
 
@@ -261,10 +265,10 @@ class NovelInfoFragment : InfoFragment() {
                         .doOnResult {
                             intent.novelBrowser!!.apply {
                                 if (mCollect == null) setButtonAddToBookshelf() else setButtonRemoveFromBookshelf()
-                                mNovelChapterRvAdapter?.mChapterName = mBrowse?.chapterName ?: return@doOnResult
+                                mAdapter?.mChapterName = mBrowse?.chapterName ?: return@doOnResult
                                 mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, true)
-                                mNovelChapterRvAdapter?.notifyItemRangeChanged(0, mNovelChapterRvAdapter?.itemCount ?: return@doOnResult)
-                                toast(getString(R.string.book_readed_chapter, mNovelChapterRvAdapter?.mChapterName))
+                                mAdapter?.notifyItemRangeChanged(0, mAdapter?.itemCount ?: return@doOnResult)
+                                toast(getString(R.string.book_readed_chapter, mAdapter?.mChapterName))
                             }
                         }
                 }
@@ -292,7 +296,7 @@ class NovelInfoFragment : InfoFragment() {
 
         mBinding.bookInfoAddToBookshelf.doOnClickInterval{
             if (mVM.mNovelInfoPage == null) return@doOnClickInterval
-            if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty()) {
+            if (MangaXAccountConfig.mAccountToken.isEmpty()) {
                 toast(getString(R.string.book_add_invalid))
                 return@doOnClickInterval
             }
@@ -320,6 +324,6 @@ class NovelInfoFragment : InfoFragment() {
         super.onDestroyView()
 
         // 轻小说适配器置空
-        mNovelChapterRvAdapter = null
+        mAdapter = null
     }
 }

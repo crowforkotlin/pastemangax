@@ -13,7 +13,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.entity.Fragments
@@ -109,7 +109,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      */
     private val mAdapter by lazy {
         AnimeChapterRvAdapter { pos, chapter ->
-            if (BaseUserConfig.HOTMANGA_TOKEN.isEmpty()) {
+            if (MangaXAccountConfig.mHotMangaToken.isEmpty()) {
                 toast(getString(R.string.anime_token_error))
                 return@AnimeChapterRvAdapter
             }

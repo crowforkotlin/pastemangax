@@ -130,9 +130,11 @@ dependencies {
     api(compose.accompanist.themeadapter)
     api(compose.accompanist.systemuicontroller)
 
-    // 不支持在MinSdk 24以下的设备运行
+    // leakcanary高版本不支持在MinSdk 24以下的设备运行
     debugApi(libs.leakcanary.android)
     debugApi(libs.glance)
+    testApi(app.junit.junit)
+    androidTestApi(app.androidx.test.junit)
     androidTestApi(app.androidx.test.junit.ktx)
     androidTestApi(app.androidx.test.espresso.core)
 }

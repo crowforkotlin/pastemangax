@@ -57,8 +57,8 @@ abstract class BaseActivityImpl : AppCompatActivity(), IBaseActivity {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView(savedInstanceState)
         initData(savedInstanceState)
+        initView(savedInstanceState)
         initListener()
     }
 }

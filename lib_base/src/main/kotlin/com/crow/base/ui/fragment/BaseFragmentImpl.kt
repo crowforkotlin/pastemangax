@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.crow.base.ui.dialog.LoadingAnimDialog
+import kotlinx.coroutines.launch
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -43,10 +45,18 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment {
         return getView(inflater, container, savedInstanceState)
     }
 
+    /**
+     * ● Fragment在销毁时需要对引用进行置空防止泄漏，如果Fragment走重启状态，并且Observer中 启用了lifecycleScope，那么需要在Observer前初始化引用数据
+     * 否则Observer拿到的引用数据为空
+     *
+     * ● 2024-02-16 23:33:26 周五 下午
+     * @author crowforkotlin
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?){
+        initObserver(savedInstanceState)
         super.onViewCreated(view, savedInstanceState)
-        initView(savedInstanceState)
         initData(savedInstanceState)
+        initView(savedInstanceState)
         initListener()
     }
 
@@ -59,4 +69,6 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment {
         super.onDestroy()
         dismissLoadingAnim()
     }
+
+    inline fun viewLifecycleScope(crossinline scope: suspend () -> Unit) { viewLifecycleOwner.lifecycleScope.launch { scope() } }
 }

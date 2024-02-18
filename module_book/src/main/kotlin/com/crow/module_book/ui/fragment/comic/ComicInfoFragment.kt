@@ -2,6 +2,7 @@ package com.crow.module_book.ui.fragment.comic
 
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -14,7 +15,7 @@ import coil.request.ImageRequest
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.getSpannableString
@@ -23,6 +24,7 @@ import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.px2sp
@@ -36,7 +38,7 @@ import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_book.R
-import com.crow.module_book.model.entity.BookChapterEntity
+import com.crow.module_book.model.database.model.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
 import com.crow.module_book.model.entity.comic.ComicActivityInfo
 import com.crow.module_book.model.intent.BookIntent
@@ -82,7 +84,7 @@ class ComicInfoFragment : InfoFragment() {
         val comicInfoPage = mVM.mComicInfoPage?.mComic ?: return
 
         // 在DB中查找已读章节
-        mVM.findReadedBookChapterOnDB(comicInfoPage.mName, BookType.COMIC)
+        mVM.findReadedBookChapterOnDB(comicInfoPage.mUuid, BookType.COMIC)
 
         mProgressFactory = AppProgressFactory.createProgressListener(comicInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
 
@@ -221,7 +223,7 @@ class ComicInfoFragment : InfoFragment() {
      */
     override fun onInitData() {
 
-        if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) mVM.input(BookIntent.GetComicBrowserHistory(mPathword))
+        if (MangaXAccountConfig.mAccountToken.isNotEmpty()) mVM.input(BookIntent.GetComicBrowserHistory(mPathword))
 
         mVM.input(BookIntent.GetComicInfoPage(mPathword))
     }
@@ -236,16 +238,21 @@ class ComicInfoFragment : InfoFragment() {
         // 初始化父View
         super.initView(savedInstanceState)
 
-        // 漫画
-        mAdapter = ComicChapterRvAdapter { comic  ->
+        // 设置适配器
+        mBinding.bookInfoRvChapter.adapter = mAdapter!!
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        mAdapter = ComicChapterRvAdapter(viewLifecycleOwner.lifecycleScope) { comic  ->
             mContext.startActivity<ComicActivity> {
                 putExtra(ComicActivity.INFO, toJson(ComicActivityInfo(
                     mTitle = mName,
                     mSubTitle = comic.name,
                     mPathword = comic.comicPathWord,
-                    mUuid = comic.uuid,
-                    mNext = comic.next,
-                    mPrev = comic.prev
+                    mComicUuid = comic.comicId,
+                    mChapterCurrentUuid = comic.uuid,
+                    mChapterNextUuid = comic.next,
+                    mChapterPrevUuid = comic.prev
                 )))
             }
             if (Build.VERSION.SDK_INT >= 34) {
@@ -253,11 +260,9 @@ class ComicInfoFragment : InfoFragment() {
             } else {
                 requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             }
-            if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) mAdapter?.mChapterName = comic.name
+            if (MangaXAccountConfig.mAccountToken.isNotEmpty()) mAdapter?.mChapterName = comic.name
         }
-
-        // 设置适配器
-        mBinding.bookInfoRvChapter.adapter = mAdapter!!
+        super.onViewCreated(view, savedInstanceState)
     }
 
     /**
@@ -266,13 +271,12 @@ class ComicInfoFragment : InfoFragment() {
      * ● 2023-06-15 23:07:45 周四 下午
      */
     override fun initObserver(saveInstanceState: Bundle?) {
-        super.initObserver(saveInstanceState)
 
         mVM.mChapterEntity.onCollect(this) { chapter ->
             if (mBaseEvent.getBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED) == null && chapter != null) {
                 mAdapter?.mChapterName = chapter.mChapterName
                 mAdapter?.notifyItemRangeChanged(0, mAdapter?.itemCount ?: return@onCollect)
-                if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) {
+                if (MangaXAccountConfig.mAccountToken.isNotEmpty()) {
                     toast(getString(R.string.book_readed_chapter, chapter.mChapterName))
                 } else {
                     toast(getString(R.string.book_readed_chapter_offline, chapter.mChapterName))
@@ -322,7 +326,7 @@ class ComicInfoFragment : InfoFragment() {
         // 添加到书架
         mBinding.bookInfoAddToBookshelf.doOnClickInterval {
             if (mVM.mComicInfoPage == null) return@doOnClickInterval
-            if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty()) {
+            if (MangaXAccountConfig.mAccountToken.isEmpty()) {
                 toast(getString(R.string.book_add_invalid))
                 return@doOnClickInterval
             }
@@ -338,7 +342,7 @@ class ComicInfoFragment : InfoFragment() {
                 startComicActivity(adapterChapter.prev, adapterChapter.next, adapterChapter.uuid, adapterChapter.comicPathWord, adapterChapter.name)
             } else {
                 val pathword = mVM.mComicInfoPage?.mComic?.mPathWord ?: return@doOnClickInterval
-                startComicActivity(chapter.mChapterPrevUUID, chapter.mChapterNextUUID, chapter.mChapterUUID, pathword, chapter.mChapterName)
+                startComicActivity(chapter.mChapterPrevUuid, chapter.mChapterNextUuid, chapter.mChapterCurrentUuid, pathword, chapter.mChapterName)
             }
         }
     }
@@ -355,7 +359,7 @@ class ComicInfoFragment : InfoFragment() {
         } else {
             requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         }
-        if (BaseUserConfig.CURRENT_USER_TOKEN.isNotEmpty()) mAdapter?.mChapterName = chapterName
+        if (MangaXAccountConfig.mAccountToken.isNotEmpty()) mAdapter?.mChapterName = chapterName
     }
 
     /**

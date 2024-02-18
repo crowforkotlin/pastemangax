@@ -82,8 +82,8 @@ object AppConfigs {
     val version_code get() = version_code_release
     val version_name get() = version_name_release
 
-    const val version_code_internal = 100000
-    const val version_name_internal = "内部版本1.0"
+    const val version_code_internal = 100001
+    const val version_name_internal = "测试版1.1"
     const val version_code_release = 14
     const val version_name_release = "1.3.2"
 

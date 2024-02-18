@@ -20,7 +20,7 @@ import com.crow.base.R.string.base_exit_app
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseStrings.ID
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.appEvent
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
@@ -30,7 +30,6 @@ import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.info
 import com.crow.base.tools.extensions.isLatestVersion
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
@@ -130,7 +129,11 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
 
             // 初始化 用户Tokne
-            BaseUserConfig.CURRENT_USER_TOKEN = it?.mToken ?: return@onCollect
+            it?.apply {
+
+                MangaXAccountConfig.mAccountToken = mToken
+                MangaXAccountConfig.mAccount = mUsername
+            }
         }
 
         // 观察ContainerVM

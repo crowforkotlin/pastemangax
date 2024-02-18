@@ -10,6 +10,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.viewbinding.ViewBinding
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.updatePadding
 import com.crow.base.ui.viewmodel.mvi.BaseMviIntent
@@ -19,23 +20,14 @@ import com.crow.base.ui.viewmodel.mvi.IBaseMvi
 
 abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBaseMvi {
 
-    /** 私有VB */
     private var _mBinding: VB? = null
-
-    /** 模块VB */
     protected val mBinding get() = _mBinding!!
 
-    /** 返回调度 */
+    private var _mContext: Context? =  null
+    protected val mContext: Context get() = _mContext!!
+
     protected var mBackDispatcher: OnBackPressedCallback? = null
 
-    /** 上下文 */
-    protected lateinit var mContext: Context
-
-    /**
-     * 获取ViewBinding
-     * @param inflater
-     * @return VB
-     * */
     abstract fun getViewBinding(inflater: LayoutInflater): VB
 
     override fun initObserver(saveInstanceState: Bundle?) {}
@@ -56,21 +48,13 @@ abstract class BaseMviFragment<out VB : ViewBinding> : BaseFragmentImpl(), IBase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mContext = requireContext()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initObserver(savedInstanceState)
-        super.onViewCreated(view, savedInstanceState)
+        _mContext = requireContext()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _mBinding = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
+        _mContext = null
         mBackDispatcher?.remove()
         mBackDispatcher = null
     }

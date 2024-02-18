@@ -20,8 +20,6 @@ import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.info
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
@@ -33,7 +31,7 @@ import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mCoverOrinal
@@ -157,11 +155,11 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
         binding.resolutionRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             mBaseEvent.doOnInterval {
                 when(checkedId) {
-                    binding.resolution800.id -> BaseUserConfig.RESOLUTION = 800
-                    binding.resolution1200.id -> BaseUserConfig.RESOLUTION = 1200
-                    binding.resolution1500.id -> BaseUserConfig.RESOLUTION = 1500
+                    binding.resolution800.id -> MangaXAccountConfig.mResolution = 800
+                    binding.resolution1200.id -> MangaXAccountConfig.mResolution = 1200
+                    binding.resolution1500.id -> MangaXAccountConfig.mResolution = 1500
                 }
-                mVM.saveAppConfig(appConfig.copy(mResolution = BaseUserConfig.RESOLUTION))
+                mVM.saveAppConfig(appConfig.copy(mResolution = MangaXAccountConfig.mResolution))
                 mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
             }
         }
@@ -248,12 +246,12 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
             // 根据选中的RadioButton设置 用户路线
             when(checkedId) {
-                binding.proxyDomesticRoute.id -> BaseUserConfig.CURRENT_ROUTE = "0"
-                binding.proxyOverseasRoute.id -> BaseUserConfig.CURRENT_ROUTE = "1"
+                binding.proxyDomesticRoute.id -> MangaXAccountConfig.mRoute = "0"
+                binding.proxyOverseasRoute.id -> MangaXAccountConfig.mRoute = "1"
             }
 
             // 保存配置
-            mVM.saveAppConfig(appConfig.copy(mRoute = BaseUserConfig.CURRENT_ROUTE))
+            mVM.saveAppConfig(appConfig.copy(mRoute = MangaXAccountConfig.mRoute))
 
             // 延时关闭Dialog 让RadioButton选中后的过渡效果执行完毕
             mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME_500)

@@ -11,6 +11,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.transition.CrossfadeTransition
 import com.crow.base.app.BaseApp
+import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.copymanga.model.di.factoryModule
 import com.crow.copymanga.model.di.fragmentModule

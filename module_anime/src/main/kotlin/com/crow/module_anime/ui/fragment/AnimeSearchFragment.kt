@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseLoadStateAdapter
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
@@ -292,7 +292,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
                         .doOnError { _, _ -> onRetryError() }
                         .doOnSuccess { if (mTipDialog?.isShowing == false) mIsCancelTokenDialog = false }
                         .doOnResult {
-                            if (BaseUserConfig.HOTMANGA_TOKEN.isNotEmpty()) {
+                            if (MangaXAccountConfig.mHotMangaToken.isNotEmpty()) {
                                 mTipDialog?.let{  dialog ->
                                     dialog.cancel()
                                     toast(getString(R.string.anime_token_ok))
@@ -432,7 +432,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
      * ● 2023-10-14 23:50:46 周六 下午
      */
     private fun checkAccountState(): Boolean {
-        val tokenEmpty = BaseUserConfig.HOTMANGA_TOKEN.isEmpty()
+        val tokenEmpty = MangaXAccountConfig.mHotMangaToken.isEmpty()
         if (tokenEmpty) {
             if (mTipDialog == null) {
                 val binding= AnimeTipsTokenLayoutBinding.inflate(layoutInflater)

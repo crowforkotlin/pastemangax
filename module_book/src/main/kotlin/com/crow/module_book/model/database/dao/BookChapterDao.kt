@@ -1,4 +1,4 @@
-package com.crow.module_book.model.dao
+package com.crow.module_book.model.database.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,18 +6,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.crow.module_book.model.entity.BookChapterEntity
+import androidx.room.Upsert
+import com.crow.module_book.model.database.model.BookChapterEntity
 
 @Dao
 interface BookChapterDao {
-    @Query("SELECT * FROM BookChapterEntity")
+    @Query("SELECT * FROM book_chapter")
     fun getAll(): MutableList<BookChapterEntity>
 
-    @Query("SELECT * FROM BookChapterEntity WHERE id IN (:ids)")
-    fun loadAllByIds(ids: IntArray): MutableList<BookChapterEntity>
-
-    @Query("SELECT * FROM BookChapterEntity WHERE book_name LIKE :bookName AND book_type LIKE :bookType LIMIT 1")
-    fun find(bookName: String, bookType: Int): BookChapterEntity?
+    @Query("SELECT * FROM book_chapter WHERE book_uuid LIKE :bookUuid AND book_type LIKE :bookType LIMIT 1")
+    fun find(bookUuid: String, bookType: Int): BookChapterEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg bookChapterEntity: BookChapterEntity)
@@ -27,4 +25,7 @@ interface BookChapterDao {
 
     @Update
     fun update(vararg bookChapterEntity: BookChapterEntity): Int
+
+    @Upsert
+    fun upSertChapter(bookChapterEntity: BookChapterEntity)
 }

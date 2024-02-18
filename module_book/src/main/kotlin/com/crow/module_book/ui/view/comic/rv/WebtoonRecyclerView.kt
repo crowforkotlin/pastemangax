@@ -12,6 +12,7 @@ import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.extensions.findCenterViewPosition
+import com.crow.base.tools.extensions.log
 import com.crow.module_book.ui.helper.GestureDetectorWithLongTap
 import com.crow.module_book.ui.view.comic.rv.ComicRecyclerView
 import kotlin.math.abs
@@ -40,6 +41,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
     private var mLastCenterViewPosition = 0
 
     private var mPreScrollListener: ComicRecyclerView.IComicPreScroll? = null
+    private var mNestedPreScrollListener: ComicRecyclerView.IComicPreScroll? = null
     private val listener = GestureListener()
     private val detector = Detector()
 
@@ -92,6 +94,7 @@ class WebtoonRecyclerView @JvmOverloads constructor(
             mLastCenterViewPosition = position
             mPreScrollListener?.onPreScrollListener(dx, dy, position)
         }
+        mNestedPreScrollListener?.onPreScrollListener(dx, dy, position)
         return super.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type)
     }
 
@@ -339,6 +342,9 @@ class WebtoonRecyclerView @JvmOverloads constructor(
     }
     fun setPreScrollListener(iComicPreScroll: ComicRecyclerView.IComicPreScroll) {
         mPreScrollListener = iComicPreScroll
+    }
+    fun setNestedPreScrollListener(iComicPreScroll: ComicRecyclerView.IComicPreScroll) {
+        mNestedPreScrollListener = iComicPreScroll
     }
 }
 

@@ -130,7 +130,7 @@ class ComicRecyclerView : RecyclerView {
 
     fun interface IComicPreScroll {
 
-        fun onPreScrollListener(position: Int, dy: Int, position1: Int)
+        fun onPreScrollListener(dx: Int, dy: Int, position: Int)
     }
 
     companion object {
