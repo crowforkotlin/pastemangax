@@ -62,9 +62,8 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
         mAppProgressFactory?.removeProgressListener()?.remove()
         mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> mLoadingText.text = AppProgressFactory.formateProgress(percentage) }
         itemView.post {
-            itemView.post {
-                itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.MATCH_PARENT }
-            }
+            itemView.minimumHeight = app.resources.displayMetrics.heightPixels
+//                itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.MATCH_PARENT }
         }
         app.imageLoader.enqueue(
             ImageRequest.Builder(itemView.context)
@@ -74,9 +73,8 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
                         mLoadingText.isInvisible = true
                         mRetry?.isGone = true
                         itemView.post {
-                            itemView.post {
-                                itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
-                            }
+                            itemView.minimumHeight = 0
+//                                itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
                         }
 
                     },
