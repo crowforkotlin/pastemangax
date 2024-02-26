@@ -14,6 +14,8 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.io.File
 import java.util.concurrent.Executors
 
@@ -67,6 +69,7 @@ object ChineseConverter {
         File(context.filesDir.toString(), "opencc_data").deleteRecursively()
     }
 
+    private val mMutex = Mutex()
     /**
      * ● 转换文本
      *
@@ -74,8 +77,11 @@ object ChineseConverter {
      * @author crowforkotlin
      */
     suspend fun convert(text: String, conversionType: ConversionType = ConversionType.HK2S): String {
-        text.log()
-        return mConvertScope.async(CoroutineExceptionHandler { coroutineContext, throwable -> throwable.stackTraceToString().errorLog()  }) { nativeConvert(text, "${app.filesDir.absolutePath}/opencc_data/${conversionType.value}") }.await()
+        return mConvertScope.async {
+            runCatching { nativeConvert(text, "${app.filesDir.absolutePath}/opencc_data/${conversionType.value}") }
+                .onFailure { cause -> cause.stackTraceToString().errorLog() }
+                .getOrElse { text }
+        }.await()
     }
 
     private external fun convert(text: String, configFile: String, absoluteDataFolderPath: String): String

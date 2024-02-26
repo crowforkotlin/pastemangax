@@ -10,8 +10,9 @@
     android:layout_marginEnd="@dimen/base_dp4"
     android:ellipsize="end"
     android:maxLines="1"
+    app:cornerRadius="@dimen/base_dp7_5"
+    android:textStyle="bold"
     android:textAlignment="center"
     android:textSize="@dimen/base_sp10"
-    android:textStyle="bold"
     app:elevation="@dimen/base_dp10"
-    tools:text="你好" />
+    tools:text="你好"/>

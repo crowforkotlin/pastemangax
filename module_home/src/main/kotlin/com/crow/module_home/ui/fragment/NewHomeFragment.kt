@@ -294,6 +294,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             toolbar.setNavigationIcon(mangaR.drawable.base_ic_back_24dp)  // 设置SearchView toolbar导航图标
             toolbar.navigationIcon?.setTint(tintColor)
             toolbar.setBackgroundColor(bgColor)                                               // 设置SearchView toolbar背景色白，沉浸式
+            binding.homeSearchTablayout.setBackgroundColor(bgColor)
             binding.homeSearchVp.setBackgroundColor(bgColor)
             setStatusBarSpacerEnabled(false)                                                       // 关闭状态栏空格间距
             addView(binding.root)                                                                          // 添加SearcViewBinding 视图内容

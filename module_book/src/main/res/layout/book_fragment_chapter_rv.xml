@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Material3.Button.ElevatedButton"
-    android:id="@+id/comic_info_rv_chip"
+    android:id="@+id/button"
     android:layout_width="match_parent"
     android:layout_height="@dimen/base_dp40"
     android:layout_marginStart="@dimen/base_dp4"

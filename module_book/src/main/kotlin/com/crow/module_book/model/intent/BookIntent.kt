@@ -18,7 +18,7 @@ open class BookIntent : BaseMviIntent() {
 
     data class GetComicChapter(val pathword: String, val comicChapter: ComicChapterResp? = null, val invalidResp: String? = null) : BookIntent()
 
-    data class GetComicPage(val pathword: String, val uuid: String, val isNext: Boolean? = null, val comicpage: ComicPageResp? = null, val enableLoading: Boolean = false) : BookIntent()
+    data class GetComicPage(val pathword: String, val uuid: String, val isNext: Boolean? = null, val comicpage: ComicPageResp? = null, val isReloadEnable: Boolean = false) : BookIntent()
 
     data class GetComicBrowserHistory(val pathword: String, val comicBrowser: ComicBrowserResp? = null) : BookIntent()
 

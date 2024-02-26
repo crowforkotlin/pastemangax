@@ -40,16 +40,64 @@
         app:title="@string/base_app_name"
         tools:visibility="visible" />
 
+    <ViewStub
+        android:id="@+id/error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/base_error_layout"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <LinearLayout
         android:id="@+id/bottom_appbar"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:visibility="gone"
         android:orientation="vertical"
-        tools:visibility="visible"
-        android:layout_height="wrap_content">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_slide"
+            style="?materialCardViewElevatedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/base_dp5"
+            android:visibility="gone"
+            app:layout_insetEdge="bottom"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/base_dp10"
+                    android:text="@string/book_night_eye_protection_mode"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/slider_light"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/base_dp5"
+                    android:stepSize="1"
+                    android:valueFrom="0"
+                    android:valueTo="190"
+                    app:labelBehavior="floating"
+                    app:tickVisible="false" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_tools"
             style="?materialCardViewElevatedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,35 +106,35 @@
             app:layout_insetEdge="bottom"
             tools:visibility="visible">
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:orientation="vertical"
-               android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-               <TextView
-                   android:layout_width="wrap_content"
-                   android:text="@string/book_night_eye_protection_mode"
-                   android:textStyle="bold"
-                   android:layout_marginTop="@dimen/base_dp5"
-                   android:layout_marginStart="@dimen/base_dp10"
-                   android:layout_height="wrap_content"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/rotate"
+                    style="@style/MangaX.Theme.Button.Icon.Tint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/base_dp5"
+                    app:icon="@drawable/book_ic_rotate_24dp"
+                    app:iconSize="@dimen/base_dp24" />
 
-               <com.google.android.material.slider.Slider
-                   android:id="@+id/slider_light"
-                   android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:layout_margin="@dimen/base_dp5"
-                   android:valueFrom="0"
-                   android:valueTo="190"
-                   android:stepSize="1"
-                   app:labelBehavior="floating"
-                   app:tickVisible="false" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/light"
+                    style="@style/MangaX.Theme.Button.Icon.Tint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/base_dp5"
+                    app:icon="@drawable/book_ic_light_24dp"
+                    app:iconSize="@dimen/base_dp24" />
 
-           </LinearLayout>
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_bottom"
             style="?materialCardViewElevatedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -115,14 +163,6 @@
 
     </LinearLayout>
 
-    <ViewStub
-        android:id="@+id/error"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout="@layout/base_error_layout"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loading"
         android:layout_width="wrap_content"
@@ -138,7 +178,7 @@
     <View
         android:id="@+id/full_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </FrameLayout>
 

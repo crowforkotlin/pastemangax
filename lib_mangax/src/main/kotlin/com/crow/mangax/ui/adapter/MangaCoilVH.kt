@@ -1,10 +1,21 @@
 package com.crow.mangax.ui.adapter
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isGone
@@ -14,7 +25,13 @@ import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import coil.decode.BitmapFactoryDecoder
+import coil.decode.DecodeResult
+import coil.decode.Decoder
+import coil.fetch.DrawableResult
 import coil.imageLoader
+import coil.load
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.size.Precision
 import coil.size.Scale
@@ -22,8 +39,12 @@ import com.crow.base.app.app
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.dp2px
 import com.crow.base.tools.extensions.error
+import com.crow.base.tools.extensions.info
 import com.crow.base.tools.extensions.log
+import com.crow.base.tools.extensions.px2dp
+import com.crow.mangax.R
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.google.android.material.button.MaterialButton
@@ -61,25 +82,29 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
         mLoadingText.text = AppProgressFactory.PERCENT_0
         mAppProgressFactory?.removeProgressListener()?.remove()
         mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> mLoadingText.text = AppProgressFactory.formateProgress(percentage) }
-        itemView.post {
-            itemView.minimumHeight = app.resources.displayMetrics.heightPixels
-//                itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.MATCH_PARENT }
+        val isNull = itemView.tag == null
+        if (isNull) {
+            itemView.tag = itemView
+            itemView.post { itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = MATCH_PARENT } }
+        } else {
+            itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = MATCH_PARENT }
         }
+
         app.imageLoader.enqueue(
             ImageRequest.Builder(itemView.context)
                 .listener(
-                    onSuccess = { _, a ->
+                    onSuccess = { _, result ->
                         mLoading.isInvisible = true
                         mLoadingText.isInvisible = true
                         mRetry?.isGone = true
-                        itemView.post {
-                            itemView.minimumHeight = 0
-//                                itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
+                        if (isNull) {
+                            itemView.post { itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = WRAP_CONTENT } }
+                        } else {
+                            itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = WRAP_CONTENT }
                         }
-
                     },
-                    onError = { _, _ ->
-                        "CoilVH onError".error()
+                    onError = { _, result ->
+                        "CoilVH onError ${result.throwable.stackTraceToString()} \t ${result.request.data}".error()
                         mLoading.isInvisible = true
                         mLoadingText.isInvisible = true
                         mRetry?.isVisible = true
@@ -92,9 +117,12 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
                     },
                 )
                 .data(imageUrl)
+                .scale(Scale.FIT)
+                .decoderFactory { source, option, _ -> Decoder { DecodeResult(drawable =BitmapFactory.decodeStream(source.source.source().inputStream()).toDrawable(option.context.resources), false) } }
                 .target(mImage)
                 .build()
         )
+
     }
 
     fun loadCoverImage(imageUrl: String) {

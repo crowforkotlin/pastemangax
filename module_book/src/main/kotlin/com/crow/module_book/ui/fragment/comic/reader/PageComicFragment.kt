@@ -48,7 +48,7 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
         if (reader.mUuid == null || message != null) {
             return@ComicStandardRvAdapter toast(message ?: getString(mangaR.string.mangax_error, "uuid is null !"))
         }
-        mVM.input(BookIntent.GetComicPage(mVM.mPathword, reader.mUuid, enableLoading = true))
+        mVM.input(BookIntent.GetComicPage(mVM.mPathword, reader.mUuid))
     }
 
     /**

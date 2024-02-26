@@ -16,5 +16,6 @@
     <string name="base_action_share">Share</string>
 
     <string name="base_exit_app">"再次返回将退出APP！"</string>
+    <string name="base_request_time_limit">请求频率太快了，请等待%1$s秒后重试</string>
 
 </resources>

@@ -35,9 +35,9 @@ class ComicChapterRvAdapter(
     private var mClick: (ComicChapterResult) -> Unit
 ) : RecyclerView.Adapter<ComicChapterRvAdapter.ChapterVH>() {
 
-    inner class ChapterVH(rvBinding: BookFragmentChapterRvBinding) : RecyclerView.ViewHolder(rvBinding.root) {
+    inner class ChapterVH(binding: BookFragmentChapterRvBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        private val mButton = rvBinding.comicInfoRvChip
+        private val mButton = binding.button
 
         init {
             mButton.doOnClickInterval { mClick(mComic[absoluteAdapterPosition]) }

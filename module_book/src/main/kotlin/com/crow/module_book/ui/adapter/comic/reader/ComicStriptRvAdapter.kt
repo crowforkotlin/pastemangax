@@ -3,14 +3,17 @@ package com.crow.module_book.ui.adapter.comic.reader
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewPropertyAnimator
 import android.widget.FrameLayout
 import androidx.annotation.IntRange
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.crow.base.app.app
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -157,7 +160,7 @@ class ComicStriptRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit)
     override fun onViewRecycled(vh: RecyclerView.ViewHolder) {
         super.onViewRecycled(vh)
         when(vh) {
-            is PageViewHolder -> {  vh.binding.root.layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT }
+            is PageViewHolder -> { vh.itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = MATCH_PARENT } }
         }
     }
 

@@ -21,11 +21,11 @@ object BaseStrings {
 
         const val Crow_Site = "https://gitee.com/llzzppFlash/copy-manga/raw/main/site.json"
         const val Crow_UpdateInfo = "https://gitee.com/llzzppFlash/copy-manga/raw/main/update_info.json"
-        const val Crow_QQGroup = "https://gitee.com/llzzppFlash/copy-manga/raw/main/qq_group"
+        const val Crow_Telegram = "https://gitee.com/llzzppFlash/copy-manga/raw/main/qq_group"
         const val Crow_HOTMANGA_TOKEN = "https://gitee.com/llzzppFlash/copy-manga/raw/main/RELA_TOKEN"
 
-        const val MangaFuna = "https://hi77-overseas.mangafuna.xyz/"
         var COPYMANGA = "https://api.copymanga$CopyManga_TLD_TV"
+        const val MangaFuna = "https://hi77-overseas.mangafuna.xyz/"
         const val Login = "/api/v3/login"
         const val Reg = "/api/v3/register"
 

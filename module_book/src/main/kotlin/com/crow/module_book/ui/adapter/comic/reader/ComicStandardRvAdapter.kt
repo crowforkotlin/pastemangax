@@ -2,7 +2,7 @@ package com.crow.module_book.ui.adapter.comic.reader
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.FrameLayout
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.annotation.IntRange
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.app
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
@@ -89,18 +90,16 @@ class ComicStandardRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Rec
             if (isNext) immersionPadding(binding.root, paddingStatusBar = false, paddingNaviateBar = true)
             else immersionPadding(binding.root, paddingStatusBar = true, paddingNaviateBar = false)
 
-            binding.comicNext.setOnClickListener {
-                BaseEvent.getSIngleInstance().doOnInterval {
-                    val pos = absoluteAdapterPosition
-                    if (pos in 0..<itemCount) {
-                        onPrevNext(getItem(pos) as ReaderPrevNextInfo)
-                    }
+            binding.comicNext.doOnClickInterval() {
+                val pos = absoluteAdapterPosition
+                if (pos in 0..< itemCount) {
+                    onPrevNext(getItem(pos) as ReaderPrevNextInfo)
                 }
             }
         }
 
-        fun onBind(position: Int) {
-            binding.comicNext.text = (getItem(absoluteAdapterPosition) as ReaderPrevNextInfo).mInfo
+        fun onBind(item: ReaderPrevNextInfo) {
+            binding.comicNext.text = item.mInfo
         }
     }
 
@@ -127,18 +126,14 @@ class ComicStandardRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Rec
     override fun onViewRecycled(vh: RecyclerView.ViewHolder) {
         super.onViewRecycled(vh)
         when(vh) {
-            is BodyViewHolder -> {
-                vh.itemView.minimumHeight = app.resources.displayMetrics.heightPixels
-//                vh.itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.MATCH_PARENT }
-            }
-            is IntentViewHolder -> { vh.itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT } }
+            is BodyViewHolder -> { vh.itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = MATCH_PARENT } }
         }
     }
 
     override fun onBindViewHolder(vh: RecyclerView.ViewHolder, position: Int) {
         when(vh) {
             is BodyViewHolder -> vh.onBind(getItem(position) as Content)
-            is IntentViewHolder -> vh.onBind(position)
+            is IntentViewHolder -> vh.onBind(getItem(position) as ReaderPrevNextInfo)
         }
     }
 

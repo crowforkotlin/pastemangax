@@ -39,7 +39,7 @@
                 android:layout_margin="@dimen/base_dp10"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
-                app:checkedButton="@+id/button_standard"
+                app:checkedButton="@id/button_standard"
                 app:selectionRequired="true"
                 app:singleSelection="true">
 
@@ -63,10 +63,14 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_page"
+                    android:enabled="false"
+                    android:clickable="false"
+                    app:backgroundTint="#80A5A6AA"
                     style="@style/Book_CopyMangaX_ToggleButton_Vertical"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:lines="2"
                     android:text="@string/book_comic_page"
                     app:icon="@drawable/book_ic_reader_ltr_24dp" />
 

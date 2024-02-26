@@ -69,7 +69,7 @@ class MainApplication : BaseApp(), ImageLoaderFactory {
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
             .okHttpClient(get<OkHttpClient>(named("ProgressOkHttp")))
-            .transitionFactory(CrossfadeTransition.Factory(300, true))
+            .transitionFactory(CrossfadeTransition.Factory(200, true))
             .eventListener(object : EventListener {
                 override fun onSuccess(request: ImageRequest, result: SuccessResult) {
                     super.onSuccess(request, result)

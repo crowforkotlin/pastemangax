@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
@@ -35,20 +36,20 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
         fun newInstance( mSearchView: SearchView,  mOnTap: (name: String, pathword: String) ->Unit): SearchNovelFragment {
             val searchNovelFragment = SearchNovelFragment()
             searchNovelFragment.mSearchView = mSearchView
-            searchNovelFragment.mOnTap = mOnTap
+            searchNovelFragment.mOnClick = mOnTap
             return searchNovelFragment
         }
     }
 
     private var mSearchView: SearchView? = null
 
-    private var mOnTap: ((name: String, pathword: String) -> Unit)? = null
+    private var mOnClick: ((name: String, pathword: String) -> Unit)? = null
 
     private val mHomeVM by viewModel<HomeViewModel>()
 
     private val mBaseEvent = BaseEvent.getSIngleInstance()
 
-    private var mNovelRvAdapter = SearchNovelRvAdapter { mOnTap?.invoke(it.mName, it.mPathWord) }
+    private var mNovelRvAdapter: SearchNovelRvAdapter? = null
 
     fun doInputSearchNovelIntent() {
 
@@ -72,9 +73,9 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
 
         repeatOnLifecycle {
 
-            mHomeVM.mNovelSearchFlowPage?.onCollect(this) { mNovelRvAdapter.submitData(it) }
+            mHomeVM.mNovelSearchFlowPage?.onCollect(this) { mNovelRvAdapter?.submitData(it) }
 
-            mNovelRvAdapter.loadStateFlow
+            (mNovelRvAdapter ?: return@repeatOnLifecycle).loadStateFlow
                 .filter { it.refresh is LoadState.Loading }
                 .collect { mBinding.homeSearchNovelRv.smoothScrollToPosition(0) }
         }
@@ -83,6 +84,7 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentSearchNovelBinding.inflate(inflater)
 
     override fun initView(bundle: Bundle?) {
+        mNovelRvAdapter = SearchNovelRvAdapter(viewLifecycleOwner.lifecycleScope) { mOnClick?.invoke(it.mName, it.mPathWord) }
         mBinding.homeSearchNovelRv.adapter = mNovelRvAdapter
     }
 
@@ -140,5 +142,10 @@ class SearchNovelFragment : BaseMviFragment<HomeFragmentSearchNovelBinding>() {
                     }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mNovelRvAdapter = null
     }
 }

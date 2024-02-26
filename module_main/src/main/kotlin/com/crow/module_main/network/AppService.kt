@@ -22,7 +22,7 @@ interface AppService {
     fun getUpdateInfo(@Url url: String = BaseStrings.URL.Crow_UpdateInfo): Flow<MainAppUpdateResp>
 
     @GET
-    fun getQQGroup(@Url url: String = BaseStrings.URL.Crow_QQGroup): Flow<ResponseBody>
+    fun getQQGroup(@Url url: String = BaseStrings.URL.Crow_Telegram): Flow<ResponseBody>
 
     @GET
     fun getSite(@Url url: String = BaseStrings.URL.Crow_Site): Flow<MainSiteResp>
