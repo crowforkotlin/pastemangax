@@ -17,7 +17,7 @@ enum class Fragments {
     BookComicInfo,
     BookNovelInfo,
     MineInfo,
-    User,
+    Mine,
     Settings,
     Image,
     Styleable,
@@ -28,4 +28,5 @@ enum class Fragments {
     ComicClassic,
     ComicPage,
     ComicStript,
+    ComicBottom
 }

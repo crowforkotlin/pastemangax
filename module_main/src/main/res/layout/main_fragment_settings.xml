@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/settings_toolbar"
+            android:id="@+id/toolbar"
             app:navigationIcon="@drawable/base_ic_back_24dp"
             app:navigationIconTint="@color/mangax_color_asc"
             app:title="@string/main_settings_titile"

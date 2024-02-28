@@ -14,14 +14,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseLoadStateAdapter
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
@@ -263,7 +263,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
                                 mBaseErrorViewStub.loadLayout(visible = true, animation = true)
 
                                 // 发现页 “漫画” 淡出
-                                mBinding.list.animateFadeOutWithEndInVisibility()
+                                mBinding.list.animateFadeOutInVisibility()
                             }
 
                             if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.base_loading_error_need_refresh))
@@ -292,7 +292,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
                         .doOnError { _, _ -> onRetryError() }
                         .doOnSuccess { if (mTipDialog?.isShowing == false) mIsCancelTokenDialog = false }
                         .doOnResult {
-                            if (BaseUserConfig.HOTMANGA_TOKEN.isNotEmpty()) {
+                            if (MangaXAccountConfig.mHotMangaToken.isNotEmpty()) {
                                 mTipDialog?.let{  dialog ->
                                     dialog.cancel()
                                     toast(getString(R.string.anime_token_ok))
@@ -432,7 +432,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
      * ● 2023-10-14 23:50:46 周六 下午
      */
     private fun checkAccountState(): Boolean {
-        val tokenEmpty = BaseUserConfig.HOTMANGA_TOKEN.isEmpty()
+        val tokenEmpty = MangaXAccountConfig.mHotMangaToken.isEmpty()
         if (tokenEmpty) {
             if (mTipDialog == null) {
                 val binding= AnimeTipsTokenLayoutBinding.inflate(layoutInflater)

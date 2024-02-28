@@ -6,7 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.base.tools.extensions.DataStoreAgent
 import com.crow.base.tools.extensions.asyncDecode
@@ -98,7 +98,7 @@ class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIn
         viewModelScope.launch {
             toTypeEntity<AccountEntity>(DataStoreAgent.DATA_USER_RELA.asyncDecode())?.also { user ->
                 mAccount = user
-                user.mToken?.let { token -> BaseUserConfig.HOTMANGA_TOKEN = token }
+                user.mToken?.let { token -> MangaXAccountConfig.mHotMangaToken = token }
             }
         }
     }
@@ -151,7 +151,7 @@ class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIn
         flowResult(intent, repository.login(intent.username, intent.password)) { value ->
             if (value.mCode == HttpURLConnection.HTTP_OK) {
                 mIsLogin = true
-                intent.copy(user = toTypeEntity<UserLoginResp>(value.mResults)?.also { user -> BaseUserConfig.HOTMANGA_TOKEN = user.mToken })
+                intent.copy(user = toTypeEntity<UserLoginResp>(value.mResults)?.also { user -> MangaXAccountConfig.mHotMangaToken = user.mToken })
             }
             else {
                 intent.copy(failureResp = (toTypeEntity(value.mResults) ?: return@flowResult intent))

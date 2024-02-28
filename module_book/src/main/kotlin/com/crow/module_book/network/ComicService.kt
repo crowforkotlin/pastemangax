@@ -40,7 +40,7 @@ interface ComicService {
 
     // 获取漫画内容
     @GET(URL.ComicPage)
-    fun getComicPage(@Path(PATH_WORD) pathword: String, @Path("uuid") uuid: String): Flow<BaseResultResp<ComicPageResp>>
+    fun getComicPage(@Path(PATH_WORD) pathword: String, @Path("uuid") uuid: String): Flow<BaseResultResp<Any>>
 
     // 获取当前漫画已浏览的记录
     @GET(URL.ComicBrowserHistory)

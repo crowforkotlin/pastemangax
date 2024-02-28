@@ -5,11 +5,17 @@ package com.crow.mangax.tools.language
 import android.content.Context
 import com.crow.base.app.app
 import com.crow.base.tools.extensions.copyFolder
+import com.crow.base.tools.extensions.log
+import com.crow.mangax.ui.text.errorLog
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.io.File
 import java.util.concurrent.Executors
 
@@ -63,6 +69,7 @@ object ChineseConverter {
         File(context.filesDir.toString(), "opencc_data").deleteRecursively()
     }
 
+    private val mMutex = Mutex()
     /**
      * ● 转换文本
      *
@@ -70,10 +77,16 @@ object ChineseConverter {
      * @author crowforkotlin
      */
     suspend fun convert(text: String, conversionType: ConversionType = ConversionType.HK2S): String {
-        return mConvertScope.async { nativeConvert(text, "${app.filesDir.absolutePath}/opencc_data/${conversionType.value}") }.await()
+        return mConvertScope.async {
+            runCatching { nativeConvert(text, "${app.filesDir.absolutePath}/opencc_data/${conversionType.value}") }
+                .onFailure { cause -> cause.stackTraceToString().errorLog() }
+                .getOrElse { text }
+        }.await()
     }
 
     private external fun convert(text: String, configFile: String, absoluteDataFolderPath: String): String
 
     private external fun nativeConvert(text: String, filePath: String): String
+
+    fun cancel() { mConvertScope.cancel() }
 }

@@ -11,10 +11,11 @@ import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderContent
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
 import com.crow.module_book.model.intent.BookIntent
+import com.crow.module_book.model.resp.comic_page.Content
 import com.crow.module_book.ui.activity.ComicActivity
-import com.crow.module_book.ui.adapter.comic.reader.ComicClassicRvAdapter
+import com.crow.module_book.ui.adapter.comic.reader.ComicStandardRvAdapter
 import com.crow.module_book.ui.adapter.comic.reader.layoutmanager.LoopLayoutManager
-import com.crow.module_book.ui.fragment.BookFragment
+import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -37,17 +38,17 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
      *
      * ● 2023-09-04 21:56:28 周一 下午
      */
-    private val mComicRvAdapter: ComicClassicRvAdapter = ComicClassicRvAdapter { reader ->
-        val isUUIDEmpty = reader.mUUID.isNullOrEmpty()
+    private val mComicRvAdapter: ComicStandardRvAdapter = ComicStandardRvAdapter { reader ->
+        val isUUIDEmpty = reader.mUuid.isNullOrEmpty()
         val message = when {
             reader.mIsNext && isUUIDEmpty -> getString(R.string.book_no_next)
             !reader.mIsNext && isUUIDEmpty -> getString(R.string.book_no_prev)
             else -> null
         }
-        if (reader.mUUID == null || message != null) {
-            return@ComicClassicRvAdapter toast(message ?: getString(mangaR.string.mangax_error, "uuid is null !"))
+        if (reader.mUuid == null || message != null) {
+            return@ComicStandardRvAdapter toast(message ?: getString(mangaR.string.mangax_error, "uuid is null !"))
         }
-        mVM.input(BookIntent.GetComicPage(mVM.mPathword, reader.mUUID, enableLoading = true))
+        mVM.input(BookIntent.GetComicPage(mVM.mPathword, reader.mUuid))
     }
 
     /**
@@ -125,18 +126,21 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     private fun processedReaderPages(reader: ReaderContent): MutableList<Any> {
         if (reader.mChapterInfo == null) return mutableListOf()
-        val prevUUID = reader.mChapterInfo.mPrevUUID
-        val nextUUID = reader.mChapterInfo.mNextUUID
-        val prevInfo = if (prevUUID == null) getString(R.string.book_no_prev) else getString(R.string.book_prev)
-        val nextInfo = if (nextUUID == null) getString(R.string.book_no_next) else getString(R.string.book_next)
+        val prevUuid = reader.mChapterInfo.mPrevUUID
+        val nextUuid = reader.mChapterInfo.mNextUUID
+        val prevInfo = if (prevUuid == null) getString(R.string.book_no_prev) else getString(R.string.book_prev)
+        val nextInfo = if (nextUuid == null) getString(R.string.book_no_next) else getString(R.string.book_next)
         val pages = reader.mPages.toMutableList()
+        val chapterID = (pages.first() as Content).mChapterID
         pages.add(0, ReaderPrevNextInfo(
-            mUUID = prevUUID,
+            mChapterID = chapterID,
+            mUuid = prevUuid,
             mInfo = prevInfo,
             mIsNext = false
         ))
         pages.add(ReaderPrevNextInfo(
-            mUUID = nextUUID,
+            mChapterID = chapterID,
+            mUuid = nextUuid,
             mInfo = nextInfo,
             mIsNext = true
         ))
@@ -145,7 +149,7 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     private fun onErrorComicPage() {
         toast(getString(baseR.string.base_loading_error))
-        BaseEvent.getSIngleInstance().setBoolean(BookFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
+        BaseEvent.getSIngleInstance().setBoolean(InfoFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 }

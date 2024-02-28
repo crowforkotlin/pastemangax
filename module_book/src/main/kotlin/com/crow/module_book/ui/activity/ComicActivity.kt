@@ -1,7 +1,10 @@
 package com.crow.module_book.ui.activity
 
+import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.transition.Fade
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.transition.TransitionSet
@@ -12,53 +15,85 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.activity.addCallback
 import androidx.core.graphics.ColorUtils
+import androidx.core.os.bundleOf
+import androidx.core.transition.doOnEnd
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.forEach
 import androidx.core.view.get
 import androidx.core.view.isGone
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
+import androidx.lifecycle.lifecycleScope
+import com.crow.base.kt.BaseNotNullVar
+import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.animateFadeOutGone
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.hasGlobalPoint
 import com.crow.base.tools.extensions.immersionFullScreen
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.immersureFullView
+import com.crow.base.tools.extensions.immersionFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.onCollect
+import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.activity.BaseMviActivity
+import com.crow.base.ui.view.BaseErrorViewStub
+import com.crow.base.ui.view.baseErrorViewStub
 import com.crow.base.ui.viewmodel.doOnError
-import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
+import com.crow.mangax.copymanga.tryConvert
+import com.crow.module_book.R
 import com.crow.module_book.databinding.BookActivityComicBinding
+import com.crow.module_book.model.database.model.MineReaderComicEntity
+import com.crow.module_book.model.entity.comic.ComicActivityInfo
 import com.crow.module_book.model.intent.BookIntent
-import com.crow.module_book.ui.fragment.comic.reader.ComicClassicFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
+import com.crow.module_book.ui.fragment.comic.reader.ComicStandardFragment
+import com.crow.module_book.ui.fragment.comic.reader.ComicStriptFragment
 import com.crow.module_book.ui.helper.GestureHelper
-import com.crow.module_book.ui.view.comic.rv.ComicFrameLayout
-import com.crow.module_book.ui.view.comic.rv.ComicRecyclerView
 import com.crow.module_book.ui.viewmodel.ComicViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.slider.Slider
+import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonFrame
+import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonRecyclerView
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.crow.mangax.R as mangaR
+import org.koin.core.qualifier.named
 import com.crow.base.R as baseR
 
 
 class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper.GestureListener {
+
+    companion object {
+        const val READER_MODE = "READER_MODE"
+        const val OPTION = "OPTION"
+        const val INFO = "INFO"
+        const val TITLE = "TITLE"
+        const val SUB_TITLE = "SUB_TITLE"
+        const val SLIDE = "SLIDE"
+        const val CHAPTER_POSITION = "CHAPTER_POSITION"
+        const val CHAPTER_POSITION_OFFSET = "CHAPTER_POSITION_OFFSET"
+    }
 
     /**
      * ● 漫画VM
      *
      * ● 2023-07-07 23:53:41 周五 下午
      */
-    private val mComicVM by viewModel<ComicViewModel>()
+    private val mVM by viewModel<ComicViewModel>()
 
     /**
      * ● WindowInset For immersure or systembar
@@ -82,11 +117,14 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
     private lateinit var mGestureHelper: GestureHelper
 
     /**
-     * ● 是否需要加载（默认为true）
+     * ● ErrorViewStub
      *
-     * ● 2023-09-04 01:35:45 周一 上午
+     * ● 2024-01-27 23:47:49 周六 下午
+     * @author crowforkotlin
      */
-    private var mIsNeedLoading = true
+    private var mBaseErrorViewStub by BaseNotNullVar<BaseErrorViewStub>(true)
+
+    private var mIsSliding = false
 
     /**
      * ● 获取ViewBinding
@@ -107,16 +145,28 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun initView(savedInstanceState: Bundle?) {
 
+        val dp5 = resources.getDimensionPixelSize(baseR.dimen.base_dp5)
+
+        // 初始化viewstub
+        mBaseErrorViewStub = baseErrorViewStub(mBinding.error, lifecycle) {
+            mBaseErrorViewStub.loadLayout(visible = false, animation = true)
+            mBinding.loading.animateFadeIn()
+            launchDelay(BASE_ANIM_300L) {
+                mVM.input(BookIntent.GetComicPage(mVM.mPathword, mVM.mCurrentChapterUuid))
+            }
+        }
+
         // 全屏
         immersionFullScreen(mWindowInsetsCompat)
 
         // 沉浸式边距
         immersionPadding(mBinding.root) { view, insets, _ ->
-            mBinding.comicToolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
+            mBinding.topAppbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
             view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 rightMargin = insets.right
             }
+            mBinding.bottomAppbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin =  dp5 + insets.bottom }
         }
 
         // 沉浸式状态栏和工具栏
@@ -125,8 +175,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
         // 内存重启 后 savedInstanceState不为空 防止重复添加Fragment
         if (savedInstanceState == null) {
 
-            // CLASSIC 经典 （按钮点击下一章）
-            mComicCategory.apply(ComicCategories.Type.STRIPT)
+            mBinding.loading.isVisible = true
         }
     }
 
@@ -137,10 +186,109 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun initListener() {
 
+        val slideListener = Slider.OnChangeListener  { _, value, _ ->
+            when(mVM.mReaderSetting?.mReadMode) {
+                ComicCategories.Type.STANDARD -> {
+                    supportFragmentManager.setFragmentResult(SLIDE, bundleOf(SLIDE to value.toInt()))
+                }
+                ComicCategories.Type.STRIPT -> {
+                    supportFragmentManager.setFragmentResult(SLIDE, bundleOf(SLIDE to value.toInt()))
+                }
+                ComicCategories.Type.PAGE -> {
+
+                }
+                else -> {
+
+                }
+            }
+        }
+
         mGestureHelper =  GestureHelper(this, this)
 
-        mBinding.comicToolbar.navigateIconClickGap {
-            finishActivity()
+        mBinding.topAppbar.navigateIconClickGap { finishActivity() }
+
+        mBinding.slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+                if (!mIsSliding) { supportFragmentManager.setFragmentResult(SLIDE, bundleOf(SLIDE to slider.value.toInt())) }
+                mIsSliding = true
+                mBinding.slider.addOnChangeListener(slideListener)
+
+            }
+            override fun onStopTrackingTouch(p0: Slider) {
+                mIsSliding = false
+                mBinding.slider.clearOnChangeListeners()
+            }
+        })
+
+        mBinding.bottomToolbar.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.action_options -> {
+                    get<BottomSheetDialogFragment>(named(Fragments.ComicBottom.name)).show(supportFragmentManager, null)
+                }
+            }
+            true
+        }
+
+        mBinding.sliderLight.addOnChangeListener { slider, value, b ->
+            val light = value.toInt()
+            mVM.updateLight(light)
+            mBinding.fullView.setBackgroundColor(ColorUtils.setAlphaComponent(Color.BLACK, light))
+        }
+
+        mBinding.light.doOnClickInterval {
+            val transition = TransitionSet()
+                .setDuration(BASE_ANIM_300L)
+                .addTransition(Fade().addTarget(mBinding.cardSlide))
+            TransitionManager.beginDelayedTransition(mBinding.bottomAppbar, transition)
+            if (mBinding.cardSlide.isVisible) {
+                mBinding.cardSlide.isInvisible = true
+            } else {
+                mBinding.cardSlide.isVisible = true
+            }
+        }
+
+        mBinding.rotate.doOnClickInterval {
+            if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            } else {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            }
+        }
+
+        supportFragmentManager.setFragmentResultListener(OPTION, this) { key, bundle ->
+            "BACK".log()
+            lifecycleScope.launch {
+                supportFragmentManager.clearFragmentResultListener(CHAPTER_POSITION)
+                supportFragmentManager.clearFragmentResultListener(SLIDE)
+                when(bundle.getInt(READER_MODE)) {
+                    R.string.book_comic_standard -> {
+                        val isSame = mVM.mReaderSetting?.mReadMode == ComicCategories.Type.STANDARD
+                        mVM.updateReaderMode(ComicCategories.Type.STANDARD)
+                        mComicCategory.apply(ComicCategories.Type.STANDARD)
+                        supportFragmentManager.setFragmentResult(CHAPTER_POSITION, Bundle().also {
+                            it.putInt(CHAPTER_POSITION, mVM.getPos() - if(isSame) 0 else 1)
+                            it.putInt(CHAPTER_POSITION_OFFSET, mVM.getPosOffset())
+                        })
+                    }
+                    R.string.book_comic_stript -> {
+                        mVM.updateReaderMode(ComicCategories.Type.STRIPT)
+                        mComicCategory.apply(ComicCategories.Type.STRIPT)
+                        supportFragmentManager.setFragmentResult(CHAPTER_POSITION, Bundle().also {
+                            it.putInt(CHAPTER_POSITION, mVM.getPosByChapterId())
+                            it.putInt(CHAPTER_POSITION_OFFSET, mVM.getPosOffset())
+                        })
+                    }
+                    R.string.book_comic_page -> {
+                        mVM.updateReaderMode(ComicCategories.Type.PAGE)
+                        mComicCategory.apply(ComicCategories.Type.PAGE)
+                    }
+                    else -> {
+                        mComicCategory.apply(ComicCategories.Type.STANDARD)
+                    }
+                }
+            }
         }
     }
 
@@ -149,16 +297,32 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      *
      * ● 2023-07-07 23:55:54 周五 下午
      */
-    override fun initData() {
-        mComicVM.mPathword = (intent.getStringExtra(BaseStrings.PATH_WORD) ?: "").also {
-            if (it.isEmpty()) finishActivity(getString(mangaR.string.mangax_error, "pathword is null or empty"))
+    override fun initData(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null) {
+            val info = toTypeEntity<ComicActivityInfo>(intent.getStringExtra(INFO)) ?: return finishActivity(getString(baseR.string.base_unknow_error))
+            mVM.mComicInfo = info
+            mVM.mChapterNextUuid = info.mChapterNextUuid
+            mVM.mChapterPrevUuid = info.mChapterPrevUuid
+            mBinding.topAppbar.title = info.mTitle
+            mBinding.topAppbar.subtitle = info.mSubTitle
+            mVM.input(BookIntent.GetComicPage(info.mPathword, info.mChapterCurrentUuid))
+            lifecycleScope.launch {
+                when(mVM.getSetting()?.mReadMode) {
+                    ComicCategories.Type.STANDARD -> {
+                        mComicCategory.apply(ComicCategories.Type.STANDARD)
+                    }
+                    ComicCategories.Type.STRIPT -> {
+                        mComicCategory.apply(ComicCategories.Type.STRIPT)
+                    }
+                    ComicCategories.Type.PAGE -> {
+                        mComicCategory.apply(ComicCategories.Type.PAGE)
+                    }
+                    else -> {
+                        mComicCategory.apply(ComicCategories.Type.STANDARD)
+                    }
+                }
+            }
         }
-        mComicVM.mUuid = (intent.getStringExtra(ComicViewModel.UUID) ?: "").also {
-            if (it.isEmpty()) finishActivity(getString(mangaR.string.mangax_error, "uuid is null or empty"))
-        }
-        mComicVM.mPrevUuid = intent.getStringExtra(ComicViewModel.PREV_UUID)
-        mComicVM.mNextUuid = intent.getStringExtra(ComicViewModel.NEXT_UUID)
-        mComicVM.input(BookIntent.GetComicPage(mComicVM.mPathword, mComicVM.mUuid, enableLoading = true))
     }
 
     /**
@@ -168,48 +332,114 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun initObserver(savedInstanceState: Bundle?) {
 
-        mComicVM.uiState.onCollect(this) { state ->
-            if (state != null && state.mReaderContent.mChapterInfo != null) {
-                if (mBinding.comicInfoBar.isGone) mBinding.comicInfoBar.animateFadeIn()
-                mBinding.comicInfoBar.update(
-                    currentPage = state.mCurrentPage,
-                    totalPage = state.mTotalPages,
-                    percent = mComicVM.computePercent(
-                        pageIndex = state.mCurrentPage,
-                        totalPage = state.mTotalPages,
-                        info = state.mReaderContent.mChapterInfo
-                    ),
-                    info = state.mReaderContent.mChapterInfo
-                )
+        lifecycleScope.launch {
+            mVM.mReaderComic?.let { comic ->
+                supportFragmentManager.setFragmentResult(CHAPTER_POSITION, Bundle().also {
+                    it.putInt(CHAPTER_POSITION_OFFSET, comic.mChapterPositionOffset)
+                    it.putInt(CHAPTER_POSITION, comic.mChapterPosition)
+                })
             }
         }
 
-        mComicVM.onOutput { intent ->
+        lifecycleScope.launch {
+            mVM.uiState.collect { state ->
+                state?.let { uiState ->
+                    if (mBinding.infobar.isGone) mBinding.infobar.animateFadeIn()
+                    val readerContent = uiState.mReaderContent
+                    val currentPage = uiState.mCurrentPagePos
+                    val totalPage = uiState.mTotalPages
+                    mBinding.infobar.update(
+                        currentPage = currentPage,
+                        totalPage = totalPage,
+                        info = readerContent.mChapterInfo ?: return@let,
+                        percent = mVM.computePercent(
+                            pageIndex = currentPage,
+                            totalPage = totalPage,
+                            info = readerContent.mChapterInfo
+                        )
+                    )
+                    mBinding.topAppbar.subtitle = readerContent.mChapterInfo.mChapterName
+                    if (mBinding.bottomAppbar.isGone || !mIsSliding) {
+                        var pageFloat = uiState.mCurrentPagePos.toFloat()
+                        var pageTotal = uiState.mTotalPages.toFloat()
+                        if (pageFloat in mBinding.slider.valueFrom..mBinding.slider.valueTo) {
+                            when(uiState.mReaderMode) {
+                                ComicCategories.Type.STANDARD -> {
+                                    pageTotal -= 2
+                                    pageFloat = pageFloat.coerceIn(1f, pageTotal)
+                                }
+                                ComicCategories.Type.STRIPT -> {
+                                    pageTotal -= 0
+                                    pageFloat = pageFloat.coerceIn(1f, pageTotal)
+                                }
+                                ComicCategories.Type.PAGE -> {
+
+                                }
+                            }
+                            val valueFrom: Float
+                            if (pageTotal <= 1f) {
+                                valueFrom = 0f
+                                pageFloat = 1f
+                                pageTotal =  1f
+                            } else {
+                                valueFrom = 1f
+                            }
+                            mBinding.slider.valueFrom = valueFrom
+                            mBinding.slider.value = pageFloat
+                            mBinding.slider.valueTo = pageTotal
+                        }
+                    }
+
+                    mVM.tryUpdateReaderComicrInfo(currentPage, state.mCurrentPagePosOffset, state.mChapterID, readerContent.mChapterInfo)
+                }
+            }
+        }
+
+        mVM.onOutput { intent ->
             when(intent) {
                 is BookIntent.GetComicPage -> {
-                    if (intent.enableLoading) {
+                    if (!this.intent.getBooleanExtra("INIT", false)) {
                         intent.mViewState
-                            .doOnLoading{
-                                if (!mIsNeedLoading) {
-                                    mIsNeedLoading = true
-                                    return@doOnLoading
-                                }
-                                showLoadingAnim { dialog -> dialog.applyWindow(dimAmount = 0.3f, isFullScreen = true) }
-                            }
-                            .doOnError { _, _ ->
-                                toast(getString(baseR.string.base_loading_error))
-                                dismissLoadingAnim { finishActivity() }
-                            }
+                            .doOnError { _, _ -> showErrorPage() }
                             .doOnResult {
-                                dismissLoadingAnim()
+                                supportFragmentManager.setFragmentResult(CHAPTER_POSITION, Bundle().also {
+                                    it.putInt(CHAPTER_POSITION_OFFSET, mVM.getPosOffset())
+                                    it.putInt(CHAPTER_POSITION, -1)
+                                })
                                 val page = intent.comicpage
                                 if (page != null) {
-                                    mBinding.comicToolbar.title = page.mComic.mName
-                                    mBinding.comicToolbar.subtitle = page.mChapter.mName
+                                    this.intent.putExtra("INIT", true)
+                                    if(mBinding.loading.isVisible) mBinding.loading.animateFadeOutGone()
+                                    lifecycleScope.tryConvert(page.mComic.mName, mBinding.topAppbar::setTitle)
+                                    lifecycleScope.tryConvert(page.mChapter.mName, mBinding.topAppbar::setSubtitle)
+                                    val total = page.mChapter.mContents.size.toFloat()
+                                    val valueFrom: Float
+                                    val value: Float
+                                    if (total <= 1f) {
+                                        valueFrom = 0f
+                                        value = 1f
+                                    } else {
+                                        valueFrom = 1f
+                                        value = 1f
+                                    }
+                                    mBinding.slider.valueFrom = valueFrom
+                                    mBinding.slider.value = value
+                                    mBinding.slider.valueTo = total
+                                } else {
+                                    showErrorPage()
                                 }
                             }
                     }
                 }
+            }
+        }
+    }
+
+    private fun showErrorPage() {
+        launchDelay(BASE_ANIM_300L) {
+            mBinding.loading.animateFadeOut().withEndAction {
+                mBinding.loading.isGone = true
+                mBaseErrorViewStub.loadLayout(visible = true, animation = true)
             }
         }
     }
@@ -221,11 +451,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (mComicVM.mOrientation != resources.configuration.orientation) {
-            mComicVM.mOrientation = resources.configuration.orientation
-            mIsNeedLoading = false
-        }
-        immersureFullView(window)
+        immersionFullView(window)
         immerureCutoutCompat(window)
     }
 
@@ -245,7 +471,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      * ● 2023-07-07 23:56:56 周五 下午
      */
     override fun onTouch(area: Int, ev: MotionEvent) {
-        transitionBar(mBinding.comicToolbar.isVisible)
+        transitionBar(mBinding.topAppbar.isVisible)
     }
 
     /**
@@ -264,34 +490,32 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      * ● 2023-09-04 01:30:21 周一 上午
      */
     private fun hasGlobalPoint(ev: MotionEvent): Boolean {
-        val hasToolbar = hasGlobalPoint(mBinding.comicToolbar, ev.rawX.toInt(), ev.rawY.toInt())
+        val rawX = ev.rawX.toInt()
+        val rawY = ev.rawY.toInt()
+        val hasToolbar = hasGlobalPoint(mBinding.topAppbar, rawX, rawY)
+        val hasBottomBar = hasGlobalPoint(mBinding.bottomAppbar, rawX, rawY)
+        if (hasToolbar || hasBottomBar) return true
+        var hasRetry =false
         var hasButton = false
         val fragment = supportFragmentManager.fragments.firstOrNull()
-        if (fragment is ComicClassicFragment) {
-            val rv = ((fragment.view as ComicFrameLayout)[0] as ComicRecyclerView)
+        mBaseErrorViewStub.mVsBinding?.let { binding ->
+            if (mBaseErrorViewStub.isVisible()) {
+                hasRetry = hasGlobalPoint(binding.retry, rawX, rawY)
+            }
+        }
+        if (fragment is ComicStandardFragment || fragment is ComicStriptFragment) {
+            val rv = ((fragment.view as WebtoonFrame)[0] as WebtoonRecyclerView)
             val childView = rv.findChildViewUnder(ev.x, ev.y)
             if(childView is FrameLayout) {
                 childView.forEach {
                     if (fragment.isRemoving) return hasToolbar
                     if(it is MaterialButton) {
-                        hasButton = hasGlobalPoint(it, ev.rawX.toInt(), ev.rawY.toInt())
+                        hasButton = hasGlobalPoint(it, rawX, rawY)
                     }
                 }
             }
         }
-        return hasToolbar || hasButton
-    }
-    /**
-     * ● 判断是否是 Classic中的Button
-     *
-     * ● 2023-09-03 23:25:45 周日 下午
-     */
-    private fun judgeIsClassicButton(ev: MotionEvent): Boolean {
-        val fragment = supportFragmentManager.fragments.firstOrNull()
-        if (fragment is ComicClassicFragment) {
-            super.dispatchTouchEvent(ev)
-        }
-        return true
+        return hasToolbar || hasButton || hasRetry
     }
 
     /**
@@ -318,10 +542,12 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
     private fun transitionBar(isHide: Boolean) {
         val transition = TransitionSet()
             .setDuration(BASE_ANIM_300L)
-            .addTransition(Slide(Gravity.TOP))
-            .addTarget(mBinding.comicToolbar)
+            .addTransition(Slide(Gravity.TOP).addTarget(mBinding.topAppbar))
+            .addTransition(Slide(Gravity.BOTTOM).addTarget(mBinding.bottomAppbar))
+            .addTransition(Fade().addTarget(mBinding.infobar))
         TransitionManager.beginDelayedTransition(mBinding.root, transition)
-        mBinding.comicToolbar.isGone = isHide
+        mBinding.topAppbar.isGone = isHide
+        mBinding.bottomAppbar.isGone = isHide
         mWindowInsetsCompat.isAppearanceLightStatusBars = !mDarkMode
         mWindowInsetsCompat.isAppearanceLightNavigationBars = !mDarkMode
         if (isHide) {
@@ -337,10 +563,9 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      *
      * ● 2023-09-02 19:12:24 周六 下午
      */
-    private fun immersionBarStyle() {
-        (mBinding.comicToolbar.background as MaterialShapeDrawable).apply {
+    private fun immersionBarStyle(alpha: Int = 242) {
+        (mBinding.topAppbar.background as MaterialShapeDrawable).apply {
             elevation = resources.getDimension(baseR.dimen.base_dp3)
-            alpha = 242
             val color = ColorUtils.setAlphaComponent(resolvedTintColor, alpha)
             window.statusBarColor = color
             window.navigationBarColor = color

@@ -25,7 +25,11 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
      * ● 2023-11-05 02:25:16 周日 上午
      * @author crowforkotlin
      */
-    companion object { const val CATEGORIES = "CATEGORIES" }
+    companion object {
+        const val CATEGORIES = "CATEGORIES"
+        var CURRENT_TYPE = Type.STRIPT
+            private set
+    }
 
     /**
      * ● 类型
@@ -35,9 +39,8 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
      */
     enum class Type(@IdRes val id: Int) {
         STRIPT(R.string.book_comic_stript),
-        CLASSIC(R.string.book_comic_classic),
-        PAGE_RIGHT(R.string.book_comic_page_right),
-        PAGE_LEFT(R.string.book_comic_page_left)
+        STANDARD(R.string.book_comic_standard),
+        PAGE(R.string.book_comic_page),
     }
 
 
@@ -48,10 +51,11 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
      * @author crowforkotlin
      */
     fun apply(type: Type) {
+        CURRENT_TYPE = type
         when (type) {
-            Type.STRIPT -> mActivity.supportFragmentManager.navigate(host.id, mActivity.get(named(Fragments.ComicStript.name)))
-            Type.CLASSIC -> mActivity.supportFragmentManager.navigate(host.id, mActivity.get(named(Fragments.ComicClassic.name)))
-            Type.PAGE_LEFT, Type.PAGE_RIGHT -> { mActivity.supportFragmentManager.navigate(host.id, mActivity.get<Fragment>(named(Fragments.ComicPage.name)).also { it.arguments = bundleOf("CATEGORIES" to type.id) }) }
+            Type.STRIPT -> mActivity.supportFragmentManager.navigate(host.id, ComicStriptFragment())
+            Type.STANDARD -> mActivity.supportFragmentManager.navigate(host.id, ComicStandardFragment())
+            Type.PAGE -> { mActivity.supportFragmentManager.navigate(host.id, mActivity.get<Fragment>(named(Fragments.ComicPage.name)).also { it.arguments = bundleOf("CATEGORIES" to type.id) }) }
         }
     }
 }

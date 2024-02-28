@@ -2,7 +2,7 @@ package com.crow.base.app
 
 import android.content.Context
 import android.content.Intent
-import com.crow.base.tools.extensions.logError
+import com.crow.base.tools.extensions.error
 import com.crow.base.tools.extensions.toJson
 import com.crow.base.ui.activity.CrashActivity
 import kotlin.system.exitProcess
@@ -22,11 +22,11 @@ class BaseAppExceptionHandler private constructor(
 
     override fun uncaughtException(thread: Thread, throwable: Throwable) {
         runCatching {
-            throwable.stackTraceToString().logError()
+            throwable.stackTraceToString().error()
             launchActivity(mApplicationContext, CrashActivity::class.java, throwable)
             exitProcess(0)
         }
-            .onSuccess { "Caught Global Exception !!!".logError() }
+            .onSuccess { "Caught Global Exception !!!".error() }
             .onFailure { mDefaultHandler.uncaughtException(thread, it) }
     }
 
@@ -45,7 +45,7 @@ class BaseAppExceptionHandler private constructor(
 
         fun getThrowableFromIntent(intent: Intent): Throwable? {
             return runCatching { Throwable(intent.getStringExtra(INTENT_EXTRA)!!) }
-                .onFailure { "Wasn't able to retrive throwable from intent".logError() }
+                .onFailure { "Wasn't able to retrive throwable from intent".error() }
                 .getOrNull()
         }
     }

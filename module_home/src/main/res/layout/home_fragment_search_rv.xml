@@ -22,12 +22,13 @@
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/loading"
+app:trackThickness="@dimen/base_dp3"
             style="@style/Widget.Material3.CircularProgressIndicator.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="true"
-            app:indicatorColor="@color/mangax_light_blue_500"
+            app:indicatorColor="@color/mangax_color_asc"
             app:indicatorSize="@dimen/base_dp36"
             app:trackCornerRadius="@dimen/base_dp99" />
 
@@ -53,7 +54,7 @@
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
-        android:id="@+id/home_search_rv_name"
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/base_dp2_5"
@@ -67,7 +68,7 @@
         tools:text="书名" />
 
     <TextView
-        android:id="@+id/home_search_rv_author"
+        android:id="@+id/author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/base_dp2_5"
@@ -80,7 +81,7 @@
         tools:text="作者" />
 
     <TextView
-        android:id="@+id/home_search_rv_hot"
+        android:id="@+id/hot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"

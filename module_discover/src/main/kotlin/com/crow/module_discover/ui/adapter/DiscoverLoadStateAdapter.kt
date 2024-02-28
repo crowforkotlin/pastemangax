@@ -15,15 +15,15 @@ class DiscoverLoadStateAdapter(private val retry: () -> Unit) : LoadStateAdapter
 
     inner class LoadStateViewHolder(val rvBinding: BasePagingFooterRetryBinding) : RecyclerView.ViewHolder(rvBinding.root) {
         fun bind(loadState: LoadState) {
-            rvBinding.baseLoadingLottie.isVisible = loadState is LoadState.Loading
-            rvBinding.baseLoadingRetry.isVisible = loadState is LoadState.Error
+            rvBinding.loading.isVisible = loadState is LoadState.Loading
+            rvBinding.retry.isVisible = loadState is LoadState.Error
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState): LoadStateViewHolder {
         return LoadStateViewHolder(BasePagingFooterRetryBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also {  vh ->
             vh.rvBinding.root.layoutParams.height = appComicCardHeight / 2
-            vh.rvBinding.baseLoadingRetry.doOnClickInterval { retry() }
+            vh.rvBinding.retry.doOnClickInterval { retry() }
         }
     }
 

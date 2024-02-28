@@ -54,7 +54,7 @@
         android:layout_margin="@dimen/base_dp20"
         android:indeterminate="true"
         app:trackCornerRadius="@dimen/base_dp99"
-        app:indicatorColor="@color/mangax_light_blue_500"
+        app:indicatorColor="@color/mangax_color_asc"
         app:indicatorSize="@dimen/base_dp36"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,4 +1,5 @@
 [versions]
+junit = "4.13.2"
 kotlin = "1.9.10"
 network-okhttp = "5.0.0-alpha.11"
 network-retrofit = "2.9.0"
@@ -45,6 +46,7 @@ glide = "5.0.0-rc01"
 
 
 [libraries]
+junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutines-core" }
 kotlin-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlin-datetime" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }

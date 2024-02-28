@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.ViewConfiguration
 import android.view.animation.DecelerateInterpolator
 import androidx.core.animation.doOnEnd
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.findCenterViewPosition
@@ -131,12 +130,12 @@ class ComicRecyclerView : RecyclerView {
 
     fun interface IComicPreScroll {
 
-        fun onPreScrollListener(position: Int)
+        fun onPreScrollListener(dx: Int, dy: Int, position: Int)
     }
 
     companion object {
         private const val ANIMATOR_DURATION_TIME = 200
-        private const val MIN_SCALE_FACTOR = 1f
+        private const val MIN_SCALE_FACTOR = 0.5f
         private const val MAX_SCALE_FACTOR = 3f
     }
 
@@ -199,7 +198,7 @@ class ComicRecyclerView : RecyclerView {
         val position = findCenterViewPosition()
         if (position != NO_POSITION && position != mLastCenterViewPosition) {
             mLastCenterViewPosition = position
-            mPreScrollListener?.onPreScrollListener(position)
+            mPreScrollListener?.onPreScrollListener(dx, dy, position)
         }
         return super.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type)
     }

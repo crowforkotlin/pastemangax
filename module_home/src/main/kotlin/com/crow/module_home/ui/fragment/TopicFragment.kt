@@ -13,7 +13,7 @@ import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.notNull
@@ -81,11 +81,7 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
      * ● 2023-11-01 00:09:12 周三 上午
      * @author crowforkotlin
      */
-    private val mAdapter by lazy {
-        TopicListAdapter(lifecycleScope) { name, pathword ->
-            onNavigate(Fragments.BookComicInfo.name, name, pathword)
-        }
-    }
+    private var mAdapter: TopicListAdapter? = null
 
     /**
      * ● 刷新任务
@@ -136,10 +132,13 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
                 navigateUp()
             }
             .onSuccess {
+                mAdapter = TopicListAdapter(lifecycleScope) { name, pathword ->
+                    onNavigate(Fragments.BookComicInfo.name, name, pathword)
+                }
                 mNetworkJob = lifecycleScope.launch {
                     delay(BASE_ANIM_200L shl 1)
                     mVM.input(HomeIntent.GetTopic(mTopic.mPathWord)) {
-                        mVM.mTopicFlowPage?.onCollect(this@TopicFragment) { mAdapter.submitData(it) }
+                        mVM.mTopicFlowPage?.onCollect(this@TopicFragment) { mAdapter?.submitData(it) }
                     }
                 }
             }
@@ -154,6 +153,7 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         BaseEvent.getSIngleInstance().remove("TOPIC_FRAGMENT_REFRESH_ANIMATE_ONLY")
+        mAdapter = null
         mNetworkJob?.cancel()
         mNetworkJob = null
         mRefreshJob?.cancel()
@@ -196,7 +196,7 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
                         }
                         .doOnError { _, _ ->
                             if (mError.isGone()) mError.loadLayout(visible = true, animation = true)
-                            if (mBinding.list.isVisible)  mBinding.list.animateFadeOutWithEndInVisibility()
+                            if (mBinding.list.isVisible)  mBinding.list.animateFadeOutInVisibility()
                         }
                         .doOnResult {
                             intent.topicResp.notNull {
@@ -263,7 +263,7 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
                 layout.finishRefresh()
                 toast(getString(mangaR.string.mangax_unknow_error))
             }
-            mAdapter.retry()
+            mAdapter?.retry()
         }
     }
 

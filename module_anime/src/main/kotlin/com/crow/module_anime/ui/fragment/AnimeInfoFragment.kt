@@ -13,15 +13,15 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
+import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.popSyncWithClear
@@ -109,7 +109,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
      */
     private val mAdapter by lazy {
         AnimeChapterRvAdapter { pos, chapter ->
-            if (BaseUserConfig.HOTMANGA_TOKEN.isEmpty()) {
+            if (MangaXAccountConfig.mHotMangaToken.isEmpty()) {
                 toast(getString(R.string.anime_token_error))
                 return@AnimeChapterRvAdapter
             }
@@ -230,7 +230,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
                 is AnimeIntent.ChapterListIntent -> {
                     intent.mViewState
                         .doOnError { _, _ ->
-                            if (mBinding.linear.isVisible) mBinding.linear.animateFadeOutWithEndInVisibility()
+                            if (mBinding.linear.isVisible) mBinding.linear.animateFadeOutInVisibility()
                             if (mBinding.tips.isGone) mBinding.tips.animateFadeIn()
                         }
                         .doOnResult {
@@ -249,7 +249,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
     private fun loadAnimeChapterList(chapters: AnimeChapterResp) {
 
         if (mBinding.linear.isInvisible) mBinding.linear.animateFadeIn()
-        if (mBinding.tips.isVisible) mBinding.tips.animateFadeOutWithEndInVisible()
+        if (mBinding.tips.isVisible) mBinding.tips.animateFadeOutGone()
 
         viewLifecycleOwner.lifecycleScope.launch {
             mAdapter.doNotify(chapters.mList.toMutableList())

@@ -24,7 +24,7 @@ import com.crow.mangax.copymanga.BaseLoadStateAdapter
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseStrings.ID
 import com.crow.mangax.copymanga.BaseStrings.URL.HotManga
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.appEvent
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
@@ -35,10 +35,11 @@ import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
+import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
+import com.crow.base.tools.extensions.info
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2sp
@@ -363,7 +364,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                                 mBaseErrorViewStub.loadLayout(visible = true, animation = true)
 
                                 // 发现页 “漫画” 淡出
-                                mBinding.list.animateFadeOutWithEndInVisibility()
+                                mBinding.list.animateFadeOutInVisibility()
                             }
 
                             if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.base_loading_error_need_refresh))
@@ -392,7 +393,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                         .doOnError { _, _ -> onRetryError() }
                         .doOnSuccess { if (mTipDialog?.isShowing == false) mIsCancelTokenDialog = false }
                         .doOnResult {
-                            if (BaseUserConfig.HOTMANGA_TOKEN.isNotEmpty()) {
+                            if (MangaXAccountConfig.mHotMangaToken.isNotEmpty()) {
                                 mTipDialog?.let{  dialog ->
                                     dialog.cancel()
                                     toast(getString(R.string.anime_token_ok))
@@ -405,16 +406,15 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     intent.mViewState
                         .doOnLoading {
                             mSiteBinding?.let { binding ->
-                                if (binding.lottie.isGone) {
-                                    binding.lottie.resumeAnimation()
-                                    binding.lottie.animateFadeIn()
+                                if (binding.loading?.isGone == true) {
+                                    binding.loading.animateFadeIn()
                                 }
                             }
                         }
                         .doOnError { _, _ ->
                            mSiteBinding?.let { binding ->
-                               if (binding.lottie.isVisible) {
-                                   binding.lottie.animateFadeOutWithEndInVisible()
+                               if (binding.loading?.isVisible == true) {
+                                   binding.loading.animateFadeOutGone()
                                    binding.list.animateFadeOut()
                                    binding.reload.animateFadeIn()
                                }
@@ -424,6 +424,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                             mSiteDialog?.let {  dialog ->
                                 mSiteBinding?.let { binding ->
                                     val sites = (intent.siteResp?.mApi?.flatMap { it.map {  site -> site } } ?: return@doOnResult).toMutableList()
+                                    sites.info()
                                     if (binding.list.isInvisible) {
                                         binding.list.animateFadeIn()
                                     }
@@ -433,8 +434,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                                     }
                                         .also { adapter ->
                                             mAnimeSiteJob = lifecycleScope.launch {
-                                                binding.lottie.pauseAnimation()
-                                                binding.lottie.isGone = true
+                                                binding.loading?.isGone = true
                                                 adapter.doNotify(sites, BASE_ANIM_100L shl 1)
                                             }
                                         }
@@ -452,10 +452,10 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                                     root.finishRefresh()
                                     BaseEvent.getSIngleInstance().setBoolean("ANIME_FRAGMENT_SEARCH_FLAG", false)
                                 }
-                                if (mSearchAdapter.itemCount == 0) tips.animateFadeIn() else if (tips.isVisible) tips.animateFadeOutWithEndInVisible()
+                                if (mSearchAdapter.itemCount == 0) tips.animateFadeIn() else if (tips.isVisible) tips.animateFadeOutGone()
                             }
                             .doOnResult {
-                                if (tips.isVisible) tips.animateFadeOutWithEndInVisible()
+                                if (tips.isVisible) tips.animateFadeOutGone()
                                 if (list.isInvisible) list.animateFadeIn()
                             }
                     }
@@ -492,7 +492,6 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
                 mVM.input(AnimeIntent.AnimeSiteIntent())
 
-                title.text = getString(R.string.anime_site_setting)
                 close.doOnClickInterval { mSiteDialog?.cancel() }
                 reload.doOnClickInterval {
                     reload.animateFadeOut()
@@ -658,7 +657,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
      * ● 2023-10-14 23:50:46 周六 下午
      */
     private fun checkAccountState(): Boolean {
-        val tokenEmpty = BaseUserConfig.HOTMANGA_TOKEN.isEmpty()
+        val tokenEmpty = MangaXAccountConfig.mHotMangaToken.isEmpty()
         if (tokenEmpty) {
             if (mTipDialog == null) {
                 val binding= AnimeTipsTokenLayoutBinding.inflate(layoutInflater)
@@ -740,6 +739,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
                     // 设置SearchView toolbar背景色白，沉浸式
                     toolbar.setBackgroundColor(bgColor)
+
+                    // listFrame设置背景色
+                    binding.listFrame.setBackgroundColor(bgColor)
 
                     // 关闭状态栏空格间距
                     setStatusBarSpacerEnabled(false)

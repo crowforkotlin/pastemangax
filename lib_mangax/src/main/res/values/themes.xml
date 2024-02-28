@@ -19,6 +19,13 @@
         <item name="android:textColor">@color/mangax_color_asc</item>
         <item name="colorPrimary">@color/mangax_color_asc</item>
         <item name="colorOnPrimary">@color/mangax_icon_desc</item>
+        <item name="bottomSheetDialogTheme">@style/MangaX.ModalBottomSheetDialog</item>
+    </style>
+    <style name="MangaX.ModalBottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/MangaX.ModalBottomSheet</item>
+    </style>
+    <style name="MangaX.ModalBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+        <!-- Apply attributes here -->
     </style>
 
     <style name="MangaX.Theme.Button.Elevated.Icon" parent="Widget.Material3.Button.ElevatedButton.Icon" />

@@ -9,7 +9,7 @@ import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_book.R
 import com.crow.module_book.model.database.BookChapterDB
-import com.crow.module_book.model.entity.BookChapterEntity
+import com.crow.module_book.model.database.model.BookChapterEntity
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.ComicChapterResp
 import com.crow.module_book.model.resp.ComicInfoResp
@@ -60,7 +60,7 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
      *
      * ● 2023-06-28 22:23:19 周三 下午
      */
-    private val mChapterDBDao by lazy { buildDatabase<BookChapterDB>(DBNameSpace.app).bookChapterDao() }
+    private val mChapterDBDao by lazy { buildDatabase<BookChapterDB>(DBNameSpace.CHAPTER_DB).bookChapterDao() }
 
     /**
      * ● 书页章节实体数据
@@ -98,20 +98,23 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
      */
     fun updateBookChapterOnDB(chapter: BookChapterEntity) {
         viewModelScope.launch(Dispatchers.IO + baseCoroutineException) {
-            val bookChapterEntity = mChapterDBDao.find(chapter.mBookName, chapter.mChapterType)
+            mChapterDBDao.upSertChapter(chapter)
+            _mChapterEntity.value = chapter
+            /*val chapterEntity = _mChapterEntity.value
+            val bookChapterEntity = mChapterDBDao.find(chapter.mBookUuid, chapter.mChapterType)
             if (bookChapterEntity != null) {
                 val snapshot = bookChapterEntity.copy(
                     mChapterName = chapter.mChapterName,
-                    mChapterUUID = chapter.mChapterUUID,
-                    mChapterPrevUUID = chapter.mChapterPrevUUID,
-                    mChapterNextUUID = chapter.mChapterNextUUID
+                    mChapterCurrentUuid = chapter.mChapterCurrentUuid,
+                    mChapterPrevUuid = chapter.mChapterPrevUuid,
+                    mChapterNextUuid = chapter.mChapterNextUuid
                 )
                 mChapterDBDao.update(snapshot)
                 _mChapterEntity.value = snapshot
             } else {
                 mChapterDBDao.insertAll(chapter)
                 _mChapterEntity.value = chapter
-            }
+            }*/
         }
     }
 
@@ -120,9 +123,9 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
      *
      * ● 2023-06-28 22:26:51 周三 下午
      */
-    fun findReadedBookChapterOnDB(bookName: String, bookType: Int) {
+    fun findReadedBookChapterOnDB(bookUuid: String, bookType: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            _mChapterEntity.value = mChapterDBDao.find(bookName, bookType)
+            _mChapterEntity.value = mChapterDBDao.find(bookUuid, bookType)
         }
     }
 

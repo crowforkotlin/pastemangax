@@ -1,0 +1,83 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/bottom_drag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/base_dp10"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/base_dp10"
+                android:layout_marginTop="@dimen/base_dp10"
+                android:text="@string/book_read_mode"
+                android:textStyle="bold" />
+
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/button_toggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/base_dp10"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                app:checkedButton="@id/button_standard"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_standard"
+                    style="@style/Book_CopyMangaX_ToggleButton_Vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/book_comic_standard"
+                    app:icon="@drawable/book_ic_reader_standard_24dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_stript"
+                    style="@style/Book_CopyMangaX_ToggleButton_Vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/book_comic_stript"
+                    app:icon="@drawable/book_ic_reader_stript_24dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_page"
+                    android:enabled="false"
+                    android:clickable="false"
+                    app:backgroundTint="#80A5A6AA"
+                    style="@style/Book_CopyMangaX_ToggleButton_Vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:lines="2"
+                    android:text="@string/book_comic_page"
+                    app:icon="@drawable/book_ic_reader_ltr_24dp" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

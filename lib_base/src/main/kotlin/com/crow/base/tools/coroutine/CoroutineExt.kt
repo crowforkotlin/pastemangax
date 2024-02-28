@@ -3,16 +3,12 @@ package com.crow.base.tools.coroutine
 import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.crow.base.tools.extensions.logError
+import com.crow.base.tools.extensions.error
 import com.crow.base.tools.extensions.logger
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,7 +27,7 @@ class GlobalCoroutineExceptionHandler : CoroutineExceptionHandler {
 
     override val key: CoroutineContext.Key<*> get() = CoroutineExceptionHandler
     override fun handleException(context: CoroutineContext, exception: Throwable) {
-        "Catch GlobalCoroutineException : ${exception.stackTraceToString()}".logError()
+        "Catch GlobalCoroutineException : ${exception.stackTraceToString()}".error()
     }
 }
 

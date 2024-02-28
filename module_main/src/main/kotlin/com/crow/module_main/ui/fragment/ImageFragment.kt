@@ -156,7 +156,6 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
 
             mImageName = it.getString(BaseStrings.NAME)
             mImageUrl = if (AppConfig.mCoverOrinal) MangaCoilVH.getOrignalCover(it.getString(BaseStrings.IMAGE_URL) ?: return) else it.getString(BaseStrings.IMAGE_URL)
-            mImageUrl.log()
         }
 
         /*app.imageLoader.enqueue(

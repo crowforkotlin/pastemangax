@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import androidx.activity.addCallback
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseEventEnum
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.getNavigationBarHeight
@@ -161,7 +161,7 @@ class MineRegFragment : BaseMviFragment<MineFragmentRegBinding>() {
                             * */
                             if (intent.mineResultsOkResp != null) {
                                 mIsRegSuccess = true
-                                if (BaseUserConfig.CURRENT_USER_TOKEN.isEmpty())
+                                if (MangaXAccountConfig.mAccountToken.isEmpty())
                                     mUserVM.input(MineIntent.Login(
                                         mUserVM.getUsername(mBinding.userRegEditTextUsr.text.toString()) ?: return@doOnResult,
                                         mUserVM.getPassword(mBinding.userRegEditTextPwd.text.toString()) ?: return@doOnResult

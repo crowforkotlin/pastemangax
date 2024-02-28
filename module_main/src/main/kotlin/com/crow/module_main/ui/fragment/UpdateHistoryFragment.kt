@@ -13,8 +13,8 @@ import com.crow.base.tools.extensions.BASE_ANIM_100L
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisible
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
+import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.popSyncWithClear
@@ -125,7 +125,7 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
                     intent.mViewState
                         .doOnLoading { mBinding.updateRefresh.autoRefreshAnimationOnly() }
                         .doOnError { _, _ ->
-                            if (mBinding.updateRv.isVisible) mBinding.updateRv.animateFadeOutWithEndInVisibility()
+                            if (mBinding.updateRv.isVisible) mBinding.updateRv.animateFadeOutInVisibility()
                             mBinding.updateTipsError.animateFadeIn()
                             mBinding.updateRefresh.finishRefresh(BASE_ANIM_300L.toInt() shl 1)
                         }
@@ -134,7 +134,7 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
                             if (intent.appUpdateResp == null) return@doOnResult
                             if (mBinding.updateRefresh.isRefreshing) mBinding.updateRefresh.finishRefresh()
                             if (mBinding.updateRv.isInvisible) mBinding.updateRv.animateFadeIn()
-                            if (mBinding.updateTipsError.isVisible) mBinding.updateTipsError.animateFadeOutWithEndInVisible()
+                            if (mBinding.updateTipsError.isVisible) mBinding.updateTipsError.animateFadeOutGone()
                             viewLifecycleOwner.lifecycleScope.launch {
                                 mBinding.updateRv.adapter = UpdateHistoryAdapter()
                                 (mBinding.updateRv.adapter as UpdateHistoryAdapter).notifyInstet(intent.appUpdateResp.mUpdates, BASE_ANIM_100L)

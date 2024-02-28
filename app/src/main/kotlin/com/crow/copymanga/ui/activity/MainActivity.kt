@@ -6,18 +6,21 @@ import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.crow.mangax.R.id.app_main_fcv
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseUserConfig
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.info
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.ui.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -27,6 +30,8 @@ class MainActivity : BaseMviActivity<ViewBinding>()  {
 
     /** ● 容器VM */
     private val mContainerVM by viewModel<MainViewModel>()
+
+    private var mInit = false
 
     /** ● 获取ViewBinding */
     override fun getViewBinding() = ViewBinding { FragmentContainerView(this).also { view -> view.id = app_main_fcv } }
@@ -75,19 +80,10 @@ class MainActivity : BaseMviActivity<ViewBinding>()  {
 
         mContainerVM.mAppConfig.onCollect(this) { appConfig ->
 
-            if (appConfig != null) {
+            // 第一次启动初始化APP（清楚数据后重新打开）则获取动态站点
+            if (appConfig?.mAppFirstInit == true) { mContainerVM.input(AppIntent.GetDynamicSite()) }
 
-                // 设置站点和TOKEN
-                BaseStrings.URL.COPYMANGA = appConfig.mCopyMangaSite
-                BaseStrings.URL.HotManga = appConfig.mHotMangaSite
-                BaseUserConfig.CURRENT_ROUTE = appConfig.mRoute
-                BaseUserConfig.RESOLUTION = appConfig.mResolution
-
-                // 第一次初始化则获取动态站点
-                if (appConfig.mAppFirstInit) mContainerVM.input(AppIntent.GetDynamicSite())
-
-                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = (!mDarkMode)
-            }
+            WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = (!mDarkMode)
         }
     }
 }

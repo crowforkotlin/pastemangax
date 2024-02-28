@@ -9,6 +9,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.Shader
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import android.view.WindowInsets
@@ -18,7 +20,7 @@ import androidx.core.content.res.use
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.crow.base.tools.extensions.logError
+import com.crow.base.tools.extensions.error
 import com.crow.base.tools.extensions.measureDimension
 import com.crow.base.tools.extensions.resolveDp
 import com.crow.module_book.R
@@ -28,7 +30,6 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.crow.mangax.R as mangaR
 import com.google.android.material.R as materialR
 import com.crow.base.R as baseR
 
@@ -76,6 +77,7 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		val insetEnd = getSystemUiDimensionOffset("status_bar_padding_end", fallbackInset) + insetCorner
 		val isRtl = layoutDirection == LAYOUT_DIRECTION_RTL
 		paint.strokeWidth = context.resources.resolveDp(2f)
+		paint.setShadowLayer(2f, 1f, 1f, Color.GRAY)
 		insetLeft = if (isRtl) insetEnd else insetStart
 		insetRight = if (isRtl) insetStart else insetEnd
 		insetTop = minOf(insetLeft, insetRight)
@@ -141,11 +143,8 @@ class ReaderInfoBarView @JvmOverloads constructor(
 			info.mChapterCount,
 			currentPage,
 			totalPage,
-		) + if (percent in 0f..1f) {
-			"     " + context.getString(R.string.book_reader_percent_pattern, (percent * 100).format())
-		} else {
-			""
-		}
+			if(percent in 0f..1f) (percent * 100).format() else ""
+		)
 		updateTextSize()
 		invalidate()
 	}
@@ -218,6 +217,6 @@ class ReaderInfoBarView @JvmOverloads constructor(
 		val resId = resources.getIdentifier(name, "dimen", "com.android.systemui")
 		resources.getDimensionPixelOffset(resId)
 	}.onFailure {
-		it.stackTraceToString().logError()
+		it.stackTraceToString().error()
 	}.getOrDefault(fallback)
 }

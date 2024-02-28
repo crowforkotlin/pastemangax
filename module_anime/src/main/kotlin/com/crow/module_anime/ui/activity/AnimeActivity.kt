@@ -12,7 +12,7 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.crow.base.tools.extensions.immersionFullScreen
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.immersureFullView
+import com.crow.base.tools.extensions.immersionFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
@@ -121,7 +121,7 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
 
         super.onCreate(savedInstanceState)
 
-        immersureFullView(window)
+        immersionFullView(window)
         immerureCutoutCompat(window)
     }
 
@@ -209,7 +209,7 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
      *
      * ● 2023-10-15 14:50:19 周日 下午
      */
-    override fun initData() {
+    override fun initData(savedInstanceState: Bundle?) {
 
         mVM.input(AnimeIntent.AnimeVideoIntent(mPathword, mChapterUUIDS[mPos]))
     }

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.crow.module_book.ui.view.comic.rv.ComicFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonFrame xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/comic_frame"
     android:layout_width="match_parent"
     android:background="@color/book_ant_10"
     android:layout_height="match_parent">
 
-    <com.crow.module_book.ui.view.comic.rv.ComicRecyclerView
+    <eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonRecyclerView
         android:id="@+id/list"
-        tools:listitem="@layout/book_activity_comic_rv"
+        tools:listitem="@layout/book_comic_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-</com.crow.module_book.ui.view.comic.rv.ComicFrameLayout>
+</eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonFrame>

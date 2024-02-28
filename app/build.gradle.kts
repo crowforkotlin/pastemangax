@@ -136,6 +136,11 @@ android {
             // .internal后缀
             applicationIdSuffix = ".internal"
 
+            // Internal 版本号和名称
+            versionCode = AppConfigs.version_code_internal
+
+            versionName = AppConfigs.version_name_internal
+
             // 是否使用线上环境
             buildConfigField("boolean", "IS_ONLINE_ENV", "true")
         }

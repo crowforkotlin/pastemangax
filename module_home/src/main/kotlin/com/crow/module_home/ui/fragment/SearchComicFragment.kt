@@ -5,12 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.crow.mangax.copymanga.BaseLoadStateAdapter
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.repeatOnLifecycle
@@ -48,13 +49,13 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
 
     private val mBaseEvent = BaseEvent.newInstance()
 
-    private var mComicRvAdapter = SearchComicRvAdapter { mOnTap?.invoke(it.mName,  it.mPathWord) }
+    private var mComicRvAdapter: SearchComicRvAdapter? = null
 
     fun doInputSearchComicIntent() {
 
         val keyword = mSearchView?.text.toString().ifEmpty {
             mBinding.homeSearchComicTips.text = getString(R.string.home_search_tips)
-            if (mBinding.homeSearchComicRv.isVisible) mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
+            if (mBinding.homeSearchComicRv.isVisible) mBinding.homeSearchComicRv.animateFadeOutInVisibility()
             mBinding.homeSearchComicTips.animateFadeIn()
             return
         }
@@ -70,7 +71,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
         mBaseEvent.setBoolean(NewHomeFragment.SEARCH_TAG, true)
         repeatOnLifecycle {
             mHomeVM.mComicSearchFlowPage?.onCollect(this) {
-                mComicRvAdapter.submitData(it)
+                mComicRvAdapter?.submitData(it)
             }
         }
     }
@@ -79,14 +80,17 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
 
     override fun initView(bundle: Bundle?) {
 
+        mComicRvAdapter = SearchComicRvAdapter(lifecycleScope) { mOnTap?.invoke(it.mName,  it.mPathWord) }
+
         // 设置适配器
-        mBinding.homeSearchComicRv.adapter = mComicRvAdapter.withLoadStateFooter(BaseLoadStateAdapter { mComicRvAdapter.retry() })
+        mBinding.homeSearchComicRv.adapter = mComicRvAdapter?.withLoadStateFooter(BaseLoadStateAdapter { mComicRvAdapter?.retry() })
 
         // 设置加载动画独占1行，漫画卡片3行
         (mBinding.homeSearchComicRv.layoutManager as GridLayoutManager).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return if (position == mComicRvAdapter.itemCount  && mComicRvAdapter.itemCount > 0) 3
+                    val itemCount = mComicRvAdapter?.itemCount ?: 0
+                    return if (position == itemCount && itemCount > 0) 3
                     else 1
                 }
             }
@@ -134,7 +138,7 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
                             dismissLoadingAnim()
                             if (intent.searchComicResp!!.mTotal == 0) {
                                 if (mBinding.homeSearchComicTips.isGone) {
-                                    mBinding.homeSearchComicRv.animateFadeOutWithEndInVisibility()
+                                    mBinding.homeSearchComicRv.animateFadeOutInVisibility()
                                     mBinding.homeSearchComicTips.animateFadeIn()
                                 }
                             } else {
@@ -150,5 +154,10 @@ class SearchComicFragment : BaseMviFragment<HomeFragmentSearchComicBinding>() {
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mComicRvAdapter = null
     }
 }

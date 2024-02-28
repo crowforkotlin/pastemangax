@@ -4,17 +4,34 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.crow.copymanga",
+  "applicationId": "com.crow.copymanga.internal",
   "variantName": "internalRelease",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 11,
-      "versionName": "1.2.7_internal",
-      "outputFile": "CopyMangaX-internal-release.apk"
+      "versionCode": 100001,
+      "versionName": "测试版1.1_internal",
+      "outputFile": "CopyMangaX-1.3.2-internal-release.apk"
     }
   ],
-  "elementType": "File"
+  "elementType": "File",
+  "baselineProfiles": [
+    {
+      "minApi": 28,
+      "maxApi": 30,
+      "baselineProfiles": [
+        "baselineProfiles/1/CopyMangaX-1.3.2-internal-release.dm"
+      ]
+    },
+    {
+      "minApi": 31,
+      "maxApi": 2147483647,
+      "baselineProfiles": [
+        "baselineProfiles/0/CopyMangaX-1.3.2-internal-release.dm"
+      ]
+    }
+  ],
+  "minSdkVersionForDexing": 23
 }

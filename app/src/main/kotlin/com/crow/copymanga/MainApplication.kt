@@ -11,6 +11,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.transition.CrossfadeTransition
 import com.crow.base.app.BaseApp
+import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.copymanga.model.di.factoryModule
 import com.crow.copymanga.model.di.fragmentModule
@@ -68,7 +69,7 @@ class MainApplication : BaseApp(), ImageLoaderFactory {
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
             .okHttpClient(get<OkHttpClient>(named("ProgressOkHttp")))
-            .transitionFactory(CrossfadeTransition.Factory(300, true))
+            .transitionFactory(CrossfadeTransition.Factory(200, true))
             .eventListener(object : EventListener {
                 override fun onSuccess(request: ImageRequest, result: SuccessResult) {
                     super.onSuccess(request, result)
@@ -84,5 +85,10 @@ class MainApplication : BaseApp(), ImageLoaderFactory {
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         MultiDex.install(this)
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        ChineseConverter.cancel()
     }
 }

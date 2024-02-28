@@ -1,9 +1,14 @@
 package com.crow.module_discover.ui.fragment
 
+import android.content.Context
 import android.graphics.Typeface
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.get
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
@@ -22,7 +27,7 @@ import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
 import com.crow.base.tools.extensions.navigateToWithBackStack
@@ -322,7 +327,9 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         mAdapter = DiscoverComicAdapter(lifecycleScope) { navigateBookComicInfo(it.mName, it.mPathWord) }
 
         // 设置适配器
-        mBinding.list.adapter = mAdapter.withLoadStateFooter(BaseLoadStateAdapter { mAdapter.retry() })
+        mBinding.list.adapter = mAdapter.withLoadStateFooter(BaseLoadStateAdapter {
+
+            mAdapter.retry() })
 
         // 设置加载动画独占1行，漫画卡片3行
         (mBinding.list.layoutManager as GridLayoutManager).apply {
@@ -351,7 +358,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                                 mBaseErrorViewStub.loadLayout(visible = true, animation = true)
 
                                 // 发现页 “漫画” 淡出
-                                mBinding.list.animateFadeOutWithEndInVisibility()
+                                mBinding.list.animateFadeOutInVisibility()
                             }
 
                             if (mBaseErrorViewStub.isGone()) toast(getString(baseR.string.base_loading_error_need_refresh))

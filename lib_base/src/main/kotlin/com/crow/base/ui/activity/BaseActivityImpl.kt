@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import com.crow.base.tools.extensions.info
 import com.crow.base.ui.dialog.LoadingAnimDialog
 
 /*************************
@@ -22,7 +23,7 @@ abstract class BaseActivityImpl : AppCompatActivity(), IBaseActivity {
     override fun doLazyDataDelayTime(): Long = 300L
     override fun doLazyData() {}
 
-    open fun initData() {}
+    open fun initData(savedInstanceState: Bundle?) {}
 
     abstract fun initView(savedInstanceState: Bundle?)
 
@@ -56,8 +57,8 @@ abstract class BaseActivityImpl : AppCompatActivity(), IBaseActivity {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initData(savedInstanceState)
         initView(savedInstanceState)
-        initData()
         initListener()
     }
 }

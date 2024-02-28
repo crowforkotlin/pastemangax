@@ -73,13 +73,13 @@ fun View.animateFadeOut(duration: Long = BASE_ANIM_300L): ViewPropertyAnimator {
     return animate().alpha(0f).setDuration(duration)
 }
 
-fun View.animateFadeOutWithEndInVisibility(duration: Long = BASE_ANIM_300L): ViewPropertyAnimator {
+fun View.animateFadeOutInVisibility(duration: Long = BASE_ANIM_300L): ViewPropertyAnimator {
     alpha = 1f
     visibility = View.VISIBLE
     return animate().alpha(0f).setDuration(duration).withEndAction { isInvisible = true }
 }
 
-fun View.animateFadeOutWithEndInVisible(duration: Long = BASE_ANIM_300L): ViewPropertyAnimator {
+fun View.animateFadeOutGone(duration: Long = BASE_ANIM_300L): ViewPropertyAnimator {
     alpha = 1f
     visibility = View.VISIBLE
     return animate().alpha(0f).setDuration(duration).withEndAction { isVisible = false }

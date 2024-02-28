@@ -7,7 +7,6 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.crow.base.R
 import com.crow.mangax.R as mangaR
 import com.crow.mangax.copymanga.BaseLoadStateAdapter
 import com.crow.mangax.copymanga.BaseStrings
@@ -16,7 +15,7 @@ import com.crow.mangax.copymanga.processTokenError
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeIn
-import com.crow.base.tools.extensions.animateFadeOutWithEndInVisibility
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.onCollect
@@ -171,12 +170,12 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
                 when(mBinding.tablayout.selectedTabPosition) {
                     0 -> {
                         if (mBinding.comicList.adapter == null) initComicList()
-                        mBinding.novelList.animateFadeOutWithEndInVisibility()
+                        mBinding.novelList.animateFadeOutInVisibility()
                         mBinding.comicList.animateFadeIn()
                     }
                     1 -> {
                         if (mBinding.novelList.adapter == null) initNovelList()
-                        mBinding.comicList.animateFadeOutWithEndInVisibility()
+                        mBinding.comicList.animateFadeOutInVisibility()
                         mBinding.novelList.animateFadeIn()
                     }
                 }
@@ -211,11 +210,11 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
                                 )
                             }
                             if (mComicAdapter.itemCount == 0) {
-                                mBinding.comicList.animateFadeOutWithEndInVisibility()
+                                mBinding.comicList.animateFadeOutInVisibility()
                                 if (mError.isGone()) mError.loadLayout(visible = true, animation = true)
                             }
                             if (mNovelAdapter.itemCount == 0) {
-                                mBinding.novelList.animateFadeOutWithEndInVisibility()
+                                mBinding.novelList.animateFadeOutInVisibility()
                                 if (mError.isGone()) mError.loadLayout(visible = true, animation = true)
                             }
                         }

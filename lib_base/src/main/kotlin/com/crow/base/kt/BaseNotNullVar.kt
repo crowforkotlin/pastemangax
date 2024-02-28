@@ -12,19 +12,27 @@ import kotlin.reflect.KProperty
  * @formatter:on
  **************************/
 
-class BaseNotNullVar<T : Any>(val mInitializeOnce: Boolean = false) :
-    ReadWriteProperty<Any, T> {
+class BaseNotNullVar<T : Any>(
+    val mInitializeOnce: Boolean = false,
+    val setVal: (() -> Unit)? = null,
+    val getVal: (() -> Unit)? = null
+) : ReadWriteProperty<Any, T> {
 
     private var value: T? = null
     override fun getValue(thisRef: Any, property: KProperty<*>): T {
+        getVal?.invoke()
         return value ?: error("Property ${property.name} should be initialized before get.")
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
         if (mInitializeOnce) {
-            if (this.value == null) this.value = value
+            if (this.value == null) {
+                this.value = value
+                setVal?.invoke()
+            }
         } else {
             this.value = value
+            setVal?.invoke()
         }
     }
 }

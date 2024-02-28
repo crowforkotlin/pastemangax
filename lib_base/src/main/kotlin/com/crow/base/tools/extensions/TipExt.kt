@@ -23,11 +23,11 @@ import com.orhanobut.logger.Logger
 const val TIPS_TAG = "CopyMangaX"
 
 /* Original PRETTY LOGGER日志输出 */
-fun String.logError() = Logger.t(TIPS_TAG).e(this)
-fun String.logDebug() = Logger.t(TIPS_TAG).d(this)
-fun String.logWarnign() = Logger.t(TIPS_TAG).w(this)
-fun String.logInfo() = Logger.t(TIPS_TAG).i(this)
-fun String.logVerbose() = Logger.t(TIPS_TAG).v(this)
+fun Any?.error() = Logger.t(TIPS_TAG).e(this.toString())
+fun Any?.debug() = Logger.t(TIPS_TAG).d(this.toString())
+fun Any?.warning() = Logger.t(TIPS_TAG).w(this.toString())
+fun Any?.info() = Logger.t(TIPS_TAG).i(this.toString())
+fun Any.verbose() = Logger.t(TIPS_TAG).v(this.toString())
 
 /* 三方依赖Logger 有反射 */
 @Deprecated("此函数包含反射，不建议在正式版中大量使用")

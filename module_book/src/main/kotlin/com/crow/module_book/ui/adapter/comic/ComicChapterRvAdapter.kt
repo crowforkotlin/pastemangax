@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.view.TooltipsView
+import com.crow.mangax.copymanga.tryConvert
 import com.crow.module_book.R
 import com.crow.mangax.R as mangaR
 import com.crow.module_book.databinding.BookFragmentChapterRvBinding
@@ -29,10 +31,30 @@ import kotlin.properties.Delegates
  **************************/
 
 class ComicChapterRvAdapter(
-    private var mDoOnTapChapter: (ComicChapterResult) -> Unit
+    private val mLifecycleScope: LifecycleCoroutineScope,
+    private var mClick: (ComicChapterResult) -> Unit
 ) : RecyclerView.Adapter<ComicChapterRvAdapter.ChapterVH>() {
 
-    inner class ChapterVH(rvBinding: BookFragmentChapterRvBinding) : RecyclerView.ViewHolder(rvBinding.root) { val mButton = rvBinding.comicInfoRvChip }
+    inner class ChapterVH(binding: BookFragmentChapterRvBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        private val mButton = binding.button
+
+        init {
+            mButton.doOnClickInterval { mClick(mComic[absoluteAdapterPosition]) }
+            mButton.doOnLayout { TooltipsView.showTipsWhenLongClick(mButton, it.measuredWidth shr 2) }
+        }
+
+        fun onBind(comic: ComicChapterResult) {
+            mLifecycleScope.tryConvert(comic.name, mButton::setText)
+            if (mChapterName != null && comic.name == mChapterName!!) {
+                mButton.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.book_blue))
+                mButton.setTextColor(ContextCompat.getColor(itemView.context, android.R.color.white))
+            } else {
+                mButton.background.setTint(mBtSurfaceColor)
+                mButton.setTextColor(mBtTextColor)
+            }
+        }
+    }
 
     var mChapterName: String? = null
 
@@ -57,27 +79,13 @@ class ComicChapterRvAdapter(
     fun getItem(position: Int) = mComic[position]
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterVH {
-        return ChapterVH(BookFragmentChapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)).also { vh ->
-            vh.mButton.doOnClickInterval { mDoOnTapChapter(mComic[vh.absoluteAdapterPosition]) }
-            vh.mButton.doOnLayout {
-                TooltipsView.showTipsWhenLongClick(vh.mButton, it.measuredWidth shr 2)
-            }
-        }
+        return ChapterVH(BookFragmentChapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+
     }
 
     override fun getItemCount(): Int = mComic.size
 
-    override fun onBindViewHolder(vh: ChapterVH, position: Int) {
-        val comic = getItem(position)
-        vh.mButton.text = comic.name
-        if (mChapterName != null && comic.name == mChapterName!!) {
-            vh.mButton.setBackgroundColor(ContextCompat.getColor(vh.itemView.context, R.color.book_blue))
-            vh.mButton.setTextColor(ContextCompat.getColor(vh.itemView.context, android.R.color.white))
-        } else {
-            vh.mButton.background.setTint(mBtSurfaceColor)
-            vh.mButton.setTextColor(mBtTextColor)
-        }
-    }
+    override fun onBindViewHolder(vh: ChapterVH, position: Int) { vh.onBind(getItem(position)) }
 
     suspend fun doNotify(newDataResult: MutableList<ComicChapterResult>, delayMs: Long = 1L) {
         mMutex.withLock {
