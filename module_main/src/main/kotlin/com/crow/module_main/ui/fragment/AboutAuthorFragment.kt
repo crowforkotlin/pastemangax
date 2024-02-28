@@ -7,7 +7,9 @@ import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import androidx.activity.addCallback
 import coil.imageLoader
+import coil.load
 import coil.request.ImageRequest
+import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import com.crow.base.app.app
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -56,10 +58,9 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
         mBinding.root.setPadding(0, mContext.getStatusBarHeight(), 0, mContext.getNavigationBarHeight())
 
         app.imageLoader.enqueue(
+//            mBinding.icon.load(mangaR.drawable.base_icon_crow)
             ImageRequest.Builder(mContext)
                 .data(mangaR.drawable.base_icon_crow) // 加载的图片地址或占位符
-                .transformations(CircleCropTransformation()) // 应用圆形裁剪
-                .size(mContext.dp2px(36f).toInt()) // 设置图片大小
                 .target(mBinding.icon)
                 .build()
         )

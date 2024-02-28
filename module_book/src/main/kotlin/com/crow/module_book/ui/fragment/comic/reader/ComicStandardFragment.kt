@@ -1,19 +1,20 @@
 package com.crow.module_book.ui.fragment.comic.reader
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withCreated
+import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.coroutine.FlowBus
-import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.findCenterViewPosition
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
 import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.onCollect
-import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
@@ -32,7 +33,6 @@ import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicStandardRvAdapter
 import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import com.crow.base.R as baseR
@@ -99,7 +99,32 @@ class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
      *
      * ● 2023-09-04 21:56:59 周一 下午
      */
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun initListener() {
+
+        parentFragmentManager.setFragmentResultListener(ComicActivity.ROTATE, viewLifecycleOwner) { key, bundle ->
+            if (mAdapter?.itemCount == 0) {
+                toast(getString(R.string.book_prev_val))
+                return@setFragmentResultListener
+            }
+            requireActivity().apply {
+                intent.putExtra(ComicActivity.ROTATE, true)
+                when (requestedOrientation) {
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT -> {
+                        updateUiState(isRotate = true, directionY = true)
+                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                    }
+                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE -> {
+                        updateUiState(isRotate = true, directionY = false)
+                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    }
+                    else -> {
+                        updateUiState(isRotate = true, directionY = true)
+                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                    }
+                }
+            }
+        }
 
         parentFragmentManager.setFragmentResultListener(ComicActivity.CHAPTER_POSITION, viewLifecycleOwner) { key, bundle ->
             val position = bundle.getInt(key)
@@ -108,10 +133,10 @@ class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
                 override fun onChildViewDetachedFromWindow(view: View) { }
                 override fun onChildViewAttachedToWindow(view: View) {
                     mBinding.list.removeOnChildAttachStateChangeListener(this)
-                    "Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
+//                    "Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
                     if (isDetached) return
                     if (position == -1) {
-                        mBinding.list.post { updateUiState(positionOffset) }
+                        mBinding.list.post { updateUiState(positionOffset, 1) }
                         return
                     }
                     if (mBinding.list.tag == null) {
@@ -142,8 +167,9 @@ class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
             })
         }
 
-        parentFragmentManager.setFragmentResultListener(ComicActivity.SLIDE, this) { key, bundle ->
+        parentFragmentManager.setFragmentResultListener(ComicActivity.SLIDE, viewLifecycleOwner) { key, bundle ->
             mBinding.list.post {
+                if (mAdapter?.itemCount == 0) return@post
                 mBinding.list.scrollToPosition(bundle.getInt(key))
                 mBinding.list.post {
                     if (isDetached) return@post
@@ -153,7 +179,7 @@ class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
         }
 
         mBinding.list.setNestedPreScrollListener { _, _, position ->
-            updateUiState()
+            updateUiState(pos = position)
         }
     }
 
@@ -169,8 +195,18 @@ class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
                 is BookIntent.GetComicPage -> {
                     intent.mViewState
                         .doOnResult {
-                            lifecycleScope.launch {
-                                val resp = intent.comicpage ?: return@launch
+                            viewLifecycleScope {
+                                withStarted {
+                                    mBinding.list.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
+                                        override fun onChildViewDetachedFromWindow(view: View) { }
+                                        override fun onChildViewAttachedToWindow(view: View) {
+                                            mBinding.list.post { updateUiState() }
+                                        }
+                                    })
+                                }
+                            }
+                            viewLifecycleScope {
+                                val resp = intent.comicpage ?: return@viewLifecycleScope
                                 val comic = resp.mComic
                                 val chapter = resp.mChapter
                                 FlowBus.with<BookChapterEntity>(BaseEventEnum.UpdateChapter.name).post(
@@ -230,25 +266,36 @@ class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 
-    private fun updateUiState(offset: Int = -1) {
+    private fun updateUiState(offset: Int = -1, pos: Int = -1, isRotate: Boolean = false, directionY: Boolean = false) {
         val list = (mAdapter ?: return).getCurrentList()
-        val centerViewPos = mBinding.list.findCenterViewPosition()
+        val centerViewPos = if(pos == -1) mBinding.list.findCenterViewPosition() else pos
         val chapterId : Int = when(val item = list.first()) {
             is ReaderPrevNextInfo -> item.mChapterID
             is Content -> item.mChapterID
             else -> error("unknow view type!")
         }
-        var positionOffset = offset
+        var positionOffset: Float = offset.toFloat()
+
         if (offset == -1) {
-            positionOffset = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(centerViewPos)?.top ?: 0
+            positionOffset = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(centerViewPos)?.top?.toFloat() ?: 0f
+            if (isRotate) {
+                positionOffset = if (directionY) {
+                    positionOffset * (mBinding.list.width / mBinding.list.height.toFloat())
+                } else {
+                    positionOffset * (mBinding.list.height / mBinding.list.width.toFloat())
+                }
+            }
         }
+        val offsetInt = positionOffset.toInt()
+        mVM.mScrollPos = centerViewPos
+        mVM.mScrollPosOffset = offsetInt
         mVM.updateUiState(ReaderUiState(
             mReaderMode = ComicCategories.Type.STANDARD,
             mReaderContent = mVM.mPageContentMapper[chapterId] ?: return,
             mChapterID = chapterId,
             mTotalPages = list.size,
             mCurrentPagePos = centerViewPos,
-            mCurrentPagePosOffset = positionOffset
+            mCurrentPagePosOffset = offsetInt
         ))
     }
 }

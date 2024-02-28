@@ -42,6 +42,7 @@ import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
+import com.crow.mangax.copymanga.tryConvert
 import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverComicMoreLayoutBinding
 import com.crow.module_discover.databinding.DiscoverFragmentComicBinding
@@ -276,11 +277,13 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                     theme.add(0, Theme(null, 0, 0, null, getString(mangaR.string.mangax_all), ""))
                     theme.forEach {
                         val chip = Chip(mContext)
-                        chip.text = it.mName
+                        viewLifecycleOwner.lifecycleScope.tryConvert(it.mName, chip::setText)
                         chip.textSize = chipTextSize
                         chip.doOnClickInterval { _ ->
                             dialog.cancel()
-                            mSubtitlePrefix = it.mName
+                            viewLifecycleOwner.lifecycleScope.tryConvert(it.mName) { text ->
+                                mSubtitlePrefix = text
+                            }
                             mToolbarSubtitle?.animateFadeIn()
                             mVM.setTheme(it.mPathWord)
                             updateComic()
@@ -298,10 +301,12 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                     top.forEach {
                         val chip = Chip(mContext)
                         chip.textSize = chipTextSize
-                        chip.text = it.mName
+                        viewLifecycleOwner.lifecycleScope.tryConvert(it.mName, chip::setText)
                         chip.doOnClickInterval { _ ->
                             dialog.cancel()
-                            mSubtitleSuffix = it.mName
+                            viewLifecycleOwner.lifecycleScope.tryConvert(it.mName) { text ->
+                                mSubtitleSuffix = text
+                            }
                             mToolbarSubtitle?.animateFadeIn()
                             mVM.setRegion(it.mPathWord)
                             updateComic()

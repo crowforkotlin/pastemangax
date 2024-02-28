@@ -31,4 +31,5 @@
 	<string name="book_comic">漫画</string>
 	<string name="book_read_mode">阅读模式</string>
 	<string name="book_night_eye_protection_mode">亮度调节</string>
+	<string name="book_empty_item_tips">请先加载</string>
 </resources>

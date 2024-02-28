@@ -4,7 +4,8 @@
     android:id="@+id/comic_frame"
     android:layout_width="match_parent"
     android:background="@color/book_ant_10"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.fragment.comic.reader.ComicStandardFragment">
 
     <eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonRecyclerView
         android:id="@+id/list"

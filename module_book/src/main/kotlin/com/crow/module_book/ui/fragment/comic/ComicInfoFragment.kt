@@ -13,13 +13,6 @@ import androidx.lifecycle.lifecycleScope
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.crow.base.app.app
-import com.crow.mangax.copymanga.BaseEventEnum
-import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.MangaXAccountConfig
-import com.crow.mangax.copymanga.entity.Fragments
-import com.crow.mangax.copymanga.formatHotValue
-import com.crow.mangax.copymanga.getSpannableString
-import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutInVisibility
@@ -35,7 +28,14 @@ import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.formatHotValue
+import com.crow.mangax.copymanga.getSpannableString
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_book.R
 import com.crow.module_book.model.database.model.BookChapterEntity
@@ -47,13 +47,12 @@ import com.crow.module_book.model.resp.comic_info.Status
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.ComicChapterRvAdapter
 import com.crow.module_book.ui.fragment.InfoFragment
-import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.core.qualifier.named
-import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 class ComicInfoFragment : InfoFragment() {
 
@@ -244,23 +243,7 @@ class ComicInfoFragment : InfoFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mAdapter = ComicChapterRvAdapter(viewLifecycleOwner.lifecycleScope) { comic  ->
-            mContext.startActivity<ComicActivity> {
-                putExtra(ComicActivity.INFO, toJson(ComicActivityInfo(
-                    mTitle = mName,
-                    mSubTitle = comic.name,
-                    mPathword = comic.comicPathWord,
-                    mComicUuid = comic.comicId,
-                    mChapterCurrentUuid = comic.uuid,
-                    mChapterNextUuid = comic.next,
-                    mChapterPrevUuid = comic.prev
-                )))
-            }
-            if (Build.VERSION.SDK_INT >= 34) {
-                requireActivity().overrideActivityTransition(AppCompatActivity.OVERRIDE_TRANSITION_CLOSE, android.R.anim.fade_in, android.R.anim.fade_out)
-            } else {
-                requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            }
-            if (MangaXAccountConfig.mAccountToken.isNotEmpty()) mAdapter?.mChapterName = comic.name
+            startComicActivity(comic.name, comic.comicPathWord, comic.comicId, comic.uuid, comic.prev, comic.next)
         }
         super.onViewCreated(view, savedInstanceState)
     }
@@ -338,21 +321,26 @@ class ComicInfoFragment : InfoFragment() {
             if ((mAdapter ?: return@doOnClickInterval).itemCount == 0 || mVM.mComicInfoPage == null) return@doOnClickInterval
             val chapter = mVM.mChapterEntity.value
             if (chapter == null) {
-                val adapterChapter = mAdapter!!.getItem(0)
-                startComicActivity(adapterChapter.prev, adapterChapter.next, adapterChapter.uuid, adapterChapter.comicPathWord, adapterChapter.name)
+                val comic = mAdapter!!.getItem(0)
+                startComicActivity(comic.name, comic.comicPathWord, comic.comicId , comic.uuid, comic.prev, comic.next)
             } else {
                 val pathword = mVM.mComicInfoPage?.mComic?.mPathWord ?: return@doOnClickInterval
-                startComicActivity(chapter.mChapterPrevUuid, chapter.mChapterNextUuid, chapter.mChapterCurrentUuid, pathword, chapter.mChapterName)
+                startComicActivity(chapter.mChapterName, pathword, chapter.mBookUuid, chapter.mChapterCurrentUuid, chapter.mChapterPrevUuid, chapter.mChapterNextUuid)
             }
         }
     }
 
-    private fun startComicActivity(prev: String?, next: String?, uuid: String, pathword: String, chapterName: String) {
+    private fun startComicActivity(chapterName: String, pathword: String, comicUuid: String, uuid: String, prev: String?, next: String?) {
         mContext.startActivity<ComicActivity> {
-            putExtra(ComicViewModel.PREV_UUID, prev)
-            putExtra(ComicViewModel.NEXT_UUID, next)
-            putExtra(ComicViewModel.UUID, uuid)
-            putExtra(BaseStrings.PATH_WORD, pathword)
+            putExtra(ComicActivity.INFO, toJson(ComicActivityInfo(
+                mTitle = mName,
+                mSubTitle = chapterName,
+                mPathword = pathword,
+                mComicUuid = comicUuid,
+                mChapterCurrentUuid = uuid,
+                mChapterNextUuid = next,
+                mChapterPrevUuid = prev
+            )))
         }
         if (Build.VERSION.SDK_INT >= 34) {
             requireActivity().overrideActivityTransition(AppCompatActivity.OVERRIDE_TRANSITION_CLOSE, android.R.anim.fade_in, android.R.anim.fade_out)

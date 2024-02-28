@@ -424,7 +424,6 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
                             mSiteDialog?.let {  dialog ->
                                 mSiteBinding?.let { binding ->
                                     val sites = (intent.siteResp?.mApi?.flatMap { it.map {  site -> site } } ?: return@doOnResult).toMutableList()
-                                    sites.info()
                                     if (binding.list.isInvisible) {
                                         binding.list.animateFadeIn()
                                     }
