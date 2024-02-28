@@ -64,7 +64,8 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      * ● 2024-01-28 00:25:53 周日 上午
      * @author crowforkotlin
      */
-    var mComicInfo: ComicActivityInfo by BaseNotNullVar(false, setVal = { initComicReader() })
+    private var mUpdateComicInfoListener: (() -> Unit)? = null
+    var mComicInfo: ComicActivityInfo by BaseNotNullVar(false)
     val mPathword: String get() = mComicInfo.mPathword
     val mComicUuid: String get() = mComicInfo.mComicUuid
     val mCurrentChapterUuid: String get() = mComicInfo.mChapterCurrentUuid
@@ -73,14 +74,12 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     var mLoadingJob: Job? = null
     private var mIsNext: Boolean = false
 
-    /**
-     * ● 漫画设置配置
-     *
-     * ● 2024-02-14 20:32:07 周三 下午
-     * @author crowforkotlin
-     */
-    private val _mOption = MutableStateFlow(Any())
-    val mOption: StateFlow<Any> get() = _mOption
+    var mScrollPos = 0
+    var mScrollPosOffset = 0
+
+    fun setUpdateComicInfoListener(listener: () -> Unit) {
+        mUpdateComicInfoListener =  listener
+    }
 
     /**
      * ● 漫画 阅读器内容，存储着当前章节页面的数据，以及其他已加载章节的页面内容并在其内容增加了分割提示
@@ -144,7 +143,6 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     var mReaderSetting: MineReaderSettingEntity? = null
     var mReaderComic: MineReaderComicEntity? = null
         private set
-
 
     suspend fun getSetting(): MineReaderSettingEntity? {
         return viewModelScope.async(Dispatchers.IO) { mComicDBDao.findSetting(MangaXAccountConfig.mAccount).also { mReaderSetting = it } }.await()
@@ -216,7 +214,6 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      *
      * ● 2023-09-02 19:51:53 周六 下午
      */
-
     private fun ComicPageResp.getLoadingPages(): Pair<MutableList<Any>, MutableList<Any>> {
         var currentPages: MutableList<Any> = mContent.value.mPages.toMutableList()
         var pages: MutableList<Any>
@@ -455,15 +452,10 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         }
     }
 
-    private fun initComicReader() {
+    fun initComicReader(complete: (MineReaderComicEntity) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            val comic = mComicDBDao.getComic(MangaXAccountConfig.mAccount, mComicUuid, mCurrentChapterUuid)
-            if (mReaderComic == null) {
-                mReaderComic = comic
-                comic?.let { _mOption.value = it }
-            } else {
-                mReaderComic = comic
-            }
+            mReaderComic= mComicDBDao.getComic(MangaXAccountConfig.mAccount, mComicUuid, mCurrentChapterUuid)
+            mReaderComic?.let(complete)
         }
     }
 
@@ -518,7 +510,6 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         var pos =  _mContent.value.mPages.indexOf(pages?.get(max(0, reader.mChapterPosition)))
         if (first is ReaderLoading) {
             if (first.mMessage == app.getString(com.crow.base.R.string.base_loading)) {
-                "POS ++".log()
                 pos ++
             }
         }
@@ -526,9 +517,10 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
     fun getPosOffset() = mReaderComic?.mChapterPositionOffset ?: 0
 
-    fun tryUpdateReaderComicrInfo(position: Int, offset: Int, chapterID: Int, readerInfo: ReaderInfo) {
+    inline fun tryUpdateReaderComicrInfo(position: Int, offset: Int, chapterID: Int, readerInfo: ReaderInfo, update: (ComicActivityInfo) -> Unit) {
         if (readerInfo.mChapterUuid != mCurrentChapterUuid) {
             mComicInfo = mComicInfo.copy(mChapterCurrentUuid = readerInfo.mChapterUuid, mChapterNextUuid = readerInfo.mNextUUID, mChapterPrevUuid = readerInfo.mPrevUUID)
+            update(mComicInfo)
         } else {
             updatePos(position, offset, chapterID)
         }

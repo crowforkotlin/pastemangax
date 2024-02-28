@@ -1,5 +1,7 @@
 package com.crow.module_book.ui.fragment.comic.reader
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -61,6 +63,8 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     private var mCurrentChapterPageID = -1
 
+    private val mLayoutmanager by lazy { LinearLayoutManager(requireActivity() as ComicActivity) }
+
     override fun getViewBinding(inflater: LayoutInflater) = BookFragmentComicBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,13 +77,42 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         // Set LayoutManager support zoom
-        mBinding.list.layoutManager = LinearLayoutManager(requireActivity() as ComicActivity)
+        mBinding.list.layoutManager = mLayoutmanager
 
         // Set RvAdapter
         mBinding.list.adapter = mAdapter
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun initListener() {
+
+        parentFragmentManager.setFragmentResultListener(ComicActivity.ROTATE, viewLifecycleOwner) { key, bundle ->
+            if (mAdapter?.itemCount == 0) return@setFragmentResultListener
+            requireActivity().apply {
+                intent.putExtra(ComicActivity.ROTATE, true)
+                getPosItem { index, pagePos, pageId, _ ->
+                    when (requestedOrientation) {
+                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT -> {
+                            val offset = mLayoutmanager.findViewByPosition(index)?.top ?.run { this * (mBinding.list.width.toFloat() / mBinding.list.height) } ?: 0
+                            updateUiState (pagePos, offset.toInt() , pageId)
+                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                        }
+                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE -> {
+                            val offset = mLayoutmanager.findViewByPosition(index)?.top
+                                ?.run { this * (mBinding.list.height.toFloat() / mBinding.list.width) } ?: 0
+                            updateUiState (pagePos, offset.toInt() , pageId)
+                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                        }
+                        else -> {
+                            val offset = mLayoutmanager.findViewByPosition(index)?.top
+                                ?.run { this * (mBinding.list.width.toFloat() / mBinding.list.height) } ?: 0
+                            updateUiState (pagePos, offset.toInt() , pageId)
+                            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                        }
+                    }
+                }
+            }
+        }
 
         parentFragmentManager.setFragmentResultListener(ComicActivity.CHAPTER_POSITION, viewLifecycleOwner) { key, bundle ->
             val position = bundle.getInt(key)
@@ -88,16 +121,14 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                 override fun onChildViewDetachedFromWindow(view: View) { }
                 override fun onChildViewAttachedToWindow(view: View) {
                     mBinding.list.removeOnChildAttachStateChangeListener(this)
-                    "Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
+//                    "Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
                     if (isDetached) return
                     if (position == -1) {
                         mBinding.list.post {
                             mBinding.list.post {
                                 mBinding.list.scrollBy(0, resources.getDimensionPixelSize(baseR.dimen.base_dp192))
                                 mBinding.list.post {
-                                    getPosItem().apply {
-                                        updateUiState(second, positionOffset, third)
-                                    }
+                                    getPosItem { index, pagePos, pageId, itemPos -> updateUiState(pagePos, positionOffset, pageId) }
                                 }
                             }
                         }
@@ -106,7 +137,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                     if (mBinding.list.tag == null) {
                         mBinding.list.tag = mBinding.list
                         mBinding.list.post {
-                            (mBinding.list.layoutManager as LinearLayoutManager).apply {
+                            mLayoutmanager.apply {
                                 if (!isAttachedToWindow) return@post
                                 findViewByPosition(findFirstVisibleItemPosition())?.apply {
                                     post {
@@ -114,8 +145,9 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                                         scrollToPositionWithOffset(position, positionOffset)
                                         mBinding.list.post {
                                             if (isDetached) return@post
-                                            val triple = getPosItem(position)
-                                            updateUiState(triple.second, positionOffset, triple.third)
+                                            getPosItem(position) { index, pagePos, pageId, itemPos ->
+                                                updateUiState(pagePos, positionOffset, pageId)
+                                            }
                                         }
                                     }
                                 }
@@ -126,8 +158,9 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                             mBinding.list.scrollToPosition(position)
                             mBinding.list.post {
                                 if (isDetached) return@post
-                                val triple = getPosItem(position)
-                                updateUiState(triple.second, positionOffset, triple.third)
+                                getPosItem(position) { index, pagePos, pageId, itemPos ->
+                                    updateUiState(pagePos, positionOffset, pageId)
+                                }
                             }
                         }
                     }
@@ -139,11 +172,14 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
             if (isDetached) return@setFragmentResultListener
             mBinding.list.post {
                 val pos = bundle.getInt(key)
-                val triple = getPosItem()
-                mBinding.list.scrollToPosition(triple.first - triple.second + pos)
-                mBinding.list.post {
-                    if (isDetached) return@post
-                    updateUiState(triple.second, (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(triple.first)?.top ?: 0, triple.third)
+                if (mAdapter?.itemCount == 0) return@post
+                getPosItem { index, pagePos, pageId, itemPos ->
+                    mBinding.list.scrollToPosition(index - pagePos + pos)
+                    mBinding.list.post {
+                        if (isDetached) return@post
+                        val view = mLayoutmanager.findViewByPosition(index)
+                        updateUiState(pagePos, view?.top ?: 0, pageId)
+                    }
                 }
             }
         }
@@ -153,9 +189,10 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
         }
         mBinding.list.setNestedPreScrollListener { dx, dy, position ->
             if (position < 0) return@setNestedPreScrollListener
-            val triple = getPosItem(position)
-            val top = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(position)?.top ?: 0
-            updateUiState(triple.second, top, triple.third)
+            getPosItem(position) { _, pagePos, pageId, _ ->
+                val top = mLayoutmanager.findViewByPosition(position)?.top ?: 0
+                updateUiState(pagePos, top, pageId)
+            }
         }
     }
 
@@ -189,12 +226,13 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
         }
     }
 
-    private fun getPosItem(itemPos: Int? = null): Triple<Int, Int, Int> {
+    private inline fun getPosItem(itemPos: Int? = null, invoke: (Int, Int, Int, Int?) -> Unit) {
         val list = (mAdapter ?: error("Adapter is null!")).getCurrentList()
         val item: Any
         var index: Int? = null
+        var itemCenterPos: Int? = null
         if (itemPos == null) {
-            val itemCenterPos = mBinding.list.findCenterViewPosition()
+            itemCenterPos = mBinding.list.findCenterViewPosition()
             item = list[itemCenterPos]
             index = list.indexOf(item)
         } else {
@@ -213,11 +251,21 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
             }
             else -> { error("unknow item type!") }
         }
+        mVM.mScrollPos = index ?: 0
 
-        return Triple(index ?: 0, chapterPagePos, chapterPageID)
+        invoke(index ?: 0, chapterPagePos, chapterPageID, itemCenterPos)
+//        return Triple(index ?: 0, chapterPagePos, chapterPageID)
     }
 
+    data class Item(
+        val mIndex: Int,
+        val mPagePosition: Int,
+        val mPageId: Int,
+        val mItemPosition: Int
+    )
+
     private fun updateUiState(currentPage: Int, offset: Int, chapterPageID: Int) {
+        mVM.mScrollPosOffset = offset
         val reader = mVM.mPageContentMapper[chapterPageID] ?: return
         if (mCurrentChapterPageID != chapterPageID) {
             mCurrentChapterPageID = chapterPageID
@@ -237,7 +285,6 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                 )
             }
         }
-
         mVM.updateUiState(
             ReaderUiState(
                 mReaderMode = ComicCategories.Type.STRIPT,

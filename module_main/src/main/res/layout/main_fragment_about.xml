@@ -6,14 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/icon"
         android:layout_width="@dimen/base_dp108"
         android:layout_height="@dimen/base_dp108"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/base_todo_textview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_about_back"
+        app:round="@dimen/base_dp99"
         tools:src="@drawable/base_icon_crow" />
 
     <com.google.android.material.button.MaterialButton
