@@ -23,7 +23,7 @@
 
 - ### **🔶 关于项目**
     - **🔷 [Dev分支可预览最新的开发进度](https://github.com/CrowForKotlin/CopyManga_Crow/tree/dev)**
-    - **🔷 App的所有Icon几乎都是作者二改、V1.1.0二次设计、V1.2.5三次设计**
+    - **🔷 设计ICON、二次创新ICON、框架 --> crowforkotlin**
 
 - ### **❓问题或方案参考及开源贡献**
     - **✅[Mihonapp - Author : mihon](https://github.com/mihonapp/mihon)**
