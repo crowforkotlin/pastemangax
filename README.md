@@ -11,21 +11,19 @@
 <img alt="ViewCount" src="https://views.whatilearened.today/views/github/crowforkotlin/CopyMangaX.svg"/>
 </p>
 
-[![Telegram](https://img.shields.io/badge/-telegram-red?color=white&logo=telegram&logoColor=blue)](https://t.me/+kFkVVuDOFsFiMzQ1)
+[![Join Telegram](https://img.shields.io/badge/-telegram-red?color=white&logo=telegram&logoColor=blue)](https://t.me/+kFkVVuDOFsFiMzQ1)
 
 **```如果你需要Clone该项目，在Clone完成后请进入到该项目的根目录下并输入git submodule update --init --recursive更新子模块才可继续执行编译```**
 
-- ### **🔶前言**
-    - **🟠数据来源于拷贝漫画 作者不对其中呈现的任何内容负责。**
-    - **🔷项目介绍**
-        - **🟠项目采用 <u>多模块</u> 和 <u>MVI框架</u> 开发**
-        - **🟠此项目非常注重代码质量、重构有十次左右了 从最初的MVC --> MVVM --> MVI 都是借鉴了自己以前的项目去实现**
+- ### **🔶 前言**
+    - **🟠 数据来源于拷贝漫画 作者不对其中呈现的任何内容负责。**
+    - **🔷 项目介绍**
+        - **🟠 项目采用 <u>多模块</u> 和 <u>MVI框架</u> 开发**
+        - **🟠 此项目非常注重代码质量、重构有十次左右了 从最初的MVC --> MVVM --> MVI 都是借鉴了自己以前的项目去实现**
 
-- ### **🔶关于项目**
-    - **🔷[Dev分支可预览最新的开发进度](https://github.com/CrowForKotlin/CopyManga_Crow/tree/dev)**
-    - **🔷App的所有Icon几乎都是作者二改、V1.1.0二次设计、V1.2.5三次设计**
-    - **🔷目前仅一人开发，欢迎Pull Request**
-    - **🔷在今后或许会新增一些新技术、扩展接口及功能模块**
+- ### **🔶 关于项目**
+    - **🔷 [Dev分支可预览最新的开发进度](https://github.com/CrowForKotlin/CopyManga_Crow/tree/dev)**
+    - **🔷 App的所有Icon几乎都是作者二改、V1.1.0二次设计、V1.2.5三次设计**
 
 - ### **❓问题或方案参考及开源贡献**
     - **✅[Mihonapp - Author : mihon](https://github.com/mihonapp/mihon)**
