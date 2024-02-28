@@ -54,8 +54,6 @@ class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
      */
     private var mAdapter: ComicStandardRvAdapter? = null
 
-    private val mLayoutManager by lazy { LinearLayoutManager(requireActivity() as ComicActivity) }
-
     /**
      * ● 获取VB
      *
@@ -93,7 +91,7 @@ class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
      */
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.list.adapter = mAdapter
-        mBinding.list.layoutManager = mLayoutManager
+        mBinding.list.layoutManager = LinearLayoutManager(requireActivity() as ComicActivity)
     }
 
     /**
@@ -279,7 +277,7 @@ class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
         var positionOffset: Float = offset.toFloat()
 
         if (offset == -1) {
-            positionOffset = mLayoutManager.findViewByPosition(centerViewPos)?.top?.toFloat() ?: 0f
+            positionOffset = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(centerViewPos)?.top?.toFloat() ?: 0f
             if (isRotate) {
                 positionOffset = if (directionY) {
                     positionOffset * (mBinding.list.width / mBinding.list.height.toFloat())

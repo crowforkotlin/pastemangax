@@ -63,8 +63,6 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     private var mCurrentChapterPageID = -1
 
-    private val mLayoutmanager by lazy { LinearLayoutManager(requireActivity() as ComicActivity) }
-
     override fun getViewBinding(inflater: LayoutInflater) = BookFragmentComicBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,7 +75,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         // Set LayoutManager support zoom
-        mBinding.list.layoutManager = mLayoutmanager
+        mBinding.list.layoutManager = LinearLayoutManager(requireActivity() as ComicActivity)
 
         // Set RvAdapter
         mBinding.list.adapter = mAdapter
@@ -93,18 +91,18 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                 getPosItem { index, pagePos, pageId, _ ->
                     when (requestedOrientation) {
                         ActivityInfo.SCREEN_ORIENTATION_PORTRAIT -> {
-                            val offset = mLayoutmanager.findViewByPosition(index)?.top ?.run { this * (mBinding.list.width.toFloat() / mBinding.list.height) } ?: 0
+                            val offset = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(index)?.top ?.run { this * (mBinding.list.width.toFloat() / mBinding.list.height) } ?: 0
                             updateUiState (pagePos, offset.toInt() , pageId)
                             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                         }
                         ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE -> {
-                            val offset = mLayoutmanager.findViewByPosition(index)?.top
+                            val offset = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(index)?.top
                                 ?.run { this * (mBinding.list.height.toFloat() / mBinding.list.width) } ?: 0
                             updateUiState (pagePos, offset.toInt() , pageId)
                             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                         }
                         else -> {
-                            val offset = mLayoutmanager.findViewByPosition(index)?.top
+                            val offset = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(index)?.top
                                 ?.run { this * (mBinding.list.width.toFloat() / mBinding.list.height) } ?: 0
                             updateUiState (pagePos, offset.toInt() , pageId)
                             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -137,7 +135,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                     if (mBinding.list.tag == null) {
                         mBinding.list.tag = mBinding.list
                         mBinding.list.post {
-                            mLayoutmanager.apply {
+                            (mBinding.list.layoutManager as LinearLayoutManager).apply {
                                 if (!isAttachedToWindow) return@post
                                 findViewByPosition(findFirstVisibleItemPosition())?.apply {
                                     post {
@@ -177,7 +175,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                     mBinding.list.scrollToPosition(index - pagePos + pos)
                     mBinding.list.post {
                         if (isDetached) return@post
-                        val view = mLayoutmanager.findViewByPosition(index)
+                        val view = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(index)
                         updateUiState(pagePos, view?.top ?: 0, pageId)
                     }
                 }
@@ -190,7 +188,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
         mBinding.list.setNestedPreScrollListener { dx, dy, position ->
             if (position < 0) return@setNestedPreScrollListener
             getPosItem(position) { _, pagePos, pageId, _ ->
-                val top = mLayoutmanager.findViewByPosition(position)?.top ?: 0
+                val top = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(position)?.top ?: 0
                 updateUiState(pagePos, top, pageId)
             }
         }
