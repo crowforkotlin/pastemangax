@@ -14,9 +14,10 @@
 [![Join Telegram](https://img.shields.io/badge/-telegram-red?color=white&logo=telegram&logoColor=blue)](https://t.me/+kFkVVuDOFsFiMzQ1)
 
 **```如果你需要Clone该项目，在Clone完成后请进入到该项目的根目录下并输入以下代码才可正常编译```**
-```text
-⦁ git init
-⦁ git submodule add https://github.com/BYVoid/OpenCC.git lib_mangax/src/main/jni/OpenCC
+```shell
+rmdir lib_mangax/src/main/jni/OpenCC
+git init
+git submodule add -f --name OpenCC -b master https://github.com/BYVoid/OpenCC.git lib_mangax/src/main/jni/OpenCC
 ```
 
 - ### **🔶 前言**
