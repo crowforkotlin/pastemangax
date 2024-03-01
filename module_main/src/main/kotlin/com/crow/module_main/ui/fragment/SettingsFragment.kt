@@ -24,7 +24,6 @@ import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.popSyncWithClear
-import com.crow.base.tools.extensions.setCenterAnimWithFadeOut
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
@@ -267,8 +266,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                 hideTarget = this@SettingsFragment,
                 addedTarget = get(named((this))),
                 tag = this,
-                backStackName = this,
-                transaction = { it.setCenterAnimWithFadeOut() }
+                backStackName = this
             )
         }
     }

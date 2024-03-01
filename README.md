@@ -13,23 +13,22 @@
 
 [![Join Telegram](https://img.shields.io/badge/-telegram-red?color=white&logo=telegram&logoColor=blue)](https://t.me/+kFkVVuDOFsFiMzQ1)
 
-**```如果你需要Clone该项目，在Clone完成后请进入到该项目的根目录下并输入git submodule update --init --recursive更新子模块才可继续执行编译```**
+- ### **编译**
+  - **`如果你需要Clone该项目，在Clone完成后请进入到该项目的根目录下并输入以下命令才可正常编译`**
+  - **`rmdir lib_mangax/src/main/jni/OpenCC`**
+  - **`git init`**
+  - **`git submodule add -f --name OpenCC -b master https://github.com/BYVoid/OpenCC.git lib_mangax/src/main/jni/OpenCC`**
 
-- ### **🔶 前言**
-    - **🟠 数据来源于拷贝漫画 作者不对其中呈现的任何内容负责。**
-    - **🔷 项目介绍**
-        - **🟠 项目采用 <u>多模块</u> 和 <u>MVI框架</u> 开发**
-        - **🟠 此项目非常注重代码质量、重构有十次左右了 从最初的MVC --> MVVM --> MVI 都是借鉴了自己以前的项目去实现**
 
-- ### **🔶 关于项目**
-    - **🔷 [Dev分支可预览最新的开发进度](https://github.com/CrowForKotlin/CopyManga_Crow/tree/dev)**
-    - **🔷 设计ICON、二次创新ICON、框架 --> crowforkotlin**
-
-- ### **❓问题或方案参考及开源贡献**
-    - **✅[Mihonapp - Author : mihon](https://github.com/mihonapp/mihon)**
-    - **✅[Kotatsu - Author : KotatsuApp](https://github.com/KotatsuApp/Kotatsu)**
-
-#### 阅读器（支持屏幕旋转、缩放）
+- ### **关于项目**
+  - **数据来源于拷贝漫画，作者不对其中呈现的任何内容负责。声明：该项目仅用于学习、禁止商用！**
+  - **设计ICON、二次创新ICON、框架 --> crowforkotlin**
+  - **[Dev分支可预览最新的开发进度](https://github.com/crowforkotlin/CopyMangaX/tree/dev)**
+- ### **问题或方案参考及开源贡献**
+  - **✅[Mihonapp - Author : mihon](https://github.com/mihonapp/mihon)**
+  - **✅[Kotatsu - Author : KotatsuApp](https://github.com/KotatsuApp/Kotatsu)**
+<br></br>
+- ### **阅读器（支持屏幕旋转、缩放）**
 <table>
 	<tr>
 		<td align="center"><img src="docs/images/1.3.2_light_comic.jpg"></td>

@@ -202,7 +202,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
      */
     protected fun navigateImage(fragment: Fragment) {
         val tag = Fragments.Image.name
-        parentFragmentManager.navigateToWithBackStack(mangaR.id.app_main_fcv, this, fragment, tag, tag )
+        parentFragmentManager.navigateToWithBackStack(mangaR.id.app_main_fcv, this, fragment, tag, tag)
     }
 
     /**

@@ -139,8 +139,8 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     private fun navigateBookComicInfo(name: String, pathword: String) {
         val tag = Fragments.BookComicInfo.name
         val bundle = Bundle()
-        bundle.putSerializable(BaseStrings.PATH_WORD, pathword)
-        bundle.putSerializable(BaseStrings.NAME, name)
+        bundle.putString(BaseStrings.PATH_WORD, pathword)
+        bundle.putString(BaseStrings.NAME, name)
         requireParentFragment().parentFragmentManager.navigateToWithBackStack(
             id = mangaR.id.app_main_fcv,
             hideTarget = requireActivity().supportFragmentManager.findFragmentByTag(Fragments.Container.name)!!,
