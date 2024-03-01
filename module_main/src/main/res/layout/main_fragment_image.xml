@@ -18,10 +18,15 @@
 		android:layout_gravity="bottom|center"
 		android:layout_marginBottom="@dimen/base_dp60"
 		android:text="@string/main_save_local"
-		android:textColor="#80FFFFFF"
+		android:textColor="#FFFFFF"
 		android:textStyle="bold"
+		app:elevation="@dimen/base_dp10"
+		app:strokeWidth="@dimen/base_dp1"
+		app:strokeColor="@color/mangax_grey_400_40"
 		app:icon="@drawable/base_ic_download_24dp"
-		app:backgroundTint="#39FFFFFF"
+		app:iconPadding="@dimen/base_dp5"
+		app:cornerRadius="@dimen/base_dp7_5"
+		app:backgroundTint="#BF4D4D4D"
 		app:iconTint="@null"
 		app:closeIconEnabled="false" />
 

@@ -77,7 +77,7 @@ object AppConfigs {
     const val min_sdk_version = 23
 
     // 目标支持版本 Android 13 T
-    const val target_sdk_version = 29
+    const val target_sdk_version = 33
 
     val version_code get() = version_code_release
     val version_name get() = version_name_release

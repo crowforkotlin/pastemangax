@@ -208,7 +208,7 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
         mProgressFactory = null
 
         // 恢复状态栏亮色 同时 置空（防止泄漏...?）
-        mWindowInsets?.isAppearanceLightStatusBars = true
+        mWindowInsets?.isAppearanceLightStatusBars = !AppConfig.mDarkMode
         mWindowInsets = null
     }
 }

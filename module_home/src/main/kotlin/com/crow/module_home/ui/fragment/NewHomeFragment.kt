@@ -35,8 +35,6 @@ import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
-import com.crow.base.tools.extensions.setCenterAnimWithFadeOut
-import com.crow.base.tools.extensions.setSlideAnimation
 import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toast
 import com.crow.base.tools.extensions.withLifecycle

@@ -137,7 +137,7 @@ inline fun<reified T: Fragment> FragmentManager.navigateToWithBackStack(
     bundle: Bundle? = null,
     tag: String? = null,
     backStackName: String? = null,
-    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.setCenterAnimWithFadeOut() },
+    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.setFadeAnimation() },
 ) {
     transaction(beginTransaction())
         .addToBackStack(backStackName)
@@ -152,7 +152,7 @@ inline fun FragmentManager.navigateToWithBackStack(
     addedTarget: Fragment,
     tag: String? = null,
     backStackName: String? = null,
-    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.setCenterAnimWithFadeOut() },
+    crossinline transaction: (FragmentTransaction) -> FragmentTransaction = { it.setFadeAnimation() },
 ) {
     transaction(beginTransaction())
         .addToBackStack(backStackName)
