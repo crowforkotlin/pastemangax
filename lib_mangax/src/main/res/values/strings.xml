@@ -10,6 +10,7 @@
     <string name="mangax_tips">提示</string>
 
     <string name="mangax_token_error">身份信息过期!\n您接下来的浏览将是访客模式！\n是否重新登录？</string>
+    <string name="mangax_token_error_relogin">身份信息过期，请重新登陆！</string>
     <string name="mangax_zero">0%</string>
     <string name="mangax_update_time"><b>更新时间</b></string>
     <string name="mangax_hot"><b>热度</b></string>

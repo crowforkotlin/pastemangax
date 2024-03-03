@@ -13,6 +13,7 @@ import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Region
+import android.os.Handler
 import android.text.TextPaint
 import android.view.View
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.ANIMATION_CONTINUATION_CROSS_EXTENSION
@@ -34,13 +35,13 @@ import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_TOP_CENTER
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_TOP_END
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_TOP_START
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.STRATEGY_DIMENSION_PX_OR_DEFAULT
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.crow.mangax.ui.text.debugText
+import com.crow.mangax.ui.text.withApiO
+import com.crow.mangax.ui.text.withPath
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.properties.Delegates
+
 
 /*
 * 在onDraw中尽量使用inline 减少频繁调用函数带来的性能开销，需要优化计算、实现方式
@@ -91,6 +92,14 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     lateinit var mTextPaint : TextPaint
 
     /**
+     * ● Async Handler
+     *
+     * ● 2024-02-20 16:15:35 周二 下午
+     * @author crowforkotlin
+     */
+    lateinit var mHandler: Handler
+
+    /**
      * ● 高刷延时时间
      *
      * ● 2024-02-01 11:16:58 周四 上午
@@ -120,7 +129,7 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
      * ● 2024-01-30 15:40:31 周二 下午
      * @author crowforkotlin
      */
-    private var mHighBrushJob: Job?= null
+    private var mHighBrushJobRunning: Boolean= false
 
     /**
      * ● 文本X坐标
@@ -164,13 +173,20 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     var mList : MutableList<Pair<String, Float>> = mutableListOf()
 
     /**
+     * ● 文本行数
+     *
+     * ● 2024-02-21 10:18:15 周三 上午
+     * @author crowforkotlin
+     */
+    var mTextLines: Int = 1
+
+    /**
      * ● 文本列表位置 -- 设置后会触发重新绘制
      *
      * ● 2023-10-31 14:06:16 周二 下午
      * @author crowforkotlin
      */
-    var mListPosition : Int by Delegates.observable(0) { _, oldPosition, newPosition -> onVariableChanged(
-        FLAG_REFRESH, oldPosition, newPosition, skipSameCheck = true) }
+    var mListPosition : Int by Delegates.observable(0) { _, oldPosition, newPosition -> onVariableChanged(FLAG_REFRESH, oldPosition, newPosition, skipSameCheck = true) }
 
     /**
      * ● 视图对齐方式 -- 上中下
@@ -178,8 +194,7 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
      * ● 2023-10-31 15:24:43 周二 下午
      * @author crowforkotlin
      */
-    var mGravity: Byte by Delegates.observable(GRAVITY_TOP_START) { _, oldSize, newSize -> onVariableChanged(
-        FLAG_REFRESH, oldSize, newSize) }
+    var mGravity: Byte by Delegates.observable(GRAVITY_TOP_START) { _, oldSize, newSize -> onVariableChanged(FLAG_REFRESH, oldSize, newSize) }
 
     /**
      * ● 是否开启换行
@@ -187,8 +202,7 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
      * ● 2023-10-31 17:31:20 周二 下午
      * @author crowforkotlin
      */
-    var mMultiLineEnable: Boolean by Delegates.observable(false) { _, oldValue, newValue -> onVariableChanged(
-        FLAG_REFRESH, oldValue, newValue) }
+    var mMultiLineEnable: Boolean by Delegates.observable(false) { _, oldValue, newValue -> onVariableChanged(FLAG_REFRESH, oldValue, newValue) }
 
     /**
      * ● 动画时间比率
@@ -215,12 +229,12 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     var mIsCurrentView: Boolean = false
 
     /**
-     * ● UI SCOPE
+     * ● 高刷动画执行成功监听器
      *
-     * ● 2024-02-01 14:11:58 周四 下午
+     * ● 2024-02-18 14:57:38 周日 下午
      * @author crowforkotlin
      */
-    var mScope: CoroutineScope? = null
+    var mHighBrushSuccessListener: Runnable? = null
 
     /**
      * ● 动画模式
@@ -275,74 +289,77 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
         val textListSize = mList.size
 
         // 列表为空
-        if (mList.isEmpty()) return
+        if (textListSize == 0) return
 
-        // 文本长度是否无效？
+        // 获取文本 -> 如果超出列表位置取最后一个
         val text = if (mListPosition !in 0..< textListSize) { mList.last() } else mList[mListPosition]
 
         // 执行动画
         val isDrawBrushAnimation = drawAnimation(canvas)
 
+        // 坐标轴数值
+        val textAxisValue = mTextAxisValue
+
         // 设置X和Y的坐标 ，Paint绘制的文本在descent位置 进行相对应的计算即可
         when(mGravity) {
             GRAVITY_TOP_START -> {
                 drawTopText(canvas, text, textListSize,
-                    onInitializaTextY = { tryLayoutHighBrushY(it) },
-                    onInitializaTextX = { tryLayoutHighBrushX(0f) }
+                    onInitializaTextY = { tryLayoutHighBrushY(textAxisValue, it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(textAxisValue, 0f) }
                 )
             }
             GRAVITY_TOP_CENTER -> {
                 drawTopText(canvas, text, textListSize,
-                    onInitializaTextY = { tryLayoutHighBrushY(it) },
-                    onInitializaTextX = { tryLayoutHighBrushX((width shr 1) - it / 2f) }
+                    onInitializaTextY = { tryLayoutHighBrushY(textAxisValue, it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(textAxisValue, (measuredWidth shr 1) - it / 2f) }
                 )
             }
             GRAVITY_TOP_END -> {
                 drawTopText(canvas, text, textListSize,
-                    onInitializaTextY = { tryLayoutHighBrushY(it) },
-                    onInitializaTextX = { tryLayoutHighBrushX(width - it) }
+                    onInitializaTextY = { tryLayoutHighBrushY(textAxisValue, it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(textAxisValue, measuredWidth - it) }
                 )
             }
             GRAVITY_CENTER_START -> {
                 drawCenterText(canvas, text, textListSize,
-                    onInitializaTextY = { tryLayoutHighBrushY(it) },
-                    onInitializaTextX = { tryLayoutHighBrushX(0f) }
+                    onInitializaTextY = { tryLayoutHighBrushY(textAxisValue, it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(textAxisValue, 0f) }
                 )
             }
             GRAVITY_CENTER -> {
                 drawCenterText(canvas, text, textListSize,
-                    onInitializaTextY = { tryLayoutHighBrushY(it) },
-                    onInitializaTextX = { tryLayoutHighBrushX((width shr 1) - it / 2f) }
+                    onInitializaTextY = { tryLayoutHighBrushY(textAxisValue, it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(textAxisValue, (measuredWidth shr 1) - it / 2f) }
                 )
             }
             GRAVITY_CENTER_END -> {
                 drawCenterText(canvas, text, textListSize,
-                    onInitializaTextY = { tryLayoutHighBrushY(it) },
-                    onInitializaTextX = { tryLayoutHighBrushX(width - it) }
+                    onInitializaTextY = { tryLayoutHighBrushY(textAxisValue, it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(textAxisValue, measuredWidth - it) }
                 )
             }
             GRAVITY_BOTTOM_START -> {
                 drawBottomText(canvas, text, textListSize,
-                    onInitializaTextY = { tryLayoutHighBrushY(it) },
-                    onInitializaTextX = { tryLayoutHighBrushX(0f) }
+                    onInitializaTextY = { tryLayoutHighBrushY(textAxisValue, it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(textAxisValue, 0f) }
                 )
             }
             GRAVITY_BOTTOM_CENTER -> {
                 drawBottomText(canvas, text, textListSize,
-                    onInitializaTextY = { tryLayoutHighBrushY(it) },
-                    onInitializaTextX = { tryLayoutHighBrushX((width shr 1) - it /  2f) }
+                    onInitializaTextY = { tryLayoutHighBrushY(textAxisValue, it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(textAxisValue, (measuredWidth shr 1) - it /  2f) }
                 )
             }
             GRAVITY_BOTTOM_END -> {
                 drawBottomText(canvas, text, textListSize,
-                    onInitializaTextY = { tryLayoutHighBrushY(it) },
-                    onInitializaTextX = { tryLayoutHighBrushX(width - it) }
+                    onInitializaTextY = { tryLayoutHighBrushY(textAxisValue, it) },
+                    onInitializaTextX = { tryLayoutHighBrushX(textAxisValue, measuredWidth - it) }
                 )
             }
         }
 
         // 如果执行的是高刷新绘制动画并且任务正在阻塞中
-        if (isDrawBrushAnimation && mHighBrushJob?.isCompleted == false) invalidateHighBrushAnimation(mHighBrushDuration )
+        if (isDrawBrushAnimation && mHighBrushJobRunning && mHighBrushDuration == 0L) invalidateHighBrushAnimation(mHighBrushDuration )
     }
 
     /**
@@ -351,12 +368,12 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
      * ● 2024-02-01 11:15:21 周四 上午
      * @author crowforkotlin
      */
-    private fun tryLayoutHighBrushY(originY: Float) : Float {
+    private fun tryLayoutHighBrushY(textAxisValue: Float, originY: Float) : Float {
         var y = originY
         if (mTextAnimationMode == ANIMATION_MOVE_Y_HIGH_BRUSH_DRAW) {
             drawView(
-                onCurrent = { y +=((if(mTextAnimationTopEnable) height.toFloat() else -height.toFloat())) + mTextAxisValue },
-                onNext = { y += mTextAxisValue }
+                onCurrent = { y +=((if(mTextAnimationTopEnable) measuredHeight.toFloat() else -measuredHeight.toFloat())) + textAxisValue },
+                onNext = { y += textAxisValue }
             )
         }
         return y
@@ -368,12 +385,12 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
      * ● 2024-02-01 11:15:40 周四 上午
      * @author crowforkotlin
      */
-    private fun tryLayoutHighBrushX(originX: Float)  {
+    private fun tryLayoutHighBrushX(textAxisValue: Float, originX: Float)  {
         if (mTextAnimationMode == ANIMATION_MOVE_X_HIGH_BRUSH_DRAW) {
             drawView(
-                onCurrent = { mTextX = (if(mTextAnimationLeftEnable) width + originX else -(width - originX)) + mTextAxisValue },
+                onCurrent = { mTextX = (if(mTextAnimationLeftEnable) measuredWidth + originX else -(measuredWidth - originX)) + textAxisValue },
                 onNext = {
-                    mTextX =  originX + mTextAxisValue
+                    mTextX =  originX + textAxisValue
                 }
             )
         }
@@ -390,8 +407,8 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
         if (mAnimationStartTime > 0) {
             when(mTextAnimationMode) {
                 ANIMATION_CONTINUATION_ERASE_X -> {
-                    val widthFloat = width.toFloat()
-                    val heightFloat = height.toFloat()
+                    val widthFloat = measuredWidth.toFloat()
+                    val heightFloat = measuredHeight.toFloat()
                     val xRate = widthFloat * mAnimationTimeFraction
                     drawView(
                         onCurrent = { canvas.drawEraseX(widthFloat, heightFloat, xRate) },
@@ -399,8 +416,8 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
                     )
                 }
                 ANIMATION_CONTINUATION_ERASE_Y -> {
-                    val widthFloat = width.toFloat()
-                    val heightFloat = height.toFloat()
+                    val widthFloat = measuredWidth.toFloat()
+                    val heightFloat = measuredHeight.toFloat()
                     val heightRate = heightFloat * mAnimationTimeFraction
                     drawView(
                         onCurrent = { canvas.drawEraseY(widthFloat, heightFloat, heightRate) },
@@ -408,10 +425,10 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
                     )
                 }
                 ANIMATION_CONTINUATION_CROSS_EXTENSION -> {
-                    val rectXRate = (width shr 1) * mAnimationTimeFraction
-                    val rectYRate = (height shr 1) * mAnimationTimeFraction
-                    val widthFloat = width.toFloat()
-                    val heightFloat = height.toFloat()
+                    val rectXRate = (measuredWidth shr 1) * mAnimationTimeFraction
+                    val rectYRate = (measuredHeight shr 1) * mAnimationTimeFraction
+                    val widthFloat = measuredWidth.toFloat()
+                    val heightFloat = measuredHeight.toFloat()
                     drawView(
                         onCurrent = { canvas.drawCrossExtension(rectXRate, rectYRate, widthFloat, heightFloat) },
                         onNext = { canvas.drawDifferenceCrossExtension(rectXRate, rectYRate, widthFloat, heightFloat) }
@@ -421,11 +438,11 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
                     withPath(mPath) {
                         drawView(
                             onCurrent = {
-                                canvas.drawOval(this, width, height, mAnimationTimeFraction)
+                                canvas.drawOval(this, measuredWidth, measuredHeight, mAnimationTimeFraction)
                                 canvas.clipPath(this)
                             },
                             onNext = {
-                                canvas.drawOval(this, width, height, mAnimationTimeFraction)
+                                canvas.drawOval(this, measuredWidth, measuredHeight, mAnimationTimeFraction)
                                 withApiO(
                                     leastO = { canvas.clipOutPath(this) },
                                     lessO = { canvas.clipPath(this, Region.Op.DIFFERENCE) }
@@ -436,7 +453,7 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
                 }
                 ANIMATION_CONTINUATION_RHOMBUS -> {
                     withPath(mPath) {
-                        canvas.drawRhombus(this, width, height, mAnimationTimeFraction)
+                        canvas.drawRhombus(this, measuredWidth, measuredHeight, mAnimationTimeFraction)
                         drawView(
                             onCurrent = {
                                 withApiO(
@@ -456,11 +473,11 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
                 ANIMATION_MOVE_X_DRAW -> {
                     drawView(
                         onCurrent = {
-                            val dx = if (mTextAnimationLeftEnable) width - mAnimationTimeFraction * width else -width + mAnimationTimeFraction * width
+                            val dx = if (mTextAnimationLeftEnable) measuredWidth - mAnimationTimeFraction * measuredWidth else -measuredWidth + mAnimationTimeFraction * measuredWidth
                             canvas.translate(dx, 0f)
                         },
                         onNext = {
-                            val dx = if (mTextAnimationLeftEnable) mAnimationTimeFraction * -width else mAnimationTimeFraction * width
+                            val dx = if (mTextAnimationLeftEnable) mAnimationTimeFraction * -measuredWidth else mAnimationTimeFraction * measuredWidth
                             canvas.translate(dx, 0f)
                         }
                     )
@@ -468,11 +485,11 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
                 ANIMATION_MOVE_Y_DRAW -> {
                     drawView(
                         onCurrent = {
-                            val dy = if (mTextAnimationTopEnable) height - mAnimationTimeFraction * height else -height + mAnimationTimeFraction * height
+                            val dy = if (mTextAnimationTopEnable) measuredHeight - mAnimationTimeFraction * measuredHeight else -measuredHeight + mAnimationTimeFraction * measuredHeight
                             canvas.translate(0f, dy)
                         },
                         onNext = {
-                            val dy = if (mTextAnimationTopEnable) mAnimationTimeFraction * -height else mAnimationTimeFraction * height
+                            val dy = if (mTextAnimationTopEnable) mAnimationTimeFraction * -measuredHeight else mAnimationTimeFraction * measuredHeight
                             canvas.translate(0f, dy)
                         }
                     )
@@ -484,33 +501,16 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 启动高刷绘制动画
-     *
-     * ● 2024-01-30 15:41:27 周二 下午
-     * @author crowforkotlin
-     */
-    internal suspend fun launchHighBrushDrawAnimation(scope: CoroutineScope, isX: Boolean, duration: Long = IAttrText.DRAW_VIEW_MIN_DURATION) {
-        mTextAxisValue = 0f
-        if (isX) {
-            launchHighBrushSuspendAnimation(scope, width, mTextAnimationLeftEnable, duration)
-        } else {
-            launchHighBrushSuspendAnimation(scope, height, mTextAnimationTopEnable, duration)
-        }
-    }
-
-    /**
      * ● 高刷动画 挂起任务
      *
      * ● 2024-02-01 11:17:55 周四 上午
      * @author crowforkotlin
      */
-    private suspend fun launchHighBrushSuspendAnimation(scope: CoroutineScope, count: Int, isTopOrLeft: Boolean, duration: Long) {
+    private fun launchHighBrushSuspendAnimation(count: Int, isTopOrLeft: Boolean, duration: Long) {
         mHighBrushPixelCount = count
         mHighBrushTopOrLeft = isTopOrLeft
         mHighBrushDuration = duration
-        invalidateHighBrushAnimation(duration = 0)
-        mHighBrushJob =  scope.launch { delay(Long.MAX_VALUE) }
-        mHighBrushJob?.join()
+        invalidateHighBrushAnimation(duration = duration)
     }
 
     /**
@@ -523,16 +523,46 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
         if (mHighBrushTopOrLeft) {
             mTextAxisValue --
             if (mTextAxisValue > -mHighBrushPixelCount) {
-                if (duration == 0L) invalidate() else mScope?.scope(duration) { invalidate() }
+                if (duration == 0L) invalidate() else {
+                    mHandler.post(object : Runnable {
+                        override fun run() {
+                            if (mTextAxisValue > -mHighBrushPixelCount) invalidate()
+                            else {
+                                mHandler.removeCallbacks(this)
+                                mHighBrushJobRunning = false
+                                mHighBrushSuccessListener?.run()
+                                return
+                            }
+                            mTextAxisValue--
+                            mHandler.postDelayed(this, duration)
+                        }
+                    })
+                }
             } else {
-                mHighBrushJob?.cancel()
+                mHighBrushJobRunning = false
+                mHighBrushSuccessListener?.run()
             }
         } else {
             mTextAxisValue ++
             if (mTextAxisValue < mHighBrushPixelCount) {
-                if (duration == 0L) invalidate() else mScope?.scope(duration) { invalidate() }
+                if (duration == 0L) invalidate() else {
+                    mHandler.post(object : Runnable {
+                        override fun run() {
+                            if (mTextAxisValue < mHighBrushPixelCount) invalidate()
+                            else {
+                                mHandler.removeCallbacks(this)
+                                mHighBrushJobRunning = false
+                                mHighBrushSuccessListener?.run()
+                                return
+                            }
+                            mTextAxisValue ++
+                            mHandler.postDelayed(this, duration)
+                        }
+                    })
+                }
             } else {
-                mHighBrushJob?.cancel()
+                mHighBrushJobRunning = false
+                mHighBrushSuccessListener?.run()
             }
         }
     }
@@ -546,13 +576,13 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     private inline fun drawTopText(canvas: Canvas, text: Pair<String, Float>, textListSize: Int, onInitializaTextY: (Float) -> Float, onInitializaTextX: (Float) -> Unit) {
         val fontMetrics = mTextPaint.fontMetrics
         if (mMultiLineEnable && textListSize > 1) {
-            val height = height
-            val heightHalf = height shr 1
+            val measuredHeight = measuredHeight
+            val heightHalf = measuredHeight shr 1
             val textHeight = getTextHeight(fontMetrics)
             val textMarginRow = if (mTextRowMargin >= heightHalf) heightHalf.toFloat() else mTextRowMargin
             val textYIncremenet = textHeight + textMarginRow
             val textHeightWithMargin = textHeight + textMarginRow
-            val textMaxLine =  if (height < textHeightWithMargin) 1 else (height / textHeightWithMargin).toInt()
+            val textMaxLine = min(if (measuredHeight < textHeightWithMargin) 1 else (measuredHeight / textHeightWithMargin).toInt(), mTextLines)
             var textStartPos = mListPosition * textMaxLine
             mTextY = onInitializaTextY(abs(fontMetrics.ascent))
             repeat(textMaxLine) {
@@ -578,15 +608,15 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
      * @author crowforkotlin
      */
     private inline fun drawCenterText(canvas: Canvas, text: Pair<String, Float>, textListSize: Int, onInitializaTextY: (Float) -> Float, onInitializaTextX: (Float) -> Unit) {
-        val height = height
-        val heightHalf = height shr 1
+        val measuredHeight = measuredHeight
+        val heightHalf = measuredHeight shr 1
         val fontMetrics = mTextPaint.fontMetrics
         val textBaseLineOffsetY = calculateBaselineOffsetY(fontMetrics)
         if (mMultiLineEnable && textListSize > 1) {
             val textHeight = getTextHeight(fontMetrics)
             var textMarginRowHalf = mTextRowMargin / 2f
             val textHeightWithMargin = textHeight + mTextRowMargin
-            val textMaxRow = if (height < textHeightWithMargin) 1 else min((height / (textHeightWithMargin)).toInt(), textListSize)
+            val textMaxRow = if (measuredHeight < textHeightWithMargin) 1 else min((measuredHeight / (textHeightWithMargin)).toInt(), textListSize)
             var textStartPos = (mListPosition * textMaxRow).let { if (it >= textListSize) it - textMaxRow else it }
             val textValidRow = if (textStartPos + textMaxRow <= textListSize) textMaxRow else textListSize - textStartPos
             val textValidRowHalf = textValidRow shr 1
@@ -622,17 +652,17 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
      */
     private inline fun drawBottomText(canvas: Canvas, text: Pair<String, Float>, textListSize: Int, onInitializaTextY: (Float) -> Float, onInitializaTextX: (Float) -> Unit) {
         if (mMultiLineEnable && textListSize > 1) {
-            val height = height
-            val heightHalf = height shr 1
+            val measuredHeight = measuredHeight
+            val heightHalf = measuredHeight shr 1
             val textMarginRow = if (mTextRowMargin >= heightHalf) heightHalf.toFloat() else mTextRowMargin
             val textHeight = getTextHeight(mTextPaint.fontMetrics)
             val textHeightWithMargin = textHeight + textMarginRow
-            val textMaxLine =  if (height < textHeightWithMargin) 1 else (measuredHeight / textHeightWithMargin).toInt()
+            val textMaxLine =  if (measuredHeight < textHeightWithMargin) 1 else (measuredHeight / textHeightWithMargin).toInt()
             var textStartPos = (mListPosition + 1) * textMaxLine
             val textEndPos = mListPosition * textMaxLine
             val textYIncrement = textHeight + textMarginRow
             textStartPos = if (textListSize >= textStartPos) textStartPos - 1 else textListSize - 1
-            mTextY = onInitializaTextY(height - calculateBaselineOffsetY(mTextPaint.fontMetrics))
+            mTextY = onInitializaTextY(measuredHeight - calculateBaselineOffsetY(mTextPaint.fontMetrics))
             repeat(textMaxLine) {
                 if (textStartPos >= textEndPos) {
                     val currentText: Pair<String, Float> = mList[textStartPos]
@@ -643,7 +673,7 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
                 } else return
             }
         } else {
-            mTextY = onInitializaTextY(height - calculateBaselineOffsetY(mTextPaint.fontMetrics))
+            mTextY = onInitializaTextY(measuredHeight - calculateBaselineOffsetY(mTextPaint.fontMetrics))
             onInitializaTextX(text.second)
             canvas.drawText(text.first)
         }
@@ -662,21 +692,21 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
         paint.color = Color.GREEN
         paint.strokeWidth = IAttrText.DEBUG_STROKE_WIDTH
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
-        canvas.drawLine(0f, (height / 2).toFloat(), width.toFloat(), (height / 2).toFloat(), paint)
-        canvas.drawLine(width / 2f, 0f, width / 2f, height.toFloat(), paint)
+        canvas.drawLine(0f, (measuredHeight / 2).toFloat(), measuredWidth.toFloat(), (measuredHeight / 2).toFloat(), paint)
+        canvas.drawLine(measuredWidth / 2f, 0f, measuredWidth / 2f, measuredHeight.toFloat(), paint)
 
         // 绘制底部线
         paint.color = Color.WHITE
-        canvas.drawLine(0f, mTextY, width.toFloat(), mTextY, paint)
+        canvas.drawLine(0f, mTextY, measuredWidth.toFloat(), mTextY, paint)
 
         // 绘制基线
         val ascentY = mTextY - abs(mTextPaint.fontMetrics.ascent)
-        canvas.drawLine(0f, ascentY, width.toFloat(), ascentY, paint)
+        canvas.drawLine(0f, ascentY, measuredWidth.toFloat(), ascentY, paint)
 
         // 蓝框范围
         paint.color = Color.CYAN
         paint.style = Paint.Style.STROKE
-        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+        canvas.drawRect(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat(), paint)
 
 
         mTextPaint.color = Color.RED
@@ -702,7 +732,7 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
         if (oldValue == newValue && !skipSameCheck) return
         when(flag) {
             FLAG_REFRESH -> {
-                if (mList.isNotEmpty()) invalidate()
+                if (mList.isNotEmpty()) mHandler.post { invalidate() }
             }
         }
     }
@@ -732,4 +762,21 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
             }
         )
     }
+
+    /**
+     * ● 启动高刷绘制动画
+     *
+     * ● 2024-01-30 15:41:27 周二 下午
+     * @author crowforkotlin
+     */
+    internal fun launchHighBrushDrawAnimation(isX: Boolean, duration: Long = IAttrText.DRAW_VIEW_MIN_DURATION) {
+        mTextAxisValue = 0f
+        mHighBrushJobRunning = true
+        if (isX) {
+            launchHighBrushSuspendAnimation(measuredWidth, mTextAnimationLeftEnable, duration)
+        } else {
+            launchHighBrushSuspendAnimation(measuredHeight, mTextAnimationTopEnable, duration)
+        }
+    }
+    internal fun setHighBrushSuccessListener(listener: Runnable) { mHighBrushSuccessListener = listener }
 }

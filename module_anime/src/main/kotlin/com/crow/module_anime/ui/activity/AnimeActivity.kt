@@ -5,15 +5,18 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionFullScreen
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.immersionFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.tools.extensions.updatePadding
@@ -28,6 +31,7 @@ import com.crow.module_anime.model.resp.video.AnimeVideoResp
 import com.crow.module_anime.ui.helper.GestureHelper
 import com.crow.module_anime.ui.viewmodel.AnimeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.math.max
 import com.crow.base.R as baseR
 
 class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
@@ -121,6 +125,10 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
 
         super.onCreate(savedInstanceState)
 
+        if (savedInstanceState != null) {
+            mPosition = savedInstanceState.getLong("POSITION")
+        }
+
         immersionFullView(window)
         immerureCutoutCompat(window)
     }
@@ -129,6 +137,19 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
         super.onDestroy()
         mPlayer.stop()
         mPlayer.release()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putLong("POSITION", mPosition)
+    }
+
+    var mPosition = 0L
+    override fun onPause() {
+        super.onPause()
+        mBinding.playerView.player?.apply {
+            mPosition = max(0L, contentPosition ?: 0L);
+        }
     }
 
     /**
@@ -176,8 +197,11 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
     @androidx.media3.common.util.UnstableApi
     override fun initListener() {
 
+        mBinding.back.doOnClickInterval { finish() }
+
         // PlayerView可见性监听
         mBinding.playerView.setControllerVisibilityListener(PlayerView.ControllerVisibilityListener { value ->
+            mBinding.back.isVisible = mBinding.playerView.isControllerFullyVisible
             /*if (mBinding.playerView.isControllerFullyVisible) {
                 transitionBar(false)
             } else {
@@ -288,6 +312,7 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
      */
     private fun loadVideo(video: AnimeVideoResp) {
         mPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(video.mChapter.mVideo)))
+        mPlayer.seekTo(mPosition)
         mPlayer.prepare()
         mPlayer.play()
     }

@@ -2,7 +2,7 @@
 
 	<string name="main_user" translatable="false">用户</string>
 	<string name="main_update_go" translatable="false">前往更新</string>
-	<string name="main_update_time" translatable="false">◉  更新日期：%s</string>
+	<string name="main_update_time" translatable="false">⦁ 更新日期：%s</string>
 	<string name="main_update_url_title" translatable="false">更新节点</string>
 	<string name="main_update_cancel" translatable="false">暂不更新</string>
 

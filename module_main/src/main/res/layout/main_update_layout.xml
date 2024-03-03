@@ -10,6 +10,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/base_dp10"
+		android:layout_marginStart="@dimen/base_dp10"
 		android:drawablePadding="@dimen/base_dp5"
 		android:ellipsize="end"
 		android:gravity="center"
@@ -17,7 +18,7 @@
 		android:textSize="@dimen/base_sp24"
 		android:textStyle="bold"
 		app:drawableStartCompat="@drawable/mine_ic_update_24dp"
-		app:layout_constraintStart_toStartOf="@+id/main_update_cancel"
+		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		tools:text="有新的更新啦" />
 
@@ -47,7 +48,7 @@
 
 	<androidx.core.widget.NestedScrollView
 		android:id="@+id/main_update_scrollview"
-		android:layout_width="match_parent"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:maxHeight="@dimen/base_dp200"
 		android:layout_marginTop="@dimen/base_dp20"
@@ -65,7 +66,6 @@
 			android:layout_height="wrap_content"
 			android:minLines="2"
 			android:gravity="center_vertical"
-			android:autoLink="web"
 			android:textSize="@dimen/base_sp12_5"
 			android:textStyle="bold"
 			tools:text="@string/base_todo_textview" />
@@ -75,19 +75,18 @@
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/main_update_cancel"
 		style="@style/Widget.Material3.Button.ElevatedButton"
-		app:layout_constraintHorizontal_bias="0"
 		android:layout_width="wrap_content"
-		app:rippleColor="@color/mangax_grey_500"
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/base_dp10"
 		android:text="@string/main_update_cancel"
+		app:cornerRadius="@dimen/base_dp7_5"
 		android:textColor="@color/mangax_black"
 		android:textStyle="bold"
 		app:backgroundTint="@color/mine_deep_purple_300"
 		app:iconTint="@null"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toStartOf="@+id/main_update_go"
-		app:layout_constraintStart_toStartOf="parent" />
+		app:rippleColor="@color/mangax_grey_500" />
 
 	<com.google.android.material.button.MaterialButton
 		android:id="@+id/main_update_go"
@@ -96,6 +95,7 @@
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/base_dp10"
 		android:text="@string/main_update_go"
+		app:cornerRadius="@dimen/base_dp7_5"
 		android:textColor="@color/mangax_black"
 		app:rippleColor="@color/mangax_grey_500"
 		android:textStyle="bold"
@@ -112,7 +112,6 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		app:icon="@drawable/mine_ic_update_history_24dp"
-		app:iconTint="@null"
 		app:rippleColor="@color/mangax_grey_500"
 		app:backgroundTint="@color/mine_deep_purple_300"
 		app:layout_constraintEnd_toEndOf="@+id/main_update_go"

@@ -72,7 +72,11 @@ class MainViewModel(val repository: AppRepository) : BaseMviViewModel<AppIntent>
         }
     }
 
-    private fun getUpdateInfo(intent: AppIntent.GetUpdateInfo) {
+    private fun getUpdateHistory(intent: AppIntent.GetUpdateHistory) {
+        flowResult(intent, repository.getUpdateHistory()) { value -> intent.copy(appUpdateResp = value) }
+    }
+
+    private fun getUupdateInfo(intent: AppIntent.GetUpdateInfo) {
         flowResult(intent, repository.getUpdateInfo()) { value -> intent.copy(appUpdateResp = value) }
     }
 
@@ -86,7 +90,8 @@ class MainViewModel(val repository: AppRepository) : BaseMviViewModel<AppIntent>
 
     override fun dispatcher(intent: AppIntent) {
         when(intent) {
-            is AppIntent.GetUpdateInfo -> getUpdateInfo(intent)
+            is AppIntent.GetUpdateHistory -> getUpdateHistory(intent)
+            is AppIntent.GetUpdateInfo -> getUupdateInfo(intent)
             is AppIntent.GetQQGroup -> getQQGropu(intent)
             is AppIntent.GetDynamicSite -> getSite(intent)
         }

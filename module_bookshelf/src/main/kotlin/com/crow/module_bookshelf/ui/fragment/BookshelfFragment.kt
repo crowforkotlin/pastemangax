@@ -357,6 +357,14 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
      */
     override fun initListener() {
 
+        mBinding.comicList.setOnScrollChangeListener { _, _, _, _, _ ->
+            if (mBinding.topbar.isOverflowMenuShowing) { mBinding.comicList.stopScroll() }
+        }
+
+        mBinding.novelList.setOnScrollChangeListener { _, _, _, _, _ ->
+            if (mBinding.topbar.isOverflowMenuShowing) { mBinding.novelList.stopScroll() }
+        }
+
         // 处理双击事件
         parentFragmentManager.setFragmentResultListener("onDoubleTap_Bookshelf", this) { _, _ ->
             val recyclerView: BaseTapScrollRecyclerView = if (mBinding.comicList.isVisible) mBinding.comicList else mBinding.novelList

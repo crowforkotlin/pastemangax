@@ -10,21 +10,19 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import com.crow.base.tools.extensions.doOnInterval
-import com.crow.base.tools.extensions.log
 import com.crow.base.ui.fragment.BaseMviBottomSheetDialogFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.view.event.BaseEventEntity
-import com.crow.base.ui.view.event.click.BaseIEventInterval
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.module_book.databinding.BookFragmentComicBottomBinding
+import com.crow.module_book.model.entity.comic.reader.ReaderEvent
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.google.android.material.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.button.MaterialButtonToggleGroup
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class ComicBottomSheetFragment : BaseMviBottomSheetDialogFragment<BookFragmentComicBottomBinding>() {
@@ -105,13 +103,22 @@ class ComicBottomSheetFragment : BaseMviBottomSheetDialogFragment<BookFragmentCo
                     checkedId = id
                     if (isChecked) {
                         when(id) {
-                            mBinding.buttonStandard.id -> { parentFragmentManager.setFragmentResult(ComicActivity.OPTION, bundleOf(ComicActivity.READER_MODE to ComicCategories.Type.STANDARD.id) ) }
-                            mBinding.buttonStript.id -> { parentFragmentManager.setFragmentResult(ComicActivity.OPTION, bundleOf(ComicActivity.READER_MODE to ComicCategories.Type.STRIPT.id) ) }
-                            mBinding.buttonPage.id -> { parentFragmentManager.setFragmentResult(ComicActivity.OPTION, bundleOf(ComicActivity.READER_MODE to ComicCategories.Type.PAGE.id) ) }
+                            mBinding.buttonStandard.id -> { sendOptionResult(ComicCategories.Type.STANDARD.id) }
+                            mBinding.buttonStript.id -> { sendOptionResult(ComicCategories.Type.STRIPT.id) }
+                            mBinding.buttonPage.id -> { sendOptionResult(ComicCategories.Type.PAGE.id) }
                         }
                     }
                 }
             })
         }
+    }
+
+    private fun sendOptionResult(type: Int) {
+        parentFragmentManager.setFragmentResult(ComicActivity.ACTIVITY_OPTION,
+            bundleOf(
+                ComicActivity.EVENT to ReaderEvent.READER_MODE,
+                ComicActivity.VALUE to type
+            )
+        )
     }
 }

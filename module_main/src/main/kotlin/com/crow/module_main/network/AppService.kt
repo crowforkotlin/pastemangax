@@ -1,7 +1,8 @@
 package com.crow.module_main.network
 
 import com.crow.mangax.copymanga.BaseStrings
-import com.crow.module_main.model.resp.MainAppUpdateResp
+import com.crow.module_main.model.resp.MainAppUpdateHistoryResp
+import com.crow.module_main.model.resp.MainAppUpdateInfoResp
 import com.crow.module_main.model.resp.MainSiteResp
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
@@ -19,11 +20,14 @@ import retrofit2.http.Url
 interface AppService {
 
     @GET
-    fun getUpdateInfo(@Url url: String = BaseStrings.URL.Crow_UpdateInfo): Flow<MainAppUpdateResp>
+    fun getUpdateInfo(@Url url: String = BaseStrings.Repository.UpdateInfo): Flow<MainAppUpdateInfoResp>
 
     @GET
-    fun getQQGroup(@Url url: String = BaseStrings.URL.Crow_Telegram): Flow<ResponseBody>
+    fun getUpdateHistory(@Url url: String = BaseStrings.Repository.UpdateHistory): Flow<MainAppUpdateHistoryResp>
 
     @GET
-    fun getSite(@Url url: String = BaseStrings.URL.Crow_Site): Flow<MainSiteResp>
+    fun getGroup(@Url url: String = BaseStrings.Repository.GROUP): Flow<ResponseBody>
+
+    @GET
+    fun getSite(@Url url: String = BaseStrings.Repository.SITE): Flow<MainSiteResp>
 }

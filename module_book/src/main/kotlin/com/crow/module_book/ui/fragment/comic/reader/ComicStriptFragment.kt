@@ -26,6 +26,7 @@ import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.database.model.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
+import com.crow.module_book.model.entity.comic.reader.ReaderEvent
 import com.crow.module_book.model.entity.comic.reader.ReaderLoading
 import com.crow.module_book.model.entity.comic.reader.ReaderUiState
 import com.crow.module_book.model.intent.BookIntent
@@ -120,7 +121,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                 override fun onChildViewAttachedToWindow(view: View) {
                     mBinding.list.removeOnChildAttachStateChangeListener(this)
 //                    "Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
-                    if (isDetached) return
+                    if (isDetached || position >= (mAdapter?.itemCount ?: 0)) return
                     if (position == -1) {
                         mBinding.list.post {
                             mBinding.list.post {
@@ -182,6 +183,14 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
             }
         }
 
+        parentFragmentManager.setFragmentResultListener(ComicActivity.FRAGMENT_OPTION, viewLifecycleOwner) { key, bundle ->
+            when(bundle.getInt(ComicActivity.EVENT, -1)) {
+                ReaderEvent.OPEN_DRAWER -> {
+                    mBinding.list.stopScroll()
+                }
+            }
+        }
+
         mBinding.list.setPreScrollListener { dx, dy, position ->
             mVM.onScroll(dy, position)
         }
@@ -226,6 +235,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     private inline fun getPosItem(itemPos: Int? = null, invoke: (Int, Int, Int, Int?) -> Unit) {
         val list = (mAdapter ?: error("Adapter is null!")).getCurrentList()
+        if (list.size == 4) return
         val item: Any
         var index: Int? = null
         var itemCenterPos: Int? = null

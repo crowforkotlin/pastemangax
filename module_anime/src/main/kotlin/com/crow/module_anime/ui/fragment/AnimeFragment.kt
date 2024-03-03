@@ -250,6 +250,10 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
      */
     override fun initListener() {
 
+        mBinding.list.setOnScrollChangeListener { _, _, _, _, _ ->
+            if (mBinding.topbar.isOverflowMenuShowing) { mBinding.list.stopScroll() }
+        }
+
         // 设置容器Fragment的回调监听
         parentFragmentManager.setFragmentResultListener(ANIME, this) { _, bundle ->
             if (bundle.getInt(ID) == 3) {

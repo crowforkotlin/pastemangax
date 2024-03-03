@@ -36,6 +36,7 @@
         <activity
             android:name="com.crow.module_book.ui.activity.ComicActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Book.Theme.CopyManga" />
 
         <activity

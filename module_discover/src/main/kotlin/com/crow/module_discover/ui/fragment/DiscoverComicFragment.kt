@@ -1,14 +1,11 @@
 package com.crow.module_discover.ui.fragment
 
-import android.content.Context
 import android.graphics.Typeface
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.appcompat.view.menu.MenuPresenter
+import androidx.appcompat.widget.ActionMenuView
 import androidx.core.view.get
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
@@ -18,10 +15,6 @@ import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import com.crow.base.app.app
-import com.crow.mangax.copymanga.BaseLoadStateAdapter
-import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.entity.Fragments
-import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
@@ -30,6 +23,7 @@ import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.px2sp
@@ -42,6 +36,10 @@ import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
+import com.crow.mangax.copymanga.BaseLoadStateAdapter
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.copymanga.tryConvert
 import com.crow.module_discover.R
 import com.crow.module_discover.databinding.DiscoverComicMoreLayoutBinding
@@ -59,8 +57,8 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.qualifier.named
 import kotlin.properties.Delegates
-import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
+import com.crow.mangax.R as mangaR
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -150,8 +148,14 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         )
     }
 
+
+
     /** ● 初始化监听事件 */
     override fun initListener() {
+
+        mBinding.list.setOnScrollChangeListener { _, _, _, _, _ ->
+            if (mBinding.topbar.isOverflowMenuShowing) { mBinding.list.stopScroll() }
+        }
 
         // 处理双击事件
         parentFragmentManager.setFragmentResultListener("onDoubleTap_Discover_Comic", this) { _, _ ->
@@ -229,10 +233,15 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
                     }
 
                     // subtitle textview
-                    mToolbarSubtitle = toolbar::class.java.superclass.getDeclaredField("mSubtitleTextView").run {
+                    mToolbarSubtitle = toolbar::class.java.superclass.superclass.getDeclaredField("mSubtitleTextView").run {
                         isAccessible = true
                         get(toolbar) as TextView
                     }
+                    /*val view = toolbar::class.java.superclass.getDeclaredField("mMenuView").run {
+                        isAccessible = true
+                        get(toolbar) as ActionMenuView
+                    }*/
+
                     mToolbarSubtitle?.typeface = Typeface.DEFAULT_BOLD
                 }
             }

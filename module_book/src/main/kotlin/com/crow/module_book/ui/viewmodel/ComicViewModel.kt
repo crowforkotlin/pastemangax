@@ -1,16 +1,20 @@
 package com.crow.module_book.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.crow.base.app.app
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.createCoroutineExceptionHandler
 import com.crow.base.tools.extensions.DBNameSpace
 import com.crow.base.tools.extensions.buildDatabase
-import com.crow.base.tools.extensions.info
 import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
+import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.module_book.R
 import com.crow.module_book.model.database.ComicDB
@@ -23,15 +27,19 @@ import com.crow.module_book.model.entity.comic.reader.ReaderLoading
 import com.crow.module_book.model.entity.comic.reader.ReaderUiState
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.ComicPageResp
+import com.crow.module_book.model.resp.comic_comment.ComicCommentListResult
 import com.crow.module_book.model.resp.comic_page.Chapter
 import com.crow.module_book.model.resp.comic_page.Content
+import com.crow.module_book.model.source.ComicCommentDataSource
 import com.crow.module_book.network.BookRepository
 import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -144,6 +152,8 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     var mReaderComic: MineReaderComicEntity? = null
         private set
 
+    var mComicCommentFlowPage : Flow<PagingData<ComicCommentListResult>>? = null
+
     suspend fun getSetting(): MineReaderSettingEntity? {
         return viewModelScope.async(Dispatchers.IO) { mComicDBDao.findSetting(MangaXAccountConfig.mAccount).also { mReaderSetting = it } }.await()
     }
@@ -160,7 +170,32 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
                     getComicPage(intent)
                 }
             }
+            is BookIntent.GetComicComment -> {
+                getComment(intent)
+            }
+            is BookIntent.SubmitComment -> {
+                submitComment(intent)
+            }
         }
+    }
+
+    private fun submitComment(intent: BookIntent.SubmitComment) {
+        flowResult(intent, repository.submitComment(mCurrentChapterUuid, intent.content)) { value -> intent.copy(resp = value) }
+    }
+
+    private fun getComment(intent: BookIntent.GetComicComment) {
+        mComicCommentFlowPage = Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                initialLoadSize = 20,
+                enablePlaceholders = true,
+            ),
+            pagingSourceFactory = {
+                ComicCommentDataSource { position, pagesize ->
+                    flowResult(repository.getComicComment(mCurrentChapterUuid, position, pagesize), intent) { value -> intent.copy(commentResp = value.mResults) }.mResults
+                }
+            }
+        ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
     }
 
     /**
@@ -369,6 +404,10 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     private fun ComicPageResp.createChapterPages(incrementIndex: Int): MutableList<Any> {
+        if (mChapter.mContents.isEmpty()) {
+            mChapter.mWords = mutableListOf(0)
+            mChapter.mContents = mutableListOf(Content(mImageUrl = BaseStrings.Repository.IMAGE_ERROR))
+        }
         val pages: MutableList<Any> = mChapter.mWords
             .zip(mChapter.mContents)
             .sortedBy { it.first }
@@ -519,7 +558,12 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
 
     inline fun tryUpdateReaderComicrInfo(position: Int, offset: Int, chapterID: Int, readerInfo: ReaderInfo, update: (ComicActivityInfo) -> Unit) {
         if (readerInfo.mChapterUuid != mCurrentChapterUuid) {
-            mComicInfo = mComicInfo.copy(mChapterCurrentUuid = readerInfo.mChapterUuid, mChapterNextUuid = readerInfo.mNextUUID, mChapterPrevUuid = readerInfo.mPrevUUID)
+            mComicInfo = mComicInfo.copy(
+                mChapterCurrentUuid = readerInfo.mChapterUuid,
+                mChapterNextUuid = readerInfo.mNextUUID,
+                mChapterPrevUuid = readerInfo.mPrevUUID,
+                mSubTitle = readerInfo.mChapterName
+            )
             update(mComicInfo)
         } else {
             updatePos(position, offset, chapterID)

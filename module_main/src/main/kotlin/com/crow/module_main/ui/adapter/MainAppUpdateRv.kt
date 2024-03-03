@@ -44,6 +44,6 @@ class MainAppUpdateRv(val mUrl: List<Url>) : RecyclerView.Adapter<MainAppUpdateR
     override fun getItemCount(): Int = mUrl.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.rvBinding.mainUpdateUrlContent.text = mUrl[position].mName.getSpannableString(mPurple, 0)
+        holder.rvBinding.mainUpdateUrlContent.text = mUrl[position].mName
     }
 }

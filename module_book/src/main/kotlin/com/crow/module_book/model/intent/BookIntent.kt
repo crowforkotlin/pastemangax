@@ -10,6 +10,8 @@ import com.crow.module_book.model.resp.NovelBrowserResp
 import com.crow.module_book.model.resp.NovelCatelogueResp
 import com.crow.module_book.model.resp.NovelChapterResp
 import com.crow.module_book.model.resp.NovelInfoResp
+import com.crow.module_book.model.resp.ComicCommentListResp
+import com.crow.module_book.model.resp.ComicCommentResp
 import okhttp3.ResponseBody
 
 open class BookIntent : BaseMviIntent() {
@@ -36,4 +38,7 @@ open class BookIntent : BaseMviIntent() {
 
     data class AddNovelToBookshelf(val novelId: String, val isCollect: Int, val baseResultResp: BaseNullableResultResp<Any?>? = null): BookIntent()
 
+    data class GetComicComment(val chapterId: String, val commentResp: ComicCommentListResp? = null) : BookIntent()
+
+    data class SubmitComment(val chapterId: String, val content: String, val resp: BaseNullableResultResp<ComicCommentResp?>? = null) : BookIntent()
 }

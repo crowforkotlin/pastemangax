@@ -5,18 +5,14 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.withCreated
 import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.findCenterViewPosition
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
-import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.BaseEventEnum
@@ -24,6 +20,7 @@ import com.crow.module_book.R
 import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.database.model.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
+import com.crow.module_book.model.entity.comic.reader.ReaderEvent
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderUiState
 import com.crow.module_book.model.intent.BookIntent
@@ -32,13 +29,13 @@ import com.crow.module_book.model.resp.comic_page.Content
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicStandardRvAdapter
 import com.crow.module_book.ui.fragment.InfoFragment
+import com.crow.module_book.ui.fragment.comic.BaseComicFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import com.crow.base.R as baseR
 import com.crow.mangax.R as mangaR
 
-class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
+class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
 
     /**
      * ● 漫画VM
@@ -178,6 +175,14 @@ class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
             }
         }
 
+        parentFragmentManager.setFragmentResultListener(ComicActivity.FRAGMENT_OPTION, viewLifecycleOwner) { key, bundle ->
+            when(bundle.getInt(ComicActivity.EVENT, -1)) {
+                ReaderEvent.OPEN_DRAWER -> {
+                    mBinding.list.stopScroll()
+                }
+            }
+        }
+
         mBinding.list.setNestedPreScrollListener { _, _, position ->
             updateUiState(pos = position)
         }
@@ -239,11 +244,11 @@ class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
     }
 
     private fun processedReaderPages(chapter: Chapter): MutableList<Any> {
+        val pages: MutableList<Any> = chapter.mContents.toMutableList()
         val prevUUID = chapter.mPrev
         val nextUUID = chapter.mNext
         val prevInfo = if (prevUUID == null) getString(R.string.book_no_prev) else getString(R.string.book_prev)
         val nextInfo = if (nextUUID == null) getString(R.string.book_no_next) else getString(R.string.book_next)
-        val pages: MutableList<Any> = chapter.mContents.toMutableList()
         val chapterID = (pages.first() as Content).mChapterID
         pages.add(0, ReaderPrevNextInfo(
             mChapterID = chapterID,
@@ -275,7 +280,6 @@ class ComicStandardFragment : BaseMviFragment<BookFragmentComicBinding>() {
             else -> error("unknow view type!")
         }
         var positionOffset: Float = offset.toFloat()
-
         if (offset == -1) {
             positionOffset = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(centerViewPos)?.top?.toFloat() ?: 0f
             if (isRotate) {

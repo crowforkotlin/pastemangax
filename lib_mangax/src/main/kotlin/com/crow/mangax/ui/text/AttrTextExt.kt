@@ -1,13 +1,17 @@
-@file:Suppress("SpellCheckingInspection", "AnnotateVersionCheck")
+@file:Suppress("SpellCheckingInspection", "AnnotateVersionCheck", "unused")
 
 package com.crow.mangax.ui.text
 
+import android.annotation.SuppressLint
 import android.graphics.Path
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.crow.mangax.ui.text.AttrTextLayout
+import com.crow.mangax.ui.text.IAttrText
+import java.lang.reflect.Constructor
 
 
 internal inline fun IAttrText.drawY(onTop: () -> Unit, onBottom: () -> Unit) {
@@ -54,9 +58,45 @@ internal fun Any?.errorLog(tag: String = IAttrText.TAG) {
     Log.e(tag, this.toString())
 }
 
-internal fun CoroutineScope.scope(duration: Long = 0L, block: suspend () -> Unit) {
-   launch {
-       if(duration != 0L) delay(duration)
-       block()
-   }
+internal inline fun Handler.asyncMessage(delay: Long, runnable: Runnable, config: Message.() -> Unit = { }) {
+    sendMessageDelayed(Message.obtain(this, runnable).also {
+        it.config()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            it.isAsynchronous = true
+        }
+    }, delay)
+}
+
+internal fun Handler.asyncMessage(runnable: Runnable) {
+    sendMessage(Message.obtain(this, runnable).also {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            it.isAsynchronous = true
+        }
+    })
+}
+internal fun Handler.sendMessage(runnable: Runnable, config: Message.() -> Unit) {
+    sendMessage(Message.obtain(this, runnable).also { it.config() })
+}
+
+@SuppressLint("ObsoleteSdkInt")
+internal fun Looper.asHandler(async: Boolean): Handler {
+    // Async support was added in API 16.
+    if (!async || Build.VERSION.SDK_INT < 16) { return Handler(this) }
+
+    if (Build.VERSION.SDK_INT >= 28) {
+//         TODO compile against API 28 so this can be invoked without reflection.
+//        val factoryMethod = Handler::class.java.getDeclaredMethod("createAsync", Looper::class.java)
+//        return factoryMethod.invoke(null, this) as Handler
+        return Handler.createAsync(this)
+    }
+
+    val constructor: Constructor<Handler>
+    try {
+        constructor = Handler::class.java.getDeclaredConstructor(Looper::class.java,
+            Handler.Callback::class.java, Boolean::class.javaPrimitiveType)
+    } catch (ignored: NoSuchMethodException) {
+        // Hidden constructor absent. Fall back to non-async constructor.
+        return Handler(this)
+    }
+    return constructor.newInstance(this, null, true)
 }

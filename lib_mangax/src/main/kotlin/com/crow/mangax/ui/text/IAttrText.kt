@@ -9,6 +9,12 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Region
 import android.util.Log
+import com.crow.mangax.ui.text.debug
+import com.crow.mangax.ui.text.debugAnimation
+import com.crow.mangax.ui.text.drawX
+import com.crow.mangax.ui.text.drawY
+import com.crow.mangax.ui.text.withApiO
+import com.crow.mangax.ui.text.withSizeUnit
 import kotlin.math.sqrt
 
 internal interface IAttrText {
@@ -53,6 +59,10 @@ internal interface IAttrText {
      */
     fun getTextHeight(fontMetrics: Paint.FontMetrics) : Float {
         return fontMetrics.descent -fontMetrics.ascent
+    }
+
+    fun Context.getExactlyTextHeight(fontMetrics: Paint.FontMetrics): Float {
+        return (fontMetrics.descent -fontMetrics.ascent) + withSizeUnit(::mTextRowMargin, dpOrSp = { px2dp(mTextRowMargin) })
     }
 
     /**
@@ -246,7 +256,7 @@ internal interface IAttrText {
      * ● 2023-12-25 16:39:20 周一 下午
      * @author crowforkotlin
      */
-    fun Any?.debugLog(tag: String = TAG, level: Int = Log.DEBUG) {
+    fun Any?.debugLog(tag: String = TAG,level: Int = Log.DEBUG) {
         debug { Log.println(level, tag, this.toString()) }
     }
 

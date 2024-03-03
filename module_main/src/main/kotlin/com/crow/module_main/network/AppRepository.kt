@@ -13,9 +13,11 @@ import kotlinx.coroutines.flow.flowOn
  **************************/
 class AppRepository(val service: AppService) {
 
+    fun getUpdateHistory() = service.getUpdateHistory().flowOn(Dispatchers.IO)
+
     fun getUpdateInfo() = service.getUpdateInfo().flowOn(Dispatchers.IO)
 
-    fun getQQGroup() = service.getQQGroup().flowOn(Dispatchers.IO)
+    fun getQQGroup() = service.getGroup().flowOn(Dispatchers.IO)
 
     fun getSite() = service.getSite().flowOn(Dispatchers.IO)
 }
