@@ -17,3 +17,7 @@ fun Any?.ifNull(block: Runnable) {
 fun Any?.notNull(block: Runnable) {
     if (this != null) block.run()
 }
+
+fun String.isAllWhiteSpace(): Boolean {
+    return Regex("\\s*").matches(this)
+}

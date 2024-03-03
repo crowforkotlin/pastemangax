@@ -230,7 +230,7 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
                     }
 
                     // subtitle textview
-                    mToolbarSubtitle = toolbar::class.java.superclass.getDeclaredField("mSubtitleTextView").run {
+                    mToolbarSubtitle = toolbar::class.java.superclass.superclass.getDeclaredField("mSubtitleTextView").run {
                         isAccessible = true
                         get(toolbar) as TextView
                     }

@@ -1,10 +1,16 @@
 package com.crow.module_mine.ui.viewmodel
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.viewModelScope
+import coil.decode.DecodeResult
+import coil.decode.Decoder
 import coil.imageLoader
 import coil.request.ImageRequest
+import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import com.crow.base.app.app
 import com.crow.base.tools.extensions.DataStoreAgent
@@ -110,9 +116,15 @@ class MineViewModel(private val repository: MineRepository) : BaseMviViewModel<M
             app.imageLoader.enqueue(
                 ImageRequest.Builder(context)
                     .data(if (mIconUrl == null) mangaR.drawable.base_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl)) // 加载的图片地址或占位符
+                    .allowConversionToBitmap(true)
                     .placeholder(mangaR.drawable.base_icon_app) // 设置占位符
                     .transformations(CircleCropTransformation()) // 应用圆形裁剪
-                    .size(context.dp2px(48f).toInt()) // 设置图片大小
+                    .scale(Scale.FIT)
+                    .decoderFactory { source, option, _ -> Decoder {
+                        val size = context.dp2px(48f).toInt()
+                        val bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(source.source.source().inputStream()), size, size, true)
+                        DecodeResult(drawable = bitmap.toDrawable(option.context.resources), false) }
+                    }
                     .target { doOnReady(it) }
                     .build()
             )
@@ -123,6 +135,11 @@ class MineViewModel(private val repository: MineRepository) : BaseMviViewModel<M
                 .data(if (mIconUrl == null) mangaR.drawable.base_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl)) // 加载的图片地址或占位符
                 .placeholder(mangaR.drawable.base_icon_app) // 设置占位符
                 .target { doOnReady(it) }
+                .decoderFactory { source, option, _ -> Decoder {
+                    val size = context.dp2px(48f).toInt()
+                    val bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(source.source.source().inputStream()), size, size, true)
+                    DecodeResult(drawable = bitmap.toDrawable(option.context.resources), false) }
+                }
                 .build()
         )
     }

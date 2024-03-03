@@ -19,11 +19,6 @@ object BaseStrings {
         const val CopyManga_TLD_TV = ".tv"
         const val CopyManga_TLD_SITE = ".site"
 
-        const val Crow_Site = "https://gitee.com/llzzppFlash/copy-manga/raw/main/site.json"
-        const val Crow_UpdateInfo = "https://gitee.com/llzzppFlash/copy-manga/raw/main/update_info.json"
-        const val Crow_Telegram = "https://gitee.com/llzzppFlash/copy-manga/raw/main/qq_group"
-        const val Crow_HOTMANGA_TOKEN = "https://gitee.com/llzzppFlash/copy-manga/raw/main/RELA_TOKEN"
-
         var COPYMANGA = "https://api.copymanga$CopyManga_TLD_TV"
         const val MangaFuna = "https://hi77-overseas.mangafuna.xyz/"
         const val Login = "/api/v3/login"
@@ -37,6 +32,8 @@ object BaseStrings {
         const val ComicAddToBookshelf = "/api/v3/member/collect/comic"
         const val ComicSearch = "/api/v3/search/comic"
         const val ComicTopic = "/api/v3/topic/{$PATH_WORD}/contents"
+        const val ComicCommentList = "/api/v3/roasts?_update=true"
+        const val ComicCommentSubmit = "/api/v3/member/roast"
 
         const val NovelInfo = "/api/v3/book/{pathword}?_update=true"
         const val NovelChapter = "/api/v3/book/{pathword}/volumes"
@@ -73,4 +70,11 @@ object BaseStrings {
         const val HotManga_Search = "api/v3/search/cartoon?platform=1&free_type=1&_update=true"
     }
 
+    object Repository {
+        const val IMAGE_ERROR = "https://gitlab.com/crowforkotlin/copymangax/-/raw/main/Image/comic_error.png"
+        const val SITE = "https://gitlab.com/crowforkotlin/copymangax/-/raw/main/site.json"
+        const val UpdateInfo = "https://gitlab.com/crowforkotlin/copymangax/-/raw/main/updateInfo.json"
+        const val GROUP = "https://gitlab.com/crowforkotlin/copymangax/-/raw/main/group.json"
+        const val UpdateHistory = "https://gitlab.com/crowforkotlin/copymangax/-/raw/main/updateHistory.json"
+    }
 }

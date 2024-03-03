@@ -55,9 +55,10 @@ internal fun <R> ProducerScope<R>.processing(response: Response<R>) {
     //HttpCode 为 200
     if (response.isSuccessful) {
         val body = response.body()
+        val code = response.code()
         // 204: 执行成功但是没有返回数据
-        if (body == null || response.code() == 204) {
-            cancel(CancellationException("HTTP status code: ${response.code()}"))
+        if (body == null || code == 204) {
+            cancel(CancellationException("HTTP status code: $code"))
         } else {
             trySendBlocking(body)
                 .onSuccess { close() }

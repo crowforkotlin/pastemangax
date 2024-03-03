@@ -100,6 +100,7 @@ dependencies {
     api(app.androidx.core.splashscreen)
     api(app.androidx.room.ktx)
     api(app.androidx.room.runtime)
+    api(app.androidx.swiperefreshlayout)
 
     api(libs.kotlin.coroutines.core)
     api(libs.kotlin.stdlib)
@@ -129,6 +130,7 @@ dependencies {
     api(compose.androidx.material.icons.extended)
     api(compose.accompanist.themeadapter)
     api(compose.accompanist.systemuicontroller)
+
 
     // leakcanary高版本不支持在MinSdk 24以下的设备运行
     debugApi(libs.leakcanary.android)

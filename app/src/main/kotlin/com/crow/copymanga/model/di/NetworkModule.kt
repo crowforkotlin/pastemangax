@@ -50,7 +50,7 @@ val networkModule = module {
      */
     single {
         Retrofit.Builder()
-            .baseUrl("https://gitee.com/")
+            .baseUrl("https://gitlab.com/")
             .client(get())
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(baseMoshi))

@@ -32,4 +32,18 @@
 	<string name="book_read_mode">阅读模式</string>
 	<string name="book_night_eye_protection_mode">亮度调节</string>
 	<string name="book_empty_item_tips">请先加载</string>
+
+	<string name="book_comment_create_time">入驻时间：%s</string>
+	<string name="book_comment_time">评论时间：%s</string>
+	<string name="book_comment_input_hint">吐槽点什么(最大200字)</string>
+	<string name="book_comment_submit">提交</string>
+	<string name="book_comment_comic_title"><b>漫画评论</b></string>
+
+	<string name="book_comment_edit_not_empty">评论不能空！</string>
+	<string name="book_comment_edit_length_invalid">评论内容字数不能超过200！</string>
+	<string name="book_comment_success">评论成功！</string>
+
+	<string name="book_lock">已锁定当前页面！</string>
+	<string name="book_unlock">已解锁当前页面！</string>
+
 </resources>

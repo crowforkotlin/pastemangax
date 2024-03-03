@@ -53,7 +53,7 @@ import com.crow.module_main.databinding.MainFragmentContainerBinding
 import com.crow.module_main.databinding.MainUpdateLayoutBinding
 import com.crow.module_main.databinding.MainUpdateUrlLayoutBinding
 import com.crow.module_main.model.intent.AppIntent
-import com.crow.module_main.model.resp.MainAppUpdateResp
+import com.crow.module_main.model.resp.MainAppUpdateInfoResp
 import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
 import com.crow.module_main.ui.view.DepthPageTransformer
@@ -363,8 +363,8 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
      * ● 2023-09-16 18:32:59 周六 下午
      * @param savedInstanceState 检查内存重启状态
      */
-    private fun doUpdateChecker(savedInstanceState: Bundle?, appUpdateResp: MainAppUpdateResp) {
-        val update = appUpdateResp.mUpdates.first()
+    private fun doUpdateChecker(savedInstanceState: Bundle?, appUpdateResp: MainAppUpdateInfoResp) {
+        val update = appUpdateResp.mUpdate
         if (savedInstanceState != null) {
             mEvent.setBoolean("INIT_UPDATE", true)
             if (!appUpdateResp.mForceUpdate) return
@@ -394,10 +394,12 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                 it.setCancelable(false)
                 it.setView(updateUrlBinding.root)
             }
-            (updateUrlBinding.mainUpdateUrlScrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = screenHeight
-            updateUrlBinding.mainUpdateUrlCancel.isInvisible = appUpdateResp.mForceUpdate
-            updateUrlBinding.mainUpdateUrlRv.adapter = MainAppUpdateRv(update.mUrl)
-            if (!appUpdateResp.mForceUpdate) { updateUrlBinding.mainUpdateUrlCancel.doOnClickInterval { updateUrlDialog.dismiss() } }
+            (updateUrlBinding.mainUpdateUrlRv.layoutParams as ConstraintLayout.LayoutParams).height = screenHeight
+            updateUrlBinding.close.isInvisible = appUpdateResp.mForceUpdate
+            updateUrlBinding.mainUpdateUrlRv.post {
+                updateUrlBinding.mainUpdateUrlRv.adapter = MainAppUpdateRv(update.mUrl)
+            }
+            if (!appUpdateResp.mForceUpdate) { updateUrlBinding.close.doOnClickInterval { updateUrlDialog.dismiss() } }
         }
         updateBinding.mainUpdateHistory.doOnClickInterval(flagTime = BASE_ANIM_300L) {
             parentFragmentManager.navigateToWithBackStack(

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="MangaX.Theme.Material3_Project" parent="Theme.Material3.DayNight.NoActionBar" >
+    <style name="MangaX.Theme.Material3_Project" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar" >
         <item name="android:textColor">@color/mangax_color_asc</item>
         <item name="colorPrimary">@color/mangax_color_asc</item>
-        <item name="colorOnPrimary">@color/mangax_icon_desc</item>
+        <item name="colorOnPrimary">@color/mangax_color_desc</item>
     </style>
 
     <style name="MangaX.TextAppearance.Widget.Button" parent="TextAppearance.Material3.TitleSmall" >

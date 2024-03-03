@@ -95,7 +95,7 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
     override fun initData(savedInstanceState: Bundle?) {
         lifecycleScope.launch {
             delay(BASE_ANIM_200L shl 1)
-            mMainVM.input(AppIntent.GetUpdateInfo())
+            mMainVM.input(AppIntent.GetUpdateHistory())
         }
     }
 
@@ -108,7 +108,7 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
         mBinding.updateToolbar.navigateIconClickGap { navigateUp() }
 
         mBinding.updateRefresh.setOnRefreshListener {
-            mMainVM.input(AppIntent.GetUpdateInfo())
+            mMainVM.input(AppIntent.GetUpdateHistory())
         }
     }
 
@@ -121,7 +121,7 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
 
         mMainVM.onOutput { intent ->
             when (intent) {
-                is AppIntent.GetUpdateInfo -> {
+                is AppIntent.GetUpdateHistory -> {
                     intent.mViewState
                         .doOnLoading { mBinding.updateRefresh.autoRefreshAnimationOnly() }
                         .doOnError { _, _ ->

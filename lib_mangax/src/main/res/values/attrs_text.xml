@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <declare-styleable name="AttrTextLayout" tools:ignore="ResourceName">
+<resources>
+    <declare-styleable name="AttrTextLayout">
         <attr name="text" format="string" />
         <attr name="textBoldEnable" format="boolean" />
         <attr name="textFakeBoldEnable" format="boolean" />
@@ -13,7 +13,8 @@
         <attr name="textSize" format="dimension" />
         <attr name="textRowMargin" format="dimension" />
         <attr name="textCharSpacing" format="dimension" />
-        <attr name="textScrollSpeed" format="integer" />
+        <attr name="textAnimationSpeed" format="integer" />
+        <attr name="textLines" format="integer" />
         <attr name="textResidenceTime" format="integer" />
         <attr name="textFontAssetsPath" format="string"/>
         <attr name="textFontAbsolutePath" format="string"/>
@@ -75,8 +76,8 @@
             <enum name="continuation_rhombus" value="315" />
             <enum name="move_x_draw" value="316" />
             <enum name="move_y_draw" value="317" />
-            <enum name="move_x_high_brushing_draw" value="318" />
-            <enum name="move_y_high_brushing_draw" value="319" />
+            <enum name="move_x_high_brush_draw" value="318" />
+            <enum name="move_y_high_brush_draw" value="319" />
         </attr>
 
     </declare-styleable>

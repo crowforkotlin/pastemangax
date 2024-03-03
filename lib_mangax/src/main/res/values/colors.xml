@@ -19,7 +19,7 @@
 
     <color name="mangax_bg">#FFFFFF</color>
     <color name="mangax_color_asc">#000000</color>
-    <color name="mangax_icon_desc">#FFFFFF</color>
+    <color name="mangax_color_desc">#FFFFFF</color>
 
     <color name="mangax_book_red">#EF5350</color>
     <color name="mangax_book_grey">#616161</color>

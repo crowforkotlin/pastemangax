@@ -10,7 +10,9 @@ import android.transition.Slide
 import android.transition.TransitionManager
 import android.transition.TransitionSet
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -24,7 +26,10 @@ import androidx.core.view.get
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withCreated
+import androidx.paging.PagingData
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
@@ -37,24 +42,34 @@ import com.crow.base.tools.extensions.immersionFullScreen
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.immersionFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
+import com.crow.base.tools.extensions.isAllWhiteSpace
 import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
+import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
+import com.crow.base.tools.extensions.updatePadding
 import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.base.ui.view.BaseErrorViewStub
 import com.crow.base.ui.view.baseErrorViewStub
 import com.crow.base.ui.viewmodel.doOnError
+import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
+import com.crow.base.ui.viewmodel.doOnSuccess
+import com.crow.mangax.copymanga.BaseLoadStateAdapter
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.copymanga.tryConvert
 import com.crow.module_book.R
+import com.crow.mangax.R as mangaR
 import com.crow.module_book.databinding.BookActivityComicBinding
 import com.crow.module_book.model.entity.comic.ComicActivityInfo
+import com.crow.module_book.model.entity.comic.reader.ReaderEvent
 import com.crow.module_book.model.intent.BookIntent
+import com.crow.module_book.ui.adapter.comic.ComicCommentRvAdapter
 import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
 import com.crow.module_book.ui.fragment.comic.reader.ComicStandardFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicStriptFragment
@@ -70,12 +85,17 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
+import kotlin.math.min
 import com.crow.base.R as baseR
 
 
-class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper.GestureListener {
+class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
 
     companion object {
+        const val EVENT = "FLAG"
+        const val ACTIVITY_OPTION  = "PARENT_OPTION"
+        const val VALUE = "VALUE"
+        const val FRAGMENT_OPTION = "CHILD_OPTION"
         const val ROTATE = "ROTATE"
         const val READER_MODE = "READER_MODE"
         const val OPTION = "OPTION"
@@ -126,17 +146,19 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
     private var mBaseErrorViewStub by BaseNotNullVar<BaseErrorViewStub>(true)
 
     private var mIsSliding = false
+    private var mIsLock = false
 
     /**
-     * ● 获取ViewBinding
+     * ● 评论适配器
      *
-     * ● 2023-07-07 23:55:09 周五 下午
+     * ● 2023-07-07 21:49:53 周五 下午
      */
-    override fun getViewBinding() = BookActivityComicBinding.inflate(layoutInflater)
+    private var mCommentAdapter: ComicCommentRvAdapter? = null
 
     override fun onDestroy() {
         super.onDestroy()
         AppProgressFactory.clear()
+        mCommentAdapter = null
     }
 
     /**
@@ -162,12 +184,19 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
 
         // 沉浸式边距
         immersionPadding(mBinding.root) { view, insets, _ ->
-            mBinding.topAppbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = insets.top }
+            val top = insets.top
+            mBinding.topAppbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin = top }
             view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 rightMargin = insets.right
             }
+            mBinding.comment.updatePadding(insets.left, dp5 + top, insets.right, dp5 + insets.bottom )
             mBinding.bottomAppbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin =  dp5 + insets.bottom }
+        }
+
+        mBinding.commentList.adapter = ComicCommentRvAdapter(lifecycleScope) { }.run {
+            mCommentAdapter = this
+            withLoadStateFooter(BaseLoadStateAdapter { retry() })
         }
 
         // 沉浸式状态栏和工具栏
@@ -248,32 +277,79 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
             }
         }
 
+        mBinding.commentButton.doOnClickInterval { mBinding.root.open() }
+
         mBinding.rotate.doOnClickInterval {
             supportFragmentManager.setFragmentResult("ROTATE", bundleOf())
         }
 
-        supportFragmentManager.setFragmentResultListener(OPTION, this) { key, bundle ->
-            lifecycleScope.launch {
-                supportFragmentManager.clearFragmentResultListener(CHAPTER_POSITION)
-                supportFragmentManager.clearFragmentResultListener(SLIDE)
-                val comicType: ComicCategories.Type = when(bundle.getInt(READER_MODE)) {
-                    R.string.book_comic_standard -> { ComicCategories.Type.STANDARD }
-                    R.string.book_comic_stript -> { ComicCategories.Type.STRIPT }
-                    R.string.book_comic_page -> { ComicCategories.Type.PAGE }
-                    else -> { ComicCategories.Type.STANDARD }
-                }
-                if (comicType == ComicCategories.Type.STANDARD) {
-                    val isSame = mVM.mReaderSetting?.mReadMode == comicType
-                    mVM.updateReaderMode(comicType)
-                    mComicCategory.apply(comicType)
-                    setChapterResult(mVM.getPos() - if(isSame) 0 else 1, mVM.getPosOffset())
-                } else {
-                    mVM.updateReaderMode(comicType)
-                    mComicCategory.apply(comicType)
-                    setChapterResult(mVM.getPosByChapterId(), mVM.getPosOffset())
+        supportFragmentManager.setFragmentResultListener(ACTIVITY_OPTION, this) { key, bundle ->
+            when(bundle.getInt(EVENT, -1)) {
+                ReaderEvent.READER_MODE -> {
+                    lifecycleScope.launch {
+                        supportFragmentManager.clearFragmentResultListener(CHAPTER_POSITION)
+                        supportFragmentManager.clearFragmentResultListener(SLIDE)
+                        val comicType: ComicCategories.Type = when(bundle.getInt(VALUE)) {
+                            R.string.book_comic_standard -> { ComicCategories.Type.STANDARD }
+                            R.string.book_comic_stript -> { ComicCategories.Type.STRIPT }
+                            R.string.book_comic_page -> { ComicCategories.Type.PAGE }
+                            else -> { ComicCategories.Type.STANDARD }
+                        }
+                        if (comicType == ComicCategories.Type.STANDARD) {
+                            val isSame = mVM.mReaderSetting?.mReadMode == comicType
+                            mVM.updateReaderMode(comicType)
+                            mComicCategory.apply(comicType)
+                            setChapterResult(mVM.getPos() - if(isSame) 0 else 1, mVM.getPosOffset())
+                        } else {
+                            mVM.updateReaderMode(comicType)
+                            mComicCategory.apply(comicType)
+                            setChapterResult(mVM.getPosByChapterId(), mVM.getPosOffset())
+                        }
+                    }
                 }
             }
         }
+
+        mBinding.refresh.setOnRefreshListener {
+            launchDelay(BASE_ANIM_300L shl 1) { mBinding.refresh.isRefreshing = false }
+            onClollectState(true)
+        }
+
+        mBinding.commentSubmit.doOnClickInterval {
+            val text = (mBinding.commentInputEdit.text ?: "").toString()
+            when {
+                MangaXAccountConfig.mAccountToken.isEmpty() -> {
+                    toast(getString(mangaR.string.mangax_token_error_relogin))
+                }
+                text.isEmpty() -> {
+                    toast(getString(R.string.book_comment_edit_not_empty))
+                }
+                text.isAllWhiteSpace() -> {
+                    toast(getString(R.string.book_comment_edit_not_empty))
+                }
+                text.length > 200 -> {
+                    toast(getString(R.string.book_comment_edit_length_invalid))
+                }
+                else -> {
+                    mVM.input(BookIntent.SubmitComment(mVM.mCurrentChapterUuid, text))
+                }
+            }
+        }
+
+        mBinding.root.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) { }
+            override fun onDrawerClosed(drawerView: View) { }
+            override fun onDrawerStateChanged(newState: Int) { }
+            override fun onDrawerOpened(drawerView: View) {
+                sendFragmentResult(ReaderEvent.OPEN_DRAWER)
+                lifecycleScope.tryConvert(mVM.mComicInfo.mSubTitle) {
+                    if (mBinding.commentTopbar.subtitle != it) {
+                        mBinding.commentTopbar.subtitle = it
+                        onClollectState(true)
+                    }
+                }
+            }
+        })
     }
 
     /**
@@ -327,6 +403,8 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      */
     override fun initObserver(savedInstanceState: Bundle?) {
 
+        onClollectState()
+
         lifecycleScope.launch {
             mVM.uiState.collect { state ->
                 state?.let { uiState ->
@@ -344,8 +422,10 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                             info = readerContent.mChapterInfo
                         )
                     )
+                    val chapterName = readerContent.mChapterInfo.mChapterName
                     mBinding.topAppbar.title = readerContent.mComicName
-                    mBinding.topAppbar.subtitle = readerContent.mChapterInfo.mChapterName
+                    mBinding.topAppbar.subtitle =  chapterName
+                    if (mBinding.root.isOpen) { mBinding.commentTopbar.subtitle = chapterName }
                     if (mBinding.bottomAppbar.isGone || !mIsSliding) {
                         var pageFloat = uiState.mCurrentPagePos.toFloat()
                         var pageTotal = uiState.mTotalPages.toFloat()
@@ -363,17 +443,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
 
                                 }
                             }
-                            val valueFrom: Float
-                            if (pageTotal <= 1f) {
-                                valueFrom = 0f
-                                pageFloat = 1f
-                                pageTotal =  1f
-                            } else {
-                                valueFrom = 1f
-                            }
-                            mBinding.slider.valueFrom = valueFrom
-                            mBinding.slider.value = pageFloat
-                            mBinding.slider.valueTo = pageTotal
+                            updateSliderValue(pageFloat, pageTotal)
                         }
                     }
                     mVM.tryUpdateReaderComicrInfo(currentPage, state.mCurrentPagePosOffset, state.mChapterID, readerContent.mChapterInfo) {
@@ -390,30 +460,64 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
                         intent.mViewState
                             .doOnError { _, _ -> showErrorPage() }
                             .doOnResult {
+                                this.intent.putExtra("INIT", true)
                                 setChapterResult(-1, mVM.getPosOffset())
                                 val page = intent.comicpage
                                 if (page != null) {
-                                    this.intent.putExtra("INIT", true)
                                     if(mBinding.loading.isVisible) mBinding.loading.animateFadeOutGone()
                                     lifecycleScope.tryConvert(page.mComic.mName, mBinding.topAppbar::setTitle)
-                                    lifecycleScope.tryConvert(page.mChapter.mName, mBinding.topAppbar::setSubtitle)
-                                    val total = page.mChapter.mContents.size.toFloat()
-                                    val valueFrom: Float
-                                    val value: Float
-                                    if (total <= 1f) {
-                                        valueFrom = 0f
-                                        value = 1f
-                                    } else {
-                                        valueFrom = 1f
-                                        value = 1f
+                                    lifecycleScope.tryConvert(page.mChapter.mName) {
+                                        mBinding.topAppbar.subtitle = it
+                                        mBinding.commentTopbar.subtitle = it
                                     }
-                                    mBinding.slider.valueFrom = valueFrom
-                                    mBinding.slider.value = value
-                                    mBinding.slider.valueTo = total
+                                    updateSliderValue(1f, page.mChapter.mContents.size.toFloat())
                                 } else {
                                     showErrorPage()
                                 }
                             }
+                    }
+                }
+                is BookIntent.GetComicComment -> {
+
+                }
+                is BookIntent.SubmitComment -> {
+                    intent.mViewState
+                        .doOnLoading { mBinding.commentSubmit.isEnabled = false }
+                        .doOnSuccess {
+                            launchDelay(BASE_ANIM_300L) { mBinding.refresh.isRefreshing = false }
+                            mBinding.commentSubmit.isEnabled = true
+                        }
+                        .doOnError { _, _ -> toast(getString(baseR.string.base_unknow_error)) }
+                        .doOnResult {
+                            mBinding.commentInputEdit.text = null
+                            if(intent.resp?.mCode == 200) toast(getString(R.string.book_comment_success))
+                            else  {
+                                lifecycleScope.tryConvert(intent.resp?.mMessage ?: return@doOnResult run { toast(getString(baseR.string.base_unknow_error)) }) { toast(it) }
+                            }
+                        }
+                }
+            }
+        }
+    }
+
+    private fun onClollectState(reset: Boolean = false) {
+        lifecycleScope.launch {
+            if (reset) {
+                mVM.mComicCommentFlowPage = null
+                mCommentAdapter?.submitData(PagingData.empty())
+            }
+            withCreated {
+                if (mVM.mComicCommentFlowPage == null) {
+
+                    // 发送获取书架 “漫画” 的意图 需要动态收集书架状态才可
+                    mVM.input(BookIntent.GetComicComment(mVM.mCurrentChapterUuid))
+
+                }
+
+                // 每个观察者需要一个单独的生命周期块，在同一个会导致第二个观察者失效 收集书架 漫画Pager状态
+                repeatOnLifecycle {
+                    mVM.mComicCommentFlowPage?.collect {
+                        mCommentAdapter?.submitData(it)
                     }
                 }
             }
@@ -437,6 +541,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if (savedInstanceState == null) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -460,6 +565,7 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      * ● 2023-07-07 23:56:56 周五 下午
      */
     override fun onTouch(area: Int, ev: MotionEvent) {
+        if (mIsLock) return
         transitionBar(mBinding.topAppbar.isVisible)
     }
 
@@ -471,6 +577,30 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         mGestureHelper.dispatchTouchEvent(ev, hasGlobalPoint(ev))
         return super.dispatchTouchEvent(ev)
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+        val action = event?.action
+        val code = event?.keyCode
+        if (action == KeyEvent.ACTION_DOWN) {
+            if (code == KeyEvent.KEYCODE_VOLUME_UP) {
+                if (mBinding.root.isOpen) { mBinding.root.closeDrawers() } else { mBinding.root.open() }
+                return true
+            }
+            if (code == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                mIsLock = !mIsLock
+                toast(
+                    if (mIsLock) {
+                        getString(R.string.book_lock)
+                    } else {
+                        getString(R.string.book_unlock)
+                    }
+                )
+                return true
+            }
+        }
+
+        return super.dispatchKeyEvent(event)
     }
 
     /**
@@ -552,12 +682,13 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
      *
      * ● 2023-09-02 19:12:24 周六 下午
      */
-    private fun immersionBarStyle(alpha: Int = 242) {
+    private fun immersionBarStyle(alpha: Int = 255) {
         (mBinding.topAppbar.background as MaterialShapeDrawable).apply {
             elevation = resources.getDimension(baseR.dimen.base_dp3)
             val color = ColorUtils.setAlphaComponent(resolvedTintColor, alpha)
             window.statusBarColor = color
             window.navigationBarColor = color
+            mBinding.comment.setBackgroundColor(color)
         }
     }
 
@@ -566,5 +697,22 @@ class ComicActivity : BaseMviActivity<BookActivityComicBinding>(), GestureHelper
             it.putInt(CHAPTER_POSITION_OFFSET, offset)
             it.putInt(CHAPTER_POSITION, position)
         })
+    }
+
+    private fun updateSliderValue(value: Float, to: Float) {
+        var pageTotal = to
+        var pageValue = value
+        val pageFrom: Float
+        if (pageTotal <= 1f) {
+            pageFrom = 0f
+            pageValue = 1f
+            pageTotal =  1f
+        } else {
+            pageFrom = 1f
+        }
+        pageValue = min(pageTotal, pageValue)
+        mBinding.slider.valueFrom =pageFrom
+        mBinding.slider.value = pageValue
+        mBinding.slider.valueTo = pageTotal
     }
 }

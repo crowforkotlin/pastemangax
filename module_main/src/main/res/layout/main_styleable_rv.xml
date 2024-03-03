@@ -38,7 +38,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:trackDecorationTint="@color/mangax_icon_desc" />
+            app:trackDecorationTint="@color/mangax_color_desc" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

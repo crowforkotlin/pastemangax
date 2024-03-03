@@ -13,7 +13,7 @@ import com.squareup.moshi.Json
  * @formatter:on
  **************************/
 
-data class MainAppUpdateResp(
+data class MainAppUpdateHistoryResp(
 
     @Json(name =  "updates")
     val mUpdates: MutableList<Update>,

@@ -59,7 +59,7 @@ data class Chapter(
     val mUuid: String,
 
     @Json(name =  "words")
-    val mWords: List<Int>
+    var mWords: MutableList<Int>
 )
 
 internal fun Chapter.getSortedContets() = mWords.zip(mContents).sortedBy { it.first }.map { it.second }.toMutableList()
