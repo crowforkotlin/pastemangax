@@ -265,7 +265,6 @@
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:counterEnabled="false"
-            app:counterMaxLength="36"
             app:endIconMode="clear_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/comment_submit"
@@ -278,8 +277,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text|textNoSuggestions"
-                android:maxLength="36"
-                android:maxLines="1"
+                android:maxLength="200"
+                android:maxLines="4"
                 android:textStyle="bold" />
 
         </com.google.android.material.textfield.TextInputLayout>

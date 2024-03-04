@@ -609,6 +609,7 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
      * ● 2023-09-04 01:30:21 周一 上午
      */
     private fun hasGlobalPoint(ev: MotionEvent): Boolean {
+        if (mBinding.root.isOpen) return true
         val rawX = ev.rawX.toInt()
         val rawY = ev.rawY.toInt()
         val hasToolbar = hasGlobalPoint(mBinding.topAppbar, rawX, rawY)
