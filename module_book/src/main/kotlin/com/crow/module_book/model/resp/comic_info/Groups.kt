@@ -6,5 +6,5 @@ import com.squareup.moshi.Json
 data class Groups(
 
     @Json(name =  "default")
-    val mDefault: Default,
+    val mDefault: Default?,
 )

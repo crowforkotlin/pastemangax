@@ -5,6 +5,7 @@ import com.crow.base.app.app
 import com.crow.base.tools.coroutine.baseCoroutineException
 import com.crow.base.tools.extensions.DBNameSpace
 import com.crow.base.tools.extensions.buildDatabase
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_book.R
