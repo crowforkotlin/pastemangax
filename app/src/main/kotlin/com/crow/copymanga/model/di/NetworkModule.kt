@@ -7,6 +7,7 @@ import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.copymanga.okhttp.AppProgressResponseBody
 import com.crow.base.tools.extensions.baseMoshi
 import com.crow.base.tools.network.FlowCallAdapterFactory
+import com.crow.mangax.copymanga.entity.AppConfig
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -89,7 +90,16 @@ val networkModule = module {
             // 动态请求地址
             .addInterceptor { chain ->
                 val request = chain.request()
-                chain.proceed(request.newBuilder().url(BaseStrings.URL.COPYMANGA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()).build())
+                val urlBuilder = if(!AppConfig.mApiProxyEnable) {
+                    BaseStrings.URL.COPYMANGA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()
+                } else {
+                    if ((AppConfig.getInstance().mApiSecret?.length ?: 0) >= 20) {
+                        BaseStrings.URL.WUYA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()
+                    } else {
+                        BaseStrings.URL.COPYMANGA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()
+                    }
+                }
+                chain.proceed(request.newBuilder().url(urlBuilder).build())
             }
 
             // 动态添加请求头
@@ -100,6 +110,7 @@ val networkModule = module {
                     .addHeader("Platform", "1")
                     .addHeader("Authorization","Token ${MangaXAccountConfig.mAccountToken}")
                     .addHeader("region", MangaXAccountConfig.mRoute)
+                    .addHeader("x-api-key", AppConfig.getInstance().mApiSecret ?: "")
                     .build()
                 )
             })

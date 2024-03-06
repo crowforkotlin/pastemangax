@@ -2,6 +2,10 @@ package com.crow.module_main.ui.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputFilter
+import android.text.Spanned
+import android.text.TextWatcher
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.forEach
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
+import com.crow.base.app.app
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
@@ -20,6 +25,7 @@ import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
@@ -32,6 +38,7 @@ import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.entity.AppConfig.Companion.mApiProxyEnable
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mCoverOrinal
 import com.crow.mangax.copymanga.entity.AppConfig.Companion.mHotAccurateDisplay
@@ -226,11 +233,21 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
     private suspend fun initProxyView() {
 
-        val appConfig = mVM.getReadedAppConfig() ?: return run { toast(getString(mangaR.string.mangax_unknow_error)) }
+        var appConfig = mVM.getReadedAppConfig() ?: return run { toast(getString(mangaR.string.mangax_unknow_error)) }
 
         val binding = MainSettingsProxyLayoutBinding.inflate(layoutInflater)
 
         val alertDialog = mContext.newMaterialDialog { dialog -> dialog.setView(binding.root) }
+
+        alertDialog.setOnDismissListener {
+            val text = binding.proxyInputEdit.text
+            appConfig = if (text == null) {
+                appConfig.copy(mApiSecret = null)
+            } else {
+                appConfig.copy(mApiSecret = text.toString())
+            }
+            mVM.saveAppConfig(appConfig)
+        }
 
         binding.close.doOnClickInterval { alertDialog.dismiss() }
 
@@ -239,6 +256,19 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
             "0" -> binding.proxyDomesticRoute.isChecked = true
             "1" -> binding.proxyOverseasRoute.isChecked = true
         }
+
+        val regex = Regex("[A-Za-z0-9@]+")
+        binding.proxyInputEdit.filters = arrayOf(object : InputFilter {
+            override fun filter( source: CharSequence?, start: Int, end: Int, dest: Spanned?, dstart: Int, dend: Int): CharSequence? {
+                // 只允许输入大写、小写字母和数字
+                if (source != null && !source.matches(regex)) {
+                    return ""
+                }
+                return null
+            }
+        })
+        binding.proxySwitch.isChecked = mApiProxyEnable
+        appConfig.mApiSecret?.let { binding.proxyInputEdit.setText(it) }
 
         // 代理组设置 选中监听
         binding.proxyRadioGroup.setOnCheckedChangeListener { _, checkedId ->
@@ -249,11 +279,42 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                 binding.proxyOverseasRoute.id -> MangaXAccountConfig.mRoute = "1"
             }
 
+            appConfig = appConfig.copy(mRoute = MangaXAccountConfig.mRoute)
+
             // 保存配置
-            mVM.saveAppConfig(appConfig.copy(mRoute = MangaXAccountConfig.mRoute))
+            mVM.saveAppConfig(appConfig)
 
             // 延时关闭Dialog 让RadioButton选中后的过渡效果执行完毕
             mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
+        }
+
+        binding.proxyInputEdit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable?) { }
+            override fun onTextChanged(chars: CharSequence?, start: Int, before: Int, count: Int) {
+                chars?.let {
+                    if (it.length >= 20) {
+                        appConfig = appConfig.copy(mApiSecret = it.toString())
+                        mVM.saveAppConfig(appConfig)
+                    }
+                }
+            }
+        })
+
+        binding.proxySwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                when {
+                    binding.proxyInputEdit.text.isNullOrEmpty() -> { toast(getString(R.string.main_api_input_tips)) }
+                    (binding.proxyInputEdit.text?.length ?: 0) < 20 -> { toast(getString(R.string.main_api_length_tips)) }
+                    else -> {
+                        mApiProxyEnable = true
+                        mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_COVER_ORINAL, true)
+                        return@setOnCheckedChangeListener
+                    }
+                }
+            }
+            mApiProxyEnable = false
+            mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_COVER_ORINAL, false)
         }
     }
 

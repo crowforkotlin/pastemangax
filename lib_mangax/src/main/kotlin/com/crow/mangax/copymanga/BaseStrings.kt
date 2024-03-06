@@ -15,6 +15,8 @@ object BaseStrings {
 
         fun setCopyMangaUrl(tld: String) { COPYMANGA = "https://api.copymanga$tld" }
 
+        const val WUYA = "https://api.badwuya.top"
+
         // (Top-Level Domain，TLD)
         const val CopyManga_TLD_TV = ".tv"
         const val CopyManga_TLD_SITE = ".site"

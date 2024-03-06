@@ -53,7 +53,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider" />
 
-
     <RadioGroup
         android:id="@+id/proxy_radio_group"
         android:layout_width="match_parent"
@@ -85,5 +84,62 @@
             android:textStyle="bold" />
 
     </RadioGroup>
+
+    <TextView
+        android:id="@+id/proxy_tips"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="@string/main_api_tips"
+        app:layout_constraintEnd_toEndOf="@+id/proxy_radio_group"
+        app:layout_constraintStart_toStartOf="@+id/proxy_radio_group"
+        app:layout_constraintTop_toBottomOf="@+id/proxy_radio_group" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/proxy_input_layout"
+        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/base_dp1"
+        android:hint="@string/main_api"
+        app:boxBackgroundColor="@color/mangax_color_desc"
+        app:boxCornerRadiusBottomEnd="@dimen/base_dp7_5"
+        android:layout_marginBottom="@dimen/base_dp10"
+        android:layout_marginEnd="@dimen/base_dp10"
+        android:layout_marginTop="@dimen/base_dp10"
+        app:boxCornerRadiusBottomStart="@dimen/base_dp7_5"
+        app:boxCornerRadiusTopEnd="@dimen/base_dp7_5"
+        app:boxCornerRadiusTopStart="@dimen/base_dp7_5"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:counterEnabled="false"
+        app:endIconMode="clear_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/proxy_switch"
+        app:layout_constraintStart_toStartOf="@+id/proxy_radio_group"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintTop_toBottomOf="@+id/proxy_tips"
+        app:startIconTint="@null">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/proxy_input_edit"
+            style="@style/Widget.Material3.TextInputEditText.FilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLength="120"
+            android:singleLine="true"
+            android:textStyle="bold" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/proxy_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/proxy_input_layout"
+        app:layout_constraintEnd_toEndOf="@+id/proxy_tips"
+        app:layout_constraintTop_toTopOf="@+id/proxy_input_layout" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
