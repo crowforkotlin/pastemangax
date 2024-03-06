@@ -2,6 +2,7 @@
 package com.crow.mangax.copymanga.entity
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.MangaXAccountConfig
@@ -42,6 +43,9 @@ data class AppConfig(
 
     @Json(name = "Resolution")
     val mResolution: Int = MangaXAccountConfig.mResolution,
+
+    @Json(name = "ApiSecret")
+    val mApiSecret: String? = null
 ) {
     companion object {
 
@@ -80,8 +84,16 @@ data class AppConfig(
         var mHotAccurateDisplay = false
             private set
 
+        /**
+         * ●  封面原图
+         *
+         * ● 2024-03-06 20:35:49 周三 下午
+         * @author crowforkotlin
+         */
         var mCoverOrinal = false
             private set
+
+        var mApiProxyEnable = false
 
         private var mAppConfig: AppConfig? =null
 
@@ -92,6 +104,7 @@ data class AppConfig(
             mHotAccurateDisplay = sp.getBoolean(SpNameSpace.Key.ENABLE_HOT_ACCURATE_DISPLAY, false)
             mUpdatePrefix = sp.getBoolean(SpNameSpace.Key.ENABLE_UPDATE_PREFIX, true)
             mCoverOrinal = sp.getBoolean(SpNameSpace.Key.ENABLE_COVER_ORINAL, false)
+            mApiProxyEnable = sp.getBoolean(SpNameSpace.Key.ENABLE_API_PROXY, false)
         }
 
         fun getAppSP(): SharedPreferences {
