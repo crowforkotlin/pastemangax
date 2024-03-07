@@ -23,9 +23,9 @@ import org.koin.core.qualifier.Qualifier
  */
 
 /**
- * ● 全局ViewModel For Activity
+ * ⦁ 全局ViewModel For Activity
  *
- * ● 2023-09-06 00:11:05 周三 上午
+ * ⦁ 2023-09-06 00:11:05 周三 上午
  */
 @MainThread
 inline fun <reified VM : BaseViewModel> BaseFragmentImpl.applicationViewModels(): Lazy<Unit> {
@@ -39,9 +39,9 @@ inline fun <reified VM : BaseViewModel> BaseFragmentImpl.applicationViewModels()
 }
 
 /**
- * ● 全局ViewModel For Activity
+ * ⦁ 全局ViewModel For Activity
  *
- * ● 2023-09-06 00:11:05 周三 上午
+ * ⦁ 2023-09-06 00:11:05 周三 上午
  */
 @MainThread
 inline fun <reified VM : BaseViewModel> BaseActivityImpl.applicationViewModels(): Lazy<VM> {

@@ -12,9 +12,9 @@ import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
 import java.util.Date
 
 /**
- * ● MineComicInfoEntity
+ * ⦁ MineComicInfoEntity
  *
- * ● 2024/2/6 21:04
+ * ⦁ 2024/2/6 21:04
  * @author crowforkotlin
  * @formatter:on
  */

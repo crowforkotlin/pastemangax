@@ -46,11 +46,11 @@ import kotlin.math.ceil
 import kotlin.properties.Delegates
 
 /**
- * ● 属性文本组件 -- 布局
+ * ⦁ 属性文本组件 -- 布局
  * 动画更新说明：视图A和视图B，当动画执行时A和B呼唤身份，此时当前的动画为B，A被设置为下一个视图，如此反复交换实现视图AB的多种动画效果
  * 文本更新说明：设置mText属性触发绘制更新文本、根据文本策略执行对应的效果
  *
- * ● 2023/10/30 15:53
+ * ⦁ 2023/10/30 15:53
  *
  * @author crowforkotlin
  * @formatter:off
@@ -192,83 +192,83 @@ class AttrTextLayout : FrameLayout, IAttrText {
         const val ANIMATION_MOVE_Y_HIGH_BRUSH_DRAW: Short = 319
 
         /**
-         * ● 重新加载更新策略：当重新绘制的时候是否重新执行动画
+         * ⦁ 重新加载更新策略：当重新绘制的时候是否重新执行动画
          *
-         * ● 2023-11-06 16:02:52 周一 下午
+         * ⦁ 2023-11-06 16:02:52 周一 下午
          * @author crowforkotlin
          */
         const val STRATEGY_ANIMATION_UPDATE_RESTART: Short = 602
 
         /**
-         * ● 默认更新策略：当重新绘制的时候继续执行已停止的动画
+         * ⦁ 默认更新策略：当重新绘制的时候继续执行已停止的动画
          *
-         * ● 2023-11-06 16:04:22 周一 下午
+         * ⦁ 2023-11-06 16:04:22 周一 下午
          * @author crowforkotlin
          */
         const val STRATEGY_ANIMATION_UPDATE_CONTINUA: Short = 603
 
         /**
-         * ● PX策略 和 DP策略
+         * ⦁ PX策略 和 DP策略
          *
-         * ● 2023-12-26 11:36:26 周二 上午
+         * ⦁ 2023-12-26 11:36:26 周二 上午
          * @author crowforkotlin
          */
         const val STRATEGY_DIMENSION_PX_OR_DEFAULT: Short = 604
         const val STRATEGY_DIMENSION_DP_OR_SP: Short = 605
 
         /**
-         * ● 默认更新策略：当文本发生改变触发绘制需求时会直接更新绘制视图
+         * ⦁ 默认更新策略：当文本发生改变触发绘制需求时会直接更新绘制视图
          *
-         * ● 2023-10-31 14:09:24 周二 下午
+         * ⦁ 2023-10-31 14:09:24 周二 下午
          * @author crowforkotlin
          */
         const val STRATEGY_TEXT_UPDATE_ALL: Short = 900
 
         /**
-         * ● 懒加载更新策略：当文本发生改变时 视图正在执行动画则不会更新，否则更新所有视图
+         * ⦁ 懒加载更新策略：当文本发生改变时 视图正在执行动画则不会更新，否则更新所有视图
          *
-         * ● 2023-10-31 14:09:59 周二 下午
+         * ⦁ 2023-10-31 14:09:59 周二 下午
          * @author crowforkotlin
          */
         const val STRATEGY_TEXT_UPDATE_LAZY: Short = 901
 
         /**
-         * ● 文本更新策略：当文本发生改变时，只会更新当前视图的文本（不管动画是否停止执行都会进行更新）
+         * ⦁ 文本更新策略：当文本发生改变时，只会更新当前视图的文本（不管动画是否停止执行都会进行更新）
          *
-         * ● 2024-01-26 17:19:40 周五 下午
+         * ⦁ 2024-01-26 17:19:40 周五 下午
          * @author crowforkotlin
          */
         const val STRATEGY_TEXT_UPDATE_CURRENT: Short = 902
 
         /**
-         * ● TaskScope 单例 暂时预留 考虑到文本数据处理采用单一线程解析，最后交由View进行对于处理
+         * ⦁ TaskScope 单例 暂时预留 考虑到文本数据处理采用单一线程解析，最后交由View进行对于处理
          *
-         * ● 2023-12-28 15:24:09 周四 下午
+         * ⦁ 2023-12-28 15:24:09 周四 下午
          * @author crowforkotlin
          */
         private var mTaskHandlerThread: HandlerThread? = null
         private lateinit var mTaskHandler: Handler
 
         /**
-         * ● 动画任务个数
+         * ⦁ 动画任务个数
          *
-         * ● 2024-01-29 16:52:10 周一 下午
+         * ⦁ 2024-01-29 16:52:10 周一 下午
          * @author crowforkotlin
          */
         private var mAnimationTaskCount: Int = 0
 
         /**
-         * ● 等待动画个数 0 跳过
+         * ⦁ 等待动画个数 0 跳过
          *
-         * ● 2024-01-29 16:49:10 周一 下午
+         * ⦁ 2024-01-29 16:49:10 周一 下午
          * @author crowforkotlin
          */
         var mAwaitAnimationCount = 0
 
         /**
-         * ● 等待动画时检查时间
+         * ⦁ 等待动画时检查时间
          *
-         * ● 2024-01-29 16:51:46 周一 下午
+         * ⦁ 2024-01-29 16:51:46 周一 下午
          * @author crowforkotlin
          */
         var mAwaitCheckAnimationDuration = 1000L
@@ -279,205 +279,205 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● Path -- 用于绘制动画
+     * ⦁ Path -- 用于绘制动画
      *
-     * ● 2023-12-21 19:15:44 周四 下午
+     * ⦁ 2023-12-21 19:15:44 周四 下午
      * @author crowforkotlin
      */
     private val mPath = Path()
 
     /**
-     * ● 是否更新全部View
+     * ⦁ 是否更新全部View
      *
-     * ● 2023-12-25 19:18:11 周一 下午
+     * ⦁ 2023-12-25 19:18:11 周一 下午
      * @author crowforkotlin
      */
     private var mUpdateAll: Boolean = false
 
     /**
-     * ● 动画时间比率
+     * ⦁ 动画时间比率
      *
-     * ● 2023-12-19 17:43:26 周二 下午
+     * ⦁ 2023-12-19 17:43:26 周二 下午
      * @author crowforkotlin
      */
     private var mAnimationTimeFraction = 0f
 
     /**
-     * ● 视图动画回调
+     * ⦁ 视图动画回调
      *
-     * ● 2023-11-01 09:51:11 周三 上午
+     * ⦁ 2023-11-01 09:51:11 周三 上午
      * @author crowforkotlin
      */
     private var mViewAnimationRunnable: Runnable? = null
 
     /**
-     * ● 任务回调列表
+     * ⦁ 任务回调列表
      *
-     * ● 2024-02-20 18:28:28 周二 下午
+     * ⦁ 2024-02-20 18:28:28 周二 下午
      * @author crowforkotlin
      */
     private val mTaskListRunnable: MutableList<Runnable> = mutableListOf()
 
     /**
-     * ● 动画启动时间
+     * ⦁ 动画启动时间
      *
-     * ● 2023-12-19 17:36:37 周二 下午
+     * ⦁ 2023-12-19 17:36:37 周二 下午
      * @author crowforkotlin
      */
     private var mAnimationStartTime = 0L
 
     /**
-     * ● 是否完成布局
+     * ⦁ 是否完成布局
      *
-     * ● 2023-12-04 10:49:29 周一 上午
+     * ⦁ 2023-12-04 10:49:29 周一 上午
      * @author crowforkotlin
      */
     private var mLayoutComplete: Boolean = false
 
     /**
-     * ● 当前任务
+     * ⦁ 当前任务
      *
-     * ● 2023-12-04 11:01:30 周一 上午
+     * ⦁ 2023-12-04 11:01:30 周一 上午
      * @author crowforkotlin
      */
     private var mTask: MutableList<Byte>? = null
 
     /**
-     * ● 等待任务回调
+     * ⦁ 等待任务回调
      *
-     * ● 2024-02-21 16:15:34 周三 下午
+     * ⦁ 2024-02-21 16:15:34 周三 下午
      * @author crowforkotlin
      */
     private var mAwaitRunnable: Runnable? = null
 
     /**
-     * ● 文本画笔
+     * ⦁ 文本画笔
      *
-     * ● 2023-11-01 09:51:41 周三 上午
+     * ⦁ 2023-11-01 09:51:41 周三 上午
      * @author crowforkotlin
      */
     private val mTextPaint : TextPaint = TextPaint()
 
     /**
-     * ● 文本列表 -- 存储屏幕上可显示的字符串集合 实现原理是 动态计算字符串宽度和 视图View做判断
+     * ⦁ 文本列表 -- 存储屏幕上可显示的字符串集合 实现原理是 动态计算字符串宽度和 视图View做判断
      * First : 文本，Second：测量宽度
      *
-     * ● 2023-10-31 14:04:26 周二 下午
+     * ⦁ 2023-10-31 14:04:26 周二 下午
      * @author crowforkotlin
      */
     private var mList : MutableList<Pair<String, Float>> = mutableListOf()
 
     /**
-     * ● 动画持续时间
+     * ⦁ 动画持续时间
      *
-     * ● 2023-10-31 13:59:35 周二 下午
+     * ⦁ 2023-10-31 13:59:35 周二 下午
      * @author crowforkotlin
      */
     private var mAnimationDuration: Long = 8000L
 
     /**
-     * ● 当前正在执行的视图动画，没有动画则为空
+     * ⦁ 当前正在执行的视图动画，没有动画则为空
      *
-     * ● 2023-10-31 14:08:33 周二 下午
+     * ⦁ 2023-10-31 14:08:33 周二 下午
      * @author crowforkotlin
      */
     private var mViewAnimatorSet : AnimatorSet? = null
 
     /**
-     * ● 上一个动画值
+     * ⦁ 上一个动画值
      *
-     * ● 2023-11-02 17:16:40 周四 下午
+     * ⦁ 2023-11-02 17:16:40 周四 下午
      * @author crowforkotlin
      */
     private var mLastAnimation: Short = -1
 
     /**
-     * ● 当前持续时间
+     * ⦁ 当前持续时间
      *
-     * ● 2023-11-06 19:14:20 周一 下午
+     * ⦁ 2023-11-06 19:14:20 周一 下午
      * @author crowforkotlin
      */
     private var mCurrentDuration = mAnimationDuration
 
     /**
-     * ● 缓存AttrTextView （默认两个）
+     * ⦁ 缓存AttrTextView （默认两个）
      *
-     * ● 2023-11-01 09:53:01 周三 上午
+     * ⦁ 2023-11-01 09:53:01 周三 上午
      * @author crowforkotlin
      */
     private val mCacheViews = ArrayList<AttrTextView>(REQUIRED_CACHE_SIZE)
 
     /**
-     * ● 当前视图的位置
+     * ⦁ 当前视图的位置
      *
-     * ● 2023-11-01 10:12:30 周三 上午
+     * ⦁ 2023-11-01 10:12:30 周三 上午
      * @author crowforkotlin
      */
     private var mCurrentViewPos: Int by Delegates.observable(0) { _, _, _ -> onVariableChanged(FLAG_LAYOUT_REFRESH) }
 
     /**
-     * ● 文本列表位置 -- 设置后会触发重新绘制
+     * ⦁ 文本列表位置 -- 设置后会触发重新绘制
      *
-     * ● 2023-10-31 14:06:16 周二 下午
+     * ⦁ 2023-10-31 14:06:16 周二 下午
      * @author crowforkotlin
      */
     private var mListPosition : Int by Delegates.observable(0) { _, _, _ -> onVariableChanged( FLAG_CHILD_REFRESH) }
 
     /**
-     * ● 多行文本（换行）位置
+     * ⦁ 多行文本（换行）位置
      *
-     * ● 2023-11-03 18:19:24 周五 下午
+     * ⦁ 2023-11-03 18:19:24 周五 下午
      * @author crowforkotlin
      */
     private var mMultipleLinePos: Int by Delegates.observable(0) { _, _, _ -> onVariableChanged( FLAG_CHILD_REFRESH) }
 
     /**
-     * ● 文本行数 需要先开启多行
+     * ⦁ 文本行数 需要先开启多行
      *
-     * ● 2024-02-20 13:55:30 周二 下午
+     * ⦁ 2024-02-20 13:55:30 周二 下午
      * @author crowforkotlin
      */
     var mTextLines: Int = 1
 
     /**
-     * ● 动画更新监听器
+     * ⦁ 动画更新监听器
      *
-     * ● 2024-01-26 17:33:06 周五 下午
+     * ⦁ 2024-01-26 17:33:06 周五 下午
      * @author crowforkotlin
      */
     private var mAnimationUpdateListener: Animator.AnimatorListener? = null
     private var mTypeface: Typeface? = null
 
     /**
-     * ● Async Handler
+     * ⦁ Async Handler
      *
-     * ● 2024-02-20 16:17:18 周二 下午
+     * ⦁ 2024-02-20 16:17:18 周二 下午
      * @author crowforkotlin
      */
     private var mHandler: Handler? = null
     private var mHandlerTaskList: MutableList<Runnable> = mutableListOf()
 
     /**
-     * ● 字体类型路径
+     * ⦁ 字体类型路径
      *
-     * ● 2024-02-01 17:50:05 周四 下午
+     * ⦁ 2024-02-01 17:50:05 周四 下午
      * @author crowforkotlin
      */
     var mTextFontAbsolutePath: String? = null
     var mTextFontAssetsPath: String? = null
 
     /**
-     * ● 滚动速度 --- 设置滚动速度实际上是对动画持续时间进行设置 重写SET函数，实现滚动速度设置 对动画时间进行相对的设置，设置后会触发重新绘制 IntRange(from = 1, to = 15)
+     * ⦁ 滚动速度 --- 设置滚动速度实际上是对动画持续时间进行设置 重写SET函数，实现滚动速度设置 对动画时间进行相对的设置，设置后会触发重新绘制 IntRange(from = 1, to = 15)
      *
-     * ● 2023-10-31 13:59:53 周二 下午
+     * ⦁ 2023-10-31 13:59:53 周二 下午
      * @author crowforkotlin
      */
     var mTextAnimationSpeed: Short by Delegates.observable(1) { _, _, _ -> onVariableChanged(FLAG_SCROLL_SPEED) }
 
     /**
-     * ● 文本内容 -- 设置后会触发重新绘制
+     * ⦁ 文本内容 -- 设置后会触发重新绘制
      *
-     * ● 2023-10-31 14:03:56 周二 下午
+     * ⦁ 2023-10-31 14:03:56 周二 下午
      * @author crowforkotlin
      */
     var mText: String by Delegates.observable("") { _, _, _ ->
@@ -489,25 +489,25 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● Layout的背景颜色
+     * ⦁ Layout的背景颜色
      *
-     * ● 2023-11-09 09:47:58 周四 上午
+     * ⦁ 2023-11-09 09:47:58 周四 上午
      * @author crowforkotlin
      */
     var mLayoutBackgroundColor: Int by Delegates.observable(Color.BLACK) { _, _, _ -> onVariableChanged(FLAG_BACKGROUND_COLOR) }
 
     /**
-     * ● 是否开启换行
+     * ⦁ 是否开启换行
      *
-     * ● 2023-10-31 17:31:20 周二 下午
+     * ⦁ 2023-10-31 17:31:20 周二 下午
      * @author crowforkotlin
      */
     var mTextMultipleLineEnable: Boolean = false
 
     /**
-     * ● 文字大小 -- 设置后会触发重新绘制 FloatRange(from = 12.0, to = 768.0)
+     * ⦁ 文字大小 -- 设置后会触发重新绘制 FloatRange(from = 12.0, to = 768.0)
      *
-     * ● 2023-10-31 14:03:04 周二 下午
+     * ⦁ 2023-10-31 14:03:04 周二 下午
      * @author crowforkotlin
      */
     var mTextSize: Float by Delegates.observable(12f) { _, _, _ ->
@@ -519,161 +519,161 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 视图对齐方式 -- 上中下 IntRange(from = 1000, to = 1008)
+     * ⦁ 视图对齐方式 -- 上中下 IntRange(from = 1000, to = 1008)
      *
-     * ● 2023-10-31 15:24:43 周二 下午
+     * ⦁ 2023-10-31 15:24:43 周二 下午
      * @author crowforkotlin
      */
     var mTextGravity: Byte = GRAVITY_TOP_START
 
     /**
-     * ● 字体颜色
+     * ⦁ 字体颜色
      *
-     * ● 2023-11-09 09:47:58 周四 上午
+     * ⦁ 2023-11-09 09:47:58 周四 上午
      * @author crowforkotlin
      */
     var mTextColor: Int = Color.RED
 
     /**
-     * ● 是否开启抗锯齿
+     * ⦁ 是否开启抗锯齿
      *
-     * ● 2023-11-09 14:42:36 周四 下午
+     * ⦁ 2023-11-09 14:42:36 周四 下午
      * @author crowforkotlin
      */
     var mTextAntiAliasEnable: Boolean = false
 
     /**
-     * ● 更新策略 详细可看定义声明
+     * ⦁ 更新策略 详细可看定义声明
      *
-     * ● 2023-10-31 14:07:36 周二 下午
+     * ⦁ 2023-10-31 14:07:36 周二 下午
      * @author crowforkotlin
      */
     var mTextUpdateStrategy : Short = STRATEGY_TEXT_UPDATE_ALL
 
     /**
-     * ● 动画策略 详细可查看定义声明
+     * ⦁ 动画策略 详细可查看定义声明
      *
-     * ● 2023-11-06 19:29:33 周一 下午
+     * ⦁ 2023-11-06 19:29:33 周一 下午
      * @author crowforkotlin
      */
     var mTextAnimationStrategy : Short = STRATEGY_ANIMATION_UPDATE_CONTINUA
 
     /**
-     * ● 是否启用单行动画（当文本 刚好当前页面显示完 根据该值决定是否启用动画）
+     * ⦁ 是否启用单行动画（当文本 刚好当前页面显示完 根据该值决定是否启用动画）
      *
-     * ● 2023-11-02 17:13:40 周四 下午
+     * ⦁ 2023-11-02 17:13:40 周四 下午
      * @author crowforkotlin
      */
     var mSingleTextAnimationEnable: Boolean = true
 
     /**
-     * ● 停留时间 静止时生效
+     * ⦁ 停留时间 静止时生效
      *
-     * ● 2023-10-31 13:59:29 周二 下午
+     * ⦁ 2023-10-31 13:59:29 周二 下午
      * @author crowforkotlin
      */
     var mTextResidenceTime: Long = 5000
 
     /**
-     * ● 字体假粗体 -- 通过算法渲染实现 性能会比设置样式略低
+     * ⦁ 字体假粗体 -- 通过算法渲染实现 性能会比设置样式略低
      *
-     * ● 2023-11-10 14:34:58 周五 下午
+     * ⦁ 2023-11-10 14:34:58 周五 下午
      * @author crowforkotlin
      */
     var mTextFakeBoldEnable: Boolean = false
 
     /**
-     * ● 字体假斜体 -- 通过变换字体 实现斜体 资源同样比定义好的样式低
+     * ⦁ 字体假斜体 -- 通过变换字体 实现斜体 资源同样比定义好的样式低
      *
-     * ● 2023-11-10 14:35:09 周五 下午
+     * ⦁ 2023-11-10 14:35:09 周五 下午
      * @author crowforkotlin
      */
     var mTextFakeItalicEnable: Boolean = false
 
     /**
-     * ● 字体粗体样式
+     * ⦁ 字体粗体样式
      *
-     * ● 2023-12-28 18:32:35 周四 下午
+     * ⦁ 2023-12-28 18:32:35 周四 下午
      * @author crowforkotlin
      */
     var mTextBoldEnable: Boolean = false
 
     /**
-     * ● 字体斜体样式
+     * ⦁ 字体斜体样式
      *
-     * ● 2023-12-28 18:32:49 周四 下午
+     * ⦁ 2023-12-28 18:32:49 周四 下午
      * @author crowforkotlin
      */
     var mTextItalicEnable: Boolean = false
 
     /**
-     * ● 启用等宽字体MonoSpace
+     * ⦁ 启用等宽字体MonoSpace
      *
-     * ● 2023-11-10 14:42:01 周五 下午
+     * ⦁ 2023-11-10 14:42:01 周五 下午
      * @author crowforkotlin
      */
     var mTextMonoSpaceEnable: Boolean = false
 
     /**
-     * ● 文本间距
+     * ⦁ 文本间距
      *
-     * ● 2023-12-25 18:05:41 周一 下午
+     * ⦁ 2023-12-25 18:05:41 周一 下午
      * @author crowforkotlin
      */
     var mTextCharSpacing: Float = 0f
 
     /**
-     * ● 渐变方向
+     * ⦁ 渐变方向
      *
-     * ● 2024-01-02 18:26:09 周二 下午
+     * ⦁ 2024-01-02 18:26:09 周二 下午
      * @author crowforkotlin
      */
     var mTextGradientDirection: Byte? = null
 
     /**
-     * ● 动画模式（一般是默认）
+     * ⦁ 动画模式（一般是默认）
      *
-     * ● 2023-10-31 18:06:32 周二 下午
+     * ⦁ 2023-10-31 18:06:32 周二 下午
      * @author crowforkotlin
      */
     override var mTextAnimationMode: Short = ANIMATION_DEFAULT
 
     /**
-     * ● 动画X方向
+     * ⦁ 动画X方向
      *
-     * ● 2023-11-02 14:53:24 周四 下午
+     * ⦁ 2023-11-02 14:53:24 周四 下午
      * @author crowforkotlin
      */
     override var mTextAnimationLeftEnable: Boolean = false
 
     /**
-     * ● 动画Y方向
+     * ⦁ 动画Y方向
      *
-     * ● 2023-11-02 14:53:45 周四 下午
+     * ⦁ 2023-11-02 14:53:45 周四 下午
      * @author crowforkotlin
      */
     override var mTextAnimationTopEnable: Boolean = false
 
     /**
-     * ● 每一行的行间距
+     * ⦁ 每一行的行间距
      *
-     * ● 2023-12-25 15:18:34 周一 下午
+     * ⦁ 2023-12-25 15:18:34 周一 下午
      * @author crowforkotlin
      */
     override var mTextRowMargin: Float = 0f
 
     /**
-     * ● 当前尺寸大小策略 默认PX
+     * ⦁ 当前尺寸大小策略 默认PX
      *
-     * ● 2023-12-26 11:37:20 周二 上午
+     * ⦁ 2023-12-26 11:37:20 周二 上午
      * @author crowforkotlin
      */
     override var mTextSizeUnitStrategy: Short = STRATEGY_DIMENSION_PX_OR_DEFAULT
 
     /**
-     * ● 初始化画笔
+     * ⦁ 初始化画笔
      *
-     * ● 2023-11-10 14:35:22 周五 下午
+     * ⦁ 2023-11-10 14:35:22 周五 下午
      * @author crowforkotlin
      */
     init {
@@ -705,9 +705,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 重写 `onMeasure` 方法以自定义视图的测量逻辑。
+     * ⦁ 重写 `onMeasure` 方法以自定义视图的测量逻辑。
      *
-     * ● 2024-02-21 09:37:34 周三 上午
+     * ⦁ 2024-02-21 09:37:34 周三 上午
      * @author crowforkotlin
      */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -733,9 +733,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 绘制周期
+     * ⦁ 绘制周期
      *
-     * ● 2023-12-19 17:39:02 周二 下午
+     * ⦁ 2023-12-19 17:39:02 周二 下午
      * @author crowforkotlin
      */
     override fun dispatchDraw(canvas: Canvas) {
@@ -744,9 +744,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 窗口分离
+     * ⦁ 窗口分离
      *
-     * ● 2023-10-31 18:11:26 周二 下午
+     * ⦁ 2023-10-31 18:11:26 周二 下午
      * @author crowforkotlin
      */
     override fun onDetachedFromWindow() {
@@ -774,9 +774,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 更新文本以及测量间距
+     * ⦁ 更新文本以及测量间距
      *
-     * ● 2024-02-21 09:41:50 周三 上午
+     * ⦁ 2024-02-21 09:41:50 周三 上午
      * @author crowforkotlin
      */
     private fun updateTextAndSpec(width: Int, height: Int) {
@@ -794,9 +794,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 初始化属性文本视图
+     * ⦁ 初始化属性文本视图
      *
-     * ● 2023-11-08 11:24:35 周三 上午
+     * ⦁ 2023-11-08 11:24:35 周三 上午
      * @author crowforkotlin
      */
     private fun creatAttrTextView(): AttrTextView {
@@ -811,9 +811,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 值发生变化 执行对于的Logic
+     * ⦁ 值发生变化 执行对于的Logic
      *
-     * ● 2023-10-31 14:14:18 周二 下午
+     * ⦁ 2023-10-31 14:14:18 周二 下午
      * @author crowforkotlin
      */
     private fun onVariableChanged(flag: Byte) {
@@ -874,9 +874,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 策略为重刷则 重新通知布局更新
+     * ⦁ 策略为重刷则 重新通知布局更新
      *
-     * ● 2023-12-19 17:37:08 周二 下午
+     * ⦁ 2023-12-19 17:37:08 周二 下午
      * @author crowforkotlin
      */
     private fun onUpdateIfResetAnimation() {
@@ -887,9 +887,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 更新当前文本位置 或者 视图 （当列表被更新 可能 会小于当前的列表位置 就直接 替换成最后一个， 相对会继续触发ChildView的更新
+     * ⦁ 更新当前文本位置 或者 视图 （当列表被更新 可能 会小于当前的列表位置 就直接 替换成最后一个， 相对会继续触发ChildView的更新
      *
-     * ● 2023-11-01 17:34:08 周三 下午
+     * ⦁ 2023-11-01 17:34:08 周三 下午
      * @author crowforkotlin
      */
     private fun onUpdatePosOrView(updateAll: Boolean = false, forceUpdate: Boolean = false) {
@@ -916,9 +916,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 文本列表是否只占满一个页面
+     * ⦁ 文本列表是否只占满一个页面
      *
-     * ● 2023-11-06 10:53:23 周一 上午
+     * ⦁ 2023-11-06 10:53:23 周一 上午
      * @author crowforkotlin
      */
     private fun isListSizeFitPage(): Boolean {
@@ -935,9 +935,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 通知视图View的可见性改变
+     * ⦁ 通知视图View的可见性改变
      *
-     * ● 2023-11-01 19:13:58 周三 下午
+     * ⦁ 2023-11-01 19:13:58 周三 下午
      * @author crowforkotlin
      */
     private fun onNotifyViewVisibility(pos: Int) {
@@ -948,9 +948,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 获取上一个 或 下一个 View
+     * ⦁ 获取上一个 或 下一个 View
      *
-     * ● 2023-11-02 10:44:24 周四 上午
+     * ⦁ 2023-11-02 10:44:24 周四 上午
      * @author crowforkotlin
      */
     private fun getNextView(pos: Int): AttrTextView {
@@ -962,9 +962,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 通知视图View更新 如果动画模式 不是 静止切换 代表 当前视图和（上一个视图）需要动态更新 否则 只有当前视图才更新
+     * ⦁ 通知视图View更新 如果动画模式 不是 静止切换 代表 当前视图和（上一个视图）需要动态更新 否则 只有当前视图才更新
      *
-     * ● 2023-11-01 19:13:46 周三 下午
+     * ⦁ 2023-11-01 19:13:46 周三 下午
      * @author crowforkotlin
      */
     private fun onNotifyViewUpdate(updateAll: Boolean = mUpdateAll) {
@@ -995,9 +995,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 动态计算可容纳字符个数获取文本列表
+     * ⦁ 动态计算可容纳字符个数获取文本列表
      *
-     * ● 2023-10-31 13:34:58 周二 下午
+     * ⦁ 2023-10-31 13:34:58 周二 下午
      * @author crowforkotlin
      */
     private fun getTextLists(originText: String, onComplete: (MutableList<Pair<String, Float>>) -> Unit) {
@@ -1103,9 +1103,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 更新ChildView的位置
+     * ⦁ 更新ChildView的位置
      *
-     * ● 2023-11-02 17:24:43 周四 下午
+     * ⦁ 2023-11-02 17:24:43 周四 下午
      * @author crowforkotlin
      */
     private fun updateViewPosition() {
@@ -1117,9 +1117,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 更新文本列表的位置
+     * ⦁ 更新文本列表的位置
      *
-     * ● 2023-11-02 17:24:58 周四 下午
+     * ⦁ 2023-11-02 17:24:58 周四 下午
      * @author crowforkotlin
      */
     private fun updateTextListPosition() {
@@ -1152,9 +1152,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 通知视图更新
+     * ⦁ 通知视图更新
      *
-     * ● 2023-11-01 10:15:07 周三 上午
+     * ⦁ 2023-11-01 10:15:07 周三 上午
      * @author crowforkotlin
      */
     private fun onNotifyLayoutUpdate(isDelay: Boolean = true) {
@@ -1187,9 +1187,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 根据动画模式启动布局动画
+     * ⦁ 根据动画模式启动布局动画
      *
-     * ● 2024-02-21 09:40:58 周三 上午
+     * ⦁ 2024-02-21 09:40:58 周三 上午
      * @author crowforkotlin
      */
     private fun onLayoutAnimation(animationMode: Short, delay: Boolean, viewA: AttrTextView, viewB: AttrTextView) {
@@ -1232,9 +1232,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 高刷动画
+     * ⦁ 高刷动画
      *
-     * ● 2024-01-29 17:00:36 周一 下午
+     * ⦁ 2024-01-29 17:00:36 周一 下午
      * @author crowforkotlin
      */
     private fun launchHighBrushDrawAnimation(animationMode: Short, delay: Boolean, isX: Boolean) {
@@ -1276,9 +1276,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 默认的动画
+     * ⦁ 默认的动画
      *
-     * ● 2023-11-01 09:51:05 周三 上午
+     * ⦁ 2023-11-01 09:51:05 周三 上午
      * @author crowforkotlin
      */
     private fun launchDefaultAnimation(animationMode: Short, isDelay: Boolean, viewA: AttrTextView, viewB: AttrTextView) {
@@ -1302,9 +1302,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 中心缩放
+     * ⦁ 中心缩放
      *
-     * ● 2023-11-08 17:53:58 周三 下午
+     * ⦁ 2023-11-08 17:53:58 周三 下午
      * @author crowforkotlin
      */
     private fun launchCenterAnimation(animationMode: Short, isDelay: Boolean) {
@@ -1360,9 +1360,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● X轴移动动画
+     * ⦁ X轴移动动画
      *
-     * ● 2024-02-21 09:38:55 周三 上午
+     * ⦁ 2024-02-21 09:38:55 周三 上午
      * @author crowforkotlin
      */
     private fun launchMoveXAnimation(animationMode: Short, isDelay: Boolean) {
@@ -1435,9 +1435,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● Y轴移动动画
+     * ⦁ Y轴移动动画
      *
-     * ● 2023-11-01 09:51:11 周三 上午
+     * ⦁ 2023-11-01 09:51:11 周三 上午
      * @author crowforkotlin
      */
     private fun launchMoveYAnimation(animationMode: Short, isDelay: Boolean) {
@@ -1505,9 +1505,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 淡入淡出动画
+     * ⦁ 淡入淡出动画
      *
-     * ● 2023-11-02 17:24:05 周四 下午
+     * ⦁ 2023-11-02 17:24:05 周四 下午
      * @param isSync 是否同步
      * @author crowforkotlin
      */
@@ -1558,9 +1558,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● Layout绘制非连续动画
+     * ⦁ Layout绘制非连续动画
      *
-     * ● 2023-12-19 17:37:40 周二 下午
+     * ⦁ 2023-12-19 17:37:40 周二 下午
      * @author crowforkotlin
      */
     private fun launchDrawAnimation(animationMode: Short, isDelay: Boolean, viewA: AttrTextView, viewB: AttrTextView) {
@@ -1607,9 +1607,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 子View绘制连续动画
+     * ⦁ 子View绘制连续动画
      *
-     * ● 2023-12-19 17:37:40 周二 下午
+     * ⦁ 2023-12-19 17:37:40 周二 下午
      * @author crowforkotlin
      */
     private fun launchContinuousDrawAnimation(animationMode: Short, isDelay: Boolean) {
@@ -1667,9 +1667,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 设置动画等待个数时 尝试等待阻塞动画执行
+     * ⦁ 设置动画等待个数时 尝试等待阻塞动画执行
      *
-     * ● 2024-02-02 14:57:46 周五 下午
+     * ⦁ 2024-02-02 14:57:46 周五 下午
      * @author crowforkotlin
      */
     private fun tryAwaitAnimationTask(onComplete: Runnable) {
@@ -1699,9 +1699,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 当动画被终止 进行撤回操作
+     * ⦁ 当动画被终止 进行撤回操作
      *
-     * ● 2023-11-08 11:22:09 周三 上午
+     * ⦁ 2023-11-08 11:22:09 周三 上午
      * @author crowforkotlin
      */
     private fun whenAnimationCancel() {
@@ -1730,9 +1730,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 取消动画任务
+     * ⦁ 取消动画任务
      *
-     * ● 2023-11-02 17:24:00 周四 下午
+     * ⦁ 2023-11-02 17:24:00 周四 下午
      * @author crowforkotlin
      */
     private fun removeAnimationRunnable() {
@@ -1740,9 +1740,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 取消动画
+     * ⦁ 取消动画
      *
-     * ● 2023-11-01 09:51:21 周三 上午
+     * ⦁ 2023-11-01 09:51:21 周三 上午
      * @author crowforkotlin
      */
     private fun cancelAnimator() {
@@ -1751,9 +1751,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 添加任务
+     * ⦁ 添加任务
      *
-     * ● 2023-12-04 11:02:32 周一 上午
+     * ⦁ 2023-12-04 11:02:32 周一 上午
      * @author crowforkotlin
      */
     private fun addTask(flag: Byte) {
@@ -1761,9 +1761,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 初始化BaseAttrTextView的基本属性
+     * ⦁ 初始化BaseAttrTextView的基本属性
      *
-     * ● 2023-12-22 15:09:52 周五 下午
+     * ⦁ 2023-12-22 15:09:52 周五 下午
      * @author crowforkotlin
      */
     private fun onInitAttrTextViewValue(view: AttrTextView) {
@@ -1782,9 +1782,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 初始化文本画笔
+     * ⦁ 初始化文本画笔
      *
-     * ● 2023-12-28 18:33:08 周四 下午
+     * ⦁ 2023-12-28 18:33:08 周四 下午
      * @author crowforkotlin
      */
     private fun onInitTextPaint() {
@@ -1813,9 +1813,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 初始化字体类型样式
+     * ⦁ 初始化字体类型样式
      *
-     * ● 2024-02-02 11:35:59 周五 上午
+     * ⦁ 2024-02-02 11:35:59 周五 上午
      * @author crowforkotlin
      */
     private fun initPaintTypeFace(textPaint: TextPaint) {
@@ -1853,9 +1853,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 绘制动画
+     * ⦁ 绘制动画
      *
-     * ● 2023-12-22 16:01:13 周五 下午
+     * ⦁ 2023-12-22 16:01:13 周五 下午
      * @author crowforkotlin
      */
     private fun drawAnimation(canvas: Canvas) {
@@ -1884,9 +1884,9 @@ class AttrTextLayout : FrameLayout, IAttrText {
     }
 
     /**
-     * ● 应用配置 -- 触发View的更新
+     * ⦁ 应用配置 -- 触发View的更新
      *
-     * ● 2023-11-02 17:25:43 周四 下午
+     * ⦁ 2023-11-02 17:25:43 周四 下午
      * @author crowforkotlin
      */
     fun applyOption() {

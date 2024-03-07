@@ -6,6 +6,7 @@ import com.crow.base.BuildConfig
 import com.crow.base.tools.coroutine.withNonCancellableContext
 import com.crow.base.tools.coroutine.withUIContext
 import com.crow.base.tools.extensions.createFileInCacheDir
+import com.crow.base.tools.extensions.error
 import com.crow.base.tools.extensions.getUriCompat
 import com.crow.base.tools.extensions.toShareIntent
 import com.crow.base.tools.extensions.toast
@@ -21,6 +22,7 @@ class CrashLogUtil(private val context: Context) {
             context.startActivity(file.getUriCompat(context).toShareIntent(context, "text/plain"))
         }
             .onFailure {
+                it.stackTraceToString().error()
                 withUIContext { toast("Failed to get logs") }
             }
     }

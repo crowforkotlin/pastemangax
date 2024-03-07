@@ -14,9 +14,9 @@ import kotlinx.coroutines.sync.withLock
 
 
 /**
- * ● SiteRvAdapter
+ * ⦁ SiteRvAdapter
  *
- * ● 2023-11-11 15:45:26 周六 下午
+ * ⦁ 2023-11-11 15:45:26 周六 下午
  * @author crowforkotlin
  */
 class AnimeSiteRvAdapter(

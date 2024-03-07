@@ -54,13 +54,13 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
         const val HIDDEN_CHANED = "HIDDEN_CHANGED"
     }
 
-    /** ● AppProgressFactory 进度加载 */
+    /** ⦁ AppProgressFactory 进度加载 */
     protected var mProgressFactory: AppProgressFactory? = null
 
-    /** ● 书架VM */
+    /** ⦁ 书架VM */
     protected val mVM by viewModel<BookViewModel>()
 
-    /** ● 漫画点击实体 */
+    /** ⦁ 漫画点击实体 */
     protected val mPathword: String by lazy {
         arguments?.getString(BaseStrings.PATH_WORD) ?: run {
             toast(getString(mangaR.string.mangax_unknow_error))
@@ -69,7 +69,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
         }
     }
 
-    /** ● 漫画点击实体 */
+    /** ⦁ 漫画点击实体 */
     protected val mName: String by lazy {
         arguments?.getString(BaseStrings.NAME) ?: run {
             toast(getString(mangaR.string.mangax_unknow_error))
@@ -78,13 +78,13 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
         }
     }
 
-    /** ● 是否添加选项卡 */
+    /** ⦁ 是否添加选项卡 */
     protected var mIsTabAlreadyAdded = false
 
-    /** ● BaseEvent 单例 */
+    /** ⦁ BaseEvent 单例 */
     protected val mBaseEvent = BaseEvent.getSIngleInstance()
 
-    /** ● 添加章节选择器 */
+    /** ⦁ 添加章节选择器 */
     protected fun addBookChapterSlector(comicChapterResp: ComicChapterResp?, novelChapterResp: NovelChapterResp?) {
 
         // 计算选项卡个数，使用向上取整的方式
@@ -119,7 +119,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
     }
 
     /**
-     * ● 书页内容意图处理
+     * ⦁ 书页内容意图处理
      * @param intent 意图
      * @param onResult 交给子类处理View
      */
@@ -143,7 +143,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
     }
 
     /**
-     * ● 书页章节意图处理
+     * ⦁ 书页章节意图处理
      * @param T 类型
      * @param intent 意图
      */
@@ -170,12 +170,12 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
     }
 
     /**
-     * ● 返回上一个界面
+     * ⦁ 返回上一个界面
      */
     protected fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.BookComicInfo.name, Fragments.BookNovelInfo.name)
 
     /**
-     * ● 处理章节错误响应
+     * ⦁ 处理章节错误响应
      */
     protected fun processChapterErrorResult() {
         if (!mBinding.comicInfoErrorTips.isVisible) {
@@ -185,7 +185,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
     }
 
     /**
-     * ● 处理章节失败的结果
+     * ⦁ 处理章节失败的结果
      * @param invalidResp 失败的结果
      */
     protected fun processChapterFailureResult(invalidResp: String?) {
@@ -197,7 +197,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
     }
 
     /**
-     * ● 导航至图片Fragment
+     * ⦁ 导航至图片Fragment
      * @param fragment
      */
     protected fun navigateImage(fragment: Fragment) {
@@ -206,7 +206,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
     }
 
     /**
-     * ● 设置AddToBookshelf按钮
+     * ⦁ 设置AddToBookshelf按钮
      */
     protected fun setButtonAddToBookshelf() {
         mBinding.bookInfoAddToBookshelf.text = getString(R.string.book_comic_add_to_bookshelf)
@@ -214,23 +214,23 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
     }
 
     /**
-     * ● 设置RemoveFromBookshelf按钮
+     * ⦁ 设置RemoveFromBookshelf按钮
      */
     protected fun setButtonRemoveFromBookshelf() {
         mBinding.bookInfoAddToBookshelf.setIconResource(R.drawable.book_ic_remove_from_bookshelf_24dp)
         mBinding.bookInfoAddToBookshelf.text = getString(R.string.book_comic_remove_from_bookshelf)
     }
 
-    /** ● 获取ViewBinding */
+    /** ⦁ 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = BookFragmentBinding.inflate(inflater)
 
-    /** ● Lifecycle onStart */
+    /** ⦁ Lifecycle onStart */
     override fun onStart() {
         super.onStart()
         mBackDispatcher = requireActivity().onBackPressedDispatcher.addCallback(this) { navigateUp() }
     }
 
-    /** ● 初始化视图 */
+    /** ⦁ 初始化视图 */
     override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
@@ -267,7 +267,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
         mBinding.chapter.text = getString(R.string.book_new_chapter, more)
     }
 
-    /** ● 处理章节结果
+    /** ⦁ 处理章节结果
      *
      * @param T 章节类型？ 漫画 轻小说
      * @param chapterResp 成功返回章节的数据
@@ -275,19 +275,19 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
      **/
     abstract fun<T> showChapterPage(chapterResp: T?, invalidResp: String?)
 
-    /** ● 下拉刷新 */
+    /** ⦁ 下拉刷新 */
     abstract fun onRefresh()
 
-    /** ● 初始化数据 */
+    /** ⦁ 初始化数据 */
     abstract fun onInitData()
 
-    /** ● 父类初始化数据 */
+    /** ⦁ 父类初始化数据 */
     override fun initData(savedInstanceState: Bundle?) {
 
         onInitData()
     }
 
-    /** ● 初始化监听器 */
+    /** ⦁ 初始化监听器 */
     override fun initListener() {
 
         // 返回事件
@@ -313,7 +313,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
         mBinding.bookInfoRefresh.setOnRefreshListener { mBaseEvent.doOnInterval { onRefresh() } ?: mBinding.bookInfoRefresh.finishRefresh() }
     }
 
-    /** ● Lifecycle onDestoryView */
+    /** ⦁ Lifecycle onDestoryView */
     override fun onDestroyView() {
         super.onDestroyView()
 
@@ -327,9 +327,9 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
     }
 
     /**
-     * ● 当隐藏时
+     * ⦁ 当隐藏时
      *
-     * ● 2023-07-03 01:29:16 周一 上午
+     * ⦁ 2023-07-03 01:29:16 周一 上午
      */
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)

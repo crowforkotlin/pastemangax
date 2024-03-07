@@ -37,9 +37,9 @@ import com.crow.base.R as baseR
 class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
 
     /**
-     * ● Static Area
+     * ⦁ Static Area
      *
-     * ● 2023-10-15 14:51:01 周日 下午
+     * ⦁ 2023-10-15 14:51:01 周日 下午
      */
     companion object {
         const val ANIME_CHAPTER_UUIDS = "UUIDS"
@@ -47,72 +47,72 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
     }
 
     /**
-     * ● 章节UUID列表
+     * ⦁ 章节UUID列表
      *
-     * ● 2023-10-15 13:07:31 周日 下午
+     * ⦁ 2023-10-15 13:07:31 周日 下午
      */
     private lateinit var mChapterUUIDS: List<String>
 
     /**
-     * ● 番剧路径词
+     * ⦁ 番剧路径词
      *
-     * ● 2023-10-15 13:07:40 周日 下午
+     * ⦁ 2023-10-15 13:07:40 周日 下午
      */
     private lateinit var mPathword: String
 
     /**
-     * ● 番名
+     * ⦁ 番名
      *
-     * ● 2023-10-15 13:07:47 周日 下午
+     * ⦁ 2023-10-15 13:07:47 周日 下午
      */
     private lateinit var mName: String
 
     /**
-     * ● 番剧UUID 位置
+     * ⦁ 番剧UUID 位置
      *
-     * ● 2023-10-15 14:30:35 周日 下午
+     * ⦁ 2023-10-15 14:30:35 周日 下午
      */
     private var mPos: Int = 0
 
     /**
-     * ● Activitiy GestureHelper （手势处理）
+     * ⦁ Activitiy GestureHelper （手势处理）
      *
-     * ● 2023-10-15 14:47:15 周日 下午
+     * ⦁ 2023-10-15 14:47:15 周日 下午
      */
     private lateinit var mGestureHelper: GestureHelper
 
     /**
-     * ● WindowInset For immersure or systembar
+     * ⦁ WindowInset For immersure or systembar
      *
-     * ● 2023-10-15 14:52:05 周日 下午
+     * ⦁ 2023-10-15 14:52:05 周日 下午
      */
     private val mWindowInsetsCompat: WindowInsetsControllerCompat by lazy { WindowInsetsControllerCompat(window, mBinding.root) }
 
     /**
-     * ● 播放器实例
+     * ⦁ 播放器实例
      *
-     * ● 2023-10-15 13:08:24 周日 下午
+     * ⦁ 2023-10-15 13:08:24 周日 下午
      */
     private val mPlayer by lazy { ExoPlayer.Builder(this).build() }
 
     /**
-     * ● AnimeViewModel
+     * ⦁ AnimeViewModel
      *
-     * ● 2023-10-15 12:09:27 周日 下午
+     * ⦁ 2023-10-15 12:09:27 周日 下午
      */
     private val mVM by viewModel<AnimeViewModel>()
     
     /**
-     * ● VB
+     * ⦁ VB
      *
-     * ● 2023-10-15 13:08:37 周日 下午
+     * ⦁ 2023-10-15 13:08:37 周日 下午
      */
     override fun getViewBinding() = AnimeActivityBinding.inflate(layoutInflater)
 
     /**
-     * ● Lifecycle onCreate
+     * ⦁ Lifecycle onCreate
      *
-     * ● 2023-10-15 14:50:46 周日 下午
+     * ⦁ 2023-10-15 14:50:46 周日 下午
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         val error = getString(baseR.string.base_loading_error)
@@ -153,9 +153,9 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
     }
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-10-15 14:50:36 周日 下午
+     * ⦁ 2023-10-15 14:50:36 周日 下午
      */
     @androidx.media3.common.util.UnstableApi
     override fun initView(savedInstanceState: Bundle?) {
@@ -189,9 +189,9 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
     }
 
     /**
-     * ● 初始化监听器
+     * ⦁ 初始化监听器
      *
-     * ● 2023-10-15 14:50:27 周日 下午
+     * ⦁ 2023-10-15 14:50:27 周日 下午
      */
     @Suppress("DEPRECATION")
     @androidx.media3.common.util.UnstableApi
@@ -229,9 +229,9 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
     }
 
     /**
-     * ● 初始化数据
+     * ⦁ 初始化数据
      *
-     * ● 2023-10-15 14:50:19 周日 下午
+     * ⦁ 2023-10-15 14:50:19 周日 下午
      */
     override fun initData(savedInstanceState: Bundle?) {
 
@@ -239,9 +239,9 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
     }
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-10-15 14:50:10 周日 下午
+     * ⦁ 2023-10-15 14:50:10 周日 下午
      */
     override fun initObserver(savedInstanceState: Bundle?) {
         mVM.onOutput { intent ->
@@ -263,18 +263,18 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
     }
 
     /**
-     * ● Activity Event onTouch
+     * ⦁ Activity Event onTouch
      *
-     * ● 2023-07-07 23:56:56 周五 下午
+     * ⦁ 2023-07-07 23:56:56 周五 下午
      */
 /*    override fun onTouch(area: Int, ev: MotionEvent) {
         transitionBar(mBinding.topbar.isVisible)
     }*/
 
     /**
-     * ● Activity Event dispatchTouchEvent
+     * ⦁ Activity Event dispatchTouchEvent
      *
-     * ● 2023-07-07 23:57:39 周五 下午
+     * ⦁ 2023-07-07 23:57:39 周五 下午
      */
 /*    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         val hasTopbar = hasGlobalPoint(mBinding.topbar, ev.rawX.toInt(), ev.rawY.toInt())
@@ -284,9 +284,9 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
     }*/
 
     /**
-     * ● TransitionBar With Animation
+     * ⦁ TransitionBar With Animation
      *
-     * ● 2023-10-15 14:49:27 周日 下午
+     * ⦁ 2023-10-15 14:49:27 周日 下午
      */
 /*    private fun transitionBar(isHide: Boolean) {
         val transition = TransitionSet()
@@ -306,9 +306,9 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
     }*/
 
     /**
-     * ● 加载视频
+     * ⦁ 加载视频
      *
-     * ● 2023-10-15 14:49:33 周日 下午
+     * ⦁ 2023-10-15 14:49:33 周日 下午
      */
     private fun loadVideo(video: AnimeVideoResp) {
         mPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(video.mChapter.mVideo)))
@@ -318,9 +318,9 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
     }
 
     /**
-     * ● 退出Activity
+     * ⦁ 退出Activity
      *
-     * ● 2023-10-15 14:49:44 周日 下午
+     * ⦁ 2023-10-15 14:49:44 周日 下午
      */
     private fun finishActivity(msg: String? = null) {
         msg?.let(::toast)
@@ -328,9 +328,9 @@ class AnimeActivity : BaseMviActivity<AnimeActivityBinding>() {
     }
 
     /**
-     * ● 沉浸式工具栏、导航栏、状态栏样式
+     * ⦁ 沉浸式工具栏、导航栏、状态栏样式
      *
-     * ● 2023-10-15 15:00:57 周日 下午
+     * ⦁ 2023-10-15 15:00:57 周日 下午
      */
 /*    private fun immersionBarStyle() {
         (mBinding.topbar.background as MaterialShapeDrawable).apply {

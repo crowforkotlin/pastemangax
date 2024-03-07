@@ -55,6 +55,7 @@ import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import com.crow.base.R.color.base_grey_500_75
 import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_home.model.resp.homepage.Banner
 import kotlinx.coroutines.delay
@@ -162,7 +163,7 @@ fun BannerItem(
     // 创建一个状态来保存转换后的文本
     val convertedText = remember { mutableStateOf(banner.mBrief) }
 
-    if (AppConfig.mChineseConvert) {
+    if (CatlogConfig.mChineseConvert) {
         LaunchedEffect(banner.mBrief) {
             convertedText.value = ChineseConverter.convert(banner.mBrief)
         }

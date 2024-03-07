@@ -1,5 +1,6 @@
 package com.crow.mangax.copymanga
 
+import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
@@ -23,6 +24,7 @@ import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.BaseViewState
 import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.mangax.tools.language.ChineseConverter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDivider
@@ -53,13 +55,14 @@ val appEvent = BaseEvent.newInstance(BaseEvent.BASE_FLAG_TIME_1000 shl 1)
 
 private val formatter  = DecimalFormat("###,###.##", DecimalFormatSymbols(Locale.US).also { it.groupingSeparator = '.' })
 /**
- * ● 格式化热度字符串
+ * ⦁ 格式化热度字符串
  *
- * ● 2023-12-14 21:31:10 周四 下午
+ * ⦁ 2023-12-14 21:31:10 周四 下午
  * @author crowforkotlin
  */
+@SuppressLint("DefaultLocale")
 fun formatHotValue(value: Int): String {
-    return if(!AppConfig.mHotAccurateDisplay)  {
+    return if(!CatlogConfig.mHotAccurateDisplay)  {
         return when {
             value >= 10_000_000 -> {
                 String.format("%.1fW", value / 10_000.0)
@@ -96,9 +99,9 @@ fun formatHotValue(value: Int): String {
 }
 
 /**
- * ● 可扩展字符串
+ * ⦁ 可扩展字符串
  *
- * ● 2023-12-14 21:30:25 周四 下午
+ * ⦁ 2023-12-14 21:30:25 周四 下午
  * @author crowforkotlin
  */
 fun String.getSpannableString(color: Int, start: Int, end: Int = length): SpannableString {
@@ -106,9 +109,9 @@ fun String.getSpannableString(color: Int, start: Int, end: Int = length): Spanna
 }
 
 /**
- * ● 处理Token错误
+ * ⦁ 处理Token错误
  *
- * ● 2023-12-14 21:27:10 周四 下午
+ * ⦁ 2023-12-14 21:27:10 周四 下午
  * @author crowforkotlin
  */
 fun View.processTokenError(code: Int, msg: String?, doOnCancel: (MaterialAlertDialogBuilder) -> Unit = { }, doOnConfirm: (MaterialAlertDialogBuilder) -> Unit) {
@@ -145,5 +148,5 @@ fun View.processTokenError(code: Int, msg: String?, doOnCancel: (MaterialAlertDi
 }
 
 inline fun LifecycleCoroutineScope.tryConvert(text: String, crossinline result: (String) -> Unit) {
-   if (AppConfig.mChineseConvert) { launch { result(ChineseConverter.convert(text)) } } else result(text)
+   if (CatlogConfig.mChineseConvert) { launch { result(ChineseConverter.convert(text)) } } else result(text)
 }

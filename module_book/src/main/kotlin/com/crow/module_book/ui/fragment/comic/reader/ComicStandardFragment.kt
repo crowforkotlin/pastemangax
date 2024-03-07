@@ -38,23 +38,23 @@ import com.crow.mangax.R as mangaR
 class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
 
     /**
-     * ● 漫画VM
+     * ⦁ 漫画VM
      *
-     * ● 2023-09-01 22:22:54 周五 下午
+     * ⦁ 2023-09-01 22:22:54 周五 下午
      */
     private val mVM by activityViewModel<ComicViewModel>()
 
     /**
-     * ● 漫画RV
+     * ⦁ 漫画RV
      *
-     * ● 2023-09-04 21:56:28 周一 下午
+     * ⦁ 2023-09-04 21:56:28 周一 下午
      */
     private var mAdapter: ComicStandardRvAdapter? = null
 
     /**
-     * ● 获取VB
+     * ⦁ 获取VB
      *
-     * ● 2023-09-04 21:56:47 周一 下午
+     * ⦁ 2023-09-04 21:56:47 周一 下午
      */
     override fun getViewBinding(inflater: LayoutInflater) : BookFragmentComicBinding {
 
@@ -62,9 +62,9 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
     }
 
     /**
-     * ● INIT DATA
+     * ⦁ INIT DATA
      *
-     * ● 2024-02-16 23:30:09 周五 下午
+     * ⦁ 2024-02-16 23:30:09 周五 下午
      * @author crowforkotlin
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,9 +82,9 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
     }
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-09-04 21:56:53 周一 下午
+     * ⦁ 2023-09-04 21:56:53 周一 下午
      */
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.list.adapter = mAdapter
@@ -92,9 +92,9 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
     }
 
     /**
-     * ● 初始化监听器
+     * ⦁ 初始化监听器
      *
-     * ● 2023-09-04 21:56:59 周一 下午
+     * ⦁ 2023-09-04 21:56:59 周一 下午
      */
     @SuppressLint("SourceLockedOrientationActivity")
     override fun initListener() {

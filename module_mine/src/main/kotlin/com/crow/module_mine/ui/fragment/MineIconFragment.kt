@@ -19,7 +19,7 @@ import coil.request.ImageRequest
 import com.crow.module_mine.ui.tools.CoilEngine
 import com.crow.base.app.app
 import com.crow.base.tools.coroutine.launchDelay
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.CatlogConfig.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.immersionPadding

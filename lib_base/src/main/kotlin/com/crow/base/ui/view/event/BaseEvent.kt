@@ -8,9 +8,9 @@ import kotlin.math.absoluteValue
 /**
  * @author : crowforkotlin
  *
- * ● 事件基类
+ * ⦁ 事件基类
  *
- * ● 2023-09-10 23:11:17 周日 下午
+ * ⦁ 2023-09-10 23:11:17 周日 下午
  */
 open class BaseEvent private constructor(val mFlagTime: Long) {
 
@@ -46,9 +46,9 @@ open class BaseEvent private constructor(val mFlagTime: Long) {
 
 
     /**
-     * ● 处理事件间隔实现
+     * ⦁ 处理事件间隔实现
      *
-     * ● 2023-09-10 23:09:46 周日 下午
+     * ⦁ 2023-09-10 23:09:46 周日 下午
      */
     internal fun <T> getIntervalResult(
         type: T,
@@ -66,9 +66,9 @@ open class BaseEvent private constructor(val mFlagTime: Long) {
     }
 
     /**
-     * ● 处理事件间隔
+     * ⦁ 处理事件间隔
      *
-     * ● 2023-09-10 23:10:36 周日 下午
+     * ⦁ 2023-09-10 23:10:36 周日 下午
      */
     internal fun <T> doOnIntervalResult(
         type: T,

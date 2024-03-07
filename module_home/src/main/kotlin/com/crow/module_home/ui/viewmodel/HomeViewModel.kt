@@ -33,25 +33,25 @@ import kotlinx.coroutines.flow.flowOn
 class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<HomeIntent>() {
 
     /**
-     * ● 主页数据
+     * ⦁ 主页数据
      *
-     * ● 2023-10-31 23:34:49 周二 下午
+     * ⦁ 2023-10-31 23:34:49 周二 下午
      * @author crowforkotlin
      */
     private val mNewHomeDatas: MutableList<Any> = mutableListOf()
 
     /**
-     * ● 轮播图数据
+     * ⦁ 轮播图数据
      *
-     * ● 2023-10-31 23:34:57 周二 下午
+     * ⦁ 2023-10-31 23:34:57 周二 下午
      * @author crowforkotlin
      */
     private val mBanners: MutableList<Banner> = mutableListOf()
 
     /**
-     * ● 刷新起始索引 默认 = 3
+     * ⦁ 刷新起始索引 默认 = 3
      *
-     * ● 2023-10-31 23:35:09 周二 下午
+     * ⦁ 2023-10-31 23:35:09 周二 下午
      * @author crowforkotlin
      */
     private var mRefreshStartIndex = 3
@@ -61,20 +61,20 @@ class HomeViewModel(private val repository: HomeRepository) : BaseMviViewModel<H
     var mTopicFlowPage:Flow<PagingData<TopicResult>> ? = null
 
     /**
-     * ● 获取主页Banner 快照
+     * ⦁ 获取主页Banner 快照
      *
-     * ● 2023-09-17 01:06:15 周日 上午
+     * ⦁ 2023-09-17 01:06:15 周日 上午
      */
     fun getSnapshotBanner() = mBanners.toMutableList()
 
     /**
-     * ● 获取主页数据 快照
+     * ⦁ 获取主页数据 快照
      *
-     * ● 2023-09-17 01:06:32 周日 上午
+     * ⦁ 2023-09-17 01:06:32 周日 上午
      */
     fun getSnapshotHomeData() = mNewHomeDatas.toMutableList()
 
-    /** ● 获取主页 （返回数据量很多）*/
+    /** ⦁ 获取主页 （返回数据量很多）*/
     private fun getHomePage(intent: HomeIntent.GetHomePage) {
         flowResult(intent, repository.getHomePage()) { value ->
             mBanners.clear()

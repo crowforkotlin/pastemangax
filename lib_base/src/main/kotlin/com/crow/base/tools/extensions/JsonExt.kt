@@ -103,9 +103,9 @@ inline fun <reified T> toJson(value: T & Any, moshi: Moshi = baseMoshi): String 
 }
 
 /**
- * ● Gson 扩展
+ * ⦁ Gson 扩展
  *
- * ● 2023-09-05 01:56:41 周二 上午
+ * ⦁ 2023-09-05 01:56:41 周二 上午
  */
 
 

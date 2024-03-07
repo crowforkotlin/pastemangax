@@ -20,33 +20,33 @@ import java.io.File
 import java.util.concurrent.Executors
 
 /**
- * ● 中文转化工具
+ * ⦁ 中文转化工具
  *
- * ● 2023-12-14 01:51:12 周四 上午
+ * ⦁ 2023-12-14 01:51:12 周四 上午
  * @author crowforkotlin
  */
 object ChineseConverter {
 
     /**
-     * ● 转换协程作用域
+     * ⦁ 转换协程作用域
      *
-     * ● 2023-12-14 01:44:12 周四 上午
+     * ⦁ 2023-12-14 01:44:12 周四 上午
      * @author crowforkotlin
      */
     private val mConvertScope = CoroutineScope(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
 
     /**
-     * ● 加载动态库
+     * ⦁ 加载动态库
      *
-     * ● 2023-12-14 01:46:59 周四 上午
+     * ⦁ 2023-12-14 01:46:59 周四 上午
      * @author crowforkotlin
      */
     init { System.loadLibrary("ChineseConverter") }
 
     /**
-     * ● 初始化词典文件夹
+     * ⦁ 初始化词典文件夹
      *
-     * ● 2023-12-14 01:49:17 周四 上午
+     * ⦁ 2023-12-14 01:49:17 周四 上午
      * @author crowforkotlin
      */
     fun initialize(context: Context) {
@@ -60,9 +60,9 @@ object ChineseConverter {
     }
 
     /**
-     * ● 清除词典数据文件夹，仅在更新词典数据时调用该方法。
+     * ⦁ 清除词典数据文件夹，仅在更新词典数据时调用该方法。
      *
-     * ● 2023-12-14 01:48:27 周四 上午
+     * ⦁ 2023-12-14 01:48:27 周四 上午
      * @author crowforkotlin
      */
     fun clearDictDataFolder(context: Context) {
@@ -71,9 +71,9 @@ object ChineseConverter {
 
     private val mMutex = Mutex()
     /**
-     * ● 转换文本
+     * ⦁ 转换文本
      *
-     * ● 2023-12-14 01:47:43 周四 上午
+     * ⦁ 2023-12-14 01:47:43 周四 上午
      * @author crowforkotlin
      */
     suspend fun convert(text: String, conversionType: ConversionType = ConversionType.HK2S): String {

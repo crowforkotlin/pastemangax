@@ -5,9 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
- * ● ComicChapterPageENtity
+ * ⦁ ComicChapterPageENtity
  *
- * ● 2024/2/6 21:04
+ * ⦁ 2024/2/6 21:04
  * @author crowforkotlin
  * @formatter:on
  */

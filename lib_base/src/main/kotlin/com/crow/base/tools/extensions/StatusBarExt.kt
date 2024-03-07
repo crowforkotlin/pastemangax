@@ -123,9 +123,9 @@ fun immersionPadding(view: View, paddingStatusBar: Boolean = true, paddingNaviat
 }
 
 /**
- * ● 沉浸式（推荐）
+ * ⦁ 沉浸式（推荐）
  *
- * ● 2023-07-08 02:08:38 周六 上午
+ * ⦁ 2023-07-08 02:08:38 周六 上午
  */
 inline fun immersionPadding(root: View, crossinline update: (v: View, insets: androidx.core.graphics.Insets, gestureInsets: androidx.core.graphics.Insets) -> Unit) {
     ViewCompat.setOnApplyWindowInsetsListener(root) { view: View, windowInsetsCompat: WindowInsetsCompat ->
@@ -135,9 +135,9 @@ inline fun immersionPadding(root: View, crossinline update: (v: View, insets: an
 }
 
 /**
- * ● 全屏沉浸式
+ * ⦁ 全屏沉浸式
  *
- * ● 2023-06-27 00:51:18 周二 上午
+ * ⦁ 2023-06-27 00:51:18 周二 上午
  */
 fun immersionFullScreen(windowInsetsControllerCompat: WindowInsetsControllerCompat) {
     windowInsetsControllerCompat.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE

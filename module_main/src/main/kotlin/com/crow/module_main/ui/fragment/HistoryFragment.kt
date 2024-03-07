@@ -50,16 +50,16 @@ import org.koin.core.qualifier.named
 class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
 
     /**
-     * ● History VM
+     * ⦁ History VM
      *
-     * ● 2023-10-03 18:37:31 周二 下午
+     * ⦁ 2023-10-03 18:37:31 周二 下午
      */
     private val mVM by viewModel<HistoryViewModel>()
 
     /**
-     * ● 漫画适配器
+     * ⦁ 漫画适配器
      *
-     * ● 2023-10-04 16:59:58 周三 下午
+     * ⦁ 2023-10-04 16:59:58 周三 下午
      */
     private val mComicAdapter by lazy {
         ComicHistoryListAdapter(lifecycleScope) { name, pathword ->
@@ -68,9 +68,9 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
     }
 
     /**
-     * ● 小说适配器
+     * ⦁ 小说适配器
      *
-     * ● 2023-10-04 17:00:17 周三 下午
+     * ⦁ 2023-10-04 17:00:17 周三 下午
      */
     private val mNovelAdapter by lazy {
         NovelHistoryListAdapter(lifecycleScope) { name, pathword ->
@@ -79,25 +79,25 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
     }
 
     /**
-     * ● 网络任务
+     * ⦁ 网络任务
      *
-     * ● 2023-11-01 23:50:26 周三 下午
+     * ⦁ 2023-11-01 23:50:26 周三 下午
      * @author crowforkotlin
      */
     private var mNetworkJob: Job? = null
 
     /**
-     * ● 错误视图
+     * ⦁ 错误视图
      *
-     * ● 2023-11-02 00:01:07 周四 上午
+     * ⦁ 2023-11-02 00:01:07 周四 上午
      * @author crowforkotlin
      */
     private var mError by BaseNotNullVar<BaseErrorViewStub>(true)
 
     /**
-     * ● 导航
+     * ⦁ 导航
      *
-     * ● 2023-10-04 17:00:33 周三 下午
+     * ⦁ 2023-10-04 17:00:33 周三 下午
      */
     private fun onNavigate(tag: String, name: String, pathword: String) {
         val bundle = Bundle()
@@ -113,16 +113,16 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
     }
 
     /**
-     * ● 获取VB
+     * ⦁ 获取VB
      *
-     * ● 2023-10-04 17:00:39 周三 下午
+     * ⦁ 2023-10-04 17:00:39 周三 下午
      */
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentHistoryBinding.inflate(layoutInflater)
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-10-04 17:00:47 周三 下午
+     * ⦁ 2023-10-04 17:00:47 周三 下午
      */
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -146,9 +146,9 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
     }
 
     /**
-     * ● 初始化监听器
+     * ⦁ 初始化监听器
      *
-     * ● 2023-10-04 17:00:54 周三 下午
+     * ⦁ 2023-10-04 17:00:54 周三 下午
      */
     override fun initListener() {
 
@@ -187,9 +187,9 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
     }
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-10-04 17:01:33 周三 下午
+     * ⦁ 2023-10-04 17:01:33 周三 下午
      */
     override fun initObserver(saveInstanceState: Bundle?) {
 
@@ -239,9 +239,9 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
     }
 
     /**
-     * ● Lifecycle onCreate
+     * ⦁ Lifecycle onCreate
      *
-     * ● 2023-10-04 17:01:06 周三 下午
+     * ⦁ 2023-10-04 17:01:06 周三 下午
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -254,9 +254,9 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
     }
 
     /**
-     * ● Lifecycle onDestroyView
+     * ⦁ Lifecycle onDestroyView
      *
-     * ● 2023-11-01 23:51:04 周三 下午
+     * ⦁ 2023-11-01 23:51:04 周三 下午
      * @author crowforkotlin
      */
     override fun onDestroyView() {
@@ -266,9 +266,9 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
     }
 
     /**
-     * ● Lifecycle onStart
+     * ⦁ Lifecycle onStart
      *
-     * ● 2023-10-04 17:01:41 周三 下午
+     * ⦁ 2023-10-04 17:01:41 周三 下午
      */
     override fun onStart() {
         super.onStart()
@@ -276,16 +276,16 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
     }
 
     /**
-     * ● 返回
+     * ⦁ 返回
      *
-     * ● 2023-10-04 17:01:50 周三 下午
+     * ⦁ 2023-10-04 17:01:50 周三 下午
      */
     private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.History.name)
 
     /**
-     * ● 初始化漫画列表
+     * ⦁ 初始化漫画列表
      *
-     * ● 2023-10-04 17:01:58 周三 下午
+     * ⦁ 2023-10-04 17:01:58 周三 下午
      */
     private fun initComicList() {
 
@@ -300,9 +300,9 @@ class HistoryFragment : BaseMviFragment<MainFragmentHistoryBinding>() {
     }
 
     /**
-     * ● 初始化轻小说列表
+     * ⦁ 初始化轻小说列表
      *
-     * ● 2023-10-04 17:02:07 周三 下午
+     * ⦁ 2023-10-04 17:02:07 周三 下午
      */
     private fun initNovelList() {
 

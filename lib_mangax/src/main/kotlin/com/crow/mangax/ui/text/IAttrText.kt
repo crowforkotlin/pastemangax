@@ -22,9 +22,9 @@ internal interface IAttrText {
     companion object {
 
         /**
-         * ● 调试模式
+         * ⦁ 调试模式
          *
-         * ● 2023-12-22 15:13:15 周五 下午
+         * ⦁ 2023-12-22 15:13:15 周五 下午
          * @author crowforkotlin
          */
         internal const val DEBUG = false
@@ -37,9 +37,9 @@ internal interface IAttrText {
         internal val mDebugBluePaint by lazy { Paint().also { it.strokeWidth = DEBUG_STROKE_WIDTH; it.color = Color.BLUE } }
 
         /**
-         * ● 绘制时间16MS
+         * ⦁ 绘制时间16MS
          *
-         * ● 2024-01-30 15:43:47 周二 下午
+         * ⦁ 2024-01-30 15:43:47 周二 下午
          * @author crowforkotlin
          */
         internal const val DRAW_VIEW_MIN_DURATION = 16L
@@ -52,9 +52,9 @@ internal interface IAttrText {
     var mTextSizeUnitStrategy: Short
 
     /**
-     * ● 获取文本高度：ascent绝对值 + descent
+     * ⦁ 获取文本高度：ascent绝对值 + descent
      *
-     * ● 2023-11-29 17:01:15 周三 下午
+     * ⦁ 2023-11-29 17:01:15 周三 下午
      * @author crowforkotlin
      */
     fun getTextHeight(fontMetrics: Paint.FontMetrics) : Float {
@@ -66,9 +66,9 @@ internal interface IAttrText {
     }
 
     /**
-     * ● 绘制菱形
+     * ⦁ 绘制菱形
      *
-     * ● 2023-12-25 15:19:02 周一 下午
+     * ⦁ 2023-12-25 15:19:02 周一 下午
      * @author crowforkotlin
      */
     fun Canvas.drawRhombus(path: Path, width: Int, height: Int, fraction: Float) {
@@ -91,9 +91,9 @@ internal interface IAttrText {
     }
 
     /**
-     * ● 绘制圆形 时钟动画
+     * ⦁ 绘制圆形 时钟动画
      *
-     * ● 2023-12-25 15:22:48 周一 下午
+     * ⦁ 2023-12-25 15:22:48 周一 下午
      * @author crowforkotlin
      */
     fun Canvas.drawOval(path: Path, width: Int, height: Int, fraction: Float) {
@@ -111,9 +111,9 @@ internal interface IAttrText {
     }
 
     /**
-     * ● 绘制十字扩展 动画
+     * ⦁ 绘制十字扩展 动画
      *
-     * ● 2023-12-25 15:23:15 周一 下午
+     * ⦁ 2023-12-25 15:23:15 周一 下午
      * @author crowforkotlin
      */
     fun Canvas.drawCrossExtension(width: Int, height: Int, fraction: Float) {
@@ -125,9 +125,9 @@ internal interface IAttrText {
     }
 
     /**
-     * ● 绘制十字扩展 动画
+     * ⦁ 绘制十字扩展 动画
      *
-     * ● 2023-12-25 15:23:15 周一 下午
+     * ⦁ 2023-12-25 15:23:15 周一 下午
      * @author crowforkotlin
      */
     fun Canvas.drawCrossExtension(rectXRate: Float, rectYRate: Float, widthFloat: Float, heightFloat: Float) {
@@ -152,9 +152,9 @@ internal interface IAttrText {
     }
 
     /**
-     * ● 绘制同方向 反效果的十字扩展 动画
+     * ⦁ 绘制同方向 反效果的十字扩展 动画
      *
-     * ● 2023-12-25 15:23:52 周一 下午
+     * ⦁ 2023-12-25 15:23:52 周一 下午
      * @author crowforkotlin
      */
     fun Canvas.drawDifferenceCrossExtension(rectXRate: Float, rectYRate: Float, widthFloat: Float, heightFloat: Float) {
@@ -167,9 +167,9 @@ internal interface IAttrText {
     }
 
     /**
-     * ● 绘制擦除Y轴方向的动画
+     * ⦁ 绘制擦除Y轴方向的动画
      *
-     * ● 2023-12-25 15:24:31 周一 下午
+     * ⦁ 2023-12-25 15:24:31 周一 下午
      * @author crowforkotlin
      */
     fun Canvas.drawEraseY(widthFloat: Float, heightFloat: Float, yRate: Float) {
@@ -186,9 +186,9 @@ internal interface IAttrText {
     }
 
     /**
-     * ● 绘制同方向 反效果的擦除Y轴方向的动画
+     * ⦁ 绘制同方向 反效果的擦除Y轴方向的动画
      *
-     * ● 2023-12-25 15:24:43 周一 下午
+     * ⦁ 2023-12-25 15:24:43 周一 下午
      * @author crowforkotlin
      */
     fun Canvas.drawDifferenceEraseY(widthFloat: Float, heightFloat: Float, yRate: Float) {
@@ -205,9 +205,9 @@ internal interface IAttrText {
     }
 
     /**
-     * ● 绘制擦除X轴方向的动画
+     * ⦁ 绘制擦除X轴方向的动画
      *
-     * ● 2023-12-25 15:25:01 周一 下午
+     * ⦁ 2023-12-25 15:25:01 周一 下午
      * @author crowforkotlin
      */
     fun Canvas.drawEraseX(widthFloat: Float, heightFloat: Float, xRate: Float) {
@@ -228,9 +228,9 @@ internal interface IAttrText {
     }
 
     /**
-     * ● 绘制同方向 反效果的擦除X轴方向的动画
+     * ⦁ 绘制同方向 反效果的擦除X轴方向的动画
      *
-     * ● 2023-12-25 15:25:48 周一 下午
+     * ⦁ 2023-12-25 15:25:48 周一 下午
      * @author crowforkotlin
      */
     fun Canvas.drawDifferenceEraseX(widthFloat: Float, heightFloat: Float, xRate: Float) {
@@ -251,9 +251,9 @@ internal interface IAttrText {
     }
 
     /**
-     * ● 调试模式打印
+     * ⦁ 调试模式打印
      *
-     * ● 2023-12-25 16:39:20 周一 下午
+     * ⦁ 2023-12-25 16:39:20 周一 下午
      * @author crowforkotlin
      */
     fun Any?.debugLog(tag: String = TAG,level: Int = Log.DEBUG) {
@@ -261,9 +261,9 @@ internal interface IAttrText {
     }
 
     /**
-     * ● DP转PX
+     * ⦁ DP转PX
      *
-     * ● 2023-12-28 10:44:00 周四 上午
+     * ⦁ 2023-12-28 10:44:00 周四 上午
      * @author crowforkotlin
      */
     fun Context.px2dp(dp: Float): Float {
@@ -271,9 +271,9 @@ internal interface IAttrText {
     }
 
     /**
-     * ● PX转SP
+     * ⦁ PX转SP
      *
-     * ● 2023-12-28 10:44:26 周四 上午
+     * ⦁ 2023-12-28 10:44:26 周四 上午
      * @author crowforkotlin
      */
     fun Context.px2sp(px: Float): Float {

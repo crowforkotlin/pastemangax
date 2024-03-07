@@ -41,9 +41,9 @@ class ComicStandardRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Rec
     var mComicName: String? = null
 
     /**
-     * ● Diff 回调
+     * ⦁ Diff 回调
      *
-     * ● 2023-09-02 20:06:41 周六 下午
+     * ⦁ 2023-09-02 20:06:41 周六 下午
      */
     private val mDiffCallback: DiffUtil.ItemCallback<Any> = object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
@@ -56,9 +56,9 @@ class ComicStandardRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Rec
     }
 
     /**
-     * ● 异步 Differ 实例
+     * ⦁ 异步 Differ 实例
      *
-     * ● 2023-09-02 20:06:53 周六 下午
+     * ⦁ 2023-09-02 20:06:53 周六 下午
      */
     private val mDiffer = AsyncListDiffer(this, mDiffCallback)
 

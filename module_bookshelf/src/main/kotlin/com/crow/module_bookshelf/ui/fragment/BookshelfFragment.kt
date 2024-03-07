@@ -68,68 +68,68 @@ import com.crow.mangax.R as mangaR
 class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
     /**
-     * ● Static Area
+     * ⦁ Static Area
      *
-     * ● 2023-10-22 01:30:51 周日 上午
+     * ⦁ 2023-10-22 01:30:51 周日 上午
      * @author crowforkotlin
      */
     companion object { const val BOOKSHELF = "BOOKSHELF" }
 
     /**
-     * ● 书架VM
+     * ⦁ 书架VM
      *
-     * ● 2023-07-01 20:26:12 周六 下午
+     * ⦁ 2023-07-01 20:26:12 周六 下午
      */
     private val mVM by viewModel<BookshelfViewModel>()
 
     /**
-     * ● Bookshelf Comic适配器
+     * ⦁ Bookshelf Comic适配器
      *
-     * ● 2023-07-07 21:49:53 周五 下午
+     * ⦁ 2023-07-07 21:49:53 周五 下午
      */
     private val mComicRvAdapter by lazy { BSComicRvAdapter(lifecycleScope) { navigate(Fragments.BookComicInfo.name, it.mComic.mName, it.mComic.mPathWord) } }
 
     /**
-     * ● Bookshelf Novel适配器
+     * ⦁ Bookshelf Novel适配器
      *
-     * ● 2023-07-07 21:50:00 周五 下午
+     * ⦁ 2023-07-07 21:50:00 周五 下午
      */
     private val mNovelRvAdapter by lazy { BSNovelRvAdapter(lifecycleScope) { navigate(Fragments.BookNovelInfo.name, it.mNovel.mName, it.mNovel.mPathWord) } }
 
     /**
-     * ● 漫画计数
+     * ⦁ 漫画计数
      *
-     * ● 2023-07-07 21:50:05 周五 下午
+     * ⦁ 2023-07-07 21:50:05 周五 下午
      */
     private var mComicCount: Int? = null
 
     /**
-     * ● 轻小说计数
+     * ⦁ 轻小说计数
      *
-     * ● 2023-07-07 21:50:10 周五 下午
+     * ⦁ 2023-07-07 21:50:10 周五 下午
      */
     private var mNovelCount: Int? = null
 
     /**
-     * ● ViewStub
+     * ⦁ ViewStub
      *
-     * ● 2023-10-30 23:21:20 周一 下午
+     * ⦁ 2023-10-30 23:21:20 周一 下午
      * @author crowforkotlin
      */
     private var mViewStub by BaseNotNullVar<BookshelfViewStub>(true)
 
     /**
-     * ● 刷新任务
+     * ⦁ 刷新任务
      *
-     * ● 2023-10-31 01:04:17 周二 上午
+     * ⦁ 2023-10-31 01:04:17 周二 上午
      * @author crowforkotlin
      */
     private var mRefershJob: Job? = null
 
     /**
-     * ● 处理错误时 隐藏控件
+     * ⦁ 处理错误时 隐藏控件
      *
-     * ● 2023-07-07 21:50:17 周五 下午
+     * ⦁ 2023-07-07 21:50:17 周五 下午
      */
     private fun processErrorHideView() {
         if (mBinding.tips.tag != null) return
@@ -141,9 +141,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     }
 
     /**
-     * ● 处理错误
+     * ⦁ 处理错误
      *
-     * ● 2023-07-07 21:49:45 周五 下午
+     * ⦁ 2023-07-07 21:49:45 周五 下午
      */
     private fun processError(code: Int, msg: String?) {
 
@@ -192,9 +192,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     }
 
     /**
-     * ● 处理结果视图
+     * ⦁ 处理结果视图
      *
-     * ● 2023-07-07 22:03:47 周五 下午
+     * ⦁ 2023-07-07 22:03:47 周五 下午
      */
     private fun processResultView(bookshelfRv: RecyclerView) {
         if (mViewStub.isVisible() || mBinding.tips.tag != null) return
@@ -205,9 +205,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     }
 
     /**
-     * ● 处理结果
+     * ⦁ 处理结果
      *
-     * ● 2023-07-07 21:50:30 周五 下午
+     * ⦁ 2023-07-07 21:50:30 周五 下午
      */
     private fun processResult(comicResp: BookshelfComicResp?, novelResp: BookshelfNovelResp?) {
         when(mBinding.buttonGroup.checkedButtonId) {
@@ -233,9 +233,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     }
     
     /**
-     * ● 导航
+     * ⦁ 导航
      *
-     * ● 2023-07-07 21:51:20 周五 下午
+     * ⦁ 2023-07-07 21:51:20 周五 下午
      */
     private fun navigate(tag: String, name: String, pathword: String) {
         val bundle = Bundle()
@@ -251,9 +251,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     }
 
     /**
-     * ● Mvi Intent Output
+     * ⦁ Mvi Intent Output
      *
-     * ● 2023-07-07 21:55:12 周五 下午
+     * ⦁ 2023-07-07 21:55:12 周五 下午
      */
     private fun onCollectState() {
 
@@ -312,17 +312,17 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     }
 
     /**
-     * ● 获取ViewBinding
+     * ⦁ 获取ViewBinding
      *
-     * ● 2023-07-07 21:55:05 周五 下午
+     * ⦁ 2023-07-07 21:55:05 周五 下午
      */
     override fun getViewBinding(inflater: LayoutInflater) =
         BookshelfFragmentBinding.inflate(inflater)
 
     /**
-     * ● Lifecycle onDestroyView
+     * ⦁ Lifecycle onDestroyView
      *
-     * ● 2023-07-07 21:52:59 周五 下午
+     * ⦁ 2023-07-07 21:52:59 周五 下午
      */
     override fun onDestroyView() {
         super.onDestroyView()
@@ -332,9 +332,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     }
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-07-07 21:54:34 周五 下午
+     * ⦁ 2023-07-07 21:54:34 周五 下午
      */
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -351,9 +351,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
     }
 
     /**
-     * ● 初始化事件
+     * ⦁ 初始化事件
      *
-     * ● 2023-07-07 21:54:43 周五 下午
+     * ⦁ 2023-07-07 21:54:43 周五 下午
      */
     override fun initListener() {
 
@@ -520,9 +520,9 @@ class BookshelfFragment : BaseMviFragment<BookshelfFragmentBinding>() {
 
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-07-07 21:53:56 周五 下午
+     * ⦁ 2023-07-07 21:53:56 周五 下午
      */
     override fun initObserver(saveInstanceState: Bundle?) {
 

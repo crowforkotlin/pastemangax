@@ -10,7 +10,6 @@ import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.createCoroutineExceptionHandler
 import com.crow.base.tools.extensions.DBNameSpace
 import com.crow.base.tools.extensions.buildDatabase
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
@@ -67,9 +66,9 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     /**
-     * ● 漫画信息
+     * ⦁ 漫画信息
      *
-     * ● 2024-01-28 00:25:53 周日 上午
+     * ⦁ 2024-01-28 00:25:53 周日 上午
      * @author crowforkotlin
      */
     private var mUpdateComicInfoListener: (() -> Unit)? = null
@@ -90,60 +89,60 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     /**
-     * ● 漫画 阅读器内容，存储着当前章节页面的数据，以及其他已加载章节的页面内容并在其内容增加了分割提示
+     * ⦁ 漫画 阅读器内容，存储着当前章节页面的数据，以及其他已加载章节的页面内容并在其内容增加了分割提示
      *
-     * ● 2023-09-01 00:51:58 周五 上午
+     * ⦁ 2023-09-01 00:51:58 周五 上午
      */
     private val _mContent = MutableStateFlow(ReaderContent("", "", "", emptyList(), null))
     val mContent: StateFlow<ReaderContent> get() = _mContent
 
     /**
-     * ● 存储当前阅读的章节数据
+     * ⦁ 存储当前阅读的章节数据
      *
-     * ● 2024-02-14 20:33:09 周三 下午
+     * ⦁ 2024-02-14 20:33:09 周三 下午
      * @author crowforkotlin
      */
     private val _mPages = MutableStateFlow<Chapter?>(null)
     val mPages: StateFlow<Chapter?> get() = _mPages
 
     /**
-     * ● UI State For InfoBar
+     * ⦁ UI State For InfoBar
      *
-     * ● 2023-09-02 22:03:53 周六 下午
+     * ⦁ 2023-09-02 22:03:53 周六 下午
      */
     private val _uiState = MutableStateFlow<ReaderUiState?>(null)
     val uiState : StateFlow<ReaderUiState?> get() = _uiState
 
     /**
-     * ● 章节页面ID 对应 当前阅读器的内容
+     * ⦁ 章节页面ID 对应 当前阅读器的内容
      *
-     * ● 2024-01-15 23:46:34 周一 下午
+     * ⦁ 2024-01-15 23:46:34 周一 下午
      * @author crowforkotlin
      */
     private val _mPageContentMapper: HashMap<Int, ReaderContent> = hashMapOf()
     val mPageContentMapper: Map<Int, ReaderContent> get() = _mPageContentMapper
 
     /**
-     * ● 页面大小列表
+     * ⦁ 页面大小列表
      *
-     * ● 2024-01-14 23:46:06 周日 下午
+     * ⦁ 2024-01-14 23:46:06 周日 下午
      * @author crowforkotlin
      */
     private val _mPageSizeMapper = hashMapOf<Int, Int>()
     val mPageSizeMapper: Map<Int, Int> get() = _mPageSizeMapper
 
     /**
-     * ● 章节页面ID
+     * ⦁ 章节页面ID
      *
-     * ● 2024-01-15 23:45:55 周一 下午
+     * ⦁ 2024-01-15 23:45:55 周一 下午
      * @author crowforkotlin
      */
     private var mIncrementPageID: Int = 0
 
     /**
-     * ● 漫画阅读信息、配置 数据库
+     * ⦁ 漫画阅读信息、配置 数据库
      *
-     * ● 2024-02-14 20:40:16 周三 下午
+     * ⦁ 2024-02-14 20:40:16 周三 下午
      * @author crowforkotlin
      */
     private val mComicDBDao by lazy { buildDatabase<ComicDB>(DBNameSpace.READER_COMIC_DB).comicDao() }
@@ -159,9 +158,9 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     /**
-     * ● 通过检查意图的类型并执行相应的代码来处理意图
+     * ⦁ 通过检查意图的类型并执行相应的代码来处理意图
      *
-     * ● 2023-06-28 22:08:41 周三 下午
+     * ⦁ 2023-06-28 22:08:41 周三 下午
      */
     override fun dispatcher(intent: BookIntent) {
         when(intent) {
@@ -199,9 +198,9 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     /**
-     * ● 获取漫画页
+     * ⦁ 获取漫画页
      *
-     * ● 2023-06-28 22:17:41 周三 下午
+     * ⦁ 2023-06-28 22:17:41 周三 下午
      */
     private suspend fun getComicPage(intent: BookIntent.GetComicPage, isNext: Boolean? = null) {
         return suspendCancellableCoroutine { continuation ->
@@ -245,9 +244,9 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     /**
-     * ● 获取阅读内容实体
+     * ⦁ 获取阅读内容实体
      *
-     * ● 2023-09-02 19:51:53 周六 下午
+     * ⦁ 2023-09-02 19:51:53 周六 下午
      */
     private fun ComicPageResp.getLoadingPages(): Pair<MutableList<Any>, MutableList<Any>> {
         var currentPages: MutableList<Any> = mContent.value.mPages.toMutableList()
@@ -424,9 +423,9 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     /**
-     * ● 计算章节、页数累计和 的 百分比
+     * ⦁ 计算章节、页数累计和 的 百分比
      *
-     * ● 2023-09-02 21:49:09 周六 下午
+     * ⦁ 2023-09-02 21:49:09 周六 下午
      */
     fun computePercent(pageIndex: Int, totalPage: Int, info: ReaderInfo): Float {
         val ppc = 1f / info.mChapterCount
@@ -438,9 +437,9 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     /**
-     * ● 处理Comic滚动
+     * ⦁ 处理Comic滚动
      *
-     * ● 2024-02-06 20:29:30 周二 下午
+     * ⦁ 2024-02-06 20:29:30 周二 下午
      * @author crowforkotlin
      */
     fun onScroll(dy: Int, position: Int) {

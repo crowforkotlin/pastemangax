@@ -78,9 +78,9 @@ object Dependencies {
     const val androidx_datastore = "androidx.datastore:datastore-preferences:1.0.0"
 
     /**
-     * ● 首选项 JetpackCompose
+     * ⦁ 首选项 JetpackCompose
      *
-     * ● 2023-09-18 00:10:47 周一 上午
+     * ⦁ 2023-09-18 00:10:47 周一 上午
      */
     const val androidx_preference = "androidx.preference:preference:${Versions.preference_version}"
 

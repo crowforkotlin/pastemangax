@@ -18,6 +18,7 @@ import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.view.TooltipsView
 import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.tryConvert
 import com.crow.mangax.ui.adapter.MangaCoilVH
@@ -53,9 +54,9 @@ class NewHomeComicRvAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     /**
-     * ● 静态区
+     * ⦁ 静态区
      *
-     * ● 2023-09-17 19:33:07 周日 下午
+     * ⦁ 2023-09-17 19:33:07 周日 下午
      */
     companion object {
         const val HEADER = 0
@@ -71,23 +72,23 @@ class NewHomeComicRvAdapter(
     }
 
     /**
-     * ● HomeData
+     * ⦁ HomeData
      *
-     * ● 2023-09-17 19:35:13 周日 下午
+     * ⦁ 2023-09-17 19:35:13 周日 下午
      */
     private var mData: MutableList<Any> = mutableListOf()
 
     /**
-     * ● Coroutine lock
+     * ⦁ Coroutine lock
      *
-     * ● 2023-09-17 19:35:50 周日 下午
+     * ⦁ 2023-09-17 19:35:50 周日 下午
      */
     private val mMutex = Mutex()
 
     /**
-     * ● Home Header
+     * ⦁ Home Header
      *
-     * ● 2023-09-17 19:36:05 周日 下午
+     * ⦁ 2023-09-17 19:36:05 周日 下午
      */
     inner class HomeComicHeaderVH(val binding: HomeFragmentComicRvHeaderBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -98,9 +99,9 @@ class NewHomeComicRvAdapter(
     }
 
     /**
-     * ● Home Comic Card
+     * ⦁ Home Comic Card
      *
-     * ● 2023-09-17 19:36:15 周日 下午
+     * ⦁ 2023-09-17 19:36:15 周日 下午
      */
     inner class HomeComicBodyVH(binding: HomeFragmentComicRvBodyBinding) : MangaCoilVH<HomeFragmentComicRvBodyBinding>(binding) {
         init {
@@ -129,7 +130,7 @@ class NewHomeComicRvAdapter(
                 is Topices -> {
                     app.imageLoader.enqueue(
                         ImageRequest.Builder(itemView.context)
-                            .data(if(AppConfig.mCoverOrinal) getOrignalCover(item.mImageUrl) else item.mImageUrl)
+                            .data(if(CatlogConfig.mCoverOrinal) getOrignalCover(item.mImageUrl) else item.mImageUrl)
                             .target(binding.image)
                             .build()
                     )
@@ -188,9 +189,9 @@ class NewHomeComicRvAdapter(
     }
 
     /**
-     * ● Home Refresh Button For Recommand Comic
+     * ⦁ Home Refresh Button For Recommand Comic
      *
-     * ● 2023-09-17 19:36:24 周日 下午
+     * ⦁ 2023-09-17 19:36:24 周日 下午
      */
     inner class HomeComicRecRefreshVH(val binding: HomeFragmentComicRvRecRefreshBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -200,16 +201,16 @@ class NewHomeComicRvAdapter(
     }
 
     /**
-     * ● HomeData Size
+     * ⦁ HomeData Size
      *
-     * ● 2023-09-17 19:36:46 周日 下午
+     * ⦁ 2023-09-17 19:36:46 周日 下午
      */
     override fun getItemCount(): Int = mData.size
 
     /**
-     * ● Reuse ViewHolder
+     * ⦁ Reuse ViewHolder
      *
-     * ● 2023-09-17 19:36:57 周日 下午
+     * ⦁ 2023-09-17 19:36:57 周日 下午
      */
     override fun onBindViewHolder(vh: RecyclerView.ViewHolder, pos: Int) {
         val item = getItem(pos)
@@ -221,9 +222,9 @@ class NewHomeComicRvAdapter(
     }
 
     /**
-     * ● Set different content depending on the ViewType
+     * ⦁ Set different content depending on the ViewType
      *
-     * ● 2023-09-17 19:37:21 周日 下午
+     * ⦁ 2023-09-17 19:37:21 周日 下午
      */
     override fun getItemViewType(position: Int): Int {
         return when(getItem(position)) {
@@ -235,9 +236,9 @@ class NewHomeComicRvAdapter(
     }
 
     /**
-     * ● Create ViewHolder
+     * ⦁ Create ViewHolder
      *
-     * ● 2023-09-17 19:38:15 周日 下午
+     * ⦁ 2023-09-17 19:38:15 周日 下午
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -250,16 +251,16 @@ class NewHomeComicRvAdapter(
     }
 
     /**
-     * ● Get home data
+     * ⦁ Get home data
      *
-     * ● 2023-09-17 19:38:26 周日 下午
+     * ⦁ 2023-09-17 19:38:26 周日 下午
      */
     private fun getItem(@IntRange(from = 0) position: Int) = mData[position]
 
     /**
-     * ● Submit homeData to rv
+     * ⦁ Submit homeData to rv
      *
-     * ● 2023-09-17 19:38:37 周日 下午
+     * ⦁ 2023-09-17 19:38:37 周日 下午
      */
     suspend fun submitList(homeData: MutableList<Any>, duration: Long) {
         mMutex.withLock {
@@ -283,9 +284,9 @@ class NewHomeComicRvAdapter(
     }
 
     /**
-     * ● Refresh
+     * ⦁ Refresh
      *
-     * ● 2023-09-17 18:57:22 周日 下午
+     * ⦁ 2023-09-17 18:57:22 周日 下午
      */
     suspend fun onRefreshSubmitList(homeData: MutableList<Any>, duration: Long) {
         mMutex.withLock {

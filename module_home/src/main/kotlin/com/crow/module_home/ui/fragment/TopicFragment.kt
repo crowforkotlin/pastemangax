@@ -52,73 +52,73 @@ import org.koin.core.qualifier.named
 class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
 
     /**
-     * ● StaticArea
+     * ⦁ StaticArea
      *
-     * ● 2023-10-29 16:01:39 周日 下午
+     * ⦁ 2023-10-29 16:01:39 周日 下午
      * @author crowforkotlin
      */
     companion object { const val TOPIC = "TOPIC" }
 
     /**
-     * ● 主题内容
+     * ⦁ 主题内容
      *
-     * ● 2023-10-29 16:01:28 周日 下午
+     * ⦁ 2023-10-29 16:01:28 周日 下午
      * @author crowforkotlin
      */
     private lateinit var mTopic: Topices
 
     /**
-     * ● 直接共享使用主页VM即可 数据量不多
+     * ⦁ 直接共享使用主页VM即可 数据量不多
      *
-     * ● 2023-10-29 16:01:10 周日 下午
+     * ⦁ 2023-10-29 16:01:10 周日 下午
      * @author crowforkotlin
      */
     private val mVM by viewModel<HomeViewModel>()
 
     /**
-     * ● Topic Rv Adapter
+     * ⦁ Topic Rv Adapter
      *
-     * ● 2023-11-01 00:09:12 周三 上午
+     * ⦁ 2023-11-01 00:09:12 周三 上午
      * @author crowforkotlin
      */
     private var mAdapter: TopicListAdapter? = null
 
     /**
-     * ● 刷新任务
+     * ⦁ 刷新任务
      *
-     * ● 2023-11-01 01:31:45 周三 上午
+     * ⦁ 2023-11-01 01:31:45 周三 上午
      * @author crowforkotlin
      */
     private var mRefreshJob: Job? = null
 
     /**
-     * ● 网络任务
+     * ⦁ 网络任务
      *
-     * ● 2023-11-01 23:40:47 周三 下午
+     * ⦁ 2023-11-01 23:40:47 周三 下午
      * @author crowforkotlin
      */
     private var mNetworkJob: Job? = null
 
     /**
-     * ● Error ViewStub
+     * ⦁ Error ViewStub
      *
-     * ● 2023-11-01 00:23:39 周三 上午
+     * ⦁ 2023-11-01 00:23:39 周三 上午
      * @author crowforkotlin
      */
     private var mError by BaseNotNullVar<BaseErrorViewStub>(true)
 
     /**
-     * ● 获取VB
+     * ⦁ 获取VB
      *
-     * ● 2023-10-29 16:02:22 周日 下午
+     * ⦁ 2023-10-29 16:02:22 周日 下午
      * @author crowforkotlin
      */
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentTopicBinding.inflate(layoutInflater)
 
     /**
-     * ● Lifecycle onCreate Init mTopic
+     * ⦁ Lifecycle onCreate Init mTopic
      *
-     * ● 2023-10-29 15:51:14 周日 下午
+     * ⦁ 2023-10-29 15:51:14 周日 下午
      * @author crowforkotlin
      */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -145,9 +145,9 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
     }
 
     /**
-     * ● Lifecycle DestroyView
+     * ⦁ Lifecycle DestroyView
      *
-     * ● 2023-11-01 01:34:41 周三 上午
+     * ⦁ 2023-11-01 01:34:41 周三 上午
      * @author crowforkotlin
      */
     override fun onDestroyView() {
@@ -161,9 +161,9 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
     }
 
     /**
-     * ● Lifecycle onStart do back dispatcher
+     * ⦁ Lifecycle onStart do back dispatcher
      *
-     * ● 2023-10-29 16:04:04 周日 下午
+     * ⦁ 2023-10-29 16:04:04 周日 下午
      * @author crowforkotlin
      */
     override fun onStart() {
@@ -172,9 +172,9 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
     }
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-10-29 16:01:56 周日 下午
+     * ⦁ 2023-10-29 16:01:56 周日 下午
      * @author crowforkotlin
      */
     override fun initObserver(saveInstanceState: Bundle?) {
@@ -210,9 +210,9 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
     }
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-10-29 16:02:07 周日 下午
+     * ⦁ 2023-10-29 16:02:07 周日 下午
      * @author crowforkotlin
      */
     override fun initView(savedInstanceState: Bundle?) {
@@ -245,9 +245,9 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
     }
 
     /**
-     * ● 初始化事件
+     * ⦁ 初始化事件
      *
-     * ● 2023-11-01 01:23:07 周三 上午
+     * ⦁ 2023-11-01 01:23:07 周三 上午
      * @author crowforkotlin
      */
     override fun initListener() {
@@ -268,17 +268,17 @@ class TopicFragment : BaseMviFragment<HomeFragmentTopicBinding>() {
     }
 
     /**
-     * ● 返回上一个界面
+     * ⦁ 返回上一个界面
      *
-     * ● 2023-10-29 15:40:05 周日 下午
+     * ⦁ 2023-10-29 15:40:05 周日 下午
      * @author crowforkotlin
      */
     private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Topic.name, Fragments.Topic.name)
 
     /**
-     * ● 导航
+     * ⦁ 导航
      *
-     * ● 2023-10-04 17:00:33 周三 下午
+     * ⦁ 2023-10-04 17:00:33 周三 下午
      */
     private fun onNavigate(tag: String, name: String, pathword: String) {
         val bundle = Bundle()

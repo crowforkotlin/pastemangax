@@ -36,30 +36,30 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 class MineRegFragment : BaseMviFragment<MineFragmentRegBinding>() {
 
     /**
-     * ● 共享用户VM
+     * ⦁ 共享用户VM
      *
-     * ● 2023-09-07 23:19:24 周四 下午
+     * ⦁ 2023-09-07 23:19:24 周四 下午
      */
     private val mUserVM by activityViewModel<MineViewModel>()
 
     /**
-     * ● 是否注冊成功？
+     * ⦁ 是否注冊成功？
      *
-     * ● 2023-09-07 23:19:30 周四 下午
+     * ⦁ 2023-09-07 23:19:30 周四 下午
      */
     private var mIsRegSuccess = false
 
     /**
-     * ● 字符串值是否相同？（用于校验密码） true 返回 this false 返回 null
+     * ⦁ 字符串值是否相同？（用于校验密码） true 返回 this false 返回 null
      *
-     * ● 2023-09-07 23:19:40 周四 下午
+     * ⦁ 2023-09-07 23:19:40 周四 下午
      */
     private fun String?.getIsSame(target: String) : String? = if(this == target) this else null
 
     /**
-     * ● 反转登录按钮
+     * ⦁ 反转登录按钮
      *
-     * ● 2023-09-07 23:20:17 周四 下午
+     * ⦁ 2023-09-07 23:20:17 周四 下午
      */
     private fun doRevertRegButton() {
 
@@ -77,24 +77,24 @@ class MineRegFragment : BaseMviFragment<MineFragmentRegBinding>() {
     }
 
     /**
-     * ● 返回界面
+     * ⦁ 返回界面
      *
-     * ● 2023-09-07 23:20:25 周四 下午
+     * ⦁ 2023-09-07 23:20:25 周四 下午
      */
     private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Reg.name)
 
     /**
-     * ● 获取ViewBinding
+     * ⦁ 获取ViewBinding
      *
-     * ● 2023-09-07 23:20:33 周四 下午
+     * ⦁ 2023-09-07 23:20:33 周四 下午
      */
 
     override fun getViewBinding(inflater: LayoutInflater) = MineFragmentRegBinding.inflate(inflater)
 
     /**
-     * ● Lifecycle OnStart
+     * ⦁ Lifecycle OnStart
      *
-     * ● 2023-09-07 23:20:41 周四 下午
+     * ⦁ 2023-09-07 23:20:41 周四 下午
      */
     override fun onStart() {
         super.onStart()
@@ -102,9 +102,9 @@ class MineRegFragment : BaseMviFragment<MineFragmentRegBinding>() {
     }
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-09-07 23:20:51 周四 下午
+     * ⦁ 2023-09-07 23:20:51 周四 下午
      */
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -116,9 +116,9 @@ class MineRegFragment : BaseMviFragment<MineFragmentRegBinding>() {
     }
 
     /**
-     * ● 初始化监听器
+     * ⦁ 初始化监听器
      *
-     * ● 2023-09-07 23:21:07 周四 下午
+     * ⦁ 2023-09-07 23:21:07 周四 下午
      */
     override fun initListener() {
 
@@ -139,9 +139,9 @@ class MineRegFragment : BaseMviFragment<MineFragmentRegBinding>() {
     }
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-09-07 23:21:15 周四 下午
+     * ⦁ 2023-09-07 23:21:15 周四 下午
      */
     override fun initObserver(saveInstanceState: Bundle?) {
         mUserVM.onOutput { intent ->

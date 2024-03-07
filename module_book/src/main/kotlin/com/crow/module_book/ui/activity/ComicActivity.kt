@@ -59,7 +59,7 @@ import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.mangax.copymanga.BaseLoadStateAdapter
 import com.crow.mangax.copymanga.MangaXAccountConfig
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.CatlogConfig.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.copymanga.tryConvert
@@ -110,37 +110,37 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● 漫画VM
+     * ⦁ 漫画VM
      *
-     * ● 2023-07-07 23:53:41 周五 下午
+     * ⦁ 2023-07-07 23:53:41 周五 下午
      */
     private val mVM by viewModel<ComicViewModel>()
 
     /**
-     * ● WindowInset For immersure or systembar
+     * ⦁ WindowInset For immersure or systembar
      *
-     * ● 2023-07-07 23:53:58 周五 下午
+     * ⦁ 2023-07-07 23:53:58 周五 下午
      */
     private val mWindowInsetsCompat: WindowInsetsControllerCompat by lazy { WindowInsetsControllerCompat(window, mBinding.root) }
 
     /**
-     * ● 漫画选项（条漫、等...）
+     * ⦁ 漫画选项（条漫、等...）
      *
-     * ● 2023-07-07 23:54:42 周五 下午
+     * ⦁ 2023-07-07 23:54:42 周五 下午
      */
     private val mComicCategory by lazy { ComicCategories(this, mBinding.comicFcv) }
 
     /**
-     * ● Activitiy GestureHelper （手势处理）
+     * ⦁ Activitiy GestureHelper （手势处理）
      *
-     * ● 2023-07-08 00:00:48 周六 上午
+     * ⦁ 2023-07-08 00:00:48 周六 上午
      */
     private lateinit var mGestureHelper: GestureHelper
 
     /**
-     * ● ErrorViewStub
+     * ⦁ ErrorViewStub
      *
-     * ● 2024-01-27 23:47:49 周六 下午
+     * ⦁ 2024-01-27 23:47:49 周六 下午
      * @author crowforkotlin
      */
     private var mBaseErrorViewStub by BaseNotNullVar<BaseErrorViewStub>(true)
@@ -149,9 +149,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     private var mIsLock = false
 
     /**
-     * ● 评论适配器
+     * ⦁ 评论适配器
      *
-     * ● 2023-07-07 21:49:53 周五 下午
+     * ⦁ 2023-07-07 21:49:53 周五 下午
      */
     private var mCommentAdapter: ComicCommentRvAdapter? = null
 
@@ -162,9 +162,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-07-07 23:55:31 周五 下午
+     * ⦁ 2023-07-07 23:55:31 周五 下午
      */
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -210,9 +210,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● 初始化事件
+     * ⦁ 初始化事件
      *
-     * ● 2023-07-08 01:06:02 周六 上午
+     * ⦁ 2023-07-08 01:06:02 周六 上午
      */
     override fun initListener() {
 
@@ -353,9 +353,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● 初始化数据
+     * ⦁ 初始化数据
      *
-     * ● 2023-07-07 23:55:54 周五 下午
+     * ⦁ 2023-07-07 23:55:54 周五 下午
      */
     override fun initData(savedInstanceState: Bundle?) {
         if (!intent.getBooleanExtra(ROTATE, false)) {
@@ -397,9 +397,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-09-01 23:08:52 周五 下午
+     * ⦁ 2023-09-01 23:08:52 周五 下午
      */
     override fun initObserver(savedInstanceState: Bundle?) {
 
@@ -534,9 +534,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● Lifecycle onCreate
+     * ⦁ Lifecycle onCreate
      *
-     * ● 2023-07-07 23:56:16 周五 下午
+     * ⦁ 2023-07-07 23:56:16 周五 下午
      */
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -550,9 +550,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● Lifecycle onStart
+     * ⦁ Lifecycle onStart
      *
-     * ● 2023-07-07 23:56:48 周五 下午
+     * ⦁ 2023-07-07 23:56:48 周五 下午
      */
     override fun onStart() {
         super.onStart()
@@ -560,9 +560,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● Activity Event onTouch
+     * ⦁ Activity Event onTouch
      *
-     * ● 2023-07-07 23:56:56 周五 下午
+     * ⦁ 2023-07-07 23:56:56 周五 下午
      */
     override fun onTouch(area: Int, ev: MotionEvent) {
         if (mIsLock) return
@@ -570,9 +570,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● Activity Event dispatchTouchEvent
+     * ⦁ Activity Event dispatchTouchEvent
      *
-     * ● 2023-07-07 23:57:39 周五 下午
+     * ⦁ 2023-07-07 23:57:39 周五 下午
      */
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         mGestureHelper.dispatchTouchEvent(ev, hasGlobalPoint(ev))
@@ -604,9 +604,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● 检查点击范围内是否存在指定控件
+     * ⦁ 检查点击范围内是否存在指定控件
      *
-     * ● 2023-09-04 01:30:21 周一 上午
+     * ⦁ 2023-09-04 01:30:21 周一 上午
      */
     private fun hasGlobalPoint(ev: MotionEvent): Boolean {
         if (mBinding.root.isOpen) return true
@@ -639,9 +639,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● Exit Activity With Animation and can add information
+     * ⦁ Exit Activity With Animation and can add information
      *
-     * ● 2023-09-01 22:41:49 周五 下午
+     * ⦁ 2023-09-01 22:41:49 周五 下午
      */
     @Suppress("DEPRECATION")
     private fun finishActivity(message: String? = null) {
@@ -655,9 +655,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● TransitionBar With Animation
+     * ⦁ TransitionBar With Animation
      *
-     * ● 2023-09-01 22:43:35 周五 下午
+     * ⦁ 2023-09-01 22:43:35 周五 下午
      */
     private fun transitionBar(isHide: Boolean) {
         val transition = TransitionSet()
@@ -679,9 +679,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     }
 
     /**
-     * ● 沉浸式工具栏、导航栏、状态栏样式
+     * ⦁ 沉浸式工具栏、导航栏、状态栏样式
      *
-     * ● 2023-09-02 19:12:24 周六 下午
+     * ⦁ 2023-09-02 19:12:24 周六 下午
      */
     private fun immersionBarStyle(alpha: Int = 255) {
         (mBinding.topAppbar.background as MaterialShapeDrawable).apply {

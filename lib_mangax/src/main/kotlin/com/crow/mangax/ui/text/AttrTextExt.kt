@@ -49,9 +49,9 @@ internal inline fun IAttrText.withSizeUnit(pxOrDefault: () -> Float, dpOrSp: () 
 }
 
 /**
- * ● 错误输出
+ * ⦁ 错误输出
  *
- * ● 2023-12-28 15:27:47 周四 下午
+ * ⦁ 2023-12-28 15:27:47 周四 下午
  * @author crowforkotlin
  */
 internal fun Any?.errorLog(tag: String = IAttrText.TAG) {

@@ -12,17 +12,17 @@ import org.koin.android.ext.android.get
 import org.koin.core.qualifier.named
 
 /**
- * ● 漫画类别
+ * ⦁ 漫画类别
  *
- * ● 2023-11-05 02:25:40 周日 上午
+ * ⦁ 2023-11-05 02:25:40 周日 上午
  * @author crowforkotlin
  */
 class ComicCategories(private val mActivity: ComicActivity, private val host: FragmentContainerView) {
 
     /**
-     * ● StaticArea
+     * ⦁ StaticArea
      *
-     * ● 2023-11-05 02:25:16 周日 上午
+     * ⦁ 2023-11-05 02:25:16 周日 上午
      * @author crowforkotlin
      */
     companion object {
@@ -32,9 +32,9 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
     }
 
     /**
-     * ● 类型
+     * ⦁ 类型
      *
-     * ● 2023-11-05 02:25:52 周日 上午
+     * ⦁ 2023-11-05 02:25:52 周日 上午
      * @author crowforkotlin
      */
     enum class Type(@IdRes val id: Int) {
@@ -45,9 +45,9 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
 
 
     /**
-     * ● 应用
+     * ⦁ 应用
      *
-     * ● 2023-11-05 02:26:01 周日 上午
+     * ⦁ 2023-11-05 02:26:01 周日 上午
      * @author crowforkotlin
      */
     fun apply(type: Type) {

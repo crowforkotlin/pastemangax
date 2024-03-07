@@ -2,6 +2,9 @@ package com.crow.module_book.ui.fragment.comic.reader
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import com.crow.base.tools.coroutine.launchDelay
+import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -13,7 +16,7 @@ import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.comic_page.Content
 import com.crow.module_book.ui.activity.ComicActivity
-import com.crow.module_book.ui.adapter.comic.reader.ComicStandardRvAdapter
+import com.crow.module_book.ui.adapter.comic.reader.ComicStriptRvAdapter
 import com.crow.module_book.ui.adapter.comic.reader.layoutmanager.LoopLayoutManager
 import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
@@ -21,61 +24,56 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.yield
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
-class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
+class ComicPageFragment1123123 : BaseMviFragment<BookFragmentComicBinding>() {
 
     /**
-     * ● 漫画VM
+     * ⦁ 漫画VM
      *
-     * ● 2023-09-01 22:22:54 周五 下午
+     * ⦁ 2023-09-01 22:22:54 周五 下午
      */
     private val mVM by activityViewModel<ComicViewModel>()
 
     /**
-     * ● 漫画RV
+     * ⦁ 漫画RV
      *
-     * ● 2023-09-04 21:56:28 周一 下午
+     * ⦁ 2023-09-04 21:56:28 周一 下午
      */
-    private val mComicRvAdapter: ComicStandardRvAdapter = ComicStandardRvAdapter { reader ->
-        val isUUIDEmpty = reader.mUuid.isNullOrEmpty()
-        val message = when {
-            reader.mIsNext && isUUIDEmpty -> getString(R.string.book_no_next)
-            !reader.mIsNext && isUUIDEmpty -> getString(R.string.book_no_prev)
-            else -> null
-        }
-        if (reader.mUuid == null || message != null) {
-            return@ComicStandardRvAdapter toast(message ?: getString(mangaR.string.mangax_error, "uuid is null !"))
-        }
-        mVM.input(BookIntent.GetComicPage(mVM.mPathword, reader.mUuid))
-    }
+    private var mAdapter: ComicStriptRvAdapter? = null
 
     /**
-     * ● 获取VB
+     * ⦁ 获取VB
      *
-     * ● 2023-09-04 21:56:47 周一 下午
+     * ⦁ 2023-09-04 21:56:47 周一 下午
      */
     override fun getViewBinding(inflater: LayoutInflater) = BookFragmentComicBinding.inflate(inflater)
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-09-04 21:56:53 周一 下午
+     * ⦁ 2023-09-04 21:56:53 周一 下午
      */
     override fun initView(savedInstanceState: Bundle?) {
 
-        mBinding.list.adapter = mComicRvAdapter
+        mBinding.list.adapter = mAdapter
         mBinding.list.layoutManager = LoopLayoutManager(requireActivity() as ComicActivity)
 
         // 显示漫画页
         // showComicPage(mComicVM.mComicPage ?: return)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        mAdapter = ComicStriptRvAdapter { uuid, isNext ->
+            launchDelay(BASE_ANIM_300L) { mVM.input(BookIntent.GetComicPage(mVM.mPathword, uuid, isNext)) }
+        }
+        super.onViewCreated(view, savedInstanceState)
+    }
+    
     /**
-     * ● 初始化监听器
+     * ⦁ 初始化监听器
      *
-     * ● 2023-09-04 21:56:59 周一 下午
+     * ⦁ 2023-09-04 21:56:59 周一 下午
      */
     override fun initListener() {
         mBinding.list.setOnScrollChangeListener { _, _, _, _, _ ->
@@ -89,9 +87,9 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
     }
 
     /**
-     * ● Lifecycle OnPause Stop Rv Scroll
+     * ⦁ Lifecycle OnPause Stop Rv Scroll
      *
-     * ● 2023-11-05 02:28:14 周日 上午
+     * ⦁ 2023-11-05 02:28:14 周日 上午
      * @author crowforkotlin
      */
     override fun onPause() {
@@ -100,29 +98,20 @@ class PageComicFragment : BaseMviFragment<BookFragmentComicBinding>() {
     }
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-11-05 02:28:34 周日 上午
+     * ⦁ 2023-11-05 02:28:34 周日 上午
      * @author crowforkotlin
      */
     override fun initObserver(saveInstanceState: Bundle?) {
 
         mVM.mContent.onCollect(this) { reader ->
             if(reader.mPages.isNotEmpty()) {
-                showComicPage(reader)
+//                showComicPage(reader)
             }
         }
     }
 
-    private suspend fun showComicPage(readerContent: ReaderContent) = coroutineScope {
-
-        // wait util complete
-        async {
-            mComicRvAdapter.submitList(processedReaderPages(readerContent))
-            yield()
-        }.await()
-
-    }
 
     private fun processedReaderPages(reader: ReaderContent): MutableList<Any> {
         if (reader.mChapterInfo == null) return mutableListOf()

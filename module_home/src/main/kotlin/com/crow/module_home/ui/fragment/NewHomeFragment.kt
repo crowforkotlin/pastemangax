@@ -20,7 +20,7 @@ import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseStrings.ID
 import com.crow.mangax.copymanga.appEvent
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.CatlogConfig.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.FlowBus
@@ -73,9 +73,9 @@ import com.crow.base.R as baseR
 class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
 
     /**
-     * ● 静态区
+     * ⦁ 静态区
      *
-     * ● 2023-09-17 01:28:03 周日 上午
+     * ⦁ 2023-09-17 01:28:03 周日 上午
      */
     companion object {
         const val HOME = "Home"
@@ -83,31 +83,31 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 主页 VM
+     * ⦁ 主页 VM
      *
-     * ● 2023-09-17 01:27:48 周日 上午
+     * ⦁ 2023-09-17 01:27:48 周日 上午
      */
     private val mVM by activityViewModel<HomeViewModel>()
 
     /**
-     * ● 推荐 “换一批” 刷新按钮
+     * ⦁ 推荐 “换一批” 刷新按钮
      *
-     * ● 2023-09-17 01:27:01 周日 上午
+     * ⦁ 2023-09-17 01:27:01 周日 上午
      */
     private var mRecRefresh: MaterialButton? = null
 
     /**
-     * ● 错误的View
+     * ⦁ 错误的View
      *
-     * ● 2023-10-29 20:59:42 周日 下午
+     * ⦁ 2023-10-29 20:59:42 周日 下午
      * @author crowforkotlin
      */
     private var mBaseErrorViewStub by BaseNotNullVar<BaseErrorViewStub>(true)
 
     /**
-     * ● 主页数据量较多， 采用Rv方式
+     * ⦁ 主页数据量较多， 采用Rv方式
      *
-     * ● 2023-09-17 01:26:14 周日 上午
+     * ⦁ 2023-09-17 01:26:14 周日 上午
      */
     private val mDataRvAdapter by lazy {
         NewHomeComicRvAdapter(
@@ -123,23 +123,23 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 全局 Event 事件
+     * ⦁ 全局 Event 事件
      *
-     * ● 2023-09-17 01:28:34 周日 上午
+     * ⦁ 2023-09-17 01:28:34 周日 上午
      */
     private val mBaseEvent by lazy { BaseEvent.getSIngleInstance() }
 
     /**
-     * ● 漫画搜索碎片
+     * ⦁ 漫画搜索碎片
      *
-     * ● 2023-09-17 01:47:09 周日 上午
+     * ⦁ 2023-09-17 01:47:09 周日 上午
      */
     private var mSearchBinding: HomeFragmentSearchViewBinding? = null
 
     /**
-     * ● 注册FlowBus 设置主页头像
+     * ⦁ 注册FlowBus 设置主页头像
      *
-     * ● 2023-09-17 01:28:24 周日 上午
+     * ⦁ 2023-09-17 01:28:24 周日 上午
      */
     init {
         FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).register(this) { drawable ->
@@ -154,9 +154,9 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 导航至BookComicInfo
+     * ⦁ 导航至BookComicInfo
      *
-     * ● 2023-06-16 22:18:11 周五 下午
+     * ⦁ 2023-06-16 22:18:11 周五 下午
      */
     private fun navigateBookComicInfo(name: String, pathword: String) {
         val tag = Fragments.BookComicInfo.name
@@ -175,9 +175,9 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 导航至BookNovelInfo
+     * ⦁ 导航至BookNovelInfo
      *
-     * ● 2023-06-16 22:17:57 周五 下午
+     * ⦁ 2023-06-16 22:17:57 周五 下午
      */
     private fun navigateBookNovelInfo(name: String, pathword: String) {
         val tag = Fragments.BookNovelInfo.name
@@ -194,9 +194,9 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 导航至Topic
+     * ⦁ 导航至Topic
      *
-     * ● 2023-06-16 22:18:11 周五 下午
+     * ⦁ 2023-06-16 22:18:11 周五 下午
      */
     private fun navigateTopic(topic: Topices) {
         val tag = Fragments.Topic.name
@@ -214,9 +214,9 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 加载主页数据
+     * ⦁ 加载主页数据
      *
-     * ● 2023-09-17 19:40:26 周日 下午
+     * ⦁ 2023-09-17 19:40:26 周日 下午
      */
     private fun doLoadHomePage() {
         if (mBaseEvent.getBoolean("HOME_FRAGMENT_LOAD_HOME_PAGE") == true) return
@@ -256,9 +256,9 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 导航至设置Fragment
+     * ⦁ 导航至设置Fragment
      *
-     * ● 2023-09-17 19:42:43 周日 下午
+     * ⦁ 2023-09-17 19:42:43 周日 下午
      */
     private fun navigateSettings() {
         val name = Fragments.Settings.name
@@ -269,9 +269,9 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 初始化SearchView
+     * ⦁ 初始化SearchView
      *
-     * ● 2023-09-17 19:43:02 周日 下午
+     * ⦁ 2023-09-17 19:43:02 周日 下午
      */
     @SuppressLint("PrivateResource")
     private fun initSearchView() {
@@ -317,16 +317,16 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 获取ViewBinding
+     * ⦁ 获取ViewBinding
      *
-     * ● 2023-09-17 19:42:53 周日 下午
+     * ⦁ 2023-09-17 19:42:53 周日 下午
      */
     override fun getViewBinding(inflater: LayoutInflater) = HomeFragmentNewBinding.inflate(inflater)
 
     /**
-     * ● Lifecycle Start
+     * ⦁ Lifecycle Start
      *
-     * ● 2023-09-17 19:43:10 周日 下午
+     * ⦁ 2023-09-17 19:43:10 周日 下午
      */
     override fun onStart() {
         super.onStart()
@@ -334,16 +334,16 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● Lifecycle Stop
+     * ⦁ Lifecycle Stop
      *
-     * ● 2023-09-17 19:43:17 周日 下午
+     * ⦁ 2023-09-17 19:43:17 周日 下午
      */
     override fun onStop() {
         super.onStop()
         mBaseEvent.remove(SEARCH_TAG)
     }
 
-    /** ● Lifecycle Destroy */
+    /** ⦁ Lifecycle Destroy */
     override fun onDestroyView() {
         super.onDestroyView()
         mRecRefresh = null  // 置空“换一批”控件 防止内存泄漏
@@ -354,9 +354,9 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 初始化数据
+     * ⦁ 初始化数据
      *
-     * ● 2023-09-17 19:43:24 周日 下午
+     * ⦁ 2023-09-17 19:43:24 周日 下午
      */
     override fun initData(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
@@ -372,9 +372,9 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-09-17 19:43:32 周日 下午
+     * ⦁ 2023-09-17 19:43:32 周日 下午
      */
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -413,9 +413,9 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 初始化监听器
+     * ⦁ 初始化监听器
      *
-     * ● 2023-09-17 19:43:48 周日 下午
+     * ⦁ 2023-09-17 19:43:48 周日 下午
      */
     override fun initListener() {
 
@@ -490,9 +490,9 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     }
 
     /**
-     * ● 初始化监听器
+     * ⦁ 初始化监听器
      *
-     * ● 2023-09-17 19:43:53 周日 下午
+     * ⦁ 2023-09-17 19:43:53 周日 下午
      */
     override fun initObserver(saveInstanceState: Bundle?) {
 

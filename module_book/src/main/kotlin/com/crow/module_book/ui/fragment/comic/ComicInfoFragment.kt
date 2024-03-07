@@ -31,7 +31,7 @@ import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.MangaXAccountConfig
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.CatlogConfig.mChineseConvert
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.formatHotValue
 import com.crow.mangax.copymanga.getSpannableString
@@ -57,9 +57,9 @@ import com.crow.mangax.R as mangaR
 class ComicInfoFragment : InfoFragment() {
 
     /**
-     * ● Regist FlowBus
+     * ⦁ Regist FlowBus
      *
-     * ● 2023-06-24 23:45:12 周六 下午
+     * ⦁ 2023-06-24 23:45:12 周六 下午
      */
     init {
         FlowBus.with<BookChapterEntity>(BaseEventEnum.UpdateChapter.name).register(this) { chapterEntity ->
@@ -68,16 +68,16 @@ class ComicInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 漫画章节Rv
+     * ⦁ 漫画章节Rv
      *
-     * ● 2023-06-15 23:00:16 周四 下午
+     * ⦁ 2023-06-15 23:00:16 周四 下午
      */
     private var mAdapter: ComicChapterRvAdapter? = null
 
     /**
-     * ● 显示漫画信息页面
+     * ⦁ 显示漫画信息页面
      *
-     * ● 2023-06-15 23:00:25 周四 下午
+     * ⦁ 2023-06-15 23:00:25 周四 下午
      */
     private fun showComicInfoPage() {
         val comicInfoPage = mVM.mComicInfoPage?.mComic ?: return
@@ -141,9 +141,9 @@ class ComicInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 处理添加漫画至书架 意图
+     * ⦁ 处理添加漫画至书架 意图
      *
-     * ● 2023-06-15 23:01:04 周四 下午
+     * ⦁ 2023-06-15 23:01:04 周四 下午
      */
     private fun processAddComicIntent(intent: BookIntent.AddComicToBookshelf) {
         intent.mViewState
@@ -163,9 +163,9 @@ class ComicInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 通知章节页面 显示出来
+     * ⦁ 通知章节页面 显示出来
      *
-     * ● 2023-06-15 23:00:49 周四 下午
+     * ⦁ 2023-06-15 23:00:49 周四 下午
      */
     private fun notifyChapterPageShowNow(comicChapterResp: ComicChapterResp) {
 
@@ -179,9 +179,9 @@ class ComicInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 处理章节
+     * ⦁ 处理章节
      *
-     * ● 2023-06-15 23:01:51 周四 下午
+     * ⦁ 2023-06-15 23:01:51 周四 下午
      */
     override fun <T> showChapterPage(chapterResp: T?, invalidResp: String?) {
         if (chapterResp == null) {
@@ -204,9 +204,9 @@ class ComicInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 下拉刷新
+     * ⦁ 下拉刷新
      *
-     * ● 2023-06-15 23:02:55 周四 下午
+     * ⦁ 2023-06-15 23:02:55 周四 下午
      */
     override fun onRefresh() {
         if (mVM.mComicInfoPage == null) {
@@ -216,9 +216,9 @@ class ComicInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 初始化数据
+     * ⦁ 初始化数据
      *
-     * ● 2023-06-15 23:01:37 周四 下午
+     * ⦁ 2023-06-15 23:01:37 周四 下午
      */
     override fun onInitData() {
 
@@ -228,9 +228,9 @@ class ComicInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-06-15 23:03:06 周四 下午
+     * ⦁ 2023-06-15 23:03:06 周四 下午
      */
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -249,9 +249,9 @@ class ComicInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-06-15 23:07:45 周四 下午
+     * ⦁ 2023-06-15 23:07:45 周四 下午
      */
     override fun initObserver(saveInstanceState: Bundle?) {
 
@@ -289,9 +289,9 @@ class ComicInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 初始化监听器
+     * ⦁ 初始化监听器
      *
-     * ● 2023-06-15 23:08:01 周四 下午
+     * ⦁ 2023-06-15 23:08:01 周四 下午
      */
     override fun initListener() {
         super.initListener()
@@ -351,9 +351,9 @@ class ComicInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● Lifecycle onDestoryView
+     * ⦁ Lifecycle onDestoryView
      *
-     * ● 2023-06-15 23:08:14 周四 下午
+     * ⦁ 2023-06-15 23:08:14 周四 下午
      */
     override fun onDestroyView() {
         super.onDestroyView()
@@ -363,9 +363,9 @@ class ComicInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● Lifectcle onStop
+     * ⦁ Lifectcle onStop
      *
-     * ● 2023-06-24 23:32:57 周六 下午
+     * ⦁ 2023-06-24 23:32:57 周六 下午
      */
     override fun onStop() {
         super.onStop()

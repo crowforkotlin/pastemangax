@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.updateLayoutParams
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.CatlogConfig.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.immersionPadding
@@ -27,7 +27,7 @@ class StyleableFragment : BaseMviFragment<MainFragmentStyleableBinding>() {
 
     private var mStyableAdapter: StyleableAdapter? = null
 
-    /** ● 返回上一个界面  */
+    /** ⦁ 返回上一个界面  */
     private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Styleable.name)
 
 
@@ -50,7 +50,7 @@ class StyleableFragment : BaseMviFragment<MainFragmentStyleableBinding>() {
     }
 
 
-    /** ● 获取ViewBinding */
+    /** ⦁ 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentStyleableBinding.inflate(inflater)
 
     override fun onStart() {

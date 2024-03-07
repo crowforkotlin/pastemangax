@@ -42,16 +42,16 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>() {
 
     /**
-     * ● Main ViewModel
+     * ⦁ Main ViewModel
      *
-     * ● 2023-06-21 00:47:01 周三 上午
+     * ⦁ 2023-06-21 00:47:01 周三 上午
      */
     private val mMainVM by viewModel<MainViewModel>()
 
     /**
-     * ● 返回
+     * ⦁ 返回
      *
-     * ● 2023-06-21 00:12:29 周三 上午
+     * ⦁ 2023-06-21 00:12:29 周三 上午
      */
     private fun navigateUp() {
         if (arguments?.getBoolean("force_update") == true) FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).post(viewLifecycleOwner, Unit)
@@ -59,17 +59,17 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
     }
 
     /**
-     * ● 获取ViewBinding
+     * ⦁ 获取ViewBinding
      *
-     * ● 2023-06-21 00:12:47 周三 上午
+     * ⦁ 2023-06-21 00:12:47 周三 上午
      */
     override fun getViewBinding(inflater: LayoutInflater) =
         MainFragmentUpdateHistoryBinding.inflate(inflater)
 
     /**
-     * ● Lifecycle onStart
+     * ⦁ Lifecycle onStart
      *
-     * ● 2023-06-21 00:12:56 周三 上午
+     * ⦁ 2023-06-21 00:12:56 周三 上午
      */
     override fun onStart() {
         super.onStart()
@@ -77,9 +77,9 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
     }
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-06-21 00:13:06 周三 上午
+     * ⦁ 2023-06-21 00:13:06 周三 上午
      */
     override fun initView(savedInstanceState: Bundle?) {
         immersionPadding(mBinding.updateAppbar, paddingNaviateBar = false)
@@ -88,9 +88,9 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
 
 
     /**
-     * ● 初始化数据
+     * ⦁ 初始化数据
      *
-     * ● 2023-06-21 00:47:23 周三 上午
+     * ⦁ 2023-06-21 00:47:23 周三 上午
      */
     override fun initData(savedInstanceState: Bundle?) {
         lifecycleScope.launch {
@@ -100,9 +100,9 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
     }
 
     /**
-     * ● 初始化事件
+     * ⦁ 初始化事件
      *
-     * ● 2023-06-21 00:38:15 周三 上午
+     * ⦁ 2023-06-21 00:38:15 周三 上午
      */
     override fun initListener() {
         mBinding.updateToolbar.navigateIconClickGap { navigateUp() }
@@ -113,9 +113,9 @@ class UpdateHistoryFragment : BaseMviFragment<MainFragmentUpdateHistoryBinding>(
     }
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-06-21 00:49:27 周三 上午
+     * ⦁ 2023-06-21 00:49:27 周三 上午
      */
     override fun initObserver(saveInstanceState: Bundle?) {
 

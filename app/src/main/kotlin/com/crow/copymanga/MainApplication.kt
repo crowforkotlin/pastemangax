@@ -12,7 +12,9 @@ import coil.request.SuccessResult
 import coil.transition.CrossfadeTransition
 import com.crow.base.app.BaseApp
 import com.crow.base.tools.extensions.BASE_ANIM_200L
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
+import com.crow.base.tools.extensions.SpNameSpace
+import com.crow.base.tools.extensions.info
+import com.crow.mangax.copymanga.entity.CatlogConfig.mDarkMode
 import com.crow.copymanga.model.di.factoryModule
 import com.crow.copymanga.model.di.fragmentModule
 import com.crow.copymanga.model.di.networkModule
@@ -20,14 +22,22 @@ import com.crow.copymanga.model.di.servicesModule
 import com.crow.copymanga.model.di.singleModule
 import com.crow.copymanga.model.di.viewModelModule
 import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.tools.language.ChineseConverter
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
+import kotlin.system.measureTimeMillis
 
 
 /*************************
@@ -40,14 +50,26 @@ import org.koin.core.qualifier.named
  **************************/
 class MainApplication : BaseApp(), ImageLoaderFactory {
 
+    private var mConfigJob: Job? = null
+
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
 
-        AppConfig.initialization()
+        val sp = CatlogConfig.getCatlogConfigSp()
+
+        mDarkMode = sp.getBoolean(SpNameSpace.Key.ENABLE_DARK, false)
+
+        mConfigJob = GlobalScope.launch(Dispatchers.IO) {
+            CatlogConfig.initialization(sp)
+            AppConfig.readAppConfig()
+        }
 
         AppCompatDelegate.setDefaultNightMode(if(mDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
 
         ChineseConverter.initialize(applicationContext)
+
+        Coil.setImageLoader(this)
 
         startKoin {
             fragmentFactory()
@@ -63,7 +85,6 @@ class MainApplication : BaseApp(), ImageLoaderFactory {
                 )
             )
         }
-        Coil.setImageLoader(this)
     }
 
     override fun newImageLoader(): ImageLoader {
@@ -89,6 +110,8 @@ class MainApplication : BaseApp(), ImageLoaderFactory {
 
     override fun onTerminate() {
         super.onTerminate()
+        mConfigJob?.cancel()
+        mConfigJob = null
         ChineseConverter.cancel()
     }
 }

@@ -26,32 +26,32 @@ class BaseTapScrollRecyclerView : RecyclerView {
     }
 
     /**
-     * ● RecyclerView Position
+     * ⦁ RecyclerView Position
      *
-     * ● 2023-09-08 22:46:26 周五 下午
+     * ⦁ 2023-09-08 22:46:26 周五 下午
      */
     var mRvPos: Int = 0
         private set
 
     /**
-     * ● RecyclerView 可见的ChildView 个数
+     * ⦁ RecyclerView 可见的ChildView 个数
      *
-     * ● 2023-09-09 01:53:44 周六 上午
+     * ⦁ 2023-09-09 01:53:44 周六 上午
      */
     var mVisiblePos: Int? = null
         private set
 
     /**
-     * ● 是否正在滑动？
+     * ⦁ 是否正在滑动？
      *
-     * ● 2023-09-10 20:35:37 周日 下午
+     * ⦁ 2023-09-10 20:35:37 周日 下午
      */
     private var mIsScrolling = false
 
     /**
-     * ● RecyclerView 滚动处理
+     * ⦁ RecyclerView 滚动处理
      *
-     * ● 2023-09-09 01:26:38 周六 上午
+     * ⦁ 2023-09-09 01:26:38 周六 上午
      */
     private val mRvOnScroll = object : OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -67,9 +67,9 @@ class BaseTapScrollRecyclerView : RecyclerView {
     }
 
     /**
-     * ● RecyclerView 状态处理
+     * ⦁ RecyclerView 状态处理
      *
-     * ● 2023-09-09 01:26:20 周六 上午
+     * ⦁ 2023-09-09 01:26:20 周六 上午
      */
     private val mRvOnScrollState = object : OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -87,9 +87,9 @@ class BaseTapScrollRecyclerView : RecyclerView {
     }
 
     /**
-     * ● 处理滚动RV
+     * ⦁ 处理滚动RV
      *
-     * ● 2023-09-09 01:16:52 周六 上午
+     * ⦁ 2023-09-09 01:16:52 周六 上午
      *
      * @param toPosition 目标位置
      * @param precisePosition 精准的实际位置
@@ -108,9 +108,9 @@ class BaseTapScrollRecyclerView : RecyclerView {
     }
 
     /**
-     * ● 平滑滚动
+     * ⦁ 平滑滚动
      *
-     * ● 2023-09-09 01:17:03 周六 上午
+     * ⦁ 2023-09-09 01:17:03 周六 上午
      */
     private fun onProcessSmoothScroll(toPosition: Int, precisePosition: Int) {
 
@@ -133,9 +133,9 @@ class BaseTapScrollRecyclerView : RecyclerView {
     }
 
     /**
-     * ● 带有过渡效果的滚动
+     * ⦁ 带有过渡效果的滚动
      *
-     * ● 2023-09-09 01:17:11 周六 上午
+     * ⦁ 2023-09-09 01:17:11 周六 上午
      */
     private fun onProcessScroll(pos: Int) {
         animateFadeOut().withEndAction {

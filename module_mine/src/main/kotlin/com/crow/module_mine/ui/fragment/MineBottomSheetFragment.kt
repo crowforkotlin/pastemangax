@@ -20,6 +20,7 @@ import com.crow.mangax.R.id.app_main_fcv
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.module_mine.R
 import com.crow.module_mine.databinding.MineFragmentBinding
@@ -45,9 +46,9 @@ import com.crow.mangax.R as mangaR
 class MineBottomSheetFragment : BaseMviBottomSheetDialogFragment<MineFragmentBinding>() {
 
     /**
-     * ● (Activity 级别)用戶 VM
+     * ⦁ (Activity 级别)用戶 VM
      *
-     * ● 2023-07-02 20:31:08 周日 下午
+     * ⦁ 2023-07-02 20:31:08 周日 下午
      */
     private val mUserVM by activityViewModel<MineViewModel>()
 
@@ -95,7 +96,7 @@ class MineBottomSheetFragment : BaseMviBottomSheetDialogFragment<MineFragmentBin
                 window.navigationBarColor = Color.TRANSPARENT
                 WindowCompat.getInsetsController(window, window.decorView).apply {
                     isAppearanceLightStatusBars = false
-                    isAppearanceLightNavigationBars = !AppConfig.mDarkMode
+                    isAppearanceLightNavigationBars = !CatlogConfig.mDarkMode
                 }
             }
 
