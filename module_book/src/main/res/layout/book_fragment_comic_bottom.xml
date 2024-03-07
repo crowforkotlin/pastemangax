@@ -67,6 +67,7 @@
                     style="@style/Book_CopyMangaX_ToggleButton_Vertical"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:visibility="gone"
                     android:layout_weight="1"
                     android:lines="2"
                     android:text="@string/book_comic_page"
