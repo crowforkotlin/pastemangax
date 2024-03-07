@@ -71,9 +71,9 @@ import com.crow.mangax.R as mangaR
 class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
     /**
-     * ● Static Area
+     * ⦁ Static Area
      *
-     * ● 2023-10-29 21:00:58 周日 下午
+     * ⦁ 2023-10-29 21:00:58 周日 下午
      * @author crowforkotlin
      */
     companion object {
@@ -83,23 +83,23 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         fun newInstance() = DiscoverComicFragment()
     }
 
-    /** ● (Activity级别) 发现页VM */
+    /** ⦁ (Activity级别) 发现页VM */
     private val mVM by activityViewModel<DiscoverViewModel>()
 
-    /** ● 漫画适配器 */
+    /** ⦁ 漫画适配器 */
     private lateinit var mAdapter: DiscoverComicAdapter
 
     /**
-     * ● subtitle textview
+     * ⦁ subtitle textview
      *
-     * ● 2023-10-01 21:59:31 周日 下午
+     * ⦁ 2023-10-01 21:59:31 周日 下午
      */
     private var mToolbarSubtitle: TextView? = null
 
     /**
-     * ● 前缀和后缀
+     * ⦁ 前缀和后缀
      *
-     * ● 2023-10-29 21:00:35 周日 下午
+     * ⦁ 2023-10-29 21:00:35 周日 下午
      * @author crowforkotlin
      */
     private var  mSubtitlePrefix: String by Delegates.observable(app.applicationContext.getString(mangaR.string.mangax_all)) { _, _, new ->
@@ -110,14 +110,14 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     }
 
     /**
-     * ● BaseViewStub
+     * ⦁ BaseViewStub
      *
-     * ● 2023-10-29 20:59:42 周日 下午
+     * ⦁ 2023-10-29 20:59:42 周日 下午
      * @author crowforkotlin
      */
     private var mBaseErrorViewStub by BaseNotNullVar<BaseErrorViewStub>(true)
 
-    /** ● 收集状态 */
+    /** ⦁ 收集状态 */
     fun onCollectState() {
         if (mVM.mTotals == 0 && mVM.mDiscoverComicHomeFlowPager == null) {
             mVM.input(DiscoverIntent.GetComicTag()) // 获取标签
@@ -130,10 +130,10 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         }
     }
 
-    /** ● 获取ViewBinding */
+    /** ⦁ 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = DiscoverFragmentComicBinding.inflate(inflater)
 
-    /** ● 导航至漫画页 */
+    /** ⦁ 导航至漫画页 */
     private fun navigateBookComicInfo(name: String, pathword: String) {
         val tag = Fragments.BookComicInfo.name
         val bundle = Bundle()
@@ -150,7 +150,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
 
 
 
-    /** ● 初始化监听事件 */
+    /** ⦁ 初始化监听事件 */
     override fun initListener() {
 
         mBinding.list.setOnScrollChangeListener { _, _, _, _, _ ->
@@ -249,9 +249,9 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
     }
 
     /**
-     * ● 更新漫画
+     * ⦁ 更新漫画
      *
-     * ● 2023-10-01 22:30:53 周日 下午
+     * ⦁ 2023-10-01 22:30:53 周日 下午
      */
     private fun updateComic() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -328,7 +328,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         }
     }
 
-    /** ● 初始化视图 */
+    /** ⦁ 初始化视图 */
     override fun initView(savedInstanceState: Bundle?) {
 
         // 设置Title
@@ -356,7 +356,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         }
     }
 
-    /** ● 初始化观察者 */
+    /** ⦁ 初始化观察者 */
     override fun initObserver(saveInstanceState: Bundle?) {
 
         // 意图观察者
@@ -396,7 +396,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         }
     }
 
-    /** ● Lifecycle onDestroyView */
+    /** ⦁ Lifecycle onDestroyView */
     override fun onDestroyView() {
         super.onDestroyView()
         AppProgressFactory.clear()

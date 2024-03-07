@@ -57,7 +57,7 @@ internal fun LoopLayoutManager.fillRightWhenScroll2Left(dx: Int, recycler: Recyc
         }
 
         val scrapView = recycler.getViewForPosition(pos) ?: return 0
-        scrapView.background = ContextCompat.getDrawable(app, android.R.color.holo_red_dark)
+//        scrapView.background = ContextCompat.getDrawable(app, android.R.color.holo_red_dark)
         addView(scrapView)
         measureChildWithMargins(scrapView, 0, 0)
         val scrapViewW = getDecoratedMeasuredWidth(scrapView)

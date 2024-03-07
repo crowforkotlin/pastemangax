@@ -46,9 +46,9 @@ suspend fun <T> withNonCancellableContext(block: suspend CoroutineScope.() -> T)
     withContext(NonCancellable, block)
 
 /**
- * ● 创建协程异常处理程序
+ * ⦁ 创建协程异常处理程序
  *
- * ● 2023-09-02 19:55:42 周六 下午
+ * ⦁ 2023-09-02 19:55:42 周六 下午
  */
 fun createCoroutineExceptionHandler(content: String, handler: ((Throwable) -> Unit)? = null): CoroutineExceptionHandler {
     return CoroutineExceptionHandler { _, throwable ->

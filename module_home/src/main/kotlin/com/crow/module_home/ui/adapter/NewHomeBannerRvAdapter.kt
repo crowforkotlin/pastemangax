@@ -14,9 +14,9 @@ import kotlinx.coroutines.sync.withLock
 class NewHomeBannerRvAdapter(val onTap: (String) -> Unit) : RecyclerView.Adapter<NewHomeBannerRvAdapter.BannerVH>() {
 
     /**
-     * ● ViewHolder
+     * ⦁ ViewHolder
      *
-     * ● 2023-09-17 19:23:47 周日 下午
+     * ⦁ 2023-09-17 19:23:47 周日 下午
      */
     inner class BannerVH(val binding: HomeFragmentBannerRvItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -26,39 +26,39 @@ class NewHomeBannerRvAdapter(val onTap: (String) -> Unit) : RecyclerView.Adapter
     }
 
     /**
-     * ● Banner Data
+     * ⦁ Banner Data
      *
-     * ● 2023-09-17 19:23:53 周日 下午
+     * ⦁ 2023-09-17 19:23:53 周日 下午
      */
     private var mBanners: MutableList<Banner> = mutableListOf()
 
     /**
-     * ● Coroutine lock
+     * ⦁ Coroutine lock
      *
-     * ● 2023-09-17 19:25:13 周日 下午
+     * ⦁ 2023-09-17 19:25:13 周日 下午
      */
     private val mMutex = Mutex()
 
     /**
-     * ● Banner Data Size
+     * ⦁ Banner Data Size
      *
-     * ● 2023-09-17 19:26:22 周日 下午
+     * ⦁ 2023-09-17 19:26:22 周日 下午
      */
     override fun getItemCount(): Int = mBanners.size
 
     /**
-     * ● Create ViewHolder
+     * ⦁ Create ViewHolder
      *
-     * ● 2023-09-17 19:26:13 周日 下午
+     * ⦁ 2023-09-17 19:26:13 周日 下午
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerVH {
         return BannerVH(HomeFragmentBannerRvItemBinding.inflate(from(parent.context), parent, false))
     }
 
     /**
-     * ● Reuse ViewHolder
+     * ⦁ Reuse ViewHolder
      *
-     * ● 2023-09-17 19:25:42 周日 下午
+     * ⦁ 2023-09-17 19:25:42 周日 下午
      */
     override fun onBindViewHolder(vh: BannerVH, position: Int) {
 
@@ -70,16 +70,16 @@ class NewHomeBannerRvAdapter(val onTap: (String) -> Unit) : RecyclerView.Adapter
     }
 
     /**
-     * ● Get Banner
+     * ⦁ Get Banner
      *
-     * ● 2023-09-17 19:24:03 周日 下午
+     * ⦁ 2023-09-17 19:24:03 周日 下午
      */
     private fun getItem(@IntRange(from = 0) position: Int) = mBanners[position]
 
     /**
-     * ● Submit BannerData
+     * ⦁ Submit BannerData
      *
-     * ● 2023-09-17 19:24:10 周日 下午
+     * ⦁ 2023-09-17 19:24:10 周日 下午
      */
     suspend fun submitList(banners: MutableList<Banner>, duration: Long) {
 

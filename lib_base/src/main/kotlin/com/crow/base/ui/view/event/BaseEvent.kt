@@ -8,9 +8,9 @@ import kotlin.math.absoluteValue
 /**
  * @author : crowforkotlin
  *
- * ● 事件基类
+ * ⦁ 事件基类
  *
- * ● 2023-09-10 23:11:17 周日 下午
+ * ⦁ 2023-09-10 23:11:17 周日 下午
  */
 open class BaseEvent private constructor(val mFlagTime: Long) {
 
@@ -23,12 +23,12 @@ open class BaseEvent private constructor(val mFlagTime: Long) {
 
     companion object {
 
-        const val BASE_FLAG_TIME_500 = 500L
+        const val BASE_FLAG_TIME_300 = 300L
         const val BASE_FLAG_TIME_1000 = 1000L
 
         private var mBaseEvent: BaseEvent? = null
 
-        fun newInstance(initFlagTime: Long = BASE_FLAG_TIME_500): BaseEvent {
+        fun newInstance(initFlagTime: Long = BASE_FLAG_TIME_300): BaseEvent {
             return BaseEvent(initFlagTime)
         }
 
@@ -36,7 +36,7 @@ open class BaseEvent private constructor(val mFlagTime: Long) {
             if (mBaseEvent == null) {
                 synchronized(this) {
                     if (mBaseEvent == null) {
-                        mBaseEvent = BaseEvent(BASE_FLAG_TIME_500)
+                        mBaseEvent = BaseEvent(BASE_FLAG_TIME_300)
                     }
                 }
             }
@@ -46,9 +46,9 @@ open class BaseEvent private constructor(val mFlagTime: Long) {
 
 
     /**
-     * ● 处理事件间隔实现
+     * ⦁ 处理事件间隔实现
      *
-     * ● 2023-09-10 23:09:46 周日 下午
+     * ⦁ 2023-09-10 23:09:46 周日 下午
      */
     internal fun <T> getIntervalResult(
         type: T,
@@ -66,9 +66,9 @@ open class BaseEvent private constructor(val mFlagTime: Long) {
     }
 
     /**
-     * ● 处理事件间隔
+     * ⦁ 处理事件间隔
      *
-     * ● 2023-09-10 23:10:36 周日 下午
+     * ⦁ 2023-09-10 23:10:36 周日 下午
      */
     internal fun <T> doOnIntervalResult(
         type: T,

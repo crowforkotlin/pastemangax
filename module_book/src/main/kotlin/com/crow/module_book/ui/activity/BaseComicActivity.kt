@@ -5,9 +5,9 @@ import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.module_book.databinding.BookActivityComicBinding
 
 /**
- * ● BaseComicActivity
+ * ⦁ BaseComicActivity
  *
- * ● 2024/3/4 01:59
+ * ⦁ 2024/3/4 01:59
  * @author crowforkotlin
  * @formatter:on
  */

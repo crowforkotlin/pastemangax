@@ -8,6 +8,7 @@ import com.crow.mangax.copymanga.okhttp.AppProgressResponseBody
 import com.crow.base.tools.extensions.baseMoshi
 import com.crow.base.tools.network.FlowCallAdapterFactory
 import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -25,8 +26,8 @@ val networkModule = module {
     val named_Progress = named("ProgressOkHttp")
 
     /**
-     * ● 默认Okhttp
-     * ● 2023-06-16 21:39:31 周五 下午
+     * ⦁ 默认Okhttp
+     * ⦁ 2023-06-16 21:39:31 周五 下午
      */
     single {
         OkHttpClient.Builder()
@@ -46,8 +47,8 @@ val networkModule = module {
     }
 
     /**
-     * ● 默认Retrofit
-     * ● 2023-06-16 21:40:42 周五 下午
+     * ⦁ 默认Retrofit
+     * ⦁ 2023-06-16 21:40:42 周五 下午
      */
     single {
         Retrofit.Builder()
@@ -59,8 +60,8 @@ val networkModule = module {
     }
 
     /**
-     * ● 进度加载 By Okhttp
-     * ● 2023-06-16 21:41:59 周五 下午
+     * ⦁ 进度加载 By Okhttp
+     * ⦁ 2023-06-16 21:41:59 周五 下午
      */
     single(named_Progress) {
         OkHttpClient.Builder().apply {
@@ -81,8 +82,8 @@ val networkModule = module {
     }
 
     /**
-     * ● CopyMangaX 站点 By Okhttp
-     * ● 2023-06-16 21:42:49 周五 下午
+     * ⦁ CopyMangaX 站点 By Okhttp
+     * ⦁ 2023-06-16 21:42:49 周五 下午
      */
     single(named_CopyMangaX) {
         OkHttpClient.Builder()
@@ -90,10 +91,10 @@ val networkModule = module {
             // 动态请求地址
             .addInterceptor { chain ->
                 val request = chain.request()
-                val urlBuilder = if(!AppConfig.mApiProxyEnable) {
+                val urlBuilder = if(!CatlogConfig.mApiProxyEnable) {
                     BaseStrings.URL.COPYMANGA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()
                 } else {
-                    if ((AppConfig.getInstance().mApiSecret?.length ?: 0) >= 20) {
+                    if ((AppConfig.getInstance()?.mApiSecret?.length ?: 0) >= 20) {
                         BaseStrings.URL.WUYA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()
                     } else {
                         BaseStrings.URL.COPYMANGA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()
@@ -110,7 +111,7 @@ val networkModule = module {
                     .addHeader("Platform", "1")
                     .addHeader("Authorization","Token ${MangaXAccountConfig.mAccountToken}")
                     .addHeader("region", MangaXAccountConfig.mRoute)
-                    .addHeader("x-api-key", AppConfig.getInstance().mApiSecret ?: "")
+                    .addHeader("x-api-key", AppConfig.getInstance()?.mApiSecret ?: "")
                     .build()
                 )
             })
@@ -126,8 +127,8 @@ val networkModule = module {
     }
 
     /**
-     * ● HotMangaX 站点 By Okhttp
-     * ● 2023-10-10 01:23:25 周二 上午
+     * ⦁ HotMangaX 站点 By Okhttp
+     * ⦁ 2023-10-10 01:23:25 周二 上午
      */
     single(named_HotMangaX) {
         OkHttpClient.Builder()
@@ -159,8 +160,8 @@ val networkModule = module {
     }
 
     /**
-     * ● CopyMangaX 站点 By Retrofit
-     * ● 2023-06-16 21:43:36 周五 下午
+     * ⦁ CopyMangaX 站点 By Retrofit
+     * ⦁ 2023-06-16 21:43:36 周五 下午
      */
     single(named_CopyMangaX) {
         Retrofit.Builder()
@@ -172,8 +173,8 @@ val networkModule = module {
     }
 
     /**
-     * ● CopyMangaX 站点 By Retrofit
-     * ● 2023-06-16 21:43:36 周五 下午
+     * ⦁ CopyMangaX 站点 By Retrofit
+     * ⦁ 2023-06-16 21:43:36 周五 下午
      */
     single(named_HotMangaX) {
         Retrofit.Builder()

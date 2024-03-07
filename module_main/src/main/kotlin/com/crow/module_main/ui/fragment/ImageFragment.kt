@@ -30,6 +30,7 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_main.R
@@ -39,48 +40,48 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
- * ● 图片Fragemnt
+ * ⦁ 图片Fragemnt
  *
- * ● 2024-01-08 22:43:03 周一 下午
+ * ⦁ 2024-01-08 22:43:03 周一 下午
  * @author crowforkotlin
  */
 class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
 
     /**
-     * ● 图片URL
+     * ⦁ 图片URL
      *
-     * ● 2024-01-08 22:43:24 周一 下午
+     * ⦁ 2024-01-08 22:43:24 周一 下午
      * @author crowforkotlin
      */
     private var mImageUrl: String? = null
 
     /**
-     * ● 图片名称
+     * ⦁ 图片名称
      *
-     * ● 2024-01-08 22:43:51 周一 下午
+     * ⦁ 2024-01-08 22:43:51 周一 下午
      * @author crowforkotlin
      */
     private var mImageName: String? = null
 
     /**
-     * ● WindowInsets属性 （状态栏属性设置等...）
+     * ⦁ WindowInsets属性 （状态栏属性设置等...）
      *
-     * ● 2024-01-08 22:44:44 周一 下午
+     * ⦁ 2024-01-08 22:44:44 周一 下午
      * @author crowforkotlin
      */
     private var mWindowInsets: WindowInsetsControllerCompat? = null
 
     /**
-     * ● ImageVM
+     * ⦁ ImageVM
      *
-     * ● 2023-07-02 21:49:02 周日 下午
+     * ⦁ 2023-07-02 21:49:02 周日 下午
      */
     private val mImageVM: ImageViewModel by viewModel()
 
     /**
-     * ● Reuqest Permission
+     * ⦁ Reuqest Permission
      *
-     * ● 2024-01-08 22:44:50 周一 下午
+     * ⦁ 2024-01-08 22:44:50 周一 下午
      * @author crowforkotlin
      */
     private val mActivitResult = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -95,25 +96,25 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
     }
 
     /**
-     * ● 进度加载工厂
+     * ⦁ 进度加载工厂
      *
-     * ● 2024-01-08 22:45:36 周一 下午
+     * ⦁ 2024-01-08 22:45:36 周一 下午
      * @author crowforkotlin
      */
     private var mProgressFactory : AppProgressFactory? = null
 
     /**
-     * ● 返回界面
+     * ⦁ 返回界面
      *
-     * ● 2024-01-08 22:45:56 周一 下午
+     * ⦁ 2024-01-08 22:45:56 周一 下午
      * @author crowforkotlin
      */
     private fun navigateUp() = parentFragmentManager.popSyncWithClear(Fragments.Image.name)
 
     /**
-     * ● 保存图片至DCIM
+     * ⦁ 保存图片至DCIM
      *
-     * ● 2024-01-08 22:46:05 周一 下午
+     * ⦁ 2024-01-08 22:46:05 周一 下午
      * @author crowforkotlin
      */
     private fun saveBitmapToDCIM() {
@@ -155,7 +156,7 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
         arguments?.let {
 
             mImageName = it.getString(BaseStrings.NAME)
-            mImageUrl = if (AppConfig.mCoverOrinal) MangaCoilVH.getOrignalCover(it.getString(BaseStrings.IMAGE_URL) ?: return) else it.getString(BaseStrings.IMAGE_URL)
+            mImageUrl = if (CatlogConfig.mCoverOrinal) MangaCoilVH.getOrignalCover(it.getString(BaseStrings.IMAGE_URL) ?: return) else it.getString(BaseStrings.IMAGE_URL)
         }
 
         /*app.imageLoader.enqueue(
@@ -208,7 +209,7 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
         mProgressFactory = null
 
         // 恢复状态栏亮色 同时 置空（防止泄漏...?）
-        mWindowInsets?.isAppearanceLightStatusBars = !AppConfig.mDarkMode
+        mWindowInsets?.isAppearanceLightStatusBars = !CatlogConfig.mDarkMode
         mWindowInsets = null
     }
 }

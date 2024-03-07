@@ -31,7 +31,7 @@ import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.CatlogConfig.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_book.R
 import com.crow.module_book.model.database.model.BookChapterEntity
@@ -49,9 +49,9 @@ import org.koin.core.qualifier.named
 class NovelInfoFragment : InfoFragment() {
 
     /**
-     * ● Regist FlowBus
+     * ⦁ Regist FlowBus
      *
-     * ● 2023-06-24 23:45:12 周六 下午
+     * ⦁ 2023-06-24 23:45:12 周六 下午
      */
     init {
         FlowBus.with<BookChapterEntity>(BaseEventEnum.UpdateChapter.name).register(this) {
@@ -60,16 +60,16 @@ class NovelInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 轻小说章节Rv
+     * ⦁ 轻小说章节Rv
      *
-     * ● 2023-06-15 22:57:42 周四 下午
+     * ⦁ 2023-06-15 22:57:42 周四 下午
      */
     private var mAdapter: NovelChapterRvAdapter? = null
 
     /**
-     * ● 显示轻小说信息页面
+     * ⦁ 显示轻小说信息页面
      *
-     * ● 2023-06-15 22:57:28 周四 下午
+     * ⦁ 2023-06-15 22:57:28 周四 下午
      */
     private fun showNovelInfoPage() {
         val novelInfoPage = mVM.mNovelInfoPage?.mNovel ?: return
@@ -131,9 +131,9 @@ class NovelInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 处理添加轻小说至 书架意图
+     * ⦁ 处理添加轻小说至 书架意图
      *
-     * ● 2023-06-15 22:57:55 周四 下午
+     * ⦁ 2023-06-15 22:57:55 周四 下午
      */
     private fun processAddNovelIntent(intent: BookIntent.AddNovelToBookshelf) {
         intent.mViewState
@@ -153,9 +153,9 @@ class NovelInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 显示章节页面
+     * ⦁ 显示章节页面
      *
-     * ● 2023-06-15 22:57:13 周四 下午
+     * ⦁ 2023-06-15 22:57:13 周四 下午
      */
     private fun notifyChapterPageShowNow(novelChapterResp: NovelChapterResp) {
         // 添加章节选择器
@@ -168,9 +168,9 @@ class NovelInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 初始化数据
+     * ⦁ 初始化数据
      *
-     * ● 2023-06-15 22:58:06 周四 下午
+     * ⦁ 2023-06-15 22:58:06 周四 下午
      */
     override fun onInitData() {
 
@@ -180,9 +180,9 @@ class NovelInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 处理章节
+     * ⦁ 处理章节
      *
-     * ● 2023-06-15 22:58:25 周四 下午
+     * ⦁ 2023-06-15 22:58:25 周四 下午
      */
     override fun <T> showChapterPage(chapterResp: T?, invalidResp: String?) {
         if (chapterResp == null) {
@@ -205,9 +205,9 @@ class NovelInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 刷新
+     * ⦁ 刷新
      *
-     * ● 2023-06-24 23:45:01 周六 下午
+     * ⦁ 2023-06-24 23:45:01 周六 下午
      */
     override fun onRefresh() {
 
@@ -218,9 +218,9 @@ class NovelInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-06-24 23:44:56 周六 下午
+     * ⦁ 2023-06-24 23:44:56 周六 下午
      */
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -238,9 +238,9 @@ class NovelInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-06-24 23:44:47 周六 下午
+     * ⦁ 2023-06-24 23:44:47 周六 下午
      */
     override fun initObserver(savedInstanceState: Bundle?) {
         super.initObserver(savedInstanceState)
@@ -278,9 +278,9 @@ class NovelInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● 初始化监听器
+     * ⦁ 初始化监听器
      *
-     * ● 2023-06-24 23:44:28 周六 下午
+     * ⦁ 2023-06-24 23:44:28 周六 下午
      */
     override fun initListener() {
         super.initListener()
@@ -306,9 +306,9 @@ class NovelInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● Lifecycle onStop
+     * ⦁ Lifecycle onStop
      *
-     * ● 2023-06-24 23:33:11 周六 下午
+     * ⦁ 2023-06-24 23:33:11 周六 下午
      */
     override fun onStop() {
         super.onStop()
@@ -316,9 +316,9 @@ class NovelInfoFragment : InfoFragment() {
     }
 
     /**
-     * ● Lifecycle onDestroyView
+     * ⦁ Lifecycle onDestroyView
      *
-     * ● 2023-06-24 23:44:12 周六 下午
+     * ⦁ 2023-06-24 23:44:12 周六 下午
      */
     override fun onDestroyView() {
         super.onDestroyView()

@@ -35,7 +35,7 @@ import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.CatlogConfig.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_anime.R
 import com.crow.module_anime.databinding.AnimeFragmentInfoBinding
@@ -55,24 +55,24 @@ import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
 /**
- * ● 动漫信息页面
+ * ⦁ 动漫信息页面
  *
- * ● 2023-10-11 22:59:51 周三 下午
+ * ⦁ 2023-10-11 22:59:51 周三 下午
  * @author : crowforkotlin
  */
 class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
 
     /**
-     * ● Anime ViewModel
+     * ⦁ Anime ViewModel
      *
-     * ● 2023-10-10 01:01:05 周二 上午
+     * ⦁ 2023-10-10 01:01:05 周二 上午
      */
     private val mVM by viewModel<AnimeViewModel>()
 
     /**
-     * ● 路径
+     * ⦁ 路径
      *
-     * ● 2023-10-12 00:47:19 周四 上午
+     * ⦁ 2023-10-12 00:47:19 周四 上午
      */
     private val mPathword: String by lazy {
         arguments?.getString(BaseStrings.PATH_WORD) ?: run {
@@ -83,9 +83,9 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
     }
 
     /**
-     * ● 漫画点击实体
+     * ⦁ 漫画点击实体
      *
-     * ● 2023-10-12 00:47:19 周四 上午
+     * ⦁ 2023-10-12 00:47:19 周四 上午
      */
     private val mName: String by lazy {
         arguments?.getString(BaseStrings.NAME) ?: run {
@@ -96,16 +96,16 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
     }
 
     /**
-     * ● 进度加载工厂
+     * ⦁ 进度加载工厂
      *
-     * ● 2023-10-12 01:11:44 周四 上午
+     * ⦁ 2023-10-12 01:11:44 周四 上午
      */
     private var mProgressFactory: AppProgressFactory? = null
 
     /**
-     * ● 章节适配器
+     * ⦁ 章节适配器
      *
-     * ● 2023-10-12 02:49:48 周四 上午
+     * ⦁ 2023-10-12 02:49:48 周四 上午
      */
     private val mAdapter by lazy {
         AnimeChapterRvAdapter { pos, chapter ->
@@ -118,16 +118,16 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
     }
 
     /**
-     * ● 获取VB
+     * ⦁ 获取VB
      *
-     * ● 2023-10-12 00:47:26 周四 上午
+     * ⦁ 2023-10-12 00:47:26 周四 上午
      */
     override fun getViewBinding(inflater: LayoutInflater) = AnimeFragmentInfoBinding.inflate(layoutInflater)
 
     /**
-     * ● Lifecycle onStart
+     * ⦁ Lifecycle onStart
      *
-     * ● 2023-10-11 23:26:52 周三 下午
+     * ⦁ 2023-10-11 23:26:52 周三 下午
      */
     override fun onStart() {
         super.onStart()
@@ -135,9 +135,9 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
     }
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-10-11 23:27:06 周三 下午
+     * ⦁ 2023-10-11 23:27:06 周三 下午
      */
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -165,9 +165,9 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
     }
 
     /**
-     * ● 初始化数据
+     * ⦁ 初始化数据
      *
-     * ● 2023-10-12 01:07:10 周四 上午
+     * ⦁ 2023-10-12 01:07:10 周四 上午
      */
     override fun initData(savedInstanceState: Bundle?) {
 
@@ -175,9 +175,9 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
     }
 
     /**
-     * ● 初始化监听器
+     * ⦁ 初始化监听器
      *
-     * ● 2023-10-12 01:22:41 周四 上午
+     * ⦁ 2023-10-12 01:22:41 周四 上午
      */
     override fun initListener() {
 
@@ -206,9 +206,9 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
     }
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-10-12 01:07:37 周四 上午
+     * ⦁ 2023-10-12 01:07:37 周四 上午
      */
     override fun initObserver(saveInstanceState: Bundle?) {
         mVM.onOutput { intent ->
@@ -242,9 +242,9 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
     }
 
     /**
-     * ● 加载动漫章节列表
+     * ⦁ 加载动漫章节列表
      *
-     * ● 2023-10-12 02:46:44 周四 上午
+     * ⦁ 2023-10-12 02:46:44 周四 上午
      */
     private fun loadAnimeChapterList(chapters: AnimeChapterResp) {
 
@@ -257,9 +257,9 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
     }
 
     /**
-     * ● 显示漫画信息页面
+     * ⦁ 显示漫画信息页面
      *
-     * ● 2023-06-15 23:00:25 周四 下午
+     * ⦁ 2023-06-15 23:00:25 周四 下午
      */
     private fun loadAnimInfoPage(info: AnimeInfoResp) {
 
@@ -317,9 +317,9 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
     }
 
     /**
-     * ● 导航至图片Fragment
+     * ⦁ 导航至图片Fragment
      *
-     * ● 2024-01-08 22:51:45 周一 下午
+     * ⦁ 2024-01-08 22:51:45 周一 下午
      * @author crowforkotlin
      */
     private fun navigateImage(fragment: Fragment) {
@@ -330,16 +330,16 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
 
 
     /**
-     * ● 返回上一个界面
+     * ⦁ 返回上一个界面
      *
-     * ● 2023-10-11 23:27:17 周三 下午
+     * ⦁ 2023-10-11 23:27:17 周三 下午
      */
     private fun navigateUp() { parentFragmentManager.popSyncWithClear(Fragments.AnimeInfo.name) }
 
     /**
-     * ● 启动动漫Activity
+     * ⦁ 启动动漫Activity
      *
-     * ● 2023-11-30 01:26:58 周四 上午
+     * ⦁ 2023-11-30 01:26:58 周四 上午
      * @author crowforkotlin
      */
     private fun launchAnimeActivity(pos: Int, chapter: AnimeChapterResult) {

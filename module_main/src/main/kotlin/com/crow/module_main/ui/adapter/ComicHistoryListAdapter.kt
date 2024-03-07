@@ -10,7 +10,7 @@ import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.formatHotValue
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.ui.view.TooltipsView
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.CatlogConfig.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_main.databinding.MainHistoryRvBinding

@@ -26,7 +26,7 @@ import com.crow.mangax.copymanga.BaseStrings.ID
 import com.crow.mangax.copymanga.BaseStrings.URL.HotManga
 import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.appEvent
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.CatlogConfig.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.launchDelay
@@ -83,23 +83,23 @@ import com.crow.base.R as baseR
 class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
     /**
-     * ● Static Area
+     * ⦁ Static Area
      *
-     * ● 2023-10-10 01:01:13 周二 上午
+     * ⦁ 2023-10-10 01:01:13 周二 上午
      */
     companion object { const val ANIME = "ANIME" }
 
     /**
-     * ● Anime ViewModel
+     * ⦁ Anime ViewModel
      *
-     * ● 2023-10-10 01:01:05 周二 上午
+     * ⦁ 2023-10-10 01:01:05 周二 上午
      */
     private val mVM by viewModel<AnimeViewModel>()
 
     /**
-     * ● Discover Page Rv Adapter
+     * ⦁ Discover Page Rv Adapter
      *
-     * ● 2023-10-10 01:00:55 周二 上午
+     * ⦁ 2023-10-10 01:00:55 周二 上午
      */
     private val mAdapter by lazy {
         AnimeDiscoverPageAdapter(lifecycleScope) { anime ->
@@ -108,9 +108,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● Search Page Rv Adapter
+     * ⦁ Search Page Rv Adapter
      *
-     * ● 2023-12-06 21:15:18 周三 下午
+     * ⦁ 2023-12-06 21:15:18 周三 下午
      * @author crowforkotlin
      */
     private val mSearchAdapter by lazy {
@@ -120,84 +120,84 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● SearchBinding
+     * ⦁ SearchBinding
      *
-     * ● 2023-12-06 21:21:52 周三 下午
+     * ⦁ 2023-12-06 21:21:52 周三 下午
      * @author crowforkotlin
      */
     private var mSearchBinding: AnimeFragmentSearchViewBinding? = null
 
     /**
-     * ● subtitle textview
+     * ⦁ subtitle textview
      *
-     * ● 2023-10-01 21:59:31 周日 下午
+     * ⦁ 2023-10-01 21:59:31 周日 下午
      */
     private var mToolbarSubtitle: TextView? = null
 
     /**
-     * ● 子标题
+     * ⦁ 子标题
      *
-     * ● 2023-10-10 02:20:34 周二 上午
+     * ⦁ 2023-10-10 02:20:34 周二 上午
      */
     private var  mSubtitle: String by Delegates.observable(app.applicationContext.getString(mangaR.string.mangax_all)) { _, _, new -> mBinding.topbar.subtitle = new }
 
     /**
-     * ● 提示窗口VB
+     * ⦁ 提示窗口VB
      *
-     * ● 2023-10-15 02:22:36 周日 上午
+     * ⦁ 2023-10-15 02:22:36 周日 上午
      */
     private var mTipDialog: AlertDialog? = null
 
     /**
-     * ● 是否取消token提示窗口
+     * ⦁ 是否取消token提示窗口
      *
-     * ● 2023-10-15 02:48:32 周日 上午
+     * ⦁ 2023-10-15 02:48:32 周日 上午
      */
     private var mIsCancelTokenDialog: Boolean = false
 
     /**
-     * ● BaseViewStub
+     * ⦁ BaseViewStub
      *
-     * ● 2023-10-29 20:59:42 周日 下午
+     * ⦁ 2023-10-29 20:59:42 周日 下午
      * @author crowforkotlin
      */
     private var mBaseErrorViewStub by BaseNotNullVar<BaseErrorViewStub>(true)
 
     /**
-     * ● 站点VB
+     * ⦁ 站点VB
      *
-     * ● 2023-11-11 13:20:16 周六 下午
+     * ⦁ 2023-11-11 13:20:16 周六 下午
      * @author crowforkotlin
      */
     private var mSiteBinding: AnimeLayoutSiteBinding? = null
 
     /**
-     * ● 站点窗口
+     * ⦁ 站点窗口
      *
-     * ● 2023-11-11 13:20:23 周六 下午
+     * ⦁ 2023-11-11 13:20:23 周六 下午
      * @author crowforkotlin
      */
     private var mSiteDialog: AlertDialog? =null
 
     /**
-     * ● 番剧站点列表加载任务
+     * ⦁ 番剧站点列表加载任务
      *
-     * ● 2023-12-03 18:28:15 周日 下午
+     * ⦁ 2023-12-03 18:28:15 周日 下午
      * @author crowforkotlin
      */
     private var mAnimeSiteJob: Job? = null
 
     /**
-     * ● 获取VB
+     * ⦁ 获取VB
      *
-     * ● 2023-10-10 01:01:31 周二 上午
+     * ⦁ 2023-10-10 01:01:31 周二 上午
      */
     override fun getViewBinding(inflater: LayoutInflater) = AnimeFragmentBinding.inflate(layoutInflater)
 
     /**
-     * ● Lifecycle onDestroyView
+     * ⦁ Lifecycle onDestroyView
      *
-     * ● 2023-12-09 17:41:07 周六 下午
+     * ⦁ 2023-12-09 17:41:07 周六 下午
      * @author crowforkotlin
      */
     override fun onDestroyView() {
@@ -209,9 +209,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-10-10 01:01:42 周二 上午
+     * ⦁ 2023-10-10 01:01:42 周二 上午
      */
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -244,9 +244,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 初始化监听器
+     * ⦁ 初始化监听器
      *
-     * ● 2023-10-10 01:01:55 周二 上午
+     * ⦁ 2023-10-10 01:01:55 周二 上午
      */
     override fun initListener() {
 
@@ -345,9 +345,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-10-14 23:49:23 周六 下午
+     * ⦁ 2023-10-14 23:49:23 周六 下午
      */
     override fun initObserver(saveInstanceState: Bundle?) {
 
@@ -468,9 +468,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 点击站点
+     * ⦁ 点击站点
      *
-     * ● 2023-11-11 13:06:59 周六 下午
+     * ⦁ 2023-11-11 13:06:59 周六 下午
      * @author crowforkotlin
      */
     private fun onSiteClick() {
@@ -532,9 +532,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 请求失败重试
+     * ⦁ 请求失败重试
      *
-     * ● 2023-10-15 02:55:35 周日 上午
+     * ⦁ 2023-10-15 02:55:35 周日 上午
      */
     private fun onRetryError() {
         if (mTipDialog?.isShowing == true) {
@@ -550,9 +550,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● Flow 收集状态
+     * ⦁ Flow 收集状态
      *
-     * ● 2023-10-10 01:32:20 周二 上午
+     * ⦁ 2023-10-10 01:32:20 周二 上午
      */
     private fun onCollectState() {
         if (mVM.mDiscoverPageFlow == null) {
@@ -567,9 +567,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 更新漫画
+     * ⦁ 更新漫画
      *
-     * ● 2023-10-10 01:32:34 周二 上午
+     * ⦁ 2023-10-10 01:32:34 周二 上午
      */
     private fun updateAnime() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -580,9 +580,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 选择菜单
+     * ⦁ 选择菜单
      *
-     * ● 2023-10-11 23:10:54 周三 下午
+     * ⦁ 2023-10-11 23:10:54 周三 下午
      */
     private fun onSelectMenu(type: Int) {
 
@@ -633,9 +633,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 导航至动漫信息页面
+     * ⦁ 导航至动漫信息页面
      *
-     * ● 2023-10-11 23:13:38 周三 下午
+     * ⦁ 2023-10-11 23:13:38 周三 下午
      */
     private fun navigateAnimeInfoPage(pathword: String, name: String) {
 
@@ -655,9 +655,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 检查番剧账户状态
+     * ⦁ 检查番剧账户状态
      *
-     * ● 2023-10-14 23:50:46 周六 下午
+     * ⦁ 2023-10-14 23:50:46 周六 下午
      */
     private fun checkAccountState(): Boolean {
         val tokenEmpty = MangaXAccountConfig.mHotMangaToken.isEmpty()
@@ -680,9 +680,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 处理搜索页面收集的结果
+     * ⦁ 处理搜索页面收集的结果
      *
-     * ● 2023-12-12 00:36:35 周二 上午
+     * ⦁ 2023-12-12 00:36:35 周二 上午
      * @author crowforkotlin
      */
     private fun onCollectSearchPage(content: String) {
@@ -699,9 +699,9 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 加载搜索视图
+     * ⦁ 加载搜索视图
      *
-     * ● 2023-12-11 22:11:28 周一 下午
+     * ⦁ 2023-12-11 22:11:28 周一 下午
      * @author crowforkotlin
      */
     @SuppressLint("RestrictedApi", "PrivateResource")

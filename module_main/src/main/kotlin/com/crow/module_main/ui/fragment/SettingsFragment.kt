@@ -14,18 +14,17 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.forEach
+import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
-import com.crow.base.app.app
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
-import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.animateFadeOutGone
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
@@ -37,12 +36,12 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.MangaXAccountConfig
-import com.crow.mangax.copymanga.entity.AppConfig
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mApiProxyEnable
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mCoverOrinal
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mHotAccurateDisplay
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mUpdatePrefix
+import com.crow.mangax.copymanga.entity.CatlogConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig.mApiProxyEnable
+import com.crow.mangax.copymanga.entity.CatlogConfig.mChineseConvert
+import com.crow.mangax.copymanga.entity.CatlogConfig.mCoverOrinal
+import com.crow.mangax.copymanga.entity.CatlogConfig.mHotAccurateDisplay
+import com.crow.mangax.copymanga.entity.CatlogConfig.mUpdatePrefix
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentSettingsBinding
@@ -66,44 +65,44 @@ import com.crow.mangax.R as mangaR
 class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
     /**
-     * ● 屏幕高度 / 6
+     * ⦁ 屏幕高度 / 6
      *
-     * ● 2023-10-02 23:27:58 周一 下午
+     * ⦁ 2023-10-02 23:27:58 周一 下午
      */
     private val mScreenHeight by lazy { mContext.resources.displayMetrics.heightPixels / 6 }
 
     /**
-     * ● 容器VM
+     * ⦁ 容器VM
      *
-     * ● 2023-10-02 23:28:07 周一 下午
+     * ⦁ 2023-10-02 23:28:07 周一 下午
      */
     private val mVM by viewModel<MainViewModel>()
 
     /**
-     * ● 站点Dialog
+     * ⦁ 站点Dialog
      *
-     * ● 2023-10-02 23:28:32 周一 下午
+     * ⦁ 2023-10-02 23:28:32 周一 下午
      */
     private var mSiteAlertDialog: AlertDialog? = null
 
     /**
-     * ● 站点Dialog Binding
+     * ⦁ 站点Dialog Binding
      *
-     * ● 2023-10-02 23:28:42 周一 下午
+     * ⦁ 2023-10-02 23:28:42 周一 下午
      */
     private var mSiteDialogBinding: MainSettingsSiteLayoutBinding? = null
 
     /**
-     * ● Global BaseEvent
+     * ⦁ Global BaseEvent
      *
-     * ● 2023-10-02 23:41:17 周一 下午
+     * ⦁ 2023-10-02 23:41:17 周一 下午
      */
     private val mBaseEvent by lazy { BaseEvent.getSIngleInstance() }
 
     /**
-     * ● Settings Rv Adapter
+     * ⦁ Settings Rv Adapter
      *
-     * ● 2023-12-15 01:41:54 周五 上午
+     * ⦁ 2023-12-15 01:41:54 周五 上午
      * @author crowforkotlin
      */
     private val mAdapter by lazy {
@@ -114,9 +113,9 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
     }
 
     /**
-     * ● 点击Item
+     * ⦁ 点击Item
      *
-     * ● 2023-10-02 23:26:28 周一 下午
+     * ⦁ 2023-10-02 23:26:28 周一 下午
      */
     private fun onClickItem(position: Int) {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -166,7 +165,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                     binding.resolution1500.id -> MangaXAccountConfig.mResolution = 1500
                 }
                 mVM.saveAppConfig(appConfig.copy(mResolution = MangaXAccountConfig.mResolution))
-                mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
+                mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME_300)
             }
         }
     }
@@ -222,7 +221,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                         siteRadioTwo.id -> BaseStrings.URL.setCopyMangaUrl(BaseStrings.URL.CopyManga_TLD_SITE)
                     }
                     mVM.saveAppConfig(appConfig.copy(mCopyMangaSite = BaseStrings.URL.COPYMANGA))
-                    mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
+                    mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_300)
                 }
             }
         }
@@ -285,7 +284,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
             mVM.saveAppConfig(appConfig)
 
             // 延时关闭Dialog 让RadioButton选中后的过渡效果执行完毕
-            mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
+            mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME_300)
         }
 
         binding.proxyInputEdit.addTextChangedListener(object : TextWatcher {
@@ -303,18 +302,17 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
         binding.proxySwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
+                val text = binding.proxyInputEdit.text
                 when {
-                    binding.proxyInputEdit.text.isNullOrEmpty() -> { toast(getString(R.string.main_api_input_tips)) }
-                    (binding.proxyInputEdit.text?.length ?: 0) < 20 -> { toast(getString(R.string.main_api_length_tips)) }
-                    else -> {
-                        mApiProxyEnable = true
-                        mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_COVER_ORINAL, true)
-                        return@setOnCheckedChangeListener
-                    }
+                    text.isNullOrEmpty() -> { toast(getString(R.string.main_api_input_tips)) }
+                    (text?.length ?: 0) < 20 -> { toast(getString(R.string.main_api_length_tips)) }
                 }
+                mApiProxyEnable = true
+                mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_API_PROXY, true)
+                return@setOnCheckedChangeListener
             }
             mApiProxyEnable = false
-            mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_COVER_ORINAL, false)
+            mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_API_PROXY, false)
         }
     }
 
@@ -349,7 +347,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
     }
 
     override fun initData(savedInstanceState: Bundle?) {
-        val config = AppConfig.getAppSP()
+        val config = CatlogConfig.getCatlogConfigSp()
         mAdapter.submitList(
             mutableListOf(
                 SettingTitleEntity(mID = -1,mTitle = getString(R.string.main_settings_title_basic)),
@@ -437,16 +435,20 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                                                 mSiteDialogBinding!!.siteRadioGroup.forEach { childView -> if (buttonView.id != (childView as MaterialRadioButton).id) childView.isChecked = false }
                                                 BaseStrings.URL.COPYMANGA = buttonView.tag.toString()
                                                 mVM.saveAppConfig()
-                                                mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
+                                                mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_300)
                                             }
                                         }
                                     })
                                 }
 
                                 // 加载动画淡出 动态站点Title、RadioGroup 淡入
-                                mSiteDialogBinding?.siteLoading?.animateFadeOutGone()
-                                mSiteDialogBinding?.siteTitle?.animateFadeIn()
-                                mSiteDialogBinding?.siteRadioGroup?.animateFadeIn()
+                                mSiteDialogBinding?.let {
+                                    it.siteLoading.animateFadeOut()?.withEndAction {
+                                        it.siteLoading.isGone = true
+                                        it.siteTitle.animateFadeIn()
+                                        it.siteRadioGroup.animateFadeIn()
+                                    }
+                                }
                             }
                         }
                 }

@@ -11,9 +11,9 @@ import retrofit2.http.Query
 interface MainService {
 
     /**
-     * ● 获取漫画浏览历史记录
+     * ⦁ 获取漫画浏览历史记录
      *
-     * ● 2023-10-03 18:58:22 周二 下午
+     * ⦁ 2023-10-03 18:58:22 周二 下午
      */
     @GET(BaseStrings.URL.ComicHistory)
     fun getComicHistory(
@@ -23,9 +23,9 @@ interface MainService {
     ) : Flow<BaseResultResp<ComicHistoryResp>>
 
     /**
-     * ● 获取漫画浏览历史记录
+     * ⦁ 获取漫画浏览历史记录
      *
-     * ● 2023-10-03 18:58:22 周二 下午
+     * ⦁ 2023-10-03 18:58:22 周二 下午
      */
     @GET(BaseStrings.URL.NovelHistory)
     fun getNovelHistory(

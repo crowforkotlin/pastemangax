@@ -7,9 +7,9 @@ import com.crow.module_book.model.entity.comic.reader.ReaderEvent
 import com.crow.module_book.ui.activity.ComicActivity
 
 /**
- * ● BaseComicFragment
+ * ⦁ BaseComicFragment
  *
- * ● 2024/3/4 01:53
+ * ⦁ 2024/3/4 01:53
  * @author crowforkotlin
  * @formatter:on
  */

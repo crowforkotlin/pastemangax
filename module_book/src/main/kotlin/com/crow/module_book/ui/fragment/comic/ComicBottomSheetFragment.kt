@@ -15,6 +15,7 @@ import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.view.event.BaseEventEntity
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.module_book.databinding.BookFragmentComicBottomBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderEvent
 import com.crow.module_book.ui.activity.ComicActivity
@@ -46,7 +47,7 @@ class ComicBottomSheetFragment : BaseMviBottomSheetDialogFragment<BookFragmentCo
                 window.statusBarColor = Color.TRANSPARENT
                 window.navigationBarColor = ColorUtils.setAlphaComponent(Color.WHITE, 1)
                 WindowCompat.getInsetsController(window, window.decorView).apply {
-                    isAppearanceLightNavigationBars = !AppConfig.mDarkMode
+                    isAppearanceLightNavigationBars = !CatlogConfig.mDarkMode
                 }
             }
 

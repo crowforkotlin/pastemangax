@@ -18,9 +18,9 @@ import com.crow.module_book.databinding.BookComicCommentRvBinding
 import com.crow.module_book.model.resp.comic_comment.ComicCommentListResult
 
 /**
- * ● ComicCommentRvAdapter
+ * ⦁ ComicCommentRvAdapter
  *
- * ● 2024/3/3 21:08
+ * ⦁ 2024/3/3 21:08
  * @author crowforkotlin
  * @formatter:on
  */
@@ -30,9 +30,9 @@ class ComicCommentRvAdapter(
 ) : PagingDataAdapter<ComicCommentListResult, ComicCommentRvAdapter.VH>(DiffCallback()) {
 
     /**
-     * ● DiffCallback
+     * ⦁ DiffCallback
      *
-     * ● 2023-10-22 01:28:53 周日 上午
+     * ⦁ 2023-10-22 01:28:53 周日 上午
      * @author crowforkotlin
      */
     class DiffCallback: DiffUtil.ItemCallback<ComicCommentListResult>() {
@@ -46,9 +46,9 @@ class ComicCommentRvAdapter(
     }
 
     /**
-     * ● Bookshelf ViewHolder
+     * ⦁ Bookshelf ViewHolder
      *
-     * ● 2023-10-22 01:29:27 周日 上午
+     * ⦁ 2023-10-22 01:29:27 周日 上午
      * @author crowforkotlin
      */
     inner class VH(binding: BookComicCommentRvBinding) : MangaCoilVH<BookComicCommentRvBinding>(binding) {
@@ -72,18 +72,18 @@ class ComicCommentRvAdapter(
     }
 
     /**
-     * ● onCreateVH
+     * ⦁ onCreateVH
      *
-     * ● 2023-10-22 01:29:37 周日 上午
+     * ⦁ 2023-10-22 01:29:37 周日 上午
      * @author crowforkotlin
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = VH(BookComicCommentRvBinding.inflate(
         LayoutInflater.from(parent.context), parent,false))
 
     /**
-     * ● onBindVH
+     * ⦁ onBindVH
      *
-     * ● 2023-10-22 01:29:46 周日 上午
+     * ⦁ 2023-10-22 01:29:46 周日 上午
      * @author crowforkotlin
      */
     override fun onBindViewHolder(vh: VH, position: Int) { vh.onBind(getItem(position) ?: return) }

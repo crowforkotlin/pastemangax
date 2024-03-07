@@ -46,10 +46,10 @@ abstract class BaseFragmentImpl : Fragment(), IBaseFragment {
     }
 
     /**
-     * ● Fragment在销毁时需要对引用进行置空防止泄漏，如果Fragment走重启状态，并且Observer中 启用了lifecycleScope，那么需要在Observer前初始化引用数据
+     * ⦁ Fragment在销毁时需要对引用进行置空防止泄漏，如果Fragment走重启状态，并且Observer中 启用了lifecycleScope，那么需要在Observer前初始化引用数据
      * 否则Observer拿到的引用数据为空
      *
-     * ● 2024-02-16 23:33:26 周五 下午
+     * ⦁ 2024-02-16 23:33:26 周五 下午
      * @author crowforkotlin
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?){

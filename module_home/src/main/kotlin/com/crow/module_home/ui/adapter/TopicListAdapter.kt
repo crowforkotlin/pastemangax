@@ -12,7 +12,7 @@ import com.crow.mangax.copymanga.appComicCardWidth
 import com.crow.mangax.copymanga.formatHotValue
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.px2sp
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.CatlogConfig.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_home.databinding.HomeTopicRvBinding
@@ -77,9 +77,9 @@ class TopicListAdapter(
     }
 
     /**
-     * ● DiffCallback
+     * ⦁ DiffCallback
      *
-     * ● 2023-11-01 00:05:03 周三 上午
+     * ⦁ 2023-11-01 00:05:03 周三 上午
      * @author crowforkotlin
      */
     class DiffCallback : DiffUtil.ItemCallback<TopicResult>() {
@@ -93,17 +93,17 @@ class TopicListAdapter(
     }
 
     /**
-     * ● 复用VH
+     * ⦁ 复用VH
      *
-     * ● 2023-11-01 00:04:50 周三 上午
+     * ⦁ 2023-11-01 00:04:50 周三 上午
      * @author crowforkotlin
      */
     override fun onBindViewHolder(holder: HistoryVH, position: Int) { holder.onBind(getItem(position) ?: return) }
 
     /**
-     * ● 创建VH
+     * ⦁ 创建VH
      *
-     * ● 2023-11-01 00:04:43 周三 上午
+     * ⦁ 2023-11-01 00:04:43 周三 上午
      * @author crowforkotlin
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryVH { return HistoryVH(HomeTopicRvBinding.inflate(LayoutInflater.from(parent.context), parent, false)) }

@@ -3,13 +3,14 @@ package com.crow.module_main.ui.viewmodel
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.lifecycle.viewModelScope
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.CatlogConfig.mDarkMode
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.MangaXAccountConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.module_main.model.intent.AppIntent
 import com.crow.module_main.network.AppRepository
 import kotlinx.coroutines.Dispatchers
@@ -29,13 +30,13 @@ import kotlin.coroutines.resume
  **************************/
 class MainViewModel(val repository: AppRepository) : BaseMviViewModel<AppIntent>() {
 
-    /** ● app配置 设置粘性状态 （内部访问）*/
+    /** ⦁ app配置 设置粘性状态 （内部访问）*/
     private var _mAppConfig = MutableStateFlow<AppConfig?>(null)
 
-    /** ● app配置 设置粘性状态 （ 公开）*/
+    /** ⦁ app配置 设置粘性状态 （ 公开）*/
     val mAppConfig: StateFlow<AppConfig?> get() = _mAppConfig
 
-    /** ● 是否重启（内存重启、旋转、夜间模式切换） */
+    /** ⦁ 是否重启（内存重启、旋转、夜间模式切换） */
     var mIsRestarted: Boolean = false
 
     init {
@@ -59,9 +60,7 @@ class MainViewModel(val repository: AppRepository) : BaseMviViewModel<AppIntent>
     }
 
     fun saveAppCatLogConfig(key: String, isChecked: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            SpNameSpace.CATALOG_CONFIG.getSharedPreferences().edit { putBoolean(key, isChecked) }
-        }
+        viewModelScope.launch(Dispatchers.IO) { CatlogConfig.saveCatlogConfig(key, isChecked) }
     }
 
     suspend fun getReadedAppConfig(): AppConfig? {

@@ -1,9 +1,9 @@
 package com.crow.mangax.copymanga.okhttp
 
 /**
- * ● Okhttp进度加载
+ * ⦁ Okhttp进度加载
  *
- * ● 2023-07-07 22:12:17 周五 下午
+ * ⦁ 2023-07-07 22:12:17 周五 下午
  * @author crowforkotlin
  */
 class AppProgressFactory private constructor (private val mUrl: String) {
@@ -13,17 +13,17 @@ class AppProgressFactory private constructor (private val mUrl: String) {
         const val PERCENT_0 = "0%"
 
         /**
-         * ● 存储映射Url : Instance
+         * ⦁ 存储映射Url : Instance
          *
-         * ● 2024-01-05 01:38:02 周五 上午
+         * ⦁ 2024-01-05 01:38:02 周五 上午
          * @author crowforkotlin
          */
         private val mProgressManagerMap: HashMap<String, AppProgressFactory> = hashMapOf()
 
         /**
-         * ● 获取实例
+         * ⦁ 获取实例
          *
-         * ● 2024-01-05 01:37:51 周五 上午
+         * ⦁ 2024-01-05 01:37:51 周五 上午
          * @author crowforkotlin
          */
         fun getProgressFactory(url: String): AppProgressFactory? {
@@ -31,9 +31,9 @@ class AppProgressFactory private constructor (private val mUrl: String) {
         }
 
         /**
-         * ● 创建实例
+         * ⦁ 创建实例
          *
-         * ● 2024-01-05 01:37:19 周五 上午
+         * ⦁ 2024-01-05 01:37:19 周五 上午
          * @author crowforkotlin
          */
         fun createProgressListener(url: String, progressListener: AppProgressListener): AppProgressFactory {
@@ -41,42 +41,42 @@ class AppProgressFactory private constructor (private val mUrl: String) {
         }
 
         /**
-         * ● 清空数据
+         * ⦁ 清空数据
          *
-         * ● 2024-01-05 01:36:05 周五 上午
+         * ⦁ 2024-01-05 01:36:05 周五 上午
          * @author crowforkotlin
          */
         fun clear() { mProgressManagerMap.clear() }
 
         /**
-         * ● 格式化字符串
+         * ⦁ 格式化字符串
          *
-         * ● 2024-01-05 01:36:38 周五 上午
+         * ⦁ 2024-01-05 01:36:38 周五 上午
          * @author crowforkotlin
          */
         fun formateProgress(progress: Int) = "$progress%"
     }
 
     /**
-     * ● 监听回调
+     * ⦁ 监听回调
      *
-     * ● 2024-01-05 01:39:01 周五 上午
+     * ⦁ 2024-01-05 01:39:01 周五 上午
      * @author crowforkotlin
      */
     private var mProgressListener: AppProgressListener? = null
 
     /**
-     * ● 进度百分比
+     * ⦁ 进度百分比
      *
-     * ● 2024-01-05 01:39:23 周五 上午
+     * ⦁ 2024-01-05 01:39:23 周五 上午
      * @author crowforkotlin
      */
     private var mProgressPercentage: Int = -1
 
     /**
-     * ● 进度监听实现类
+     * ⦁ 进度监听实现类
      *
-     * ● 2024-01-05 01:39:41 周五 上午
+     * ⦁ 2024-01-05 01:39:41 周五 上午
      * @author crowforkotlin
      */
     val mRequestProgressListener = object : AppProgressResponseBody.InternalProgressListener {
@@ -92,17 +92,17 @@ class AppProgressFactory private constructor (private val mUrl: String) {
     }
 
     /**
-     * ● 初始化路径
+     * ⦁ 初始化路径
      *
-     * ● 2024-01-05 01:42:30 周五 上午
+     * ⦁ 2024-01-05 01:42:30 周五 上午
      * @author crowforkotlin
      */
     init { mProgressManagerMap[mUrl] = this }
 
     /**
-     * ● 设置进度监听器
+     * ⦁ 设置进度监听器
      *
-     * ● 2024-01-05 01:33:07 周五 上午
+     * ⦁ 2024-01-05 01:33:07 周五 上午
      * @author crowforkotlin
      */
     fun setProgressListenerse(listener: AppProgressListener): AppProgressFactory {
@@ -111,9 +111,9 @@ class AppProgressFactory private constructor (private val mUrl: String) {
     }
 
     /**
-     * ● 移除进度回调监听器
+     * ⦁ 移除进度回调监听器
      *
-     * ● 2024-01-05 01:32:19 周五 上午
+     * ⦁ 2024-01-05 01:32:19 周五 上午
      * @author crowforkotlin
      */
     fun removeProgressListener(): AppProgressFactory {
@@ -122,9 +122,9 @@ class AppProgressFactory private constructor (private val mUrl: String) {
     }
 
     /**
-     * ● 移除Key
+     * ⦁ 移除Key
      *
-     * ● 2024-01-05 01:31:21 周五 上午
+     * ⦁ 2024-01-05 01:31:21 周五 上午
      * @author crowforkotlin
      */
     fun remove(url: String = mUrl): AppProgressFactory {

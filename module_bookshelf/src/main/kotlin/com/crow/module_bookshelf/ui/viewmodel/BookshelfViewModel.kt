@@ -6,7 +6,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mUpdatePrefix
+import com.crow.mangax.copymanga.entity.CatlogConfig.mUpdatePrefix
 import com.crow.module_bookshelf.model.intent.BookshelfIntent
 import com.crow.module_bookshelf.model.resp.bookshelf_comic.BookshelfComicResults
 import com.crow.module_bookshelf.model.resp.bookshelf_novel.BookshelfNovelResults

@@ -45,16 +45,16 @@ val Context.cacheImageDir: File
  */
 fun File.getUriCompat(context: Context): Uri {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        FileProvider.getUriForFile(context, "com.crow.manga" + ".provider", this)
+        FileProvider.getUriForFile(context, context.applicationInfo.packageName + ".provider", this)
     } else {
         this.toUri()
     }
 }
 
 /**
- * ● 拷贝文件到本地磁盘
+ * ⦁ 拷贝文件到本地磁盘
  *
- * ● 2023-12-14 01:28:47 周四 上午
+ * ⦁ 2023-12-14 01:28:47 周四 上午
  * @author crowforkotlin
  */
 fun Context.copyFolder(folderName: String) {

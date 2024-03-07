@@ -9,7 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import com.crow.base.ui.view.event.BaseEvent
-import com.crow.base.ui.view.event.BaseEvent.Companion.BASE_FLAG_TIME_500
+import com.crow.base.ui.view.event.BaseEvent.Companion.BASE_FLAG_TIME_300
 import com.crow.base.ui.view.event.click.BaseIEventInterval
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.google.android.material.appbar.MaterialToolbar
@@ -26,19 +26,19 @@ import com.google.android.material.materialswitch.MaterialSwitch
 
 
 // View 点击事件间隔 默认1秒
-fun View.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_500, msg: String? = null, iEven: BaseIEventInterval<View>) {
+fun View.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_300, msg: String? = null, iEven: BaseIEventInterval<View>) {
     val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance(flagTime)
     setOnClickListener { iEven.onIntervalOk(baseEvent.getIntervalResult(this, msg, baseEvent) ?: return@setOnClickListener) }
 }
 
 // View 扩展 onFailure
-fun View.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_500, iEven: BaseIEventIntervalExt<View>) {
+fun View.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_300, iEven: BaseIEventIntervalExt<View>) {
     val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance(flagTime)
     setOnClickListener { baseEvent.doOnIntervalResult(this, baseEvent, iEven) }
 }
 
 // MenuItem 点击事件间隔 默认1秒
-fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_500, msg: String? = null, iEven: BaseIEventInterval<MenuItem>) {
+fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_300, msg: String? = null, iEven: BaseIEventInterval<MenuItem>) {
     val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance(flagTime)
     setOnMenuItemClickListener {
         iEven.onIntervalOk(baseEvent.getIntervalResult(this, msg, baseEvent) ?: return@setOnMenuItemClickListener true)
@@ -47,7 +47,7 @@ fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FL
 }
 
 // MenuItem 扩展 onFailure
-fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_500, iEvent: BaseIEventIntervalExt<MenuItem>) {
+fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_300, iEvent: BaseIEventIntervalExt<MenuItem>) {
     val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance(flagTime)
     setOnMenuItemClickListener {
         baseEvent.doOnIntervalResult(this, baseEvent, iEvent)
@@ -56,7 +56,7 @@ fun MenuItem.doOnClickInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FL
 }
 
 // MaterialToolbar 点击事件间隔 默认1秒
-fun MaterialToolbar.navigateIconClickGap(isGlobal: Boolean = true, flagTime: Long = BASE_FLAG_TIME_500, msg: String? = null, iEven: BaseIEventInterval<MaterialToolbar>) {
+fun MaterialToolbar.navigateIconClickGap(isGlobal: Boolean = true, flagTime: Long = BASE_FLAG_TIME_300, msg: String? = null, iEven: BaseIEventInterval<MaterialToolbar>) {
     val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance(flagTime)
     setNavigationOnClickListener {
         iEven.onIntervalOk(baseEvent.getIntervalResult(this, msg, baseEvent) ?: return@setNavigationOnClickListener)
@@ -125,7 +125,7 @@ inline fun EditText.afterTextChanged(crossinline afterTextChanged: (String) -> U
     })
 }
 
-fun MaterialSwitch.setOnCheckedInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_500, msg: String? = null, iEven: BaseIEventInterval<MaterialSwitch>) {
+fun MaterialSwitch.setOnCheckedInterval(isGlobal:Boolean = true, flagTime: Long = BASE_FLAG_TIME_300, msg: String? = null, iEven: BaseIEventInterval<MaterialSwitch>) {
     val baseEvent = if (isGlobal) BaseEvent.getSIngleInstance() else BaseEvent.newInstance(flagTime)
     setOnCheckedChangeListener { buttonView, isChecked -> iEven.onIntervalOk(baseEvent.getIntervalResult(this, msg, baseEvent) ?: return@setOnCheckedChangeListener) }
 }

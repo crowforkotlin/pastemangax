@@ -16,6 +16,9 @@ import com.crow.base.tools.extensions.getSharedPreferences
 import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toTypeEntity
 import com.squareup.moshi.Json
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * App 全局配置
@@ -49,72 +52,9 @@ data class AppConfig(
 ) {
     companion object {
 
-        /**
-         * ●  黑夜模式
-         *
-         * ● 2023-12-18 00:10:11 周一 上午
-         * @author crowforkotlin
-         */
-        var mDarkMode = false
+        private var mAppConfig: AppConfig? = null
 
-        /**
-         * ● 更新前置
-         *
-         * ● 2023-12-18 00:10:25 周一 上午
-         * @author crowforkotlin
-         */
-        var mUpdatePrefix = true
-            private set
-
-        /**
-         * ● 简繁题转换
-         *
-         * ● 2023-12-18 00:10:38 周一 上午
-         * @author crowforkotlin
-         */
-        var mChineseConvert = true
-            private set
-
-        /**
-         * ● 热度精准显示
-         *
-         * ● 2023-12-18 00:10:53 周一 上午
-         * @author crowforkotlin
-         */
-        var mHotAccurateDisplay = false
-            private set
-
-        /**
-         * ●  封面原图
-         *
-         * ● 2024-03-06 20:35:49 周三 下午
-         * @author crowforkotlin
-         */
-        var mCoverOrinal = false
-            private set
-
-        var mApiProxyEnable = false
-
-        private var mAppConfig: AppConfig? =null
-
-        fun initialization() {
-            val sp = SpNameSpace.CATALOG_CONFIG.getSharedPreferences()
-            mDarkMode = sp.getBoolean(SpNameSpace.Key.ENABLE_DARK, false)
-            mChineseConvert = sp.getBoolean(SpNameSpace.Key.ENABLE_CHINESE_CONVERT, true)
-            mHotAccurateDisplay = sp.getBoolean(SpNameSpace.Key.ENABLE_HOT_ACCURATE_DISPLAY, false)
-            mUpdatePrefix = sp.getBoolean(SpNameSpace.Key.ENABLE_UPDATE_PREFIX, true)
-            mCoverOrinal = sp.getBoolean(SpNameSpace.Key.ENABLE_COVER_ORINAL, false)
-            mApiProxyEnable = sp.getBoolean(SpNameSpace.Key.ENABLE_API_PROXY, false)
-        }
-
-        fun getAppSP(): SharedPreferences {
-            return SpNameSpace.CATALOG_CONFIG.getSharedPreferences()
-        }
-
-
-        fun getInstance(): AppConfig {
-            return mAppConfig!!
-        }
+        fun getInstance(): AppConfig? { return mAppConfig }
 
         suspend fun saveAppConfig(appConfig: AppConfig) {
             app.appConfigDataStore.asyncEncode(DataStoreAgent.APP_CONFIG, toJson(appConfig.also { mAppConfig = it }))

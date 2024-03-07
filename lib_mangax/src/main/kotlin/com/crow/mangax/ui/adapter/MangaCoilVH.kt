@@ -46,6 +46,7 @@ import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.px2dp
 import com.crow.mangax.R
 import com.crow.mangax.copymanga.entity.AppConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -125,6 +126,43 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
 
     }
 
+    fun loadImageAdjustWithRetry(imageUrl: String) {
+        mLoading.isInvisible = false
+        mLoadingText.isInvisible = false
+        mRetry?.isGone = true
+        mLoadingText.text = AppProgressFactory.PERCENT_0
+        mAppProgressFactory?.removeProgressListener()?.remove()
+        mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> mLoadingText.text = AppProgressFactory.formateProgress(percentage) }
+        app.imageLoader.enqueue(
+            ImageRequest.Builder(itemView.context)
+                .listener(
+                    onSuccess = { _, result ->
+                        mLoading.isInvisible = true
+                        mLoadingText.isInvisible = true
+                        mRetry?.isGone = true
+                    },
+                    onError = { _, result ->
+                        "CoilVH onError ${result.throwable.stackTraceToString()} \t ${result.request.data}".error()
+                        mLoading.isInvisible = true
+                        mLoadingText.isInvisible = true
+                        mRetry?.isVisible = true
+                        mRetry?.doOnClickInterval {
+                            mLoading.isInvisible = false
+                            mLoadingText.isInvisible = false
+                            it.mType.isGone = true
+                            (itemView.context as LifecycleOwner).launchDelay(BASE_ANIM_300L) { loadImageWithRetry(imageUrl) }
+                        }
+                    },
+                )
+                .data(imageUrl)
+                .scale(Scale.FIT)
+                .decoderFactory { source, option, _ -> Decoder { DecodeResult(drawable =BitmapFactory.decodeStream(source.source.source().inputStream()).toDrawable(option.context.resources), false) } }
+                .target(mImage)
+                .build()
+        )
+
+    }
+
     fun loadCoverImage(imageUrl: String) {
         mLoading.isInvisible = false
         mLoadingText.isInvisible = false
@@ -133,7 +171,7 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
             removeProgressListener()
             remove()
         }
-        val cover = if(AppConfig.mCoverOrinal) getOrignalCover(imageUrl) else imageUrl
+        val cover = if(CatlogConfig.mCoverOrinal) getOrignalCover(imageUrl) else imageUrl
         mAppProgressFactory = AppProgressFactory.createProgressListener(cover) { _, _, percentage, _, _ -> mLoadingText.text = AppProgressFactory.formateProgress(percentage) }
         app.imageLoader.enqueue(
             ImageRequest.Builder(itemView.context)

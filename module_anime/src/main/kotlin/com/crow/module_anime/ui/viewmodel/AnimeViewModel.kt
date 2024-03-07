@@ -32,64 +32,64 @@ import kotlin.coroutines.resume
 class AnimeViewModel(val repository: AnimeRepository) : BaseMviViewModel<AnimeIntent>() {
 
     /**
-     * ● 封面
+     * ⦁ 封面
      *
-     * ● 2024-01-08 22:55:28 周一 下午
+     * ⦁ 2024-01-08 22:55:28 周一 下午
      * @author crowforkotlin
      */
     var mCover: String? = null
         private set
 
     /**
-     * ● PagingFlow
+     * ⦁ PagingFlow
      *
-     * ● 2023-10-10 00:50:44 周二 上午
+     * ⦁ 2023-10-10 00:50:44 周二 上午
      */
     var mDiscoverPageFlow: Flow<PagingData<DiscoverPageResult>>? = null
         private set
 
     /**
-     * ● SearchPageFlow
+     * ⦁ SearchPageFlow
      *
-     * ● 2023-10-10 00:50:44 周二 上午
+     * ⦁ 2023-10-10 00:50:44 周二 上午
      */
     var mSearchPageFlow: Flow<PagingData<SearchResult>>? = null
         private set
 
     /**
-     * ● 排序方式
+     * ⦁ 排序方式
      *
-     * ● 2023-10-10 00:50:54 周二 上午
+     * ⦁ 2023-10-10 00:50:54 周二 上午
      */
     private var mOrder: String = "-datetime_updated"
 
     /**
-     * ● 年份 不填则默认 选填 20xx
+     * ⦁ 年份 不填则默认 选填 20xx
      *
-     * ● 2023-10-10 01:52:48 周二 上午
+     * ⦁ 2023-10-10 01:52:48 周二 上午
      */
     private var mYear: String = ""
 
     /**
-     * ● 总数
+     * ⦁ 总数
      *
-     * ● 2023-10-10 00:51:02 周二 上午
+     * ⦁ 2023-10-10 00:51:02 周二 上午
      */
     var mTotals: Int = 0
         private set
 
     /**
-     * ● 是否登录
+     * ⦁ 是否登录
      *
-     * ● 2023-10-15 02:31:37 周日 上午
+     * ⦁ 2023-10-15 02:31:37 周日 上午
      */
     var mIsLogin: Boolean = false
         private set
 
     /**
-     * ● 用户数据
+     * ⦁ 用户数据
      *
-     * ● 2023-10-15 02:40:26 周日 上午
+     * ⦁ 2023-10-15 02:40:26 周日 上午
      */
     var mAccount: AccountEntity? = null
         private set

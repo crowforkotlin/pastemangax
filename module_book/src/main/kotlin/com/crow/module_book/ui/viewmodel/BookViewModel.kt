@@ -34,47 +34,47 @@ import java.net.HttpURLConnection
 class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookIntent>() {
 
     /**
-     * ● 检索章节 起始位置
+     * ⦁ 检索章节 起始位置
      *
-     * ● 2023-06-28 22:05:36 周三 下午
+     * ⦁ 2023-06-28 22:05:36 周三 下午
      */
     private var mChapterStartIndex = 0
 
     /**
-     * ● 页面UUID (Comic,  Novel)
+     * ⦁ 页面UUID (Comic,  Novel)
      *
-     * ● 2023-06-28 22:05:47 周三 下午
+     * ⦁ 2023-06-28 22:05:47 周三 下午
      */
     var mUuid: String? = null
         private set
 
-    /** ● 漫画信息页 */
+    /** ⦁ 漫画信息页 */
     var mComicInfoPage: ComicInfoResp? = null
         private set
 
-    /** ● 轻小说信息页 */
+    /** ⦁ 轻小说信息页 */
     var mNovelInfoPage: NovelInfoResp? = null
         private set
 
     /**
-     * ● 章节 数据库 DAO
+     * ⦁ 章节 数据库 DAO
      *
-     * ● 2023-06-28 22:23:19 周三 下午
+     * ⦁ 2023-06-28 22:23:19 周三 下午
      */
     private val mChapterDBDao by lazy { buildDatabase<BookChapterDB>(DBNameSpace.CHAPTER_DB).bookChapterDao() }
 
     /**
-     * ● 书页章节实体数据
+     * ⦁ 书页章节实体数据
      *
-     * ● 2023-06-28 22:23:46 周三 下午
+     * ⦁ 2023-06-28 22:23:46 周三 下午
      */
     private var _mChapterEntity = MutableStateFlow<BookChapterEntity?>(null)
     val mChapterEntity: StateFlow<BookChapterEntity?> get() = _mChapterEntity
 
     /**
-     * ● 通过检查意图的类型并执行相应的代码来处理意图
+     * ⦁ 通过检查意图的类型并执行相应的代码来处理意图
      *
-     * ● 2023-06-28 22:08:41 周三 下午
+     * ⦁ 2023-06-28 22:08:41 周三 下午
      */
     override fun dispatcher(intent: BookIntent) {
         when (intent) {
@@ -93,9 +93,9 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
 
 
     /**
-     * ● 更新数据库中书页章节
+     * ⦁ 更新数据库中书页章节
      *
-     * ● 2023-06-28 22:24:38 周三 下午
+     * ⦁ 2023-06-28 22:24:38 周三 下午
      */
     fun updateBookChapterOnDB(chapter: BookChapterEntity) {
         viewModelScope.launch(Dispatchers.IO + baseCoroutineException) {
@@ -120,9 +120,9 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
     }
 
     /**
-     * ● 查找数据库中德章节
+     * ⦁ 查找数据库中德章节
      *
-     * ● 2023-06-28 22:26:51 周三 下午
+     * ⦁ 2023-06-28 22:26:51 周三 下午
      */
     fun findReadedBookChapterOnDB(bookUuid: String, bookType: Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -131,9 +131,9 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
     }
 
     /**
-     * ● 重新计数（位置）
+     * ⦁ 重新计数（位置）
      *
-     * ● 2023-06-28 22:27:27 周三 下午
+     * ⦁ 2023-06-28 22:27:27 周三 下午
      */
     fun reCountPos(pos: Int) {
         mChapterStartIndex = pos * 100

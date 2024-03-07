@@ -58,23 +58,23 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
 
     /**
-     * ● Static Area
+     * ⦁ Static Area
      *
-     * ● 2023-10-10 01:01:13 周二 上午
+     * ⦁ 2023-10-10 01:01:13 周二 上午
      */
     companion object { const val ANIME = "ANIME" }
 
     /**
-     * ● Anime ViewModel
+     * ⦁ Anime ViewModel
      *
-     * ● 2023-10-10 01:01:05 周二 上午
+     * ⦁ 2023-10-10 01:01:05 周二 上午
      */
     private val mVM by viewModel<AnimeViewModel>()
 
     /**
-     * ● Discover Page Rv Adapter
+     * ⦁ Discover Page Rv Adapter
      *
-     * ● 2023-10-10 01:00:55 周二 上午
+     * ⦁ 2023-10-10 01:00:55 周二 上午
      */
     private val mAdapter by lazy {
         AnimeDiscoverPageAdapter(lifecycleScope) { anime ->
@@ -83,55 +83,55 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● subtitle textview
+     * ⦁ subtitle textview
      *
-     * ● 2023-10-01 21:59:31 周日 下午
+     * ⦁ 2023-10-01 21:59:31 周日 下午
      */
     private var mToolbarSubtitle: TextView? = null
 
     /**
-     * ● 子标题
+     * ⦁ 子标题
      *
-     * ● 2023-10-10 02:20:34 周二 上午
+     * ⦁ 2023-10-10 02:20:34 周二 上午
      */
     private var  mSubtitle: String by Delegates.observable(app.applicationContext.getString(mangaR.string.mangax_all)) { _, _, new ->
         mBinding.topbar.subtitle = new
     }
 
     /**
-     * ● 提示窗口VB
+     * ⦁ 提示窗口VB
      *
-     * ● 2023-10-15 02:22:36 周日 上午
+     * ⦁ 2023-10-15 02:22:36 周日 上午
      */
     private var mTipDialog: AlertDialog? = null
 
     /**
-     * ● 是否取消token提示窗口
+     * ⦁ 是否取消token提示窗口
      *
-     * ● 2023-10-15 02:48:32 周日 上午
+     * ⦁ 2023-10-15 02:48:32 周日 上午
      */
     private var mIsCancelTokenDialog: Boolean = false
 
     /**
-     * ● BaseViewStub
+     * ⦁ BaseViewStub
      *
-     * ● 2023-10-29 20:59:42 周日 下午
+     * ⦁ 2023-10-29 20:59:42 周日 下午
      * @author crowforkotlin
      */
     private var mBaseErrorViewStub by BaseNotNullVar<BaseErrorViewStub>(true)
 
 
     /**
-     * ● 获取VB
+     * ⦁ 获取VB
      *
-     * ● 2023-10-10 01:01:31 周二 上午
+     * ⦁ 2023-10-10 01:01:31 周二 上午
      */
     override fun getViewBinding(inflater: LayoutInflater) = AnimeFragmentBinding.inflate(layoutInflater)
 
     /**
-     * ● 初始化视图
+     * ⦁ 初始化视图
      *
-     * ● 2023-10-10 01:01:42 周二 上午
+     * ⦁ 2023-10-10 01:01:42 周二 上午
      */
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -157,9 +157,9 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 初始化监听器
+     * ⦁ 初始化监听器
      *
-     * ● 2023-10-10 01:01:55 周二 上午
+     * ⦁ 2023-10-10 01:01:55 周二 上午
      */
     override fun initListener() {
 
@@ -240,9 +240,9 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 初始化观察者
+     * ⦁ 初始化观察者
      *
-     * ● 2023-10-14 23:49:23 周六 下午
+     * ⦁ 2023-10-14 23:49:23 周六 下午
      */
     override fun initObserver(saveInstanceState: Bundle?) {
 
@@ -307,9 +307,9 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
 
 
     /**
-     * ● 请求失败重试
+     * ⦁ 请求失败重试
      *
-     * ● 2023-10-15 02:55:35 周日 上午
+     * ⦁ 2023-10-15 02:55:35 周日 上午
      */
     private fun onRetryError() {
         if (mTipDialog?.isShowing == true) {
@@ -325,9 +325,9 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● Flow 收集状态
+     * ⦁ Flow 收集状态
      *
-     * ● 2023-10-10 01:32:20 周二 上午
+     * ⦁ 2023-10-10 01:32:20 周二 上午
      */
     private fun onCollectState() {
         if (mVM.mDiscoverPageFlow == null) {
@@ -342,9 +342,9 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 更新漫画
+     * ⦁ 更新漫画
      *
-     * ● 2023-10-10 01:32:34 周二 上午
+     * ⦁ 2023-10-10 01:32:34 周二 上午
      */
     private fun updateAnime() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -355,9 +355,9 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 选择菜单
+     * ⦁ 选择菜单
      *
-     * ● 2023-10-11 23:10:54 周三 下午
+     * ⦁ 2023-10-11 23:10:54 周三 下午
      */
     private fun onSelectMenu(type: Int) {
 
@@ -405,9 +405,9 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 导航至动漫信息页面
+     * ⦁ 导航至动漫信息页面
      *
-     * ● 2023-10-11 23:13:38 周三 下午
+     * ⦁ 2023-10-11 23:13:38 周三 下午
      */
     private fun navigateAnimeInfoPage(pathword: String, name: String) {
 
@@ -427,9 +427,9 @@ class AnimeSearchFragment : BaseMviFragment<AnimeFragmentBinding>() {
     }
 
     /**
-     * ● 检查番剧账户状态
+     * ⦁ 检查番剧账户状态
      *
-     * ● 2023-10-14 23:50:46 周六 下午
+     * ⦁ 2023-10-14 23:50:46 周六 下午
      */
     private fun checkAccountState(): Boolean {
         val tokenEmpty = MangaXAccountConfig.mHotMangaToken.isEmpty()

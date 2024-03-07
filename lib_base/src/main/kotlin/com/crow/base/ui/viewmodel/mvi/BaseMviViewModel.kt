@@ -60,9 +60,9 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
     }
 
     /**
-     * ● 将 Flow<T> 转换成适合于 MVI 架构的结果，并利用 _sharedFlow.emit() 发送结果到 UI。
+     * ⦁ 将 Flow<T> 转换成适合于 MVI 架构的结果，并利用 _sharedFlow.emit() 发送结果到 UI。
      *
-     * ● 2023-08-31 21:41:19 周四 下午
+     * ⦁ 2023-08-31 21:41:19 周四 下午
      */
     fun <T> flowResult(intent: I, flow: Flow<T>, result: BaseMviFlowResult<I, T>) {
         viewModelScope.launch {
@@ -75,9 +75,9 @@ abstract class BaseMviViewModel<I : BaseMviIntent> : ViewModel() {
     }
 
     /**
-     * ● 将 Flow<T> 转换成适合于 MVI 架构的结果，并根据 意图判断是否需要通过 _sharedFlow.emit() 发送结果到 UI 否则 直接获取结果。
+     * ⦁ 将 Flow<T> 转换成适合于 MVI 架构的结果，并根据 意图判断是否需要通过 _sharedFlow.emit() 发送结果到 UI 否则 直接获取结果。
      *
-     * ● 2023-08-31 21:41:13 周四 下午
+     * ⦁ 2023-08-31 21:41:13 周四 下午
      */
     suspend fun <T> flowResult(flow: Flow<T>, intent: I? = null, context: CoroutineContext = Dispatchers.Main,  result: BaseMviFlowResult<I, T>) = suspendCancellableCoroutine { continuation ->
         viewModelScope.launch(context) {

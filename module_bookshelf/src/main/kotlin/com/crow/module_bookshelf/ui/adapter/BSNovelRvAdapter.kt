@@ -18,9 +18,9 @@ class BSNovelRvAdapter(
 ) : PagingDataAdapter<BookshelfNovelResults, BSNovelRvAdapter.BSViewHolder>(DiffCallback()) {
 
     /**
-     * ● DiffCallback
+     * ⦁ DiffCallback
      *
-     * ● 2023-10-22 01:34:54 周日 上午
+     * ⦁ 2023-10-22 01:34:54 周日 上午
      * @author crowforkotlin
      */
     class DiffCallback: DiffUtil.ItemCallback<BookshelfNovelResults>() {
@@ -34,9 +34,9 @@ class BSNovelRvAdapter(
     }
 
     /**
-     * ● Bookshelf Novel ViewHolder
+     * ⦁ Bookshelf Novel ViewHolder
      *
-     * ● 2023-10-22 01:35:08 周日 上午
+     * ⦁ 2023-10-22 01:35:08 周日 上午
      * @author crowforkotlin
      */
     inner class BSViewHolder(binding: BookshelfFragmentRvBinding) : MangaCoilVH<BookshelfFragmentRvBinding>(binding) {
@@ -55,17 +55,17 @@ class BSNovelRvAdapter(
     }
 
     /**
-     * ● onCreateVH
+     * ⦁ onCreateVH
      *
-     * ● 2023-10-22 01:35:24 周日 上午
+     * ⦁ 2023-10-22 01:35:24 周日 上午
      * @author crowforkotlin
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = BSViewHolder(BookshelfFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent,false))
 
     /**
-     * ● onBindVH
+     * ⦁ onBindVH
      *
-     * ● 2023-10-22 01:35:34 周日 上午
+     * ⦁ 2023-10-22 01:35:34 周日 上午
      * @author crowforkotlin
      */
     override fun onBindViewHolder(vh: BSViewHolder, position: Int) { vh.onBind(getItem(position) ?: return) }

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mChineseConvert
+import com.crow.mangax.copymanga.entity.CatlogConfig.mChineseConvert
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_bookshelf.databinding.BookshelfFragmentRvBinding
@@ -23,9 +23,9 @@ class BSComicRvAdapter(
 ) : PagingDataAdapter<BookshelfComicResults, BSComicRvAdapter.BSViewHolder>(DiffCallback()) {
 
     /**
-     * ● DiffCallback
+     * ⦁ DiffCallback
      *
-     * ● 2023-10-22 01:28:53 周日 上午
+     * ⦁ 2023-10-22 01:28:53 周日 上午
      * @author crowforkotlin
      */
     class DiffCallback: DiffUtil.ItemCallback<BookshelfComicResults>() {
@@ -39,9 +39,9 @@ class BSComicRvAdapter(
     }
 
     /**
-     * ● Bookshelf ViewHolder
+     * ⦁ Bookshelf ViewHolder
      *
-     * ● 2023-10-22 01:29:27 周日 上午
+     * ⦁ 2023-10-22 01:29:27 周日 上午
      * @author crowforkotlin
      */
     inner class BSViewHolder(binding: BookshelfFragmentRvBinding) : MangaCoilVH<BookshelfFragmentRvBinding>(binding) {
@@ -65,17 +65,17 @@ class BSComicRvAdapter(
     }
 
     /**
-     * ● onCreateVH
+     * ⦁ onCreateVH
      *
-     * ● 2023-10-22 01:29:37 周日 上午
+     * ⦁ 2023-10-22 01:29:37 周日 上午
      * @author crowforkotlin
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = BSViewHolder(BookshelfFragmentRvBinding.inflate(LayoutInflater.from(parent.context), parent,false))
 
     /**
-     * ● onBindVH
+     * ⦁ onBindVH
      *
-     * ● 2023-10-22 01:29:46 周日 上午
+     * ⦁ 2023-10-22 01:29:46 周日 上午
      * @author crowforkotlin
      */
     override fun onBindViewHolder(vh: BSViewHolder, position: Int) { vh.onBind(getItem(position) ?: return) }

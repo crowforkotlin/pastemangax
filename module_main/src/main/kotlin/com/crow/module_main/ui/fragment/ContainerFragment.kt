@@ -80,22 +80,22 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
     }
 
-    /** ● 碎片容器适配器 */
+    /** ⦁ 碎片容器适配器 */
     private var mContainerAdapter: ContainerAdapter? = null
 
-    /** ● （Activity级别）容器VM */
+    /** ⦁ （Activity级别）容器VM */
     private val mContainerVM by activityViewModel<MainViewModel>()
 
-    /** ● （Activity级别）用户VM */
+    /** ⦁ （Activity级别）用户VM */
     private val mUserVM by activityViewModel<MineViewModel>()
 
-    /** ● 碎片集 */
+    /** ⦁ 碎片集 */
     private val mFragmentList by lazy { mutableListOf<Fragment>(NewHomeFragment(), DiscoverComicFragment(), BookshelfFragment(), AnimeFragment()) }
 
     /**
-     * ● 手势检测
+     * ⦁ 手势检测
      *
-     * ● 2023-09-08 01:04:40 周五 上午
+     * ⦁ 2023-09-08 01:04:40 周五 上午
      */
     private val mGestureDetector by lazy {
         GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
@@ -110,16 +110,16 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     /**
-     * ● Global BaseEvent
+     * ⦁ Global BaseEvent
      *
-     * ● 2023-09-16 18:37:52 周六 下午
+     * ⦁ 2023-09-16 18:37:52 周六 下午
      */
     private val mEvent: BaseEvent by lazy { BaseEvent.getSIngleInstance() }
 
-    /** ● 获取ViewBinding */
+    /** ⦁ 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
-    /** ● 初始化观察者 */
+    /** ⦁ 初始化观察者 */
     override fun initObserver(saveInstanceState: Bundle?) {
 
         // 用户信息 收集
@@ -156,7 +156,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         }
     }
 
-    /** ● 初始化视图 */
+    /** ⦁ 初始化视图 */
     override fun initView(savedInstanceState: Bundle?) {
 
         // 沉浸式 VP BottomNavigation
@@ -177,9 +177,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     /**
-     * ● Lifecycle onStart
+     * ⦁ Lifecycle onStart
      *
-     * ● 2023-12-12 00:47:21 周二 上午
+     * ⦁ 2023-12-12 00:47:21 周二 上午
      * @author crowforkotlin
      */
     override fun onStart() {
@@ -201,9 +201,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     /**
-     * ● Lifecycle OnViewCreated
+     * ⦁ Lifecycle OnViewCreated
      *
-     * ● 2023-09-10 20:01:04 周日 下午
+     * ⦁ 2023-09-10 20:01:04 周日 下午
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -217,9 +217,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     /**
-     * ● Lifecycle onCreate 内存重启逻辑
+     * ⦁ Lifecycle onCreate 内存重启逻辑
      *
-     * ● 2023-07-02 20:22:37 周日 下午
+     * ⦁ 2023-07-02 20:22:37 周日 下午
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -227,16 +227,16 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     /**
-     * ● Lifecycle onDestroyView
+     * ⦁ Lifecycle onDestroyView
      *
-     * ● 2023-07-02 20:22:59 周日 下午
+     * ⦁ 2023-07-02 20:22:59 周日 下午
      */
     override fun onDestroyView() {
         super.onDestroyView()
         mFragmentList.forEach { mEvent.remove(it.hashCode().toString()) }
     }
 
-    /** ● 当视图隐藏状态发生改变 并触发 */
+    /** ⦁ 当视图隐藏状态发生改变 并触发 */
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
@@ -248,7 +248,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         onNotifyPage()
     }
 
-    /** ● 初始化监听器 */
+    /** ⦁ 初始化监听器 */
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
 
@@ -315,9 +315,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     /**
-     * ● 通知页面更新
+     * ⦁ 通知页面更新
      *
-     * ● 2023-06-29 01:28:48 周四 上午
+     * ⦁ 2023-06-29 01:28:48 周四 上午
      */
     private fun onNotifyPage() {
         if (mContainerVM.mIsRestarted) {
@@ -334,7 +334,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
 
-    /** ● 执行选择Fragment */
+    /** ⦁ 执行选择Fragment */
     private fun doSwitchFragment(position: Int) {
         if (mBinding.viewPager.currentItem != position) {
             mBinding.viewPager.currentItem = position
@@ -343,9 +343,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     /**
-     * ● 保存当前页面ID
+     * ⦁ 保存当前页面ID
      *
-     * ● 2023-07-02 20:21:35 周日 下午
+     * ⦁ 2023-07-02 20:21:35 周日 下午
      */
     private fun saveItemPageID(position: Int) {
         if (arguments == null) {
@@ -358,9 +358,9 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     }
 
     /**
-     * ● 检查更新
+     * ⦁ 检查更新
      *
-     * ● 2023-09-16 18:32:59 周六 下午
+     * ⦁ 2023-09-16 18:32:59 周六 下午
      * @param savedInstanceState 检查内存重启状态
      */
     private fun doUpdateChecker(savedInstanceState: Bundle?, appUpdateResp: MainAppUpdateInfoResp) {

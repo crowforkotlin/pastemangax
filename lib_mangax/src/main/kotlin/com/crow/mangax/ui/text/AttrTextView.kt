@@ -48,9 +48,9 @@ import kotlin.properties.Delegates
 * */
 
 /**
- * ● 属性文本组件
+ * ⦁ 属性文本组件
  *
- * ● 2023/10/30 15:53
+ * ⦁ 2023/10/30 15:53
  * @author: crowforkotlin
  * @formatter:on
  */
@@ -59,227 +59,227 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     companion object {
 
         /**
-         * ● 刷新标志位
+         * ⦁ 刷新标志位
          *
-         * ● 2023-12-25 17:32:12 周一 下午
+         * ⦁ 2023-12-25 17:32:12 周一 下午
          * @author crowforkotlin
          */
         private const val FLAG_REFRESH: Byte = 0x01
 
         /**
-         * ● 文本有效行默认为小于3，1奇、2偶 为3则 另外手动处理，直接给文本高度设置0 详情见 drawCenterText 函数
+         * ⦁ 文本有效行默认为小于3，1奇、2偶 为3则 另外手动处理，直接给文本高度设置0 详情见 drawCenterText 函数
          *
-         * ● 2023-12-25 17:29:59 周一 下午
+         * ⦁ 2023-12-25 17:29:59 周一 下午
          * @author crowforkotlin
          */
         private const val TEXT_HEIGHT_VALID_ROW: Int = 3
 
         /**
-         * ● 用于解决文本Y轴的精准度 减少由浮点数带来的微小误差，在像素级视图中 效果十分明显
+         * ⦁ 用于解决文本Y轴的精准度 减少由浮点数带来的微小误差，在像素级视图中 效果十分明显
          *
-         * ● 2023-12-25 17:27:58 周一 下午
+         * ⦁ 2023-12-25 17:27:58 周一 下午
          * @author crowforkotlin
          */
         private const val ROW_DEVIATION: Float = 0.5f
     }
 
     /**
-     * ● ChildView 文本画笔
+     * ⦁ ChildView 文本画笔
      *
-     * ● 2023-11-03 15:27:29 周五 下午
+     * ⦁ 2023-11-03 15:27:29 周五 下午
      * @author crowforkotlin
      */
     lateinit var mTextPaint : TextPaint
 
     /**
-     * ● Async Handler
+     * ⦁ Async Handler
      *
-     * ● 2024-02-20 16:15:35 周二 下午
+     * ⦁ 2024-02-20 16:15:35 周二 下午
      * @author crowforkotlin
      */
     lateinit var mHandler: Handler
 
     /**
-     * ● 高刷延时时间
+     * ⦁ 高刷延时时间
      *
-     * ● 2024-02-01 11:16:58 周四 上午
+     * ⦁ 2024-02-01 11:16:58 周四 上午
      * @author crowforkotlin
      */
     private var mHighBrushDuration = 0L
 
     /**
-     * ● 高刷方向 是否为 Top和Left
+     * ⦁ 高刷方向 是否为 Top和Left
      *
-     * ● 2024-02-01 11:14:08 周四 上午
+     * ⦁ 2024-02-01 11:14:08 周四 上午
      * @author crowforkotlin
      */
     private var mHighBrushTopOrLeft = false
 
     /**
-     * ● 高刷PX像素个数
+     * ⦁ 高刷PX像素个数
      *
-     * ● 2024-02-01 11:14:36 周四 上午
+     * ⦁ 2024-02-01 11:14:36 周四 上午
      * @author crowforkotlin
      */
     private var mHighBrushPixelCount = 0
 
     /**
-     * ● 高刷新绘制任务
+     * ⦁ 高刷新绘制任务
      *
-     * ● 2024-01-30 15:40:31 周二 下午
+     * ⦁ 2024-01-30 15:40:31 周二 下午
      * @author crowforkotlin
      */
     private var mHighBrushJobRunning: Boolean= false
 
     /**
-     * ● 文本X坐标
+     * ⦁ 文本X坐标
      *
-     * ● 2023-10-31 14:08:08 周二 下午
+     * ⦁ 2023-10-31 14:08:08 周二 下午
      * @author crowforkotlin
      */
     private var mTextX : Float = 0f
 
     /**
-     * ● XY轴量值
+     * ⦁ XY轴量值
      *
-     * ● 2024-01-29 17:03:09 周一 下午
+     * ⦁ 2024-01-29 17:03:09 周一 下午
      * @author crowforkotlin
      */
     private var mTextAxisValue: Float = 0f
 
     /**
-     * ● 文本Y坐标
+     * ⦁ 文本Y坐标
      *
-     * ● 2023-10-31 16:18:51 周二 下午
+     * ⦁ 2023-10-31 16:18:51 周二 下午
      * @author crowforkotlin
      */
     private var mTextY : Float = 0f
 
     /**
-     * ● Path -- 用于绘制动画
+     * ⦁ Path -- 用于绘制动画
      *
-     * ● 2023-12-21 19:15:44 周四 下午
+     * ⦁ 2023-12-21 19:15:44 周四 下午
      * @author crowforkotlin
      */
     var mPath = Path()
 
     /**
-     * ● 文本列表 -- 存储屏幕上可显示的字符串集合 实现原理是 动态计算字符串宽度和 视图View做判断
+     * ⦁ 文本列表 -- 存储屏幕上可显示的字符串集合 实现原理是 动态计算字符串宽度和 视图View做判断
      * First : 文本，Second：测量宽度
      *
-     * ● 2023-10-31 14:04:26 周二 下午
+     * ⦁ 2023-10-31 14:04:26 周二 下午
      * @author crowforkotlin
      */
     var mList : MutableList<Pair<String, Float>> = mutableListOf()
 
     /**
-     * ● 文本行数
+     * ⦁ 文本行数
      *
-     * ● 2024-02-21 10:18:15 周三 上午
+     * ⦁ 2024-02-21 10:18:15 周三 上午
      * @author crowforkotlin
      */
     var mTextLines: Int = 1
 
     /**
-     * ● 文本列表位置 -- 设置后会触发重新绘制
+     * ⦁ 文本列表位置 -- 设置后会触发重新绘制
      *
-     * ● 2023-10-31 14:06:16 周二 下午
+     * ⦁ 2023-10-31 14:06:16 周二 下午
      * @author crowforkotlin
      */
     var mListPosition : Int by Delegates.observable(0) { _, oldPosition, newPosition -> onVariableChanged(FLAG_REFRESH, oldPosition, newPosition, skipSameCheck = true) }
 
     /**
-     * ● 视图对齐方式 -- 上中下
+     * ⦁ 视图对齐方式 -- 上中下
      *
-     * ● 2023-10-31 15:24:43 周二 下午
+     * ⦁ 2023-10-31 15:24:43 周二 下午
      * @author crowforkotlin
      */
     var mGravity: Byte by Delegates.observable(GRAVITY_TOP_START) { _, oldSize, newSize -> onVariableChanged(FLAG_REFRESH, oldSize, newSize) }
 
     /**
-     * ● 是否开启换行
+     * ⦁ 是否开启换行
      *
-     * ● 2023-10-31 17:31:20 周二 下午
+     * ⦁ 2023-10-31 17:31:20 周二 下午
      * @author crowforkotlin
      */
     var mMultiLineEnable: Boolean by Delegates.observable(false) { _, oldValue, newValue -> onVariableChanged(FLAG_REFRESH, oldValue, newValue) }
 
     /**
-     * ● 动画时间比率
+     * ⦁ 动画时间比率
      *
-     * ● 2023-12-19 17:43:26 周二 下午
+     * ⦁ 2023-12-19 17:43:26 周二 下午
      * @author crowforkotlin
      */
     var mAnimationTimeFraction = 0f
 
     /**
-     * ● 动画启动时间
+     * ⦁ 动画启动时间
      *
-     * ● 2023-12-19 17:36:37 周二 下午
+     * ⦁ 2023-12-19 17:36:37 周二 下午
      * @author crowforkotlin
      */
     var mAnimationStartTime = 0L
 
     /**
-     * ● 当前视图是否是显示在最前面的？
+     * ⦁ 当前视图是否是显示在最前面的？
      *
-     * ● 2023-12-19 19:00:24 周二 下午
+     * ⦁ 2023-12-19 19:00:24 周二 下午
      * @author crowforkotlin
      */
     var mIsCurrentView: Boolean = false
 
     /**
-     * ● 高刷动画执行成功监听器
+     * ⦁ 高刷动画执行成功监听器
      *
-     * ● 2024-02-18 14:57:38 周日 下午
+     * ⦁ 2024-02-18 14:57:38 周日 下午
      * @author crowforkotlin
      */
     var mHighBrushSuccessListener: Runnable? = null
 
     /**
-     * ● 动画模式
+     * ⦁ 动画模式
      *
-     * ● 2023-12-19 18:57:03 周二 下午
+     * ⦁ 2023-12-19 18:57:03 周二 下午
      * @author crowforkotlin
      */
     override var mTextAnimationMode: Short = 0
 
     /**
-     * ● 动画X方向
+     * ⦁ 动画X方向
      *
-     * ● 2023-11-02 14:53:24 周四 下午
+     * ⦁ 2023-11-02 14:53:24 周四 下午
      * @author crowforkotlin
      */
     override var mTextAnimationLeftEnable: Boolean = false
 
     /**
-     * ● 动画Y方向
+     * ⦁ 动画Y方向
      *
-     * ● 2023-11-02 14:53:45 周四 下午
+     * ⦁ 2023-11-02 14:53:45 周四 下午
      * @author crowforkotlin
      */
     override var mTextAnimationTopEnable: Boolean = false
 
     /**
-     * ● 文本的行间距
+     * ⦁ 文本的行间距
      *
-     * ● 2023-12-25 15:17:16 周一 下午
+     * ⦁ 2023-12-25 15:17:16 周一 下午
      * @author crowforkotlin
      */
     override var mTextRowMargin: Float = 0f
 
     /**
-     * ● 当前尺寸大小策略 默认PX
+     * ⦁ 当前尺寸大小策略 默认PX
      *
-     * ● 2023-12-26 11:37:20 周二 上午
+     * ⦁ 2023-12-26 11:37:20 周二 上午
      * @author crowforkotlin
      */
     override var mTextSizeUnitStrategy: Short = STRATEGY_DIMENSION_PX_OR_DEFAULT
 
     /**
-     * ● 绘制文本
+     * ⦁ 绘制文本
      *
-     * ● 2023-10-31 13:33:44 周二 下午
+     * ⦁ 2023-10-31 13:33:44 周二 下午
      * @author crowforkotlin
      */
     override fun onDraw(canvas: Canvas) {
@@ -363,9 +363,9 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 布局高刷Y轴位置
+     * ⦁ 布局高刷Y轴位置
      *
-     * ● 2024-02-01 11:15:21 周四 上午
+     * ⦁ 2024-02-01 11:15:21 周四 上午
      * @author crowforkotlin
      */
     private fun tryLayoutHighBrushY(textAxisValue: Float, originY: Float) : Float {
@@ -380,9 +380,9 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 布局高刷X轴位置
+     * ⦁ 布局高刷X轴位置
      *
-     * ● 2024-02-01 11:15:40 周四 上午
+     * ⦁ 2024-02-01 11:15:40 周四 上午
      * @author crowforkotlin
      */
     private fun tryLayoutHighBrushX(textAxisValue: Float, originX: Float)  {
@@ -398,9 +398,9 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 绘制Canvas动画
+     * ⦁ 绘制Canvas动画
      *
-     * ● 2023-12-22 15:21:59 周五 下午
+     * ⦁ 2023-12-22 15:21:59 周五 下午
      * @author crowforkotlin
      */
     private fun drawAnimation(canvas: Canvas) : Boolean{
@@ -501,9 +501,9 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 高刷动画 挂起任务
+     * ⦁ 高刷动画 挂起任务
      *
-     * ● 2024-02-01 11:17:55 周四 上午
+     * ⦁ 2024-02-01 11:17:55 周四 上午
      * @author crowforkotlin
      */
     private fun launchHighBrushSuspendAnimation(count: Int, isTopOrLeft: Boolean, duration: Long) {
@@ -514,9 +514,9 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 更新高刷动画
+     * ⦁ 更新高刷动画
      *
-     * ● 2024-02-01 14:15:20 周四 下午
+     * ⦁ 2024-02-01 14:15:20 周四 下午
      * @author crowforkotlin
      */
     private fun invalidateHighBrushAnimation(duration: Long) {
@@ -568,9 +568,9 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 绘制顶部文本
+     * ⦁ 绘制顶部文本
      *
-     * ● 2023-11-04 17:53:43 周六 下午
+     * ⦁ 2023-11-04 17:53:43 周六 下午
      * @author crowforkotlin
      */
     private inline fun drawTopText(canvas: Canvas, text: Pair<String, Float>, textListSize: Int, onInitializaTextY: (Float) -> Float, onInitializaTextX: (Float) -> Unit) {
@@ -602,9 +602,9 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 绘制中心文本
+     * ⦁ 绘制中心文本
      *
-     * ● 2023-11-04 17:54:09 周六 下午
+     * ⦁ 2023-11-04 17:54:09 周六 下午
      * @author crowforkotlin
      */
     private inline fun drawCenterText(canvas: Canvas, text: Pair<String, Float>, textListSize: Int, onInitializaTextY: (Float) -> Float, onInitializaTextX: (Float) -> Unit) {
@@ -645,9 +645,9 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 绘制底部文本
+     * ⦁ 绘制底部文本
      *
-     * ● 2023-11-04 17:54:00 周六 下午
+     * ⦁ 2023-11-04 17:54:00 周六 下午
      * @author crowforkotlin
      */
     private inline fun drawBottomText(canvas: Canvas, text: Pair<String, Float>, textListSize: Int, onInitializaTextY: (Float) -> Float, onInitializaTextX: (Float) -> Unit) {
@@ -680,9 +680,9 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● Debug Logic Function
+     * ⦁ Debug Logic Function
      *
-     * ● 2023-11-07 18:44:26 周二 下午
+     * ⦁ 2023-11-07 18:44:26 周二 下午
      * @author crowforkotlin
      */
     private fun drawDebugTextLine(canvas: Canvas) {
@@ -713,9 +713,9 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 计算 baseline 的相对文字中心的偏移量
+     * ⦁ 计算 baseline 的相对文字中心的偏移量
      *
-     * ● 2023-10-31 13:34:50 周二 下午
+     * ⦁ 2023-10-31 13:34:50 周二 下午
      * @author crowforkotlin
      */
     private fun calculateBaselineOffsetY(fontMetrics: FontMetrics): Float {
@@ -723,9 +723,9 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 值发生变化 执行对于的Logic
+     * ⦁ 值发生变化 执行对于的Logic
      *
-     * ● 2023-10-31 14:14:18 周二 下午
+     * ⦁ 2023-10-31 14:14:18 周二 下午
      * @author crowforkotlin
      */
     private fun<T : Any> onVariableChanged(flag: Byte, oldValue: T?, newValue: T?, skipSameCheck: Boolean = false) {
@@ -738,17 +738,17 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 根据FLAG绘制视图
+     * ⦁ 根据FLAG绘制视图
      *
-     * ● 2023-12-22 19:05:36 周五 下午
+     * ⦁ 2023-12-22 19:05:36 周五 下午
      * @author crowforkotlin
      */
     private inline fun drawView(onCurrent: () -> Unit, onNext: () -> Unit) { if (mIsCurrentView) onCurrent() else onNext() }
 
     /**
-     * ● 绘制文本
+     * ⦁ 绘制文本
      *
-     * ● 2023-12-22 19:05:29 周五 下午
+     * ⦁ 2023-12-22 19:05:29 周五 下午
      * @author crowforkotlin
      */
     private fun Canvas.drawText(text: String) {
@@ -764,9 +764,9 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
     }
 
     /**
-     * ● 启动高刷绘制动画
+     * ⦁ 启动高刷绘制动画
      *
-     * ● 2024-01-30 15:41:27 周二 下午
+     * ⦁ 2024-01-30 15:41:27 周二 下午
      * @author crowforkotlin
      */
     internal fun launchHighBrushDrawAnimation(isX: Boolean, duration: Long = IAttrText.DRAW_VIEW_MIN_DURATION) {

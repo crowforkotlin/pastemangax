@@ -27,9 +27,9 @@ abstract class BaseViewStub<VB : ViewBinding>(
 ) : LifecycleEventObserver {
 
     /**
-     * ● 错误视图
+     * ⦁ 错误视图
      *
-     * ● 2023-10-29 20:59:42 周日 下午
+     * ⦁ 2023-10-29 20:59:42 周日 下午
      * @author crowforkotlin
      */
     var mView: View? = null
@@ -37,9 +37,9 @@ abstract class BaseViewStub<VB : ViewBinding>(
     var mVsBinding: VB? = null
 
     /**
-     * ● 为当前Lifecycle 添加观察此对象
+     * ⦁ 为当前Lifecycle 添加观察此对象
      *
-     * ● 2023-10-29 21:17:33 周日 下午
+     * ⦁ 2023-10-29 21:17:33 周日 下午
      * @author crowforkotlin
      */
     init {
@@ -49,9 +49,9 @@ abstract class BaseViewStub<VB : ViewBinding>(
     abstract fun bindViewBinding(view: View): VB
 
     /**
-     * ● 当声明周期处于销毁状态时移除ErrorView 防止内存泄漏
+     * ⦁ 当声明周期处于销毁状态时移除ErrorView 防止内存泄漏
      *
-     * ● 2023-10-29 21:16:55 周日 下午
+     * ⦁ 2023-10-29 21:16:55 周日 下午
      * @author crowforkotlin
      */
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -67,9 +67,9 @@ abstract class BaseViewStub<VB : ViewBinding>(
     }
 
     /**
-     * ● 加载错误视图
+     * ⦁ 加载错误视图
      *
-     * ● 2023-10-29 21:07:58 周日 下午
+     * ⦁ 2023-10-29 21:07:58 周日 下午
      * @author crowforkotlin
      */
     fun loadLayout(visible: Boolean, animation: Boolean = false) {
@@ -121,17 +121,17 @@ abstract class BaseViewStub<VB : ViewBinding>(
     }
 
     /**
-     * ● ErrorView 和 ViewStub 是否可见
+     * ⦁ ErrorView 和 ViewStub 是否可见
      *
-     * ● 2023-10-29 21:16:42 周日 下午
+     * ⦁ 2023-10-29 21:16:42 周日 下午
      * @author crowforkotlin
      */
     fun isVisible() = mView?.isVisible == true || mViewStub.isVisible
 
     /**
-     * ● ErrorView 和 ViewStub 是否消失
+     * ⦁ ErrorView 和 ViewStub 是否消失
      *
-     * ● 2023-10-29 21:29:27 周日 下午
+     * ⦁ 2023-10-29 21:29:27 周日 下午
      * @author crowforkotlin
      */
     fun isGone() = mView?.isGone == true || mViewStub.isGone

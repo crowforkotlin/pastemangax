@@ -11,7 +11,7 @@ import androidx.viewbinding.ViewBinding
 import com.crow.mangax.R.id.app_main_fcv
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.MangaXAccountConfig
-import com.crow.mangax.copymanga.entity.AppConfig.Companion.mDarkMode
+import com.crow.mangax.copymanga.entity.CatlogConfig.mDarkMode
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.animateFadeOut
@@ -29,15 +29,15 @@ import org.koin.core.qualifier.named
 
 class MainActivity : BaseMviActivity<ViewBinding>()  {
 
-    /** ● 容器VM */
+    /** ⦁ 容器VM */
     private val mContainerVM by viewModel<MainViewModel>()
 
     private var mInit = false
 
-    /** ● 获取ViewBinding */
+    /** ⦁ 获取ViewBinding */
     override fun getViewBinding() = ViewBinding { FragmentContainerView(this).also { view -> view.id = app_main_fcv } }
 
-    /** ● Lifecycle onCreate */
+    /** ⦁ Lifecycle onCreate */
     override fun onCreate(savedInstanceState: Bundle?) {
 
         // 启动动画
@@ -54,7 +54,7 @@ class MainActivity : BaseMviActivity<ViewBinding>()  {
         super.onCreate(savedInstanceState)
     }
 
-    /** ● 初始化视图 */
+    /** ⦁ 初始化视图 */
     @SuppressLint("SourceLockedOrientationActivity")
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -76,7 +76,7 @@ class MainActivity : BaseMviActivity<ViewBinding>()  {
         }
     }
 
-    /** ● 初始化观察者 */
+    /** ⦁ 初始化观察者 */
     override fun initObserver(savedInstanceState: Bundle?) {
 
         mContainerVM.mAppConfig.onCollect(this) { appConfig ->

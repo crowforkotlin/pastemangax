@@ -2,7 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.fragment.comic.ComicBottomSheetFragment">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:id="@+id/bottom_drag"
@@ -63,12 +64,10 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_page"
-                    android:enabled="false"
-                    android:clickable="false"
-                    app:backgroundTint="#80A5A6AA"
                     style="@style/Book_CopyMangaX_ToggleButton_Vertical"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:visibility="gone"
                     android:layout_weight="1"
                     android:lines="2"
                     android:text="@string/book_comic_page"

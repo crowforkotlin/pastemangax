@@ -68,9 +68,10 @@ class WebtoonRecyclerView @JvmOverloads constructor(
     override fun onScrolled(dx: Int, dy: Int) {
         super.onScrolled(dx, dy)
         val layoutManager = layoutManager
-        lastVisibleItemPosition =
-            (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-        firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+        if (layoutManager is LinearLayoutManager) {
+            lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+            firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+        }
     }
 
     override fun onScrollStateChanged(state: Int) {

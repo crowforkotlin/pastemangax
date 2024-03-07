@@ -25,9 +25,9 @@ class ChapterLoader {
     private val mPolicy = ChapterLoaderPolicy.DISK
 
     /**
-     * ● 漫画内容
+     * ⦁ 漫画内容
      *
-     * ● 2023-06-28 22:08:26 周三 下午
+     * ⦁ 2023-06-28 22:08:26 周三 下午
      */
     var mComicList: List<Content>? = null
         private set
