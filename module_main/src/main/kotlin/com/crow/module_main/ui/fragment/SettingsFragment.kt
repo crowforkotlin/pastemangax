@@ -14,6 +14,7 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.forEach
+import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
 import com.crow.base.tools.extensions.SpNameSpace
@@ -164,7 +165,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                     binding.resolution1500.id -> MangaXAccountConfig.mResolution = 1500
                 }
                 mVM.saveAppConfig(appConfig.copy(mResolution = MangaXAccountConfig.mResolution))
-                mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
+                mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME_300)
             }
         }
     }
@@ -220,7 +221,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                         siteRadioTwo.id -> BaseStrings.URL.setCopyMangaUrl(BaseStrings.URL.CopyManga_TLD_SITE)
                     }
                     mVM.saveAppConfig(appConfig.copy(mCopyMangaSite = BaseStrings.URL.COPYMANGA))
-                    mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
+                    mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_300)
                 }
             }
         }
@@ -283,7 +284,7 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
             mVM.saveAppConfig(appConfig)
 
             // 延时关闭Dialog 让RadioButton选中后的过渡效果执行完毕
-            mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
+            mHandler.postDelayed({ alertDialog.dismiss() },BaseEvent.BASE_FLAG_TIME_300)
         }
 
         binding.proxyInputEdit.addTextChangedListener(object : TextWatcher {
@@ -305,8 +306,8 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                 when {
                     text.isNullOrEmpty() -> { toast(getString(R.string.main_api_input_tips)) }
                     (text?.length ?: 0) < 20 -> { toast(getString(R.string.main_api_length_tips)) }
-                    else -> { mApiProxyEnable = true }
                 }
+                mApiProxyEnable = true
                 mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_API_PROXY, true)
                 return@setOnCheckedChangeListener
             }
@@ -434,16 +435,20 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                                                 mSiteDialogBinding!!.siteRadioGroup.forEach { childView -> if (buttonView.id != (childView as MaterialRadioButton).id) childView.isChecked = false }
                                                 BaseStrings.URL.COPYMANGA = buttonView.tag.toString()
                                                 mVM.saveAppConfig()
-                                                mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_500)
+                                                mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_300)
                                             }
                                         }
                                     })
                                 }
 
                                 // 加载动画淡出 动态站点Title、RadioGroup 淡入
-                                mSiteDialogBinding?.siteLoading?.animateFadeOutGone()
-                                mSiteDialogBinding?.siteTitle?.animateFadeIn()
-                                mSiteDialogBinding?.siteRadioGroup?.animateFadeIn()
+                                mSiteDialogBinding?.let {
+                                    it.siteLoading.animateFadeOut()?.withEndAction {
+                                        it.siteLoading.isGone = true
+                                        it.siteTitle.animateFadeIn()
+                                        it.siteRadioGroup.animateFadeIn()
+                                    }
+                                }
                             }
                         }
                 }

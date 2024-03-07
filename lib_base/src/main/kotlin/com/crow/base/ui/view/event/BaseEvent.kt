@@ -23,12 +23,12 @@ open class BaseEvent private constructor(val mFlagTime: Long) {
 
     companion object {
 
-        const val BASE_FLAG_TIME_500 = 500L
+        const val BASE_FLAG_TIME_300 = 300L
         const val BASE_FLAG_TIME_1000 = 1000L
 
         private var mBaseEvent: BaseEvent? = null
 
-        fun newInstance(initFlagTime: Long = BASE_FLAG_TIME_500): BaseEvent {
+        fun newInstance(initFlagTime: Long = BASE_FLAG_TIME_300): BaseEvent {
             return BaseEvent(initFlagTime)
         }
 
@@ -36,7 +36,7 @@ open class BaseEvent private constructor(val mFlagTime: Long) {
             if (mBaseEvent == null) {
                 synchronized(this) {
                     if (mBaseEvent == null) {
-                        mBaseEvent = BaseEvent(BASE_FLAG_TIME_500)
+                        mBaseEvent = BaseEvent(BASE_FLAG_TIME_300)
                     }
                 }
             }

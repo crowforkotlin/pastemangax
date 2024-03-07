@@ -135,7 +135,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true"
-        app:indicatorSize="@dimen/base_dp36"
+        app:indicatorSize="@dimen/base_dp28"
         app:layout_constraintBottom_toBottomOf="@+id/site_reload"
         app:layout_constraintEnd_toEndOf="@+id/site_reload"
         app:layout_constraintStart_toStartOf="@+id/site_reload"
