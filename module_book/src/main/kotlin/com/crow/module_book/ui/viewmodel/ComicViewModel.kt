@@ -32,6 +32,7 @@ import com.crow.module_book.model.resp.comic_page.Content
 import com.crow.module_book.model.source.ComicCommentDataSource
 import com.crow.module_book.network.BookRepository
 import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
+import com.crow.module_book.ui.viewmodel.comic.ComicChapterLoader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -44,7 +45,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Date
 import kotlin.coroutines.resume
-import kotlin.math.max
 import com.crow.base.R as baseR
 
 /*************************
@@ -64,6 +64,8 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         const val CHAPTER_LOADED_THRESHOLD = 100
         const val CHAPTER_PRELOADED_INDEX = 3
     }
+
+    private val mChapterLoader = ComicChapterLoader()
 
     /**
      * ⦁ 漫画信息
@@ -120,7 +122,9 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      * @author crowforkotlin
      */
     private val _mPageContentMapper: HashMap<Int, ReaderContent> = hashMapOf()
-    val mPageContentMapper: Map<Int, ReaderContent> get() = _mPageContentMapper
+//    val mPageContentMapper: Map<Int, ReaderContent> get() = _mPageContentMapper
+
+    val mPageContentMapper: Map<Int, ReaderContent> get() = mChapterLoader._mChapterPageMapper
 
     /**
      * ⦁ 页面大小列表
@@ -212,7 +216,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
                             intent.copy(comicpage = null)
                         } else {
                             intent.copy(comicpage = (toTypeEntity<ComicPageResp>(value.mResults) ?: error(app.getString(baseR.string.base_unknow_error))).apply {
-                                val loadingPages = getLoadingPages()
+                                /*val loadingPages = getLoadingPages()
                                 val reader = ReaderContent(
                                     mComicName = mComic.mName,
                                     mComicUuid = mComic.mPathWord,
@@ -227,13 +231,17 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
                                         mPrevUUID = mChapter.mPrev,
                                         mNextUUID = mChapter.mNext
                                     )
-                                )
-                                _mPageContentMapper[mIncrementPageID] = reader
-                                mIncrementPageID ++
-                                _mContent.value = reader.copy(mPages = loadingPages.first)
-                                if (intent.isReloadEnable || _mPages.value == null) {
-                                    _mPages.value = mChapter
-                                }
+                                )*/
+                                val readerContent = mChapterLoader.obtainReaderContent(isNext, this)
+                                _mPages.value = mChapter
+//                                if (intent.isReloadEnable || _mPages.value == null) { }
+                                return@apply
+//                                _mPageContentMapper[mIncrementPageID] = reader
+//                                mIncrementPageID ++
+//                                _mContent.value = reader.copy(mPages = loadingPages.first)
+//                                if (intent.isReloadEnable || _mPages.value == null) {
+//                                    _mPages.value = mChapter
+//                                }
                             })
                         }
                     }
@@ -470,7 +478,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     fun processErrorRequestPage(isNext: Boolean?) {
-        val content = mContent.value
+        /*val content = mContent.value
         val pages = content.mPages.toMutableList()
         if (pages.isEmpty()) return
         if (isNext == true) {
@@ -487,7 +495,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
                 pages.add(0, first.copy(mMessage = null, mLoadNext = false, mStateComplete = !first.mStateComplete))
                 _mContent.value = content.copy(mPages = pages)
             }
-        }
+        }*/
     }
 
     fun initComicReader(complete: (MineReaderComicEntity) -> Unit) {
@@ -542,7 +550,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
 
     fun getPos() = mReaderComic?.mChapterPosition ?: 0
     fun getPosByChapterId(): Int {
-        val reader = mReaderComic ?: return 0
+        /*val reader = mReaderComic ?: return 0
         val pages = mPageContentMapper[reader.mChapterId]?.mPages
         val first = pages?.first()
         var pos =  _mContent.value.mPages.indexOf(pages?.get(max(0, reader.mChapterPosition)))
@@ -550,8 +558,8 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
             if (first.mMessage == app.getString(com.crow.base.R.string.base_loading)) {
                 pos ++
             }
-        }
-        return pos
+        }*/
+        return 0
     }
     fun getPosOffset() = mReaderComic?.mChapterPositionOffset ?: 0
 
@@ -590,7 +598,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     fun updateOriginChapterPage(chapterPageID: Int) {
-        val pages = (_mPages.value ?: return)
+/*        val pages = (_mPages.value ?: return)
         val pageContentMapper = _mPageContentMapper[chapterPageID] ?: return
         var index = 0
         val list = pageContentMapper.mPages.toMutableList()
@@ -599,6 +607,6 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         index = list.size - 2
         if (list[index] is ReaderLoading) { list.removeAt(index) } else { index ++ }
         if (list[index] is ReaderLoading) { list.removeLast() }
-        _mPages.value = pages.copy(mContents = list as MutableList<Content>)
+        _mPages.value = pages.copy(mContents = list as MutableList<Content>)*/
     }
 }

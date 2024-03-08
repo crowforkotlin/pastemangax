@@ -1,5 +1,7 @@
 package com.crow.module_book.model.entity.comic.reader
 
+import com.crow.module_book.model.resp.comic_page.Content
+
 
 /**
  * Reader content
@@ -15,6 +17,6 @@ data class ReaderContent(
     val mComicName: String,
     val mComicUuid: String,
     val mComicPathword: String,
-    val mPages: List<Any>,
+    val mPages: List<Content>,
     val mChapterInfo: ReaderInfo?
 )

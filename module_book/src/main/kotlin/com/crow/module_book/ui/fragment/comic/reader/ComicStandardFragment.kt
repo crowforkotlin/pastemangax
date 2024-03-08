@@ -24,13 +24,13 @@ import com.crow.module_book.model.entity.comic.reader.ReaderEvent
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderUiState
 import com.crow.module_book.model.intent.BookIntent
-import com.crow.module_book.model.resp.comic_page.Chapter
 import com.crow.module_book.model.resp.comic_page.Content
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicStandardRvAdapter
 import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.fragment.comic.BaseComicFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
+import com.crow.module_book.ui.viewmodel.comic.StandardLoader
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import com.crow.base.R as baseR
 import com.crow.mangax.R as mangaR
@@ -76,7 +76,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
                 else -> null
             }
             if (reader.mUuid == null || message != null) { return@ComicStandardRvAdapter toast(message ?: getString(mangaR.string.mangax_error, "uuid is null !")) }
-            mVM.input(BookIntent.GetComicPage(mVM.mPathword, reader.mUuid, isReloadEnable = true))
+            mVM.input(BookIntent.GetComicPage(mVM.mPathword, reader.mUuid, isNext = reader.mIsNext, isReloadEnable = true))
         }
         super.onViewCreated(view, savedInstanceState)
     }
@@ -233,7 +233,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
 
         mVM.mPages.onCollect(this) { pages ->
             pages?.let {
-                mAdapter?.submitList(processedReaderPages(it))
+                mAdapter?.submitList(StandardLoader.obtaintStandrdPages(mContext, pages))
             }
         }
     }
@@ -243,27 +243,6 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
         mAdapter = null
     }
 
-    private fun processedReaderPages(chapter: Chapter): MutableList<Any> {
-        val pages: MutableList<Any> = chapter.mContents.toMutableList()
-        val prevUUID = chapter.mPrev
-        val nextUUID = chapter.mNext
-        val prevInfo = if (prevUUID == null) getString(R.string.book_no_prev) else getString(R.string.book_prev)
-        val nextInfo = if (nextUUID == null) getString(R.string.book_no_next) else getString(R.string.book_next)
-        val chapterID = (pages.first() as Content).mChapterID
-        pages.add(0, ReaderPrevNextInfo(
-            mChapterID = chapterID,
-            mUuid = prevUUID,
-            mInfo = prevInfo,
-            mIsNext = false
-        ))
-        pages.add(ReaderPrevNextInfo(
-            mChapterID = chapterID,
-            mUuid = nextUUID,
-            mInfo = nextInfo,
-            mIsNext = true
-        ))
-        return pages
-    }
 
     private fun onErrorComicPage() {
         toast(getString(baseR.string.base_loading_error))

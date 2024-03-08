@@ -113,29 +113,6 @@ class ComicPageFragment1123123 : BaseMviFragment<BookFragmentComicBinding>() {
     }
 
 
-    private fun processedReaderPages(reader: ReaderContent): MutableList<Any> {
-        if (reader.mChapterInfo == null) return mutableListOf()
-        val prevUuid = reader.mChapterInfo.mPrevUUID
-        val nextUuid = reader.mChapterInfo.mNextUUID
-        val prevInfo = if (prevUuid == null) getString(R.string.book_no_prev) else getString(R.string.book_prev)
-        val nextInfo = if (nextUuid == null) getString(R.string.book_no_next) else getString(R.string.book_next)
-        val pages = reader.mPages.toMutableList()
-        val chapterID = (pages.first() as Content).mChapterID
-        pages.add(0, ReaderPrevNextInfo(
-            mChapterID = chapterID,
-            mUuid = prevUuid,
-            mInfo = prevInfo,
-            mIsNext = false
-        ))
-        pages.add(ReaderPrevNextInfo(
-            mChapterID = chapterID,
-            mUuid = nextUuid,
-            mInfo = nextInfo,
-            mIsNext = true
-        ))
-        return pages
-    }
-
     private fun onErrorComicPage() {
         toast(getString(baseR.string.base_loading_error))
         BaseEvent.getSIngleInstance().setBoolean(InfoFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
