@@ -49,7 +49,6 @@ class ComicStandardRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Rec
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
             return oldItem == newItem
         }
-
         override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
             return true
         }

@@ -31,7 +31,6 @@
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loading"
-        app:trackThickness="@dimen/base_dp3"
         style="@style/Widget.Material3.CircularProgressIndicator.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,6 +38,7 @@
         android:indeterminate="true"
         android:visibility="gone"
         app:indicatorColor="@color/base_white"
+        app:trackThickness="@dimen/base_dp3"
         app:indicatorSize="@dimen/base_dp36"
         app:trackCornerRadius="@dimen/base_dp99"
         tools:visibility="visible" />

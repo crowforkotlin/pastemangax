@@ -43,14 +43,12 @@ import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.immersionFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
 import com.crow.base.tools.extensions.isAllWhiteSpace
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.tools.extensions.updatePadding
-import com.crow.base.ui.activity.BaseMviActivity
 import com.crow.base.ui.view.BaseErrorViewStub
 import com.crow.base.ui.view.baseErrorViewStub
 import com.crow.base.ui.viewmodel.doOnError
@@ -65,7 +63,6 @@ import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.copymanga.tryConvert
 import com.crow.module_book.R
 import com.crow.mangax.R as mangaR
-import com.crow.module_book.databinding.BookActivityComicBinding
 import com.crow.module_book.model.entity.comic.ComicActivityInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderEvent
 import com.crow.module_book.model.intent.BookIntent
@@ -296,16 +293,13 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                             else -> { ComicCategories.Type.STANDARD }
                         }
                         if (comicType == ComicCategories.Type.STANDARD) {
-                            val isSame = mVM.mReaderSetting?.mReadMode == comicType
                             mVM.updateReaderMode(comicType)
                             mComicCategory.apply(comicType)
-
-                            setChapterResult(                            mVM.mReaderComic!!.mChapterPosition,                             mVM.mReaderComic!!.mChapterPositionOffset)
+                            setChapterResult(mVM.getChapterPagePos(), mVM.getPosOffset())
                         } else {
                             mVM.updateReaderMode(comicType)
                             mComicCategory.apply(comicType)
-                            setChapterResult(                            mVM.mReaderComic!!.mChapterPosition,                             mVM.mReaderComic!!.mChapterPositionOffset)
-
+                            setChapterResult(mVM.getStriptChapterPagePosById(), mVM.getPosOffset())
                         }
                     }
                 }
@@ -382,14 +376,14 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
             }
             mVM.initComicReader {
                 mVM.mReaderComic?.let { comic ->
-                    setChapterResult(comic.mChapterPosition, comic.mChapterPositionOffset)
+                    setChapterResult(comic.mChapterPagePosition, comic.mChapterPagePositionOffset)
                 }
             }
         } else {
             mVM.initComicReader {
                 if (mVM.mScrollPos == 0) {
                     mVM.mReaderComic?.let {
-                        setChapterResult(it.mChapterPosition, it.mChapterPositionOffset)
+                        setChapterResult(it.mChapterPagePosition, it.mChapterPagePositionOffset)
                     }
                 } else {
                     setChapterResult(mVM.mScrollPos, mVM.mScrollPosOffset)

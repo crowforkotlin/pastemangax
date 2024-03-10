@@ -53,4 +53,22 @@ object StriptLoader {
         }
         return pages
     }
+
+    fun obtainErrorPages(pages: MutableList<Any>, isNext: Boolean?): MutableList<Any>? {
+        if (pages.isEmpty()) return null
+        if (isNext == true) {
+            val last = pages.last()
+            if (last is ReaderLoading) {
+                pages.removeLast()
+                pages.add(last.copy(mMessage = null, mLoadNext = true, mStateComplete = !last.mStateComplete))
+            }
+        } else {
+            val first = pages.first()
+            if (first is ReaderLoading) {
+                pages.removeFirst()
+                pages.add(0, first.copy(mMessage = null, mLoadNext = false, mStateComplete = !first.mStateComplete))
+            }
+        }
+        return pages
+    }
 }

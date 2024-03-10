@@ -44,17 +44,11 @@ class ComicStriptRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit)
     private val mDiffCallback: DiffUtil.ItemCallback<Any> = object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
             return if (oldItem is ReaderLoading && newItem is ReaderLoading) {
-                if (newItem.mMessage == null && oldItem.mMessage == null) {
-                    oldItem.mStateComplete == newItem.mStateComplete
-                } else {
-                   oldItem.mMessage == newItem.mMessage
-                   false
-                }
+               false
             } else if(oldItem is Content && newItem is Content) {
                 oldItem.mImageUrl == newItem.mImageUrl
             } else false
         }
-
         override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
             return if (oldItem is ReaderLoading && newItem is ReaderLoading) {
                 oldItem == newItem

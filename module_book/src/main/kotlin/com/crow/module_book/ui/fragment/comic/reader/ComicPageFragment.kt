@@ -10,6 +10,7 @@ import com.crow.base.R
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
+import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
@@ -24,6 +25,7 @@ import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.ui.adapter.comic.reader.layoutmanager.ComicPageRvAdapter
 import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
+import com.crow.module_book.ui.viewmodel.comic.StriptLoader
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -199,7 +201,7 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
             when (intent) {
                 is BookIntent.GetComicPage -> {
                     intent.mViewState
-                        .doOnError { _, _ -> mVM.processErrorRequestPage(intent.isNext) }
+                        .doOnError { _, _ ->  }
                         .doOnResult {
                             if (intent.comicpage == null) mVM.mLoadingJob?.cancel()
                         }
@@ -207,57 +209,19 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
             }
         }
 
-        /*mVM.mContent.onCollect(this) {
-            mAdapter?.submitList(it.mPages.toMutableList()) {
+        mVM.mUnitPages.onCollect(this) {
+            if (it == null) return@onCollect
+            mAdapter?.submitList(StriptLoader.obtaintStriptPages(mContext, mVM.mChapterPageList)) {
                 mVM.mLoadingJob?.cancel()
             }
-        }*/
-    }
-
-   /* private inline fun getPosItem(itemPos: Int? = null, invoke: (Int, Int, Int, Int?) -> Unit) {
-        val list = (mAdapter ?: error("Adapter is null!")).getCurrentList()
-        if (list.size == 4) return
-        val item: Any
-        var index: Int? = null
-        var itemCenterPos: Int? = null
-        if (itemPos == null) {
-            itemCenterPos = mBinding.list.findCenterViewPosition()
-            item = list[itemCenterPos]
-            index = list.indexOf(item)
-        } else {
-            item = list[itemPos]
         }
-        val chapterPageID: Int
-        val chapterPagePos: Int
-        when (item) {
-            is ReaderLoading -> {
-                chapterPageID = item.mChapterID
-                chapterPagePos = item.mChapterPagePos
-            }
-            is Content -> {
-                chapterPageID = item.mChapterID
-                chapterPagePos = item.mChapterPagePos
-            }
-            else -> { error("unknow item type!") }
-        }
-        mVM.mScrollPos = index ?: 0
-
-        invoke(index ?: 0, chapterPagePos, chapterPageID, itemCenterPos)
     }
-*/
-    data class Item(
-        val mIndex: Int,
-        val mPagePosition: Int,
-        val mPageId: Int,
-        val mItemPosition: Int
-    )
 
     private fun updateUiState(currentPage: Int, offset: Int, chapterPageID: Int) {
         mVM.mScrollPosOffset = offset
         val reader = mVM.mChapterPageList[chapterPageID] ?: return
         if (mCurrentChapterPageID != chapterPageID) {
             mCurrentChapterPageID = chapterPageID
-            mVM.updateOriginChapterPage(chapterPageID)
             lifecycleScope.launch {
                 val reader = reader.second
                 val chapter = reader.mChapterInfo ?: return@launch
@@ -274,7 +238,7 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
                 )
             }
         }
-        mVM.updateUiState(
+        /*mVM.updateUiState(
             ReaderUiState(
                 mReaderMode = ComicCategories.Type.STRIPT,
                 mReaderContent =  reader.second,
@@ -283,7 +247,7 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
                 mCurrentPagePos = currentPage,
                 mCurrentPagePosOffset = offset
             )
-        )
+        )*/
     }
 
     private fun onErrorComicPage() {

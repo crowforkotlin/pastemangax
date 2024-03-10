@@ -100,7 +100,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
     /**
      * ⦁ 初始化监听器
      *
-     * ⦁ 2023-09-04 21:56:59 周一 下午
+     * ⦁ 2023-09-04 21:56:59 周一 下午Ø
      */
     @SuppressLint("SourceLockedOrientationActivity")
     override fun initListener() {
@@ -136,7 +136,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
                 override fun onChildViewDetachedFromWindow(view: View) { }
                 override fun onChildViewAttachedToWindow(view: View) {
                     mBinding.list.removeOnChildAttachStateChangeListener(this)
-                    "Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
+                    "Standard Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
                     if (isDetached || position >= (mAdapter?.itemCount ?: 0)) return
                     if (position == -1) {
                         mBinding.list.post {
@@ -160,11 +160,11 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
                                 if (!isAttachedToWindow) return@post
                                 findViewByPosition(mBinding.list.findFisrtVisibleViewPosition())?.post {
                                     if (!isAttachedToWindow) return@post
-                                    scrollToPositionWithOffset(position + 1, positionOffset)
+                                    scrollToPositionWithOffset(position, positionOffset)
                                     mBinding.list.post {
                                         if (!isAttachedToWindow) return@post
                                         getPosItem(position) { index, pagePos, pageId, itemPos ->
-                                            updateUiState(pagePos + 1, positionOffset, pageId)
+                                            updateUiState(pagePos, positionOffset, pageId)
                                         }
                                     }
                                 }
@@ -186,14 +186,16 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
         }
 
         parentFragmentManager.setFragmentResultListener(ComicActivity.SLIDE, viewLifecycleOwner) { key, bundle ->
-            mBinding.list.post {
-                if (mAdapter?.itemCount == 0) return@post
-                mBinding.list.scrollToPosition(bundle.getInt(key))
-                mBinding.list.post {
-                    if (isDetached) return@post
-                    updateUiState()
+            mBinding.list.post(object : Runnable {
+                override fun run() {
+                    if ((mAdapter?.itemCount ?: 0) <= 2) return
+                    mBinding.list.scrollToPosition(bundle.getInt(key))
+                    mBinding.list.post {
+                        if (isDetached) return@post
+                        updateUiState()
+                    }
                 }
-            }
+            })
         }
 
         parentFragmentManager.setFragmentResultListener(ComicActivity.FRAGMENT_OPTION, viewLifecycleOwner) { key, bundle ->
@@ -256,7 +258,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
             }
         }
 
-        mVM.mPages.onCollect(this) { pages ->
+        mVM.mUnitPages.onCollect(this) { pages ->
             pages?.let {
                 mAdapter?.submitList(StandardLoader.obtaintStandrdPages(mContext, mVM.mChapterPageMapper[mVM.mCurrentChapterPageKey] ?: return@let))
             }

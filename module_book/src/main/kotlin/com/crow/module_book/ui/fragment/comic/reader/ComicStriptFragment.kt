@@ -128,7 +128,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                     if (position == -1) {
                         mBinding.list.post {
                             mBinding.list.post {
-                                    mBinding.list.scrollBy(0, resources.getDimensionPixelSize(baseR.dimen.base_dp192))
+                                mBinding.list.scrollBy(0, resources.getDimensionPixelSize(baseR.dimen.base_dp192))
                                 getPosItem { index, pagePos, pageId, itemPos -> updateUiState(-1, positionOffset, pageId) }
                             }
                         }
@@ -143,11 +143,12 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                                 layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())?.apply {
                                     post {
                                         if (isDetached) return@post
-                                        layoutManager.scrollToPositionWithOffset(position + 1, positionOffset)
+                                        val realPos = position + 1
+                                        layoutManager.scrollToPositionWithOffset(realPos, positionOffset)
                                         mBinding.list.post(object : Runnable {
                                             override fun run() {
                                                 if (isDetached) return
-                                                getPosItem(position) { index, pagePos, pageId, itemPos ->
+                                                getPosItem(realPos) { index, pagePos, pageId, itemPos ->
                                                     updateUiState(pagePos, positionOffset, pageId)
                                                 }
                                             }
@@ -184,7 +185,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                         mBinding.list.post {
                             if (isDetached) return@post
                             val view = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(index)
-                            updateUiState(pagePos, view?.top ?: 0, pageId)
+                            updateUiState(pos, view?.top ?: 0, pageId)
                         }
                     }
                 }
@@ -227,7 +228,10 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
             when (intent) {
                 is BookIntent.GetComicPage -> {
                     intent.mViewState
-                        .doOnError { _, _ -> mVM.processErrorRequestPage(intent.isNext) }
+                        .doOnError { _, _ ->
+                            "error".log()
+                            mAdapter?.submitList(StriptLoader.obtainErrorPages((mAdapter ?: return@doOnError).getCurrentList().toMutableList(), intent.isNext) ?: return@doOnError) { }
+                        }
                         .doOnResult {
                             if (intent.comicpage == null) mVM.mLoadingJob?.cancel()
                         }
@@ -235,7 +239,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
             }
         }
 
-        mVM.mPages.onCollect(this) {
+        mVM.mUnitPages.onCollect(this) {
             if (it == null) return@onCollect
             mAdapter?.submitList(StriptLoader.obtaintStriptPages(mContext, mVM.mChapterPageList)) {
                 mVM.mLoadingJob?.cancel()
@@ -291,7 +295,6 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
         val reader = mVM.mChapterPageMapper[chapterPageID] ?: return
         if (mCurrentChapterPageID != chapterPageID) {
             mCurrentChapterPageID = chapterPageID
-            mVM.updateOriginChapterPage(chapterPageID)
             lifecycleScope.launch {
                 val chapter = reader.mChapterInfo
                 FlowBus.with<BookChapterEntity>(BaseEventEnum.UpdateChapter.name).post(
