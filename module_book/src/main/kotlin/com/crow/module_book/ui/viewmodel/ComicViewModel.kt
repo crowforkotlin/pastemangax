@@ -10,12 +10,12 @@ import com.crow.base.kt.BaseNotNullVar
 import com.crow.base.tools.coroutine.createCoroutineExceptionHandler
 import com.crow.base.tools.extensions.DBNameSpace
 import com.crow.base.tools.extensions.buildDatabase
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.MangaXAccountConfig
-import com.crow.module_book.R
 import com.crow.module_book.model.database.ComicDB
 import com.crow.module_book.model.database.model.MineReaderComicEntity
 import com.crow.module_book.model.database.model.MineReaderSettingEntity
@@ -91,14 +91,6 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     /**
-     * ⦁ 漫画 阅读器内容，存储着当前章节页面的数据，以及其他已加载章节的页面内容并在其内容增加了分割提示
-     *
-     * ⦁ 2023-09-01 00:51:58 周五 上午
-     */
-    private val _mContent = MutableStateFlow(ReaderContent("", "", "", emptyList(), null))
-    val mContent: StateFlow<ReaderContent> get() = _mContent
-
-    /**
      * ⦁ 存储当前阅读的章节数据
      *
      * ⦁ 2024-02-14 20:33:09 周三 下午
@@ -124,7 +116,9 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     private val _mPageContentMapper: HashMap<Int, ReaderContent> = hashMapOf()
 //    val mPageContentMapper: Map<Int, ReaderContent> get() = _mPageContentMapper
 
-    val mPageContentMapper: Map<Int, ReaderContent> get() = mChapterLoader._mChapterPageMapper
+    val mChapterPageList: List<Pair<Int, ReaderContent>> get() = mChapterLoader._mChapterPageList
+    val mChapterPageMapper: Map<Int, ReaderContent> get() = mChapterLoader._mChapterPageMapper
+    var mCurrentChapterPageKey: Int = 0
 
     /**
      * ⦁ 页面大小列表
@@ -216,218 +210,19 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
                             intent.copy(comicpage = null)
                         } else {
                             intent.copy(comicpage = (toTypeEntity<ComicPageResp>(value.mResults) ?: error(app.getString(baseR.string.base_unknow_error))).apply {
-                                /*val loadingPages = getLoadingPages()
-                                val reader = ReaderContent(
-                                    mComicName = mComic.mName,
-                                    mComicUuid = mComic.mPathWord,
-                                    mComicPathword = mComic.mPathWord,
-                                    mPages = loadingPages.second,
-                                    mChapterInfo =  ReaderInfo(
-                                        mChapterIndex = mChapter.mIndex,
-                                        mChapterUuid = mChapter.mUuid,
-                                        mChapterName = mChapter.mName,
-                                        mChapterCount = mChapter.mCount,
-                                        mChapterUpdate = mChapter.mDatetimeCreated,
-                                        mPrevUUID = mChapter.mPrev,
-                                        mNextUUID = mChapter.mNext
-                                    )
-                                )*/
-                                val readerContent = mChapterLoader.obtainReaderContent(isNext, this)
+                                mChapterLoader.obtainReaderContent(isNext, this)
+                                mChapterPrevUuid = mChapterLoader.mLoadPrevUuid
+                                mChapterNextUuid = mChapterLoader.mLoadNextUuid
                                 _mPages.value = mChapter
-//                                if (intent.isReloadEnable || _mPages.value == null) { }
                                 return@apply
-//                                _mPageContentMapper[mIncrementPageID] = reader
-//                                mIncrementPageID ++
-//                                _mContent.value = reader.copy(mPages = loadingPages.first)
-//                                if (intent.isReloadEnable || _mPages.value == null) {
-//                                    _mPages.value = mChapter
-//                                }
                             })
                         }
                     }
                 }
                     .onFailure { continuation.resume(Unit) }
+                    .onSuccess { continuation.resume(Unit) }
             }
         }
-    }
-
-    /**
-     * ⦁ 获取阅读内容实体
-     *
-     * ⦁ 2023-09-02 19:51:53 周六 下午
-     */
-    private fun ComicPageResp.getLoadingPages(): Pair<MutableList<Any>, MutableList<Any>> {
-        var currentPages: MutableList<Any> = mContent.value.mPages.toMutableList()
-        var pages: MutableList<Any>
-        val nextChapter = app.getString(R.string.book_next_val, mChapter.mName)
-        val lastChapter = app.getString(R.string.book_prev_val, mChapter.mName)
-        val noNextChapter = app.getString(R.string.book_no_next)
-        val noLastChapter = app.getString(R.string.book_no_prev)
-        val loading = app.getString(baseR.string.base_loading)
-        val pageID = mIncrementPageID
-        val currentUuid = mChapter.mUuid
-        val pageTotalSize = if (currentPages.isEmpty()) {
-            val pagesSize: Int
-            var pageSizeTemp = 4
-            val next = mChapterNextUuid
-            val prev = mChapterPrevUuid
-            if (prev == null) {
-                createChapterPages(3).apply {
-                    pagesSize = size
-                    pages = this
-                    pages.add(0, ReaderLoading(pageID, 2, nextChapter, null, next, currentUuid))
-                    pages.add(ReaderLoading(pageID, pagesSize + 3, lastChapter, null, next, currentUuid))
-                    pages.add(0, ReaderLoading(pageID, 1, noLastChapter, null, next, currentUuid))
-                }
-            } else {
-                createChapterPages(2).apply {
-                    pagesSize = size
-                    pageSizeTemp --
-                    pages = this
-                    pages.add(0, ReaderLoading(pageID, 1, nextChapter, prev, next, currentUuid))
-                    pages.add(ReaderLoading(pageID, pagesSize + 2, lastChapter, prev, next, currentUuid))
-                    pages.add(0, ReaderLoading(pageID, 1, loading, prev, next, currentUuid, false))
-                }
-            }
-            if (next == null) {
-                pages.add(ReaderLoading(pageID, pagesSize + 4, noNextChapter, prev, null, currentUuid))
-            } else {
-                pageSizeTemp --
-                pages.add(ReaderLoading(pageID, pagesSize + 4, loading, prev, next, currentUuid, true))
-            }
-            currentPages.addAll(pages)
-            pagesSize + pageSizeTemp
-        } else {
-            if (mIsNext) {
-                mChapterNextUuid = mChapter.mNext
-                val next = mChapterNextUuid
-                val prev = mChapterPrevUuid
-                if (next == null) {
-                    pages = createChapterPages(3)
-                    val pagesSize = pages.size
-                    val last = currentPages.last()
-                    if (last is ReaderLoading) {
-                        pages.add(ReaderLoading(pageID, pagesSize + 2, lastChapter, prev, null, currentUuid))
-                        pages.add(ReaderLoading(pageID, pagesSize + 3, noNextChapter, prev, null, currentUuid, true))
-                        pages.add(0, ReaderLoading(pageID, 1, nextChapter, prev, null, currentUuid))
-                        currentPages.removeLast()
-                        currentPages.addAll(pages)
-                    }
-                    pagesSize + 3
-                } else {
-                    pages = createChapterPages(2)
-                    val pagesSize = pages.size
-                    val last = currentPages.last()
-                    if (last is ReaderLoading) {
-                        pages.add(ReaderLoading(pageID, pagesSize + 2, lastChapter, prev, next, currentUuid))
-                        pages.add(ReaderLoading(pageID, pagesSize + 2, loading, prev, next, currentUuid, true))
-                        pages.add(0, ReaderLoading(pageID, 1, nextChapter, prev, next, currentUuid))
-                        currentPages.removeLast()
-                        currentPages.addAll(pages)
-                    }
-                    pagesSize + 2
-                }
-            } else {
-                mChapterPrevUuid = mChapter.mPrev
-                val next = mChapterNextUuid
-                val prev = mChapterPrevUuid
-                if (prev == null) {
-                    pages = createChapterPages(3)
-                    val pagesSize = pages.size
-                    val first = currentPages.first()
-                    if (first is ReaderLoading) {
-                        pages.add(0, ReaderLoading(pageID, 2, nextChapter, null, next, currentUuid))
-                        pages.add(0, ReaderLoading(pageID, 1, noLastChapter, null, next, currentUuid, false))
-                        pages.add(ReaderLoading(pageID, pagesSize + 3, lastChapter, null, next, currentUuid))
-                        currentPages.removeFirst()
-                        currentPages.addAll(0, pages)
-                    }
-                    pagesSize + 3
-                } else {
-                    pages = createChapterPages(2)
-                    val pagesSize = pages.size
-                    val first = currentPages.first()
-                    if (first is ReaderLoading) {
-                        pages.add(0, ReaderLoading(pageID,1, nextChapter, prev, next, currentUuid))
-                        pages.add(0, ReaderLoading(pageID, 1, loading, prev, next, currentUuid, false))
-                        pages.add(ReaderLoading(pageID, pagesSize + 2, lastChapter, prev, next, currentUuid))
-                        currentPages.removeFirst()
-                        currentPages.addAll(0, pages)
-                    }
-                    pagesSize + 2
-                }
-            }
-        }
-        _mPageSizeMapper[pageID] = pageTotalSize
-        if (_mPageSizeMapper.size > 2 && currentPages.size > CHAPTER_LOADED_THRESHOLD) {
-            currentPages = removeLoadingPages(loading, currentPages, mIsNext)
-        }
-        return currentPages to pages
-    }
-
-    private fun removeLoadingPages(loading: String, pages: MutableList<Any>, isNext: Boolean): MutableList<Any> {
-        val pageSize = pages.size
-        return if (isNext) {
-            val chapterId = (pages.first() as ReaderLoading).mChapterID
-            val totalSize =  (_mPageSizeMapper[chapterId] ?: error("sizemapper is null!"))
-            val pageList: MutableList<Any>
-            var prev = pages[totalSize - 1]
-            val next: ReaderLoading
-            if (prev is ReaderLoading) {
-                next = pages[totalSize] as ReaderLoading
-                pageList = pages.subList(totalSize, pageSize).toMutableList()
-            } else {
-                val nextIndex = totalSize + 1
-                prev = pages[totalSize] as ReaderLoading
-                next = pages[nextIndex] as ReaderLoading
-                pageList = pages.subList(nextIndex, pageSize).toMutableList()
-            }
-            _mPageContentMapper.remove(chapterId)
-            _mPageSizeMapper.remove(chapterId)
-            mChapterPrevUuid = prev.mCurrentUuid
-            pageList.add(0, next.copy(mChapterID = next.mChapterID,mMessage = loading))
-            pageList
-        } else {
-            val chapterId = (pages.last() as ReaderLoading).mChapterID
-            val totalSize =  (_mPageSizeMapper[chapterId] ?: error("sizemapper is null!"))
-            val pageList: MutableList<Any>
-            val nextIndex = pageSize - totalSize
-            var next = pages[nextIndex]
-            val prev: ReaderLoading
-            if (next is ReaderLoading) {
-                prev = pages[nextIndex - 1] as ReaderLoading
-                pageList = pages.subList(0, nextIndex).toMutableList()
-            } else {
-                prev = pages[nextIndex - 2] as ReaderLoading
-                next = pages[nextIndex - 1] as ReaderLoading
-                pageList = pages.subList(0, nextIndex - 1).toMutableList()
-            }
-            _mPageContentMapper.remove(chapterId)
-            _mPageSizeMapper.remove(chapterId)
-            mChapterNextUuid = next.mCurrentUuid
-            pageList.add(prev.copy(mChapterID = prev.mChapterID,mMessage = loading))
-            pageList
-        }
-    }
-
-    private fun ComicPageResp.createChapterPages(incrementIndex: Int): MutableList<Any> {
-        if (mChapter.mContents.isEmpty()) {
-            mChapter.mWords = mutableListOf(0)
-            mChapter.mContents = mutableListOf(Content(mImageUrl = BaseStrings.Repository.IMAGE_ERROR))
-        }
-        val pages: MutableList<Any> = mChapter.mWords
-            .zip(mChapter.mContents)
-            .sortedBy { it.first }
-            .mapIndexed { index, pair ->
-                val content = pair.second
-                content.mChapterPagePos = index + incrementIndex
-                content.mChapterID = mIncrementPageID
-                content
-            }
-            .also { mChapter.mContents = it.toMutableList() }
-//            .also { = mChapter.copy(mContents = it.toMutableList()) }
-            .toMutableList()
-        return pages
     }
 
     /**
@@ -441,6 +236,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     }
 
     fun updateUiState(readerUiState: ReaderUiState) {
+        mCurrentChapterPageKey = readerUiState.mChapterID
         _uiState.value = readerUiState
     }
 
@@ -455,7 +251,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         if (dy < 0 && position - 2 < CHAPTER_PRELOADED_INDEX) {
             loadPrevNextChapter(isNext = false)
         }
-        else if (dy > 0 && position + 2 > mContent.value.mPages.size - CHAPTER_PRELOADED_INDEX) {
+        else if (dy > 0 && position + 2 > mChapterLoader.mPageTotalSize - CHAPTER_PRELOADED_INDEX) {
             loadPrevNextChapter(isNext = true)
         }
     }

@@ -10,7 +10,6 @@ import com.crow.base.R
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
-import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
@@ -22,7 +21,6 @@ import com.crow.module_book.model.database.model.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
 import com.crow.module_book.model.entity.comic.reader.ReaderUiState
 import com.crow.module_book.model.intent.BookIntent
-import com.crow.module_book.ui.adapter.comic.reader.ComicStriptRvAdapter
 import com.crow.module_book.ui.adapter.comic.reader.layoutmanager.ComicPageRvAdapter
 import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
@@ -209,11 +207,11 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
             }
         }
 
-        mVM.mContent.onCollect(this) {
+        /*mVM.mContent.onCollect(this) {
             mAdapter?.submitList(it.mPages.toMutableList()) {
                 mVM.mLoadingJob?.cancel()
             }
-        }
+        }*/
     }
 
    /* private inline fun getPosItem(itemPos: Int? = null, invoke: (Int, Int, Int, Int?) -> Unit) {
@@ -256,11 +254,12 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
 
     private fun updateUiState(currentPage: Int, offset: Int, chapterPageID: Int) {
         mVM.mScrollPosOffset = offset
-        val reader = mVM.mPageContentMapper[chapterPageID] ?: return
+        val reader = mVM.mChapterPageList[chapterPageID] ?: return
         if (mCurrentChapterPageID != chapterPageID) {
             mCurrentChapterPageID = chapterPageID
             mVM.updateOriginChapterPage(chapterPageID)
             lifecycleScope.launch {
+                val reader = reader.second
                 val chapter = reader.mChapterInfo ?: return@launch
                 FlowBus.with<BookChapterEntity>(BaseEventEnum.UpdateChapter.name).post(
                     BookChapterEntity(
@@ -278,7 +277,7 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
         mVM.updateUiState(
             ReaderUiState(
                 mReaderMode = ComicCategories.Type.STRIPT,
-                mReaderContent =  reader,
+                mReaderContent =  reader.second,
                 mChapterID = chapterPageID,
                 mTotalPages = mVM.mPageSizeMapper[chapterPageID] ?: return,
                 mCurrentPagePos = currentPage,

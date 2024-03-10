@@ -77,7 +77,7 @@ class ComicPageFragment1123123 : BaseMviFragment<BookFragmentComicBinding>() {
      */
     override fun initListener() {
         mBinding.list.setOnScrollChangeListener { _, _, _, _, _ ->
-            val reader = mVM.mContent.value
+//            val reader = mVM.mContent.value
             /*mVM.updateUiState(ReaderState(
                 mReaderContent = reader,
                 mTotalPages = reader.mPages.size + 2,
@@ -105,11 +105,7 @@ class ComicPageFragment1123123 : BaseMviFragment<BookFragmentComicBinding>() {
      */
     override fun initObserver(saveInstanceState: Bundle?) {
 
-        mVM.mContent.onCollect(this) { reader ->
-            if(reader.mPages.isNotEmpty()) {
-//                showComicPage(reader)
-            }
-        }
+
     }
 
 

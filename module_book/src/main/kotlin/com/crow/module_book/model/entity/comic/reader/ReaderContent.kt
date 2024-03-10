@@ -18,5 +18,5 @@ data class ReaderContent(
     val mComicUuid: String,
     val mComicPathword: String,
     val mPages: List<Content>,
-    val mChapterInfo: ReaderInfo?
+    val mChapterInfo: ReaderInfo
 )

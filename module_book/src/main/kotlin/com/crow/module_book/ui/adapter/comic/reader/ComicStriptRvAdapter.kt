@@ -73,7 +73,7 @@ class ComicStriptRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit)
 
     fun getCurrentList() = mDiffer.currentList
 
-    fun submitList(contents: MutableList<Any?>, runnable: Runnable) = mDiffer.submitList(contents) {
+    fun submitList(contents: MutableList<Any>, runnable: Runnable) = mDiffer.submitList(contents) {
        runnable.run()
     }
 

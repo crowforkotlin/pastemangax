@@ -299,11 +299,13 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                             val isSame = mVM.mReaderSetting?.mReadMode == comicType
                             mVM.updateReaderMode(comicType)
                             mComicCategory.apply(comicType)
-                            setChapterResult(mVM.getPos() - if(isSame) 0 else 1, mVM.getPosOffset())
+
+                            setChapterResult(                            mVM.mReaderComic!!.mChapterPosition,                             mVM.mReaderComic!!.mChapterPositionOffset)
                         } else {
                             mVM.updateReaderMode(comicType)
                             mComicCategory.apply(comicType)
-                            setChapterResult(mVM.getPosByChapterId(), mVM.getPosOffset())
+                            setChapterResult(                            mVM.mReaderComic!!.mChapterPosition,                             mVM.mReaderComic!!.mChapterPositionOffset)
+
                         }
                     }
                 }
@@ -411,13 +413,14 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                     if (mBinding.infobar.isGone) mBinding.infobar.animateFadeIn()
                     val readerContent = uiState.mReaderContent
                     val currentPage = uiState.mCurrentPagePos
+                    val _currentPage = if (currentPage == -1) 1 else currentPage
                     val totalPage = uiState.mTotalPages
                     mBinding.infobar.update(
-                        currentPage = currentPage,
+                        currentPage = _currentPage,
                         totalPage = totalPage,
                         info = readerContent.mChapterInfo ?: return@let,
                         percent = mVM.computePercent(
-                            pageIndex = currentPage,
+                            pageIndex = _currentPage,
                             totalPage = totalPage,
                             info = readerContent.mChapterInfo
                         )
@@ -446,6 +449,7 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                             updateSliderValue(pageFloat, pageTotal)
                         }
                     }
+                    if (currentPage == -1) return@collect
                     mVM.tryUpdateReaderComicrInfo(currentPage, state.mCurrentPagePosOffset, state.mChapterID, readerContent.mChapterInfo) {
                         intent.putExtra(INFO, toJson(it))
                     }

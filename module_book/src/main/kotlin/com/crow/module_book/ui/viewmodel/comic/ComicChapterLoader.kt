@@ -29,8 +29,12 @@ class ComicChapterLoader {
      * ⦁ 2024-01-15 23:46:34 周一 下午
      * @author crowforkotlin
      */
+    val _mChapterPageList: MutableList<Pair<Int, ReaderContent>> = mutableListOf()
     val _mChapterPageMapper: HashMap<Int, ReaderContent> = hashMapOf()
     var mPageTotalSize = 0
+
+    var mLoadPrevUuid: String? = null
+    var mLoadNextUuid: String? = null
 
     /**
      * ⦁ 获取ReaderContent、根据条件决定是否删除缓存
@@ -41,23 +45,35 @@ class ComicChapterLoader {
     fun obtainReaderContent(isNext: Boolean?, page: ComicPageResp) : ReaderContent {
         return with(page) {
             val pages = createChapterPages()
+            val info = ReaderInfo(
+                mChapterIndex = mChapter.mIndex,
+                mChapterUuid = mChapter.mUuid,
+                mChapterName = mChapter.mName,
+                mChapterCount = mChapter.mCount,
+                mChapterUpdate = mChapter.mDatetimeCreated,
+                mPrevUUID = mChapter.mPrev,
+                mNextUUID = mChapter.mNext
+            )
             val reader = ReaderContent(
                 mComicName = mComic.mName,
                 mComicUuid = mComic.mPathWord,
                 mComicPathword = mComic.mPathWord,
                 mPages = pages,
-                mChapterInfo =  ReaderInfo (
-                    mChapterIndex = mChapter.mIndex,
-                    mChapterUuid = mChapter.mUuid,
-                    mChapterName = mChapter.mName,
-                    mChapterCount = mChapter.mCount,
-                    mChapterUpdate = mChapter.mDatetimeCreated,
-                    mPrevUUID = mChapter.mPrev,
-                    mNextUUID = mChapter.mNext
-                )
+                mChapterInfo = info
             )
             mPageTotalSize += pages.size
-            if (_mChapterPageMapper.size > MAX_CHAPTER_SIZE && mPageTotalSize > MAX_PAGE_SIZE) { _mChapterPageMapper.tryDeleteCache(isNext) }
+            if (_mChapterPageList.size > MAX_CHAPTER_SIZE && mPageTotalSize > MAX_PAGE_SIZE) { _mChapterPageList.tryDeleteCache(isNext) }
+            if (_mChapterPageList.size == 0) {
+                mLoadNextUuid = info.mNextUUID
+                mLoadPrevUuid = info.mPrevUUID
+            }
+            if (isNext == true) {
+                _mChapterPageList.add(mIncrementPageID to reader)
+                mLoadNextUuid = info.mNextUUID
+            } else {
+                _mChapterPageList.add(0, mIncrementPageID to reader)
+                mLoadPrevUuid = info.mPrevUUID
+            }
             _mChapterPageMapper[mIncrementPageID] = reader
             mIncrementPageID ++
             reader
@@ -70,16 +86,19 @@ class ComicChapterLoader {
      * ⦁ 2024-03-09 01:17:16 周六 上午
      * @author crowforkotlin
      */
-    private fun HashMap<Int, ReaderContent>.tryDeleteCache(isNext: Boolean?) {
-        val entries = entries
-        val prev = entries.first()
-        val next = entries.last()
+    private fun MutableList<Pair<Int, ReaderContent>>.tryDeleteCache(isNext: Boolean?) {
+        val prev = first()
+        val next = last()
         if (isNext == true) {
-            mPageTotalSize -= prev.value.mPages.size
-            remove(prev.key)
+            mPageTotalSize -= prev.second.mPages.size
+            removeFirst()
+            _mChapterPageMapper.remove(prev.first)
+            mLoadPrevUuid = first().second.mChapterInfo.mPrevUUID
         } else {
-            mPageTotalSize -= next.value.mPages.size
-            remove(next.key)
+            mPageTotalSize -= next.second.mPages.size
+            removeLast()
+            _mChapterPageMapper.remove(next.first)
+            mLoadNextUuid = last().second.mChapterInfo.mNextUUID
         }
     }
 

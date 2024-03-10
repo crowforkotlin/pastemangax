@@ -2,9 +2,9 @@ package com.crow.module_book.ui.viewmodel.comic
 
 import android.content.Context
 import com.crow.module_book.R
-import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
-import com.crow.module_book.model.resp.comic_page.Chapter
-import com.crow.module_book.model.resp.comic_page.Content
+import com.crow.base.R as baseR
+import com.crow.module_book.model.entity.comic.reader.ReaderContent
+import com.crow.module_book.model.entity.comic.reader.ReaderLoading
 
 /**
  * ● StandardLoader
@@ -15,26 +15,42 @@ import com.crow.module_book.model.resp.comic_page.Content
  */
 object StriptLoader {
 
-    fun obtaintStriptPages(context: Context, chapter: Chapter) : MutableList<Any> {
-        val pages: MutableList<Any> = chapter.mContents.toMutableList()
-        val prevUUID = chapter.mPrev
-        val nextUUID = chapter.mNext
-        val prevInfo = if (prevUUID == null) context.getString(R.string.book_no_prev) else context.getString(R.string.book_prev)
-        val nextInfo = if (nextUUID == null) context.getString(R.string.book_no_next) else context.getString(R.string.book_next)
-        val chapterID = (pages.first() as Content).mChapterID
-        pages.add(0, ReaderPrevNextInfo(
-            mChapterID = chapterID,
-            mUuid = prevUUID,
-            mInfo = prevInfo,
-            mIsNext = false
-        ))
-        pages.add(
-            ReaderPrevNextInfo(
-            mChapterID = chapterID,
-            mUuid = nextUUID,
-            mInfo = nextInfo,
-            mIsNext = true
-        ) )
+    fun obtaintStriptPages(context: Context, readerMappers: List<Pair<Int, ReaderContent>>) : MutableList<Any> {
+        val pages: MutableList<Any> = mutableListOf()
+        val noNextChapter = context.getString(R.string.book_no_next)
+        val noLastChapter = context.getString(R.string.book_no_prev)
+        val loading = context.getString(baseR.string.base_loading)
+        val entriesLastIndex = readerMappers.size - 1
+        readerMappers.forEachIndexed { index, pair ->
+            val key = pair.first
+            val value = pair.second
+            val info = value.mChapterInfo!!
+            val nextChapter = context.getString(R.string.book_next_val, info.mChapterName)
+            val lastChapter = context.getString(R.string.book_prev_val, info.mChapterName)
+            val prev = info.mPrevUUID
+            val next = info.mNextUUID
+            val current = info.mChapterUuid
+            val loadingStartPos = 1
+            val page = value.mPages
+            val pageSize = page.size
+            if (pages.isEmpty()) {
+                if(prev == null) {
+                    pages.add(ReaderLoading(key, loadingStartPos, noLastChapter, null, next, current))
+                } else {
+                    pages.add(ReaderLoading(key, loadingStartPos, loading, prev, next, current))
+                }
+            }
+            pages.add(ReaderLoading(key, loadingStartPos, nextChapter, prev, next, current))
+            pages.addAll(page)
+            pages.add(ReaderLoading(key, pageSize, lastChapter, prev, next, current))
+            if (entriesLastIndex == 0 || entriesLastIndex == index) {
+                if (next == null) {
+                    pages.add(ReaderLoading(key, pageSize, noNextChapter, prev, null, current))
+                } else {
+                    pages.add(ReaderLoading(key, pageSize, loading, prev, next, current))
+                }
+            }
+        }
         return pages
     }
 }

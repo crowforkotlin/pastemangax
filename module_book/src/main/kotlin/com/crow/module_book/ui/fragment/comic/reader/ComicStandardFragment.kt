@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_ANONYMOUS_PARAMETER")
+
 package com.crow.module_book.ui.fragment.comic.reader
 
 import android.annotation.SuppressLint
@@ -5,12 +7,14 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.findCenterViewPosition
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.view.event.BaseEvent
@@ -21,6 +25,7 @@ import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.database.model.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
 import com.crow.module_book.model.entity.comic.reader.ReaderEvent
+import com.crow.module_book.model.entity.comic.reader.ReaderLoading
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderUiState
 import com.crow.module_book.model.intent.BookIntent
@@ -31,6 +36,7 @@ import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.fragment.comic.BaseComicFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.crow.module_book.ui.viewmodel.comic.StandardLoader
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import com.crow.base.R as baseR
 import com.crow.mangax.R as mangaR
@@ -130,10 +136,21 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
                 override fun onChildViewDetachedFromWindow(view: View) { }
                 override fun onChildViewAttachedToWindow(view: View) {
                     mBinding.list.removeOnChildAttachStateChangeListener(this)
-//                    "Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
-                    if (isDetached) return
+                    "Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
+                    if (isDetached || position >= (mAdapter?.itemCount ?: 0)) return
                     if (position == -1) {
-                        mBinding.list.post { updateUiState(positionOffset, 1) }
+                        mBinding.list.post {
+                            (mBinding.list.layoutManager as LinearLayoutManager).apply {
+                                if (!isAttachedToWindow) return@post
+                                findViewByPosition(mBinding.list.findFisrtVisibleViewPosition())?.post {
+                                    if (!isAttachedToWindow) return@post
+                                    scrollToPosition(1)
+                                    mBinding.list.post {
+                                        getPosItem { index, pagePos, pageId, itemPos -> updateUiState(-1, positionOffset, pageId) }
+                                    }
+                                }
+                            }
+                        }
                         return
                     }
                     if (mBinding.list.tag == null) {
@@ -143,10 +160,12 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
                                 if (!isAttachedToWindow) return@post
                                 findViewByPosition(mBinding.list.findFisrtVisibleViewPosition())?.post {
                                     if (!isAttachedToWindow) return@post
-                                    scrollToPositionWithOffset(position, positionOffset)
+                                    scrollToPositionWithOffset(position + 1, positionOffset)
                                     mBinding.list.post {
                                         if (!isAttachedToWindow) return@post
-                                        updateUiState(positionOffset)
+                                        getPosItem(position) { index, pagePos, pageId, itemPos ->
+                                            updateUiState(pagePos + 1, positionOffset, pageId)
+                                        }
                                     }
                                 }
                             }
@@ -156,7 +175,9 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
                             mBinding.list.scrollToPosition(position)
                             mBinding.list.post {
                                 if (isDetached) return@post
-                                updateUiState(positionOffset)
+                                getPosItem(position) { index, pagePos, pageId, itemPos ->
+                                    updateUiState(pagePos, positionOffset, pageId)
+                                }
                             }
                         }
                     }
@@ -184,7 +205,11 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
         }
 
         mBinding.list.setNestedPreScrollListener { _, _, position ->
-            updateUiState(pos = position)
+            getPosItem(position) { index, pagePos, pageId, itemPos ->
+                val top = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(position)?.top ?: 0
+                updateUiState(pagePos, top, pageId)
+            }
+//            updateUiState(pos = position)
         }
     }
 
@@ -200,7 +225,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
                 is BookIntent.GetComicPage -> {
                     intent.mViewState
                         .doOnResult {
-                            viewLifecycleScope {
+                            /*viewLifecycleScope {
                                 withStarted {
                                     mBinding.list.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
                                         override fun onChildViewDetachedFromWindow(view: View) { }
@@ -209,7 +234,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
                                         }
                                     })
                                 }
-                            }
+                            }*/
                             viewLifecycleScope {
                                 val resp = intent.comicpage ?: return@viewLifecycleScope
                                 val comic = resp.mComic
@@ -233,7 +258,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
 
         mVM.mPages.onCollect(this) { pages ->
             pages?.let {
-                mAdapter?.submitList(StandardLoader.obtaintStandrdPages(mContext, pages))
+                mAdapter?.submitList(StandardLoader.obtaintStandrdPages(mContext, mVM.mChapterPageMapper[mVM.mCurrentChapterPageKey] ?: return@let))
             }
         }
     }
@@ -274,11 +299,58 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
         mVM.mScrollPosOffset = offsetInt
         mVM.updateUiState(ReaderUiState(
             mReaderMode = ComicCategories.Type.STANDARD,
-            mReaderContent = mVM.mPageContentMapper[chapterId] ?: return,
+            mReaderContent = mVM.mChapterPageMapper[chapterId] ?: return,
             mChapterID = chapterId,
             mTotalPages = list.size,
             mCurrentPagePos = centerViewPos,
             mCurrentPagePosOffset = offsetInt
         ))
+    }
+
+    private inline fun getPosItem(itemPos: Int? = null, invoke: (Int, Int, Int, Int?) -> Unit) {
+        val list = (mAdapter ?: error("Adapter is null!")).getCurrentList()
+        if (list.size <= 2) return
+        val item: Any
+        var index: Int? = null
+        var itemCenterPos: Int? = null
+        if (itemPos == null) {
+            itemCenterPos = mBinding.list.findCenterViewPosition()
+            item = list[itemCenterPos]
+            index = list.indexOf(item)
+        } else {
+            item = list[itemPos]
+        }
+        val chapterPageID: Int
+        val chapterPagePos: Int
+        when (item) {
+            is ReaderPrevNextInfo -> {
+                chapterPageID = item.mChapterID
+                chapterPagePos = item.mChapterPagePos
+            }
+            is Content -> {
+                chapterPageID = item.mChapterID
+                chapterPagePos = item.mChapterPagePos + 1
+            }
+            else -> {
+                error("unknow item type!")
+            }
+        }
+        mVM.mScrollPos = index ?: 0
+        invoke(index ?: 0, chapterPagePos, chapterPageID, itemCenterPos)
+    }
+
+    private fun updateUiState(pos: Int, offset: Int, chapterPageID: Int) {
+        mVM.mScrollPosOffset = offset
+        val reader = mVM.mChapterPageMapper[chapterPageID] ?: return
+        mVM.updateUiState(
+            ReaderUiState(
+                mReaderMode = ComicCategories.Type.STRIPT,
+                mReaderContent =  reader,
+                mChapterID = chapterPageID,
+                mTotalPages = reader.mPages.size,
+                mCurrentPagePos = pos,
+                mCurrentPagePosOffset = offset
+            )
+        )
     }
 }
