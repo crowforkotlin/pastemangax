@@ -7,7 +7,7 @@
     android:background="@color/book_ant_10"
     tools:context=".ui.fragment.comic.reader.ComicPageFragment">
 
-    <androidx.viewpager2.widget.ViewPager2
+    <com.crow.module_book.ui.view.comic.rv.PagerRecyclerView
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

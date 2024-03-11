@@ -211,7 +211,6 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
                 val top = (mBinding.list.layoutManager as LinearLayoutManager).findViewByPosition(position)?.top ?: 0
                 updateUiState(pagePos, top, pageId)
             }
-//            updateUiState(pos = position)
         }
     }
 

@@ -8,7 +8,6 @@ import com.crow.module_book.ui.fragment.comic.ComicInfoFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicPageFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicStriptFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicStandardFragment
-import com.crow.module_book.ui.fragment.comic.reader.ComicPageFragment1123123
 import com.crow.module_book.ui.fragment.novel.NovelInfoFragment
 import com.crow.module_home.ui.fragment.TopicFragment
 import com.crow.module_main.ui.fragment.AboutAuthorFragment

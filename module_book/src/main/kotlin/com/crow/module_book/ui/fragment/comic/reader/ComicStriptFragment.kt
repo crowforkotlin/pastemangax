@@ -201,7 +201,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
         }
 
         mBinding.list.setPreScrollListener { dx, dy, position ->
-            mVM.onScroll(dy, position)
+            mVM.onScroll(dy, position, 2)
         }
 
         mBinding.list.setNestedPreScrollListener { dx, dy, position ->
@@ -229,7 +229,6 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
                 is BookIntent.GetComicPage -> {
                     intent.mViewState
                         .doOnError { _, _ ->
-                            "error".log()
                             mAdapter?.submitList(StriptLoader.obtainErrorPages((mAdapter ?: return@doOnError).getCurrentList().toMutableList(), intent.isNext) ?: return@doOnError) { }
                         }
                         .doOnResult {

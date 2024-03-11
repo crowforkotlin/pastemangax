@@ -75,4 +75,6 @@ dependencies {
 
     // 引入lib_mangax库
     implementation(project(":lib_mangax"))
+
+    implementation("com.github.KotatsuApp:subsampling-scale-image-view:1b19231b2f")
 }

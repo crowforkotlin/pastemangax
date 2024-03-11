@@ -28,7 +28,6 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
     companion object {
         const val CATEGORIES = "CATEGORIES"
         var CURRENT_TYPE = Type.STRIPT
-            private set
     }
 
     /**

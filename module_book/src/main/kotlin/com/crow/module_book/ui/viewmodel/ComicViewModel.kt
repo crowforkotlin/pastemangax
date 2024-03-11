@@ -162,7 +162,6 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
             viewModelScope.launch {
                 runCatching {
                     flowResult(repository.getComicPage(intent.pathword, intent.uuid), intent) { value ->
-                        value.log()
                         if (value.mCode == 210) {
                             toast("\\d+".toRegex().find(value.mMessage)?.value?.let { app.getString(baseR.string.base_request_time_limit, it) } ?: value.mMessage)
                             intent.copy(comicpage = null)
@@ -210,12 +209,13 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      * ⦁ 2024-02-06 20:29:30 周二 下午
      * @author crowforkotlin
      */
-    fun onScroll(dy: Int, position: Int) {
-//        "position $position \t ${mContent.value.mPages.size}".log()
+    fun onScroll(dy: Int, position: Int, fraction: Int) {
+//        "position $position \t $dy \t ${mChapterLoader.mPageTotalSize} \t ${mChapterLoader.mPageTotalSize + mChapterPageList.size * fraction - CHAPTER_PRELOADED_INDEX}".log()
+
         if (dy < 0 && position - 2 < CHAPTER_PRELOADED_INDEX) {
             loadPrevNextChapter(isNext = false)
         }
-        else if (dy > 0 && position + 2 > mChapterLoader.mPageTotalSize - CHAPTER_PRELOADED_INDEX) {
+        else if (dy > 0 && position + 2 > mChapterLoader.mPageTotalSize + mChapterPageList.size * fraction - CHAPTER_PRELOADED_INDEX) {
             loadPrevNextChapter(isNext = true)
         }
     }
@@ -304,7 +304,11 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
                     mUpdatedAt = time
                 )
             } else {
-                comic.copy(mChapterPagePosition = position, mChapterPagePositionOffset = offset, mChapterId = chapterID, mUpdatedAt = Date(System.currentTimeMillis()))
+                comic.copy(
+                    mChapterPagePosition = position,
+                    mChapterPagePositionOffset = offset,
+                    mChapterId = chapterID,
+                    mUpdatedAt = Date(System.currentTimeMillis()))
             }
             mReaderComic = comic
             mComicDBDao.upSertReaderComic(comic)
@@ -327,7 +331,8 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
             index++
             totalSize += 1
             if (chapter.first == chapterId) {
-                index = chapter.second.mPages.indexOf(pages?.get(max(0, reader.mChapterPagePosition)))
+                index = chapter.second.mPages.indexOf(pages?.get(max(0, reader.mChapterPagePosition - 1)))
+                index ++
                 break
             }
             if (index > 1) { totalSize ++ }
@@ -336,8 +341,54 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         index += totalSize
         return index
     }
+    fun getPageChapterPagePosById(): Int {
+        val reader = mReaderComic ?: return 1
+        val chapterId = reader.mChapterId
+        val pages = mChapterPageMapper[chapterId]?.mPages
+        var totalSize = 1
+        var index = 1
+        for (chapter in mChapterPageList) {
+            if (chapter.first == chapterId) {
+                index += chapter.second.mPages.indexOf(pages?.get(max(0, reader.mChapterPagePosition - 1)))
+                index.log()
+                break
+            }
+            totalSize += chapter.second.mPages.size
+        }
+        index += totalSize
+        "getPageChapterPagePosById = $index".log()
+        return index
+    }
     fun getChapterPagePos() = mReaderComic?.mChapterPagePosition ?: 0
     fun getPosOffset() = mReaderComic?.mChapterPagePositionOffset ?: 0
+    fun getRealPosition(): Int {
+        val comic = mReaderComic ?: return 0
+        val current = ComicCategories.CURRENT_TYPE
+        return when(current) {
+            ComicCategories.Type.STANDARD -> { comic.mChapterPagePosition }
+            ComicCategories.Type.STRIPT -> {
+                val chapterId = comic.mChapterId
+                val pages = mChapterPageMapper[chapterId]?.mPages
+                var totalSize = 0
+                var index = 0
+                for (chapter in mChapterPageList) {
+                    index ++
+                    totalSize ++
+                    if (chapter.first == chapterId) {
+                        index += chapter.second.mPages.indexOf(pages?.get(max(0, comic.mChapterPagePosition - 1)))
+                        break
+                    }
+                    if (index > 1) { totalSize + }
+                    totalSize += chapter.second.mPages.size
+                }
+                index += totalSize
+                return index
+            }
+            ComicCategories.Type.PAGE -> {
+                0
+            }
+        }
+    }
 
     /**
      * ⦁ 尝试更新当前漫画信息如果uuid不同则更新到数据库
