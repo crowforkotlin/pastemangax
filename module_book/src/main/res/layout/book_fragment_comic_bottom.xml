@@ -32,47 +32,62 @@
                 android:text="@string/book_read_mode"
                 android:textStyle="bold" />
 
-
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/button_toggle"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/base_dp10"
-                android:baselineAligned="false"
-                android:orientation="horizontal"
-                app:checkedButton="@id/button_standard"
-                app:selectionRequired="true"
-                app:singleSelection="true">
+                    android:layout_margin="@dimen/base_dp10"
+                android:fillViewport="true"
+                android:layout_height="wrap_content">
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/button_toggle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    app:checkedButton="@id/button_standard"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_standard"
-                    style="@style/Book_CopyMangaX_ToggleButton_Vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/book_comic_standard"
-                    app:icon="@drawable/book_ic_reader_standard_24dp" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_standard"
+                        style="@style/Book_CopyMangaX_ToggleButton_Vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/book_comic_standard"
+                        app:icon="@drawable/book_ic_reader_standard_24dp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_stript"
-                    style="@style/Book_CopyMangaX_ToggleButton_Vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/book_comic_stript"
-                    app:icon="@drawable/book_ic_reader_stript_24dp" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_stript"
+                        style="@style/Book_CopyMangaX_ToggleButton_Vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/book_comic_stript"
+                        app:icon="@drawable/book_ic_reader_stript_24dp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_page"
-                    style="@style/Book_CopyMangaX_ToggleButton_Vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:lines="2"
-                    android:text="@string/book_comic_page"
-                    app:icon="@drawable/book_ic_reader_ltr_24dp" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_page_horizontal"
+                        style="@style/Book_CopyMangaX_ToggleButton_Vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:lines="2"
+                        android:text="@string/book_comic_page_horizontal"
+                        app:icon="@drawable/book_ic_reader_ltr_24dp" />
 
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_page_vertical"
+                        style="@style/Book_CopyMangaX_ToggleButton_Vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:lines="2"
+                        android:text="@string/book_comic_page_vertical"
+                        app:icon="@drawable/book_ic_reader_ltr_24dp" />
+
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            </HorizontalScrollView>
 
         </LinearLayout>
 

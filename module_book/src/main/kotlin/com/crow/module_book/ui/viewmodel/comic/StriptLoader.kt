@@ -1,6 +1,7 @@
 package com.crow.module_book.ui.viewmodel.comic
 
 import android.content.Context
+import com.crow.base.tools.extensions.log
 import com.crow.module_book.R
 import com.crow.base.R as baseR
 import com.crow.module_book.model.entity.comic.reader.ReaderContent
@@ -70,5 +71,25 @@ object StriptLoader {
             }
         }
         return pages
+    }
+
+    fun obtaintCurrentPos(chapterId: Int, pages: List<Pair<Int, ReaderContent>>, position: Int): Int {
+        val pageSize = pages.size
+        if (pageSize == 1) {
+            return position + 1
+        } else {
+            var pos = 0
+            var total = 0
+            pages.apply {
+                forEachIndexed { index, pair ->
+                    if (chapterId == pair.first) {
+                        return@apply
+                    }
+                    total += pair.second.mPages.size + 2
+                }
+            }
+            pos += total + position + 1
+            return pos
+        }
     }
 }

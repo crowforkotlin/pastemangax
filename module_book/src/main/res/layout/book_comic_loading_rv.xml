@@ -15,7 +15,6 @@
         android:textStyle="bold"
         tools:text="上一章节：第一话" />
 
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/retry"
         style="@style/Widget.Material3.Button.TonalButton"

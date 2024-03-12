@@ -17,7 +17,6 @@ import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.error
 import com.crow.base.tools.extensions.findCenterViewPosition
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -34,7 +33,7 @@ import com.crow.module_book.model.entity.comic.reader.ReaderUiState
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.comic_page.Content
 import com.crow.module_book.ui.activity.ComicActivity
-import com.crow.module_book.ui.adapter.comic.reader.ComicPageRvAdapter
+import com.crow.module_book.ui.adapter.comic.reader.ComicPageVerticalRvAdapter
 import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.crow.module_book.ui.viewmodel.comic.PagerLoader
@@ -50,11 +49,11 @@ import com.crow.base.R as baseR
  * @Description: BookStripComicFragment
  * @formatter:on
  **************************/
-class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
+class ComicPageVerticalFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
 
     private val mVM by activityViewModel<ComicViewModel>()
 
-    private var mAdapter: ComicPageRvAdapter?  = null
+    private var mAdapter: ComicPageVerticalRvAdapter?  = null
 
     private val mWindowInsetsControllerCompat by lazy {
         WindowInsetsControllerCompat(
@@ -70,7 +69,7 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
     override fun getViewBinding(inflater: LayoutInflater) = BookFragmentComicPageBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mAdapter = ComicPageRvAdapter { uuid, isNext ->
+        mAdapter = ComicPageVerticalRvAdapter { uuid, isNext ->
             launchDelay(BASE_ANIM_300L) { mVM.input(BookIntent.GetComicPage(mVM.mPathword, uuid, isNext)) }
         }
         super.onViewCreated(view, savedInstanceState)
@@ -79,7 +78,7 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
 
-        mBinding.pager.layoutManager = LinearLayoutManager((requireActivity() as ComicActivity), LinearLayoutManager.HORIZONTAL, false)
+        mBinding.pager.layoutManager = LinearLayoutManager((requireActivity() as ComicActivity), LinearLayoutManager.VERTICAL, false)
 
         PagerSnapHelper().attachToRecyclerView(mBinding.pager)
 
@@ -119,12 +118,12 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
                 override fun onChildViewDetachedFromWindow(view: View) { }
                 override fun onChildViewAttachedToWindow(view: View) {
                     mBinding.pager.removeOnChildAttachStateChangeListener(this)
-                    "Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
+//                    "Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
                     if (isDetached || position >= (mAdapter?.itemCount ?: 0)) return
                     if (position == -1) {
                         mBinding.pager.post {
                             mBinding.pager.post {
-                                mBinding.pager.scrollBy(resources.displayMetrics.widthPixels, 0)
+                                mBinding.pager.scrollBy(0, resources.displayMetrics.heightPixels)
                                 getPosItem { index, pagePos, pageId, itemPos -> updateUiState(-1, positionOffset, pageId) }
                             }
                         }
@@ -139,11 +138,12 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
                                 layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())?.apply {
                                     post {
                                         if (isDetached) return@post
-                                        layoutManager.scrollToPosition(position)
+                                        val realPosition = PagerLoader.obtainPagerPosition(mVM.mCurrentChapterPageKey, mVM.mChapterPageList, position)
+                                        layoutManager.scrollToPosition(realPosition)
                                         mBinding.pager.post(object : Runnable {
                                             override fun run() {
                                                 if (isDetached) return
-                                                getPosItem(position) { index, pagePos, pageId, itemPos ->
+                                                getPosItem(realPosition) { index, pagePos, pageId, itemPos ->
                                                     updateUiState(pagePos, positionOffset, pageId)
                                                 }
                                             }
@@ -174,7 +174,6 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
             mBinding.pager.post(object : Runnable {
                 override fun run() {
                     val pos = bundle.getInt(key)
-                    pos.log()
                     if (mAdapter?.itemCount == 0) return
                     getPosItem { index, pagePos, pageId, itemPos ->
                         mBinding.pager.scrollToPosition(index - pagePos + pos)
@@ -196,7 +195,7 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
         }
 
         mBinding.pager.setPreScrollListener { dx, dy, position ->
-            mVM.onScroll(dx, position, 1)
+            mVM.onScroll(dy, position, 1)
         }
 
         mBinding.pager.setNestedPreScrollListener { dx, dy, position ->
@@ -262,7 +261,6 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
             }
             else -> { error("unknow item type!") }
         }
-        mVM.mScrollPos = index ?: 0
         invoke(index ?: 0, chapterPagePos, chapterPageID, itemCenterPos)
     }
 
@@ -274,7 +272,6 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
     )
 
     private fun updateUiState(pos: Int, offset: Int, chapterPageID: Int) {
-        mVM.mScrollPosOffset = offset
         val reader = mVM.mChapterPageMapper[chapterPageID] ?: return
         if (mCurrentChapterPageID != chapterPageID) {
             mCurrentChapterPageID = chapterPageID
@@ -295,7 +292,7 @@ class ComicPageFragment : BaseMviFragment<BookFragmentComicPageBinding>() {
         }
         mVM.updateUiState(
             ReaderUiState(
-                mReaderMode = ComicCategories.Type.PAGE,
+                mReaderMode = ComicCategories.Type.PAGE_VERTICAL,
                 mReaderContent =  reader,
                 mChapterID = chapterPageID,
                 mTotalPages = reader.mPages.size,

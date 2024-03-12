@@ -72,4 +72,16 @@ object PagerLoader {
         }
         return pages
     }
+
+    fun obtainPagerPosition(chapterId: Int, pages: List<Pair<Int, ReaderContent>>, position: Int): Int {
+        if (pages.size == 1) { return position }
+        var total = 0
+        pages.forEach {
+            if (it.first == chapterId) { return total + position } else {
+                total += 1
+            }
+            total += it.second.mPages.size
+        }
+        return 0
+    }
 }

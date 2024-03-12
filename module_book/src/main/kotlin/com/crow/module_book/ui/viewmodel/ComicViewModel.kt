@@ -74,8 +74,6 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
     var mChapterPrevUuid: String? = null
     var mChapterNextUuid: String? = null
     var mLoadingJob: Job? = null
-    var mScrollPos = 0
-    var mScrollPosOffset = 0
 
 
     private var mIsNext: Boolean = false
@@ -96,8 +94,8 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
      * ⦁ 2024-02-14 20:33:09 周三 下午
      * @author crowforkotlin
      */
-    private val _mUnitPages = MutableStateFlow<Boolean?>(null)
-    val mUnitPages: StateFlow<Boolean?> get() = _mUnitPages
+    private val _mUnitPages = MutableStateFlow<Int?>(null)
+    val mUnitPages: StateFlow<Int?> get() = _mUnitPages
     val mChapterPageList: List<Pair<Int, ReaderContent>> get() = mChapterLoader._mChapterPageList
     val mChapterPageMapper: Map<Int, ReaderContent> get() = mChapterLoader._mChapterPageMapper
     var mCurrentChapterPageKey: Int = 0
@@ -167,10 +165,14 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
                             intent.copy(comicpage = null)
                         } else {
                             intent.copy(comicpage = (toTypeEntity<ComicPageResp>(value.mResults) ?: error(app.getString(baseR.string.base_unknow_error))).apply {
-                                mChapterLoader.obtainReaderContent(isNext, this)
+                                val reader = mChapterLoader.obtainReaderContent(isNext, this)
                                 mChapterPrevUuid = mChapterLoader.mLoadPrevUuid
                                 mChapterNextUuid = mChapterLoader.mLoadNextUuid
-                                _mUnitPages.value = !(mUnitPages.value ?: false)
+                                if (intent.isReloadEnable) {
+                                    _mUnitPages.value = reader.mPages.first().mChapterID
+                                } else {
+                                    _mUnitPages.value = (_mUnitPages.value ?: 0) - 1
+                                }
                                 return@apply
                             })
                         }
@@ -307,6 +309,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
                 comic.copy(
                     mChapterPagePosition = position,
                     mChapterPagePositionOffset = offset,
+                    mChapterUUID = mCurrentChapterUuid,
                     mChapterId = chapterID,
                     mUpdatedAt = Date(System.currentTimeMillis()))
             }
@@ -315,80 +318,8 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         }
     }
 
-    /**
-     * ⦁ 条漫获取位置通过ChapterId，这里计算有点麻烦是因为要计算额外的ReaderLoading
-     *
-     * ⦁ 2024-03-10 22:34:46 周日 下午
-     * @author crowforkotlin
-     */
-    fun getStriptChapterPagePosById(): Int {
-        val reader = mReaderComic ?: return 0
-        val chapterId = reader.mChapterId
-        val pages = mChapterPageMapper[chapterId]?.mPages
-        var totalSize = 0
-        var index = 0
-        for (chapter in mChapterPageList) {
-            index++
-            totalSize += 1
-            if (chapter.first == chapterId) {
-                index = chapter.second.mPages.indexOf(pages?.get(max(0, reader.mChapterPagePosition - 1)))
-                index ++
-                break
-            }
-            if (index > 1) { totalSize ++ }
-            totalSize += chapter.second.mPages.size
-        }
-        index += totalSize
-        return index
-    }
-    fun getPageChapterPagePosById(): Int {
-        val reader = mReaderComic ?: return 1
-        val chapterId = reader.mChapterId
-        val pages = mChapterPageMapper[chapterId]?.mPages
-        var totalSize = 1
-        var index = 1
-        for (chapter in mChapterPageList) {
-            if (chapter.first == chapterId) {
-                index += chapter.second.mPages.indexOf(pages?.get(max(0, reader.mChapterPagePosition - 1)))
-                index.log()
-                break
-            }
-            totalSize += chapter.second.mPages.size
-        }
-        index += totalSize
-        "getPageChapterPagePosById = $index".log()
-        return index
-    }
     fun getChapterPagePos() = mReaderComic?.mChapterPagePosition ?: 0
     fun getPosOffset() = mReaderComic?.mChapterPagePositionOffset ?: 0
-    fun getRealPosition(): Int {
-        val comic = mReaderComic ?: return 0
-        val current = ComicCategories.CURRENT_TYPE
-        return when(current) {
-            ComicCategories.Type.STANDARD -> { comic.mChapterPagePosition }
-            ComicCategories.Type.STRIPT -> {
-                val chapterId = comic.mChapterId
-                val pages = mChapterPageMapper[chapterId]?.mPages
-                var totalSize = 0
-                var index = 0
-                for (chapter in mChapterPageList) {
-                    index ++
-                    totalSize ++
-                    if (chapter.first == chapterId) {
-                        index += chapter.second.mPages.indexOf(pages?.get(max(0, comic.mChapterPagePosition - 1)))
-                        break
-                    }
-                    if (index > 1) { totalSize + }
-                    totalSize += chapter.second.mPages.size
-                }
-                index += totalSize
-                return index
-            }
-            ComicCategories.Type.PAGE -> {
-                0
-            }
-        }
-    }
 
     /**
      * ⦁ 尝试更新当前漫画信息如果uuid不同则更新到数据库
@@ -405,6 +336,7 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
                 mSubTitle = readerInfo.mChapterName
             )
             update(mComicInfo)
+            updatePos(position, offset, chapterID)
         } else {
             updatePos(position, offset, chapterID)
         }

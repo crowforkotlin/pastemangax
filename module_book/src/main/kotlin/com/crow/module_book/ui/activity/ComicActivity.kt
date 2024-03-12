@@ -45,7 +45,6 @@ import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.immersionFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
 import com.crow.base.tools.extensions.isAllWhiteSpace
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toJson
@@ -71,7 +70,7 @@ import com.crow.module_book.model.entity.comic.reader.ReaderEvent
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.ui.adapter.comic.ComicCommentRvAdapter
 import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
-import com.crow.module_book.ui.fragment.comic.reader.ComicPageFragment
+import com.crow.module_book.ui.fragment.comic.reader.ComicPageHorizontalFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicStandardFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicStriptFragment
 import com.crow.module_book.ui.helper.GestureHelper
@@ -80,8 +79,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.slider.Slider
-import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonFrame
-import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonRecyclerView
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -225,7 +222,10 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                 ComicCategories.Type.STRIPT -> {
                     supportFragmentManager.setFragmentResult(SLIDE, bundleOf(SLIDE to value.toInt()))
                 }
-                ComicCategories.Type.PAGE -> {
+                ComicCategories.Type.PAGE_HORIZONTAL -> {
+                    supportFragmentManager.setFragmentResult(SLIDE, bundleOf(SLIDE to value.toInt()))
+                }
+                ComicCategories.Type.PAGE_VERTICAL -> {
                     supportFragmentManager.setFragmentResult(SLIDE, bundleOf(SLIDE to value.toInt()))
                 }
                 else -> {
@@ -293,15 +293,17 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                         val comicType: ComicCategories.Type = when(bundle.getInt(VALUE)) {
                             R.string.book_comic_standard -> { ComicCategories.Type.STANDARD }
                             R.string.book_comic_stript -> { ComicCategories.Type.STRIPT }
-                            R.string.book_comic_page -> { ComicCategories.Type.PAGE }
+                            R.string.book_comic_page_horizontal -> { ComicCategories.Type.PAGE_HORIZONTAL }
+                            R.string.book_comic_page_vertical -> { ComicCategories.Type.PAGE_VERTICAL }
                             else -> { ComicCategories.Type.STANDARD }
                         }
                         mVM.updateReaderMode(comicType)
                         mComicCategory.apply(comicType)
                         when(comicType) {
                             ComicCategories.Type.STANDARD -> setChapterResult(mVM.getChapterPagePos(), mVM.getPosOffset())
-                            ComicCategories.Type.STRIPT -> setChapterResult(mVM.getStriptChapterPagePosById(), mVM.getPosOffset())
-                            ComicCategories.Type.PAGE -> setChapterResult(mVM.getPageChapterPagePosById(), 0)
+                            ComicCategories.Type.STRIPT -> setChapterResult(mVM.getChapterPagePos(), mVM.getPosOffset())
+                            ComicCategories.Type.PAGE_HORIZONTAL -> setChapterResult(mVM.getChapterPagePos(), 0)
+                            ComicCategories.Type.PAGE_VERTICAL -> setChapterResult(mVM  .getChapterPagePos(), 0)
                         }
                     }
                 }
@@ -372,24 +374,15 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                 when(mVM.getSetting()?.mReadMode) {
                     ComicCategories.Type.STANDARD -> { mComicCategory.apply(ComicCategories.Type.STANDARD) }
                     ComicCategories.Type.STRIPT -> { mComicCategory.apply(ComicCategories.Type.STRIPT) }
-                    ComicCategories.Type.PAGE -> { mComicCategory.apply(ComicCategories.Type.PAGE) }
+                    ComicCategories.Type.PAGE_HORIZONTAL -> { mComicCategory.apply(ComicCategories.Type.PAGE_HORIZONTAL) }
+                    ComicCategories.Type.PAGE_VERTICAL -> { mComicCategory.apply(ComicCategories.Type.PAGE_VERTICAL) }
                     else -> { mComicCategory.apply(ComicCategories.Type.STANDARD) }
                 }
             }
-            mVM.initComicReader {
-                mVM.mReaderComic?.let { comic ->
-                    setChapterResult(comic.mChapterPagePosition, comic.mChapterPagePositionOffset)
-                }
-            }
-        } else {
-            mVM.initComicReader {
-                if (mVM.mScrollPos == 0) {
-                    mVM.mReaderComic?.let {
-                        setChapterResult(it.mChapterPagePosition, it.mChapterPagePositionOffset)
-                    }
-                } else {
-                    setChapterResult(mVM.mScrollPos, mVM.mScrollPosOffset)
-                }
+        }
+        mVM.initComicReader {
+            mVM.mReaderComic?.let { comic ->
+                setChapterResult(comic.mChapterPagePosition, comic.mChapterPagePositionOffset)
             }
         }
     }
@@ -438,7 +431,11 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                                     pageTotal -= 0
                                     pageFloat = pageFloat.coerceIn(1f, pageTotal)
                                 }
-                                ComicCategories.Type.PAGE -> {
+                                ComicCategories.Type.PAGE_HORIZONTAL -> {
+                                    pageTotal -= 0
+                                    pageFloat = pageFloat.coerceIn(1f, pageTotal)
+                                }
+                                ComicCategories.Type.PAGE_VERTICAL -> {
                                     pageTotal -= 0
                                     pageFloat = pageFloat.coerceIn(1f, pageTotal)
                                 }
@@ -447,7 +444,7 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                         }
                     }
                     if (currentPage == -1) return@collect
-                    mVM.tryUpdateReaderComicrInfo(currentPage, state.mCurrentPagePosOffset, state.mChapterID, readerContent.mChapterInfo, state.mReaderMode) {
+                    mVM.tryUpdateReaderComicrInfo(currentPage, state.mCurrentPagePosOffset, state.mChapterID, readerContent.mChapterInfo) {
                         intent.putExtra(INFO, toJson(it))
                     }
                 }
@@ -624,7 +621,7 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                 hasRetry = hasGlobalPoint(binding.retry, rawX, rawY)
             }
         }
-        if (fragment is ComicStandardFragment || fragment is ComicStriptFragment || fragment is ComicPageFragment) {
+        if (fragment is ComicStandardFragment || fragment is ComicStriptFragment || fragment is ComicPageHorizontalFragment) {
             val rv = ((fragment.view as FrameLayout)[0] as RecyclerView)
             val childView = rv.findChildViewUnder(ev.x, ev.y)
             if(childView is FrameLayout || childView is ConstraintLayout) {

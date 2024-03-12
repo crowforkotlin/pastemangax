@@ -4,7 +4,6 @@ package com.crow.module_book.ui.adapter.comic.reader
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.davemorrissey.labs.subscaleview.ImageSource
 import androidx.annotation.IntRange
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
@@ -15,12 +14,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.decode.DataSource
 import coil.decode.DecodeResult
 import coil.decode.Decoder
 import coil.imageLoader
 import coil.request.ImageRequest
-import coil.size.Scale
 import com.crow.base.app.app
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
@@ -30,17 +27,20 @@ import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.error
-import com.crow.base.tools.extensions.log
 import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.ui.adapter.MangaCoilVH
-import com.crow.module_book.databinding.BookComicLoadingPageRvBinding
+import com.crow.module_book.databinding.BookComicLoadingVerticalPageRvBinding
 import com.crow.module_book.databinding.BookComicPagerPageRvBinding
-import com.crow.module_book.model.entity.comic.reader.ReaderInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderLoading
 import com.crow.module_book.model.entity.comic.reader.ReaderPageLoading
 import com.crow.module_book.model.resp.comic_page.Content
+import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.OnImageEventListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
 
 
 /*************************
@@ -51,14 +51,16 @@ import com.davemorrissey.labs.subscaleview.OnImageEventListener
  * @Description: ComicInfoChapterRvAdapter
  * @formatter:on
  **************************/
-class ComicPageRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ComicPageVerticalRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val LOADING_VIEW = 0
         private const val CONTENT_VIEW = 1
     }
 
-    inner class PageLoadingVH(val binding: BookComicLoadingPageRvBinding) : RecyclerView.ViewHolder(binding.root) {
+    private val mScope = CoroutineScope(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
+
+    inner class PageLoadingVH(val binding: BookComicLoadingVerticalPageRvBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.retryLeft.doOnClickInterval {
@@ -165,15 +167,19 @@ class ComicPageRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit) :
                         },
                     )
                     .data(imageUrl)
-                    .scale(Scale.FIT)
                     .decoderFactory { source, option, _ ->
-                        if(source.dataSource == DataSource.NETWORK) { binding.image.post { binding.image.animateFadeIn() } }
                         Decoder {
                             val bitmap = BitmapFactory.decodeStream(source.source.source().inputStream())
-                            DecodeResult(drawable = bitmap.toDrawable(option.context.resources), false)
+                            binding.image.post { binding.image.animateFadeIn() }
+                            DecodeResult(drawable =bitmap.toDrawable(app.resources), false)
                         }
                     }
-                    .target { binding.image.setImage(ImageSource.Bitmap(it.toBitmap())) }
+                    .target {
+                        mScope.launch {
+                            val bitmap = it.toBitmap()
+                            binding.image.post { binding.image.setImage(ImageSource.Bitmap(bitmap)) }
+                        }
+                    }
                     .build()
             )
         }
@@ -203,7 +209,7 @@ class ComicPageRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            LOADING_VIEW -> PageLoadingVH(BookComicLoadingPageRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            LOADING_VIEW -> PageLoadingVH(BookComicLoadingVerticalPageRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             CONTENT_VIEW -> PageViewHolder(BookComicPagerPageRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> error("unknow view type!")
         }
