@@ -56,7 +56,7 @@ class ComicChapterLoader {
             )
             val reader = ReaderContent(
                 mComicName = mComic.mName,
-                mComicUuid = mComic.mPathWord,
+                mComicUuid = mComic.mUuid,
                 mComicPathword = mComic.mPathWord,
                 mPages = pages,
                 mChapterInfo = info

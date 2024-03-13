@@ -20,6 +20,7 @@ import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.module_book.R
 import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.database.model.BookChapterEntity
@@ -137,7 +138,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
                 override fun onChildViewDetachedFromWindow(view: View) { }
                 override fun onChildViewAttachedToWindow(view: View) {
                     mBinding.list.removeOnChildAttachStateChangeListener(this)
-                    "Standard Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset \t ${mBinding.list.tag == null}".log()
+//                    "Standard Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset \t ${mBinding.list.tag == null}".log()
                     if (isDetached || position >= (mAdapter?.itemCount ?: 0)) return
                     if (position == -1) {
                         mBinding.list.post {
@@ -271,6 +272,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        AppProgressFactory.clear()
         mAdapter = null
     }
 

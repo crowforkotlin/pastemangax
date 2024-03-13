@@ -25,6 +25,7 @@ import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.module_book.databinding.BookFragmentComicPageBinding
 import com.crow.module_book.model.database.model.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
@@ -119,7 +120,7 @@ class ComicPageHorizontalFragment : BaseMviFragment<BookFragmentComicPageBinding
                 override fun onChildViewDetachedFromWindow(view: View) { }
                 override fun onChildViewAttachedToWindow(view: View) {
                     mBinding.pager.removeOnChildAttachStateChangeListener(this)
-                    "Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
+//                    "Detached : $isDetached \t POSITION : $position \t OFFSET : $positionOffset".log()
                     if (isDetached || position >= (mAdapter?.itemCount ?: 0)) return
                     if (position == -1) {
                         mBinding.pager.post {
@@ -210,6 +211,8 @@ class ComicPageHorizontalFragment : BaseMviFragment<BookFragmentComicPageBinding
 
     override fun onDestroyView() {
         super.onDestroyView()
+        AppProgressFactory.clear()
+        mAdapter?.onDestroy()
         mAdapter = null
     }
 

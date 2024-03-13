@@ -16,6 +16,7 @@ import com.crow.module_book.model.resp.ComicChapterResp
 import com.crow.module_book.model.resp.ComicInfoResp
 import com.crow.module_book.model.resp.NovelChapterResp
 import com.crow.module_book.model.resp.NovelInfoResp
+import com.crow.module_book.model.resp.comic_browser.Browse
 import com.crow.module_book.network.BookRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,6 +73,15 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
     val mChapterEntity: StateFlow<BookChapterEntity?> get() = _mChapterEntity
 
     /**
+     * ⦁ 漫画历史记录
+     *
+     * ⦁ 2024-03-13 21:16:41 周三 下午
+     * @author crowforkotlin
+     */
+    var mComicBrowser: Browse? = null
+        private set
+
+    /**
      * ⦁ 通过检查意图的类型并执行相应的代码来处理意图
      *
      * ⦁ 2023-06-28 22:08:41 周三 下午
@@ -101,21 +111,6 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
         viewModelScope.launch(Dispatchers.IO + baseCoroutineException) {
             mChapterDBDao.upSertChapter(chapter)
             _mChapterEntity.value = chapter
-            /*val chapterEntity = _mChapterEntity.value
-            val bookChapterEntity = mChapterDBDao.find(chapter.mBookUuid, chapter.mChapterType)
-            if (bookChapterEntity != null) {
-                val snapshot = bookChapterEntity.copy(
-                    mChapterName = chapter.mChapterName,
-                    mChapterCurrentUuid = chapter.mChapterCurrentUuid,
-                    mChapterPrevUuid = chapter.mChapterPrevUuid,
-                    mChapterNextUuid = chapter.mChapterNextUuid
-                )
-                mChapterDBDao.update(snapshot)
-                _mChapterEntity.value = snapshot
-            } else {
-                mChapterDBDao.insertAll(chapter)
-                _mChapterEntity.value = chapter
-            }*/
         }
     }
 
@@ -157,7 +152,10 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
         flowResult(
             intent,
             repository.getComicBrowserHistory(intent.pathword)
-        ) { value -> intent.copy(comicBrowser = value.mResults) }
+        ) { value ->
+            mComicBrowser = value.mResults.mBrowse
+            intent.copy(comicBrowser = value.mResults)
+        }
     }
 
     private fun getComicInfoPage(intent: BookIntent.GetComicInfoPage) {
@@ -171,15 +169,9 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
     private fun getComicChapter(intent: BookIntent.GetComicChapter) {
         flowResult(intent, repository.getComicChapter(intent.pathword, mChapterStartIndex, 100)) { value ->
             if (value.mCode == HttpURLConnection.HTTP_OK) {
-                val chapters = toTypeEntity<ComicChapterResp>(value.mResults)
-                intent.copy(comicChapter = chapters)
+                intent.copy(comicChapter = toTypeEntity<ComicChapterResp>(value.mResults))
             } else {
-                intent.copy(
-                    invalidResp = app.getString(
-                        R.string.BookComicRequestThrottled,
-                        Regex("\\d+").find(value.mMessage)?.value ?: "0"
-                    )
-                )
+                intent.copy(invalidResp = app.getString( R.string.BookComicRequestThrottled, Regex("\\d+").find(value.mMessage)?.value ?: "0" ))
             }
         }
     }

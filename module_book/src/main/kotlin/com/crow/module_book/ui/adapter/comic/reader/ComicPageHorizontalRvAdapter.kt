@@ -1,6 +1,7 @@
 
 package com.crow.module_book.ui.adapter.comic.reader
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -39,6 +40,7 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.OnImageEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
@@ -133,6 +135,7 @@ class ComicPageHorizontalRvAdapter(val onRetry: (uuid: String, isNext: Boolean) 
                         binding.image.width / binding.image.sWidth.toFloat(),
                         binding.image.height / binding.image.sHeight.toFloat(),
                     )
+                    binding.image.animateFadeIn()
                 }
                 override fun onTileLoadError(e: Throwable) { }
             })
@@ -144,6 +147,8 @@ class ComicPageHorizontalRvAdapter(val onRetry: (uuid: String, isNext: Boolean) 
             binding.loadingText.isInvisible = false
             binding.retry.isGone = true
             binding.loadingText.text = AppProgressFactory.PERCENT_0
+            binding.image.recycle()
+            binding.image.setImage(ImageSource.Bitmap(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)))
             mAppProgressFactory?.removeProgressListener()?.remove()
             mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
             app.imageLoader.enqueue(
@@ -170,7 +175,6 @@ class ComicPageHorizontalRvAdapter(val onRetry: (uuid: String, isNext: Boolean) 
                     .decoderFactory { source, option, _ ->
                         Decoder {
                             val bitmap = BitmapFactory.decodeStream(source.source.source().inputStream())
-                            binding.image.post { binding.image.animateFadeIn() }
                             DecodeResult(drawable =bitmap.toDrawable(app.resources), false)
                         }
                     }
@@ -243,5 +247,7 @@ class ComicPageHorizontalRvAdapter(val onRetry: (uuid: String, isNext: Boolean) 
     fun getCurrentList() = mDiffer.currentList
 
     fun submitList(contents: MutableList<Any>, runnable: Runnable) = mDiffer.submitList(contents) { runnable.run() }
+
+    fun onDestroy() { mScope.cancel() }
 
 }

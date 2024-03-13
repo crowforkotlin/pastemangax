@@ -37,109 +37,140 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/close" />
 
-    <TextView
-        android:id="@+id/settings_proxy_tips"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/base_dp20"
-        android:layout_marginTop="@dimen/base_dp10"
-        android:layout_marginEnd="@dimen/base_dp20"
-        android:drawablePadding="@dimen/base_dp5"
-        android:text="@string/main_proxy_tips"
-        android:textSize="@dimen/base_sp12"
-        android:textStyle="bold"
-        app:drawableStartCompat="@drawable/base_ic_tips"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider" />
-
-    <RadioGroup
-        android:id="@+id/proxy_radio_group"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/base_dp20"
-        android:layout_marginTop="@dimen/base_dp10"
-        android:layout_marginEnd="@dimen/base_dp20"
-        android:layout_marginBottom="@dimen/base_dp10"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_proxy_tips"
-        app:layout_constraintVertical_bias="0">
-
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/proxy_domestic_route"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/main_proxy_domestic_route"
-            android:textSize="@dimen/base_sp12"
-            android:textStyle="bold" />
-
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/proxy_overseas_route"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_proxy_overseas_route"
-            android:textSize="@dimen/base_sp12"
-            android:textStyle="bold" />
-
-    </RadioGroup>
-
-    <TextView
-        android:id="@+id/proxy_tips"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="@string/main_api_tips"
-        app:layout_constraintEnd_toEndOf="@+id/proxy_radio_group"
-        app:layout_constraintStart_toStartOf="@+id/proxy_radio_group"
-        app:layout_constraintTop_toBottomOf="@+id/proxy_radio_group" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/proxy_input_layout"
-        style="@style/Widget.Material3.TextInputLayout.FilledBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/base_dp1"
-        android:hint="@string/main_api"
-        app:boxBackgroundColor="@color/mangax_color_desc"
-        app:boxCornerRadiusBottomEnd="@dimen/base_dp7_5"
         android:layout_marginBottom="@dimen/base_dp10"
-        android:layout_marginEnd="@dimen/base_dp10"
-        android:layout_marginTop="@dimen/base_dp10"
-        app:boxCornerRadiusBottomStart="@dimen/base_dp7_5"
-        app:boxCornerRadiusTopEnd="@dimen/base_dp7_5"
-        app:boxCornerRadiusTopStart="@dimen/base_dp7_5"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeWidthFocused="0dp"
-        app:counterEnabled="false"
-        app:endIconMode="clear_text"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/proxy_switch"
-        app:layout_constraintStart_toStartOf="@+id/proxy_radio_group"
         app:layout_constraintVertical_bias="0"
-        app:layout_constraintTop_toBottomOf="@+id/proxy_tips"
-        app:startIconTint="@null">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/proxy_input_edit"
-            style="@style/Widget.Material3.TextInputEditText.FilledBox"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLength="120"
-            android:singleLine="true"
-            android:textStyle="bold" />
+            android:layout_height="match_parent">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/settings_proxy_tips"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/base_dp20"
+                android:layout_marginEnd="@dimen/base_dp20"
+                android:layout_marginTop="@dimen/base_dp10"
+                android:drawablePadding="@dimen/base_dp5"
+                android:text="@string/main_proxy_tips"
+                android:textSize="@dimen/base_sp12"
+                android:textStyle="bold"
+                app:drawableStartCompat="@drawable/base_ic_tips"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/proxy_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/proxy_input_layout"
-        app:layout_constraintEnd_toEndOf="@+id/proxy_tips"
-        app:layout_constraintTop_toTopOf="@+id/proxy_input_layout" />
+            <RadioGroup
+                android:id="@+id/proxy_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/base_dp20"
+                android:layout_marginTop="@dimen/base_dp10"
+                android:layout_marginEnd="@dimen/base_dp20"
+                android:layout_marginBottom="@dimen/base_dp10"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/settings_proxy_tips"
+                app:layout_constraintVertical_bias="0">
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/proxy_domestic_route"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_proxy_domestic_route"
+                    android:textSize="@dimen/base_sp12"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/proxy_overseas_route"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_proxy_overseas_route"
+                    android:textSize="@dimen/base_sp12"
+                    android:textStyle="bold" />
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/proxy_tips"
+                android:layout_width="0dp"
+                android:layout_marginTop="@dimen/base_dp10"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="@dimen/base_sp12"
+                android:text="@string/main_api_tips"
+                app:layout_constraintEnd_toEndOf="@+id/proxy_radio_group"
+                app:layout_constraintStart_toStartOf="@+id/proxy_radio_group"
+                app:layout_constraintTop_toBottomOf="@+id/proxy_radio_group" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/proxy_input_layout"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/base_dp10"
+                android:layout_marginBottom="@dimen/base_dp10"
+                android:elevation="@dimen/base_dp1"
+                android:hint="@string/main_api"
+                app:boxBackgroundColor="@color/mangax_color_desc"
+                app:boxCornerRadiusBottomEnd="@dimen/base_dp7_5"
+                app:boxCornerRadiusBottomStart="@dimen/base_dp7_5"
+                app:boxCornerRadiusTopEnd="@dimen/base_dp7_5"
+                app:boxCornerRadiusTopStart="@dimen/base_dp7_5"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp"
+                app:counterEnabled="false"
+                app:endIconMode="clear_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/proxy_tips"
+                app:layout_constraintStart_toStartOf="@+id/proxy_radio_group"
+                app:layout_constraintTop_toBottomOf="@+id/proxy_tips"
+                app:layout_constraintVertical_bias="0"
+                app:startIconTint="@null">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/proxy_input_edit"
+                    style="@style/Widget.Material3.TextInputEditText.FilledBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="120"
+                    android:singleLine="true"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/proxy_switch"
+                android:layout_width="0dp"
+                app:layout_constraintStart_toStartOf="@id/proxy_input_layout"
+                android:layout_height="wrap_content"
+                android:text="@string/main_proxy_switch_tips"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/proxy_input_layout"
+                app:layout_constraintTop_toBottomOf="@+id/proxy_input_layout" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/image_proxy_switch"
+                android:layout_width="0dp"
+                app:layout_constraintStart_toStartOf="@id/proxy_input_layout"
+                android:layout_height="wrap_content"
+                app:layout_constraintVertical_bias="0"
+                android:text="@string/main_image_proxy_switch_tips"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/proxy_switch"
+                app:layout_constraintEnd_toEndOf="@+id/proxy_tips"/>
 
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

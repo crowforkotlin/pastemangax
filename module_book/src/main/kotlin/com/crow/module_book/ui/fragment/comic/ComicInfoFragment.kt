@@ -222,9 +222,12 @@ class ComicInfoFragment : InfoFragment() {
      */
     override fun onInitData() {
 
-        if (MangaXAccountConfig.mAccountToken.isNotEmpty()) mVM.input(BookIntent.GetComicBrowserHistory(mPathword))
-
         mVM.input(BookIntent.GetComicInfoPage(mPathword))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (MangaXAccountConfig.mAccountToken.isNotEmpty()) mVM.input(BookIntent.GetComicBrowserHistory(mPathword))
     }
 
     /**
@@ -256,14 +259,11 @@ class ComicInfoFragment : InfoFragment() {
     override fun initObserver(saveInstanceState: Bundle?) {
 
         mVM.mChapterEntity.onCollect(this) { chapter ->
+            if (MangaXAccountConfig.mAccountToken.isNotEmpty()) return@onCollect
             if (mBaseEvent.getBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED) == null && chapter != null) {
                 mAdapter?.mChapterName = chapter.mChapterName
                 mAdapter?.notifyItemRangeChanged(0, mAdapter?.itemCount ?: return@onCollect)
-                if (MangaXAccountConfig.mAccountToken.isNotEmpty()) {
-                    toast(getString(R.string.book_readed_chapter, chapter.mChapterName))
-                } else {
-                    toast(getString(R.string.book_readed_chapter_offline, chapter.mChapterName))
-                }
+                toast(getString(R.string.book_readed_chapter_offline, chapter.mChapterName))
             }
         }
 
@@ -277,10 +277,12 @@ class ComicInfoFragment : InfoFragment() {
                         .doOnResult {
                             intent.comicBrowser?.apply {
                                 if (mCollectId == null) setButtonAddToBookshelf() else setButtonRemoveFromBookshelf()
-                                mAdapter!!.mChapterName = mBrowse?.chapterName ?: return@doOnResult
-                                mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, true)
-                                mAdapter!!.notifyItemRangeChanged(0, mAdapter!!.itemCount)
-                                toast(getString(R.string.book_readed_chapter, mAdapter?.mChapterName))
+                                mAdapter?.apply {
+                                    mChapterName = mBrowse?.chapterName ?: return@doOnResult
+                                    mBaseEvent.setBoolean(LOGIN_CHAPTER_HAS_BEEN_SETED, true)
+                                    notifyItemRangeChanged(0, itemCount)
+                                    toast(getString(R.string.book_readed_chapter, mAdapter?.mChapterName))
+                                }
                             }
                          }
                 }
@@ -322,7 +324,12 @@ class ComicInfoFragment : InfoFragment() {
             val chapter = mVM.mChapterEntity.value
             if (chapter == null) {
                 val comic = mAdapter!!.getItem(0)
-                startComicActivity(comic.name, comic.comicPathWord, comic.comicId , comic.uuid, comic.prev, comic.next)
+                val brwoser = mVM.mComicBrowser
+                if (brwoser == null) {
+                    startComicActivity(comic.name, comic.comicPathWord, comic.comicId , comic.uuid, comic.prev, comic.next)
+                } else {
+                    startComicActivity(brwoser.chapterName, brwoser.pathWord, brwoser.comicId , brwoser.chapterId, null, null)
+                }
             } else {
                 val pathword = mVM.mComicInfoPage?.mComic?.mPathWord ?: return@doOnClickInterval
                 startComicActivity(chapter.mChapterName, pathword, chapter.mBookUuid, chapter.mChapterCurrentUuid, chapter.mChapterPrevUuid, chapter.mChapterNextUuid)

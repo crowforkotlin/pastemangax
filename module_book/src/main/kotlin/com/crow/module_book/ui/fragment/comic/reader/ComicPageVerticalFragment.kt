@@ -24,6 +24,7 @@ import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.module_book.databinding.BookFragmentComicPageBinding
 import com.crow.module_book.model.database.model.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
@@ -209,6 +210,8 @@ class ComicPageVerticalFragment : BaseMviFragment<BookFragmentComicPageBinding>(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        AppProgressFactory.clear()
+        mAdapter?.onDestroy()
         mAdapter = null
     }
 
