@@ -347,7 +347,7 @@ class AnimeFragment : BaseMviFragment<AnimeFragmentBinding>() {
     /**
      * ⦁ 初始化观察者
      *
-     * ⦁ 2023-10-14 23:49:23 周六 下午
+     * ⦁ 2023-10-14 23:49:23 周六 下
      */
     override fun initObserver(saveInstanceState: Bundle?) {
 

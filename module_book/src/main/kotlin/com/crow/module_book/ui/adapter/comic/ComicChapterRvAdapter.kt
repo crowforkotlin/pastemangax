@@ -80,7 +80,6 @@ class ComicChapterRvAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterVH {
         return ChapterVH(BookFragmentChapterRvBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-
     }
 
     override fun getItemCount(): Int = mComic.size

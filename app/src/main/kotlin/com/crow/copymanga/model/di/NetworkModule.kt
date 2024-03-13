@@ -68,11 +68,12 @@ val networkModule = module {
             addInterceptor { chain ->
                 val request = chain.request()
                 val response = chain.proceed(request)
-                val progressFactory = AppProgressFactory.getProgressFactory(request.url.toString())
+                val url = request.url.toString()
+                val progressFactory = AppProgressFactory.getProgressFactory(url)
                 if (progressFactory == null) {
                     response
                 } else {
-                    response.newBuilder().body(AppProgressResponseBody(request.url.toString(), progressFactory.mRequestProgressListener, response.body)).build()
+                    response.newBuilder().body(AppProgressResponseBody(url, progressFactory.mRequestProgressListener, response.body)).build()
                 }
             }
             sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())

@@ -28,7 +28,6 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
     companion object {
         const val CATEGORIES = "CATEGORIES"
         var CURRENT_TYPE = Type.STRIPT
-            private set
     }
 
     /**
@@ -40,7 +39,8 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
     enum class Type(@IdRes val id: Int) {
         STRIPT(R.string.book_comic_stript),
         STANDARD(R.string.book_comic_standard),
-        PAGE(R.string.book_comic_page),
+        PAGE_HORIZONTAL(R.string.book_comic_page_horizontal),
+        PAGE_VERTICAL(R.string.book_comic_page_vertical),
     }
 
 
@@ -55,7 +55,8 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
         when (type) {
             Type.STRIPT -> mActivity.supportFragmentManager.navigate(host.id, ComicStriptFragment())
             Type.STANDARD -> mActivity.supportFragmentManager.navigate(host.id, ComicStandardFragment())
-            Type.PAGE -> { mActivity.supportFragmentManager.navigate(host.id, mActivity.get<Fragment>(named(Fragments.ComicPage.name)).also { it.arguments = bundleOf("CATEGORIES" to type.id) }) }
+            Type.PAGE_HORIZONTAL -> { mActivity.supportFragmentManager.navigate(host.id, mActivity.get<Fragment>(named(Fragments.ComicPageHorizontal.name)).also { it.arguments = bundleOf("CATEGORIES" to type.id) }) }
+            Type.PAGE_VERTICAL -> { mActivity.supportFragmentManager.navigate(host.id, mActivity.get<Fragment>(named(Fragments.ComicPageVertical.name)).also { it.arguments = bundleOf("CATEGORIES" to type.id) }) }
         }
     }
 }

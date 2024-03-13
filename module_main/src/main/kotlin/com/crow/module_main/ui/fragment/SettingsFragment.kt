@@ -37,6 +37,7 @@ import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.CatlogConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig.mApiImageProxyEnable
 import com.crow.mangax.copymanga.entity.CatlogConfig.mApiProxyEnable
 import com.crow.mangax.copymanga.entity.CatlogConfig.mChineseConvert
 import com.crow.mangax.copymanga.entity.CatlogConfig.mCoverOrinal
@@ -313,6 +314,21 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
             }
             mApiProxyEnable = false
             mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_API_PROXY, false)
+        }
+
+        binding.imageProxySwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                val text = binding.proxyInputEdit.text
+                when {
+                    text.isNullOrEmpty() -> { toast(getString(R.string.main_api_input_tips)) }
+                    (text.length ?: 0) < 20 -> { toast(getString(R.string.main_api_length_tips)) }
+                }
+                mApiImageProxyEnable = true
+                mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_API_IMAGE_PROXY, true)
+                return@setOnCheckedChangeListener
+            }
+            mApiImageProxyEnable = false
+            mVM.saveAppCatLogConfig(SpNameSpace.Key.ENABLE_API_IMAGE_PROXY, false)
         }
     }
 

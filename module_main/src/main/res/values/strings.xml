@@ -37,8 +37,10 @@
     <string name="main_dark_mode" translatable="false">黑夜模式</string>
 
 	<string name="main_history" translatable="false">历史记录</string>
-	<string name="main_api">API密钥</string>
-	<string name="main_api_tips">API线路代理：当所有站点都无法访问时，可以加群获取密钥进行正常访问和浏览！（需要开启此功能并输入密钥，此时所有漫画站点配置将失效，需要恢复请关闭此功能）</string>
+	<string name="main_api">请输入App专用密钥</string>
+	<string name="main_api_tips">⦁ 当所有站点都无法访问时，可以输入密钥走App专用线路进行正常访问和浏览！\n⦁ 需要开启此功能并输入密钥，此时所有漫画站点配置将失效，需要恢复请关闭此功能！\n\n⦁ 专用线路代理：解决访问不了内容\n⦁ 图床密钥代理：解决所有图片加载失败\n⦁ 加群获取密钥或者电邮联系(可在“关于作者”中找到)</string>
     <string name="main_api_input_tips">请输入密钥！</string>
 	<string name="main_api_length_tips">密钥最小长度为20！</string>
+	<string name="main_proxy_switch_tips">⦁ 专用线路密钥代理</string>
+	<string name="main_image_proxy_switch_tips">⦁ 专用图库密钥代理</string>
 </resources>

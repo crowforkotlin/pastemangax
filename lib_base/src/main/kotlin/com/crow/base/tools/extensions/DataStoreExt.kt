@@ -53,6 +53,7 @@ object SpNameSpace {
         const val ENABLE_UPDATE_PREFIX = "enable_update_prefix"
         const val ENABLE_COVER_ORINAL = "enable_cover_orinal"
         const val ENABLE_API_PROXY = "enable_api_proxy°"
+        const val ENABLE_API_IMAGE_PROXY = "enable_api_image_proxy°"
     }
 }
 

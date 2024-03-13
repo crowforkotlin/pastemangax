@@ -5,18 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:contentDescription="@null">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loading"
+        app:trackThickness="@dimen/base_dp3"
         style="@style/Widget.Material3.CircularProgressIndicator.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true"
         app:indicatorColor="@color/base_white"
-        app:trackThickness="@dimen/base_dp3"
         app:indicatorSize="@dimen/base_dp36"
         app:trackCornerRadius="@dimen/base_dp99" />
 
@@ -30,6 +30,13 @@
         android:textSize="@dimen/base_sp10"
         android:textStyle="bold" />
 
+    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:restoreStrategy="deferred"
+        android:contentDescription="@string/base_todo_textview"/>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/retry"
         style="@style/Widget.Material3.Button.TonalButton"
@@ -41,12 +48,5 @@
         android:text="@string/base_retry"
         android:visibility="gone"
         tools:visibility="visible" />
-
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/base_todo_textview"/>
 
 </FrameLayout>

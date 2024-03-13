@@ -11,10 +11,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.transition.CrossfadeTransition
 import com.crow.base.app.BaseApp
-import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.SpNameSpace
-import com.crow.base.tools.extensions.info
-import com.crow.mangax.copymanga.entity.CatlogConfig.mDarkMode
 import com.crow.copymanga.model.di.factoryModule
 import com.crow.copymanga.model.di.fragmentModule
 import com.crow.copymanga.model.di.networkModule
@@ -23,9 +20,9 @@ import com.crow.copymanga.model.di.singleModule
 import com.crow.copymanga.model.di.viewModelModule
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.entity.CatlogConfig
+import com.crow.mangax.copymanga.entity.CatlogConfig.mDarkMode
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.tools.language.ChineseConverter
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -37,7 +34,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
-import kotlin.system.measureTimeMillis
 
 
 /*************************

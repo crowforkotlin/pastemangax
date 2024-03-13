@@ -68,6 +68,14 @@ object CatlogConfig {
      */
     var mApiProxyEnable = false
 
+    /**
+     * ⦁ 图床代理是否启用
+     *
+     * ⦁ 2024-03-13 23:09:45 周三 下午
+     * @author crowforkotlin
+     */
+    var mApiImageProxyEnable = false
+
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun initialization(sp: SharedPreferences) {
@@ -77,6 +85,7 @@ object CatlogConfig {
             mUpdatePrefix = sp.getBoolean(SpNameSpace.Key.ENABLE_UPDATE_PREFIX, true)
             mCoverOrinal = sp.getBoolean(SpNameSpace.Key.ENABLE_COVER_ORINAL, false)
             mApiProxyEnable = sp.getBoolean(SpNameSpace.Key.ENABLE_API_PROXY, false)
+            mApiImageProxyEnable = sp.getBoolean(SpNameSpace.Key.ENABLE_API_IMAGE_PROXY, false)
         }
     }
 

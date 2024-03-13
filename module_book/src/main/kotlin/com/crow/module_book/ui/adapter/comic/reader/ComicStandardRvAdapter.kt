@@ -49,7 +49,6 @@ class ComicStandardRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Rec
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
             return oldItem == newItem
         }
-
         override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
             return true
         }
@@ -142,4 +141,5 @@ class ComicStandardRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Rec
     fun getCurrentList() = mDiffer.currentList
 
     fun submitList(pages: MutableList<Any>) = mDiffer.submitList(pages)
+    fun submitList(pages: MutableList<Any>, callback: Runnable) = mDiffer.submitList(pages, callback)
 }

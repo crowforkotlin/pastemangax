@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/base_dp96"
+    android:layout_height="match_parent"
     android:background="@color/book_ant_10">
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/text_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColor="@android:color/white"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/bookGuideline"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="上一章节：第一话" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/retry"
+        android:id="@+id/retry_right"
         style="@style/Widget.Material3.Button.TonalButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,10 +30,14 @@
         android:visibility="gone"
         app:backgroundTint="@color/base_white"
         app:cornerRadius="@dimen/base_dp10"
+        app:layout_constraintBottom_toBottomOf="@+id/text_right"
+        app:layout_constraintEnd_toEndOf="@+id/text_right"
+        app:layout_constraintStart_toStartOf="@+id/text_right"
+        app:layout_constraintTop_toTopOf="@+id/text_right"
         tools:visibility="visible" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/loading"
+        android:id="@+id/loading_right"
         style="@style/Widget.Material3.CircularProgressIndicator.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,69 +45,68 @@
         android:indeterminate="true"
         android:visibility="gone"
         app:indicatorColor="@color/base_white"
-        app:trackThickness="@dimen/base_dp3"
         app:indicatorSize="@dimen/base_dp36"
+        app:layout_constraintBottom_toBottomOf="@+id/text_right"
+        app:layout_constraintEnd_toEndOf="@+id/text_right"
+        app:layout_constraintStart_toStartOf="@+id/text_right"
+        app:layout_constraintTop_toTopOf="@+id/text_right"
         app:trackCornerRadius="@dimen/base_dp99"
+        app:trackThickness="@dimen/base_dp3"
         tools:visibility="visible" />
 
-    <!--<androidx.constraintlayout.widget.Guideline
-        android:id="@+id/stript_guideline_hor_0.5"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bookGuideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/stript_tips_prev"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:layout_marginBottom="@dimen/base_dp5"
-        app:layout_constraintBottom_toTopOf="@+id/stript_loading"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="上一章节：第一话" />
-
-    <TextView
-        android:id="@+id/stript_tips_center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/stript_loading"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stript_tips_prev"
-        tools:text="已经没有上一章了..." />
-
-    <TextView
-        android:id="@+id/stript_tips_next"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="@dimen/base_dp5"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stript_loading"
-        tools:text="下一章节：第一话" />
-
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/stript_loading"
-        style="@style/Widget.Material3.CircularProgressIndicator.Small"
+        android:id="@+id/text_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/bookGuideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="上一章节：第一话" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/retry_left"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/base_retry"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:backgroundTint="@color/base_white"
+        app:cornerRadius="@dimen/base_dp10"
+        app:layout_constraintBottom_toBottomOf="@+id/text_left"
+        app:layout_constraintEnd_toEndOf="@+id/text_left"
+        app:layout_constraintStart_toStartOf="@+id/text_left"
+        app:layout_constraintTop_toTopOf="@+id/text_left"
+        tools:visibility="visible" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/loading_left"
+        style="@style/Widget.Material3.CircularProgressIndicator.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/text_left"
+        app:layout_constraintTop_toTopOf="@id/text_left"
+        app:layout_constraintEnd_toEndOf="@id/text_left"
+        app:layout_constraintStart_toStartOf="@id/text_left"
+        android:layout_gravity="center"
         android:indeterminate="true"
         android:visibility="gone"
-        app:indicatorColor="@color/mangax_color_asc"
+        app:indicatorColor="@color/base_white"
         app:indicatorSize="@dimen/base_dp36"
-        app:layout_constraintBottom_toTopOf="@+id/stript_guideline_hor_0.5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/stript_guideline_hor_0.5"
         app:trackCornerRadius="@dimen/base_dp99"
-        tools:visibility="visible" />-->
+        app:trackThickness="@dimen/base_dp3"
+        tools:visibility="visible" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

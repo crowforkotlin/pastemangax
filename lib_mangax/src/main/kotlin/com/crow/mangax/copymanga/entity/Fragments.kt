@@ -26,7 +26,8 @@ enum class Fragments {
     AnimeInfo,
     Topic,
     ComicClassic,
-    ComicPage,
+    ComicPageHorizontal,
+    ComicPageVertical,
     ComicStript,
     ComicBottom
 }

@@ -14,7 +14,6 @@ import com.crow.base.ui.fragment.BaseMviBottomSheetDialogFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.view.event.BaseEventEntity
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
-import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.module_book.databinding.BookFragmentComicBottomBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderEvent
@@ -68,8 +67,11 @@ class ComicBottomSheetFragment : BaseMviBottomSheetDialogFragment<BookFragmentCo
                 ComicCategories.Type.STRIPT -> {
                     mBinding.buttonStript.isChecked = true
                 }
-                ComicCategories.Type.PAGE -> {
-                    mBinding.buttonPage.isChecked = true
+                ComicCategories.Type.PAGE_HORIZONTAL -> {
+                    mBinding.buttonPageHorizontal.isChecked = true
+                }
+                ComicCategories.Type.PAGE_VERTICAL -> {
+                    mBinding.buttonPageVertical.isChecked = true
                 }
                 else -> {
                     mBinding.buttonStandard.isChecked = true
@@ -95,8 +97,11 @@ class ComicBottomSheetFragment : BaseMviBottomSheetDialogFragment<BookFragmentCo
                         mBinding.buttonStript.id -> {
                             mBinding.buttonStript.isChecked = true
                         }
-                        mBinding.buttonPage.id -> {
-                            mBinding.buttonPage.isChecked = true
+                        mBinding.buttonPageHorizontal.id -> {
+                            mBinding.buttonPageHorizontal.isChecked = true
+                        }
+                        mBinding.buttonPageVertical.id -> {
+                            mBinding.buttonPageVertical.isChecked = true
                         }
                     }
                 }
@@ -106,7 +111,8 @@ class ComicBottomSheetFragment : BaseMviBottomSheetDialogFragment<BookFragmentCo
                         when(id) {
                             mBinding.buttonStandard.id -> { sendOptionResult(ComicCategories.Type.STANDARD.id) }
                             mBinding.buttonStript.id -> { sendOptionResult(ComicCategories.Type.STRIPT.id) }
-                            mBinding.buttonPage.id -> { sendOptionResult(ComicCategories.Type.PAGE.id) }
+                            mBinding.buttonPageHorizontal.id -> { sendOptionResult(ComicCategories.Type.PAGE_HORIZONTAL.id) }
+                            mBinding.buttonPageVertical.id -> { sendOptionResult(ComicCategories.Type.PAGE_VERTICAL.id)}
                         }
                     }
                 }
