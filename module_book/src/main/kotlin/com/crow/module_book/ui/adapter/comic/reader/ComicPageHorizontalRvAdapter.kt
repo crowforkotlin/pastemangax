@@ -147,7 +147,6 @@ class ComicPageHorizontalRvAdapter(val onRetry: (uuid: String, isNext: Boolean) 
             binding.loadingText.isInvisible = false
             binding.retry.isGone = true
             binding.loadingText.text = AppProgressFactory.PERCENT_0
-            binding.image.recycle()
             binding.image.setImage(ImageSource.Bitmap(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)))
             mAppProgressFactory?.removeProgressListener()?.remove()
             mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
