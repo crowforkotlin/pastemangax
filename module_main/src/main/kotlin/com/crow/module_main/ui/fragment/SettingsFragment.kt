@@ -268,7 +268,9 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
             }
         })
         binding.proxySwitch.isChecked = mApiProxyEnable
+        binding.imageProxySwitch.isChecked = mApiImageProxyEnable
         appConfig.mApiSecret?.let { binding.proxyInputEdit.setText(it) }
+
 
         // 代理组设置 选中监听
         binding.proxyRadioGroup.setOnCheckedChangeListener { _, checkedId ->

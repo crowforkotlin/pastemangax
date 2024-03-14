@@ -8,7 +8,7 @@ import com.crow.module_book.model.database.dao.ComicDao
 import com.crow.module_book.model.database.model.MineReaderComicEntity
 import com.crow.module_book.model.database.model.MineReaderSettingEntity
 
-@Database(entities = [MineReaderComicEntity::class, MineReaderSettingEntity::class], version = 2)
+@Database(entities = [MineReaderComicEntity::class, MineReaderSettingEntity::class], version = 5)
 @TypeConverters(BaseRoomDateConverter::class)
 abstract class ComicDB : RoomDatabase() {
 

@@ -7,6 +7,7 @@ import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.copymanga.okhttp.AppProgressResponseBody
 import com.crow.base.tools.extensions.baseMoshi
 import com.crow.base.tools.network.FlowCallAdapterFactory
+import com.crow.mangax.copymanga.BaseStrings.URL
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.entity.CatlogConfig
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -68,7 +69,15 @@ val networkModule = module {
             addInterceptor { chain ->
                 val request = chain.request()
                 val response = chain.proceed(request)
-                val url = request.url.toString()
+                val url = if (!CatlogConfig.mApiImageProxyEnable) {
+                    request.url.toString()
+                } else {
+                    if ((AppConfig.getInstance()?.mApiSecret?.length ?: 0) >= 20) {
+                        request.url.newBuilder().scheme(URL.SCHEME_HTTPS).host(URL.WUYA_API_IMAGE).build().toString()
+                    } else {
+                        request.url.toString()
+                    }
+                }
                 val progressFactory = AppProgressFactory.getProgressFactory(url)
                 if (progressFactory == null) {
                     response
@@ -93,12 +102,12 @@ val networkModule = module {
             .addInterceptor { chain ->
                 val request = chain.request()
                 val urlBuilder = if(!CatlogConfig.mApiProxyEnable) {
-                    BaseStrings.URL.COPYMANGA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()
+                    URL.COPYMANGA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()
                 } else {
                     if ((AppConfig.getInstance()?.mApiSecret?.length ?: 0) >= 20) {
-                        BaseStrings.URL.WUYA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()
+                        URL.WUYA_API_ROUTE.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()
                     } else {
-                        BaseStrings.URL.COPYMANGA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()
+                        URL.COPYMANGA.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()
                     }
                 }
                 chain.proceed(request.newBuilder().url(urlBuilder).build())
@@ -137,7 +146,7 @@ val networkModule = module {
             // 动态请求地址
             .addInterceptor { chain ->
                 val request = chain.request()
-                chain.proceed(request.newBuilder().url(BaseStrings.URL.HotManga.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()).build())
+                chain.proceed(request.newBuilder().url(URL.HotManga.toHttpUrl().newBuilder().encodedPath(request.url.encodedPath).encodedQuery(request.url.encodedQuery).build()).build())
             }
 
             // 动态添加请求头
@@ -166,7 +175,7 @@ val networkModule = module {
      */
     single(named_CopyMangaX) {
         Retrofit.Builder()
-            .baseUrl(BaseStrings.URL.COPYMANGA)
+            .baseUrl(URL.COPYMANGA)
             .client(get(named_CopyMangaX))
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
@@ -179,7 +188,7 @@ val networkModule = module {
      */
     single(named_HotMangaX) {
         Retrofit.Builder()
-            .baseUrl(BaseStrings.URL.HotManga)
+            .baseUrl(URL.HotManga)
             .client(get(named_HotMangaX))
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(baseMoshi))
