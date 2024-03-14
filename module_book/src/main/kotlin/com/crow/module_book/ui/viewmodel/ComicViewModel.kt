@@ -318,8 +318,8 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
         }
     }
 
-    fun getChapterPagePos() = mReaderComic?.mChapterPagePosition ?: 0
-    fun getPosOffset() = mReaderComic?.mChapterPagePositionOffset ?: 0
+    fun getChapterPagePos() = mReaderComic?.mChapterPagePosition ?: 1
+    fun getPosOffset() = mReaderComic?.mChapterPagePositionOffset ?: 1
 
     /**
      * ⦁ 尝试更新当前漫画信息如果uuid不同则更新到数据库

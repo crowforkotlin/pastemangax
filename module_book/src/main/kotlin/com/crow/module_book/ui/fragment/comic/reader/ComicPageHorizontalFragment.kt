@@ -71,7 +71,7 @@ class ComicPageHorizontalFragment : BaseMviFragment<BookFragmentComicPageBinding
     override fun getViewBinding(inflater: LayoutInflater) = BookFragmentComicPageBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mAdapter = ComicPageHorizontalRvAdapter { uuid, isNext ->
+        mAdapter = ComicPageHorizontalRvAdapter(viewLifecycleOwner) { uuid, isNext ->
             launchDelay(BASE_ANIM_300L) { mVM.input(BookIntent.GetComicPage(mVM.mPathword, uuid, isNext)) }
         }
         super.onViewCreated(view, savedInstanceState)
@@ -212,7 +212,6 @@ class ComicPageHorizontalFragment : BaseMviFragment<BookFragmentComicPageBinding
     override fun onDestroyView() {
         super.onDestroyView()
         AppProgressFactory.clear()
-        mAdapter?.onDestroy()
         mAdapter = null
     }
 

@@ -1,17 +1,17 @@
 
 package com.crow.module_book.ui.adapter.comic.reader
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.IntRange
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -38,11 +38,12 @@ import com.crow.module_book.model.entity.comic.reader.ReaderPageLoading
 import com.crow.module_book.model.resp.comic_page.Content
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.OnImageEventListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.cancel
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.davemorrissey.labs.subscaleview.decoder.SkiaPooledImageRegionDecoder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
 
 
 /*************************
@@ -53,14 +54,14 @@ import java.util.concurrent.Executors
  * @Description: ComicInfoChapterRvAdapter
  * @formatter:on
  **************************/
-class ComicPageHorizontalRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ComicPageHorizontalRvAdapter(
+    val mLifecycleOwner: LifecycleOwner,
+    val onRetry: (uuid: String, isNext: Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val LOADING_VIEW = 0
         private const val CONTENT_VIEW = 1
     }
-
-    private val mScope = CoroutineScope(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
 
     inner class PageLoadingVH(val binding: BookComicLoadingHorizontalPageRvBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -69,26 +70,24 @@ class ComicPageHorizontalRvAdapter(val onRetry: (uuid: String, isNext: Boolean) 
                 val item = getItem(absoluteAdapterPosition)
                 if (item is ReaderPageLoading) {
                     binding.retryLeft.animateFadeOut()
-                        .withEndAction {
-                            binding.retryLeft.isGone = true
-                            binding.loadingLeft.animateFadeIn()
-                                .withEndAction {
-                                    onRetry(item.mPrevUuid ?: return@withEndAction, false)
-                                }
-                        }
+                        .withEndAction(object : Runnable {
+                            override fun run() {
+                                binding.retryLeft.isGone = true
+                                binding.loadingLeft.animateFadeIn() .withEndAction { onRetry(item.mPrevUuid ?: return@withEndAction, false) }
+                            }
+                        })
                 }
             }
             binding.retryRight.doOnClickInterval {
                 val item = getItem(absoluteAdapterPosition)
                 if (item is ReaderPageLoading) {
                     binding.retryRight.animateFadeOut()
-                        .withEndAction {
-                            binding.retryRight.isGone = true
-                            binding.loadingRight.animateFadeIn()
-                                .withEndAction {
-                                    onRetry(item.mNextUuid ?: return@withEndAction, false)
-                                }
-                        }
+                        .withEndAction(object : Runnable {
+                            override fun run() {
+                                binding.retryRight.isGone = true
+                                binding.loadingRight.animateFadeIn() .withEndAction { onRetry(item.mNextUuid ?: return@withEndAction, false) }
+                            }
+                        })
                 }
             }
         }
@@ -124,67 +123,95 @@ class ComicPageHorizontalRvAdapter(val onRetry: (uuid: String, isNext: Boolean) 
 
     inner class PageViewHolder(binding: BookComicPagerPageRvBinding) : MangaCoilVH<BookComicPagerPageRvBinding>(binding) {
 
+        private var mCurrentImage: String? = null
+        private var mPrevJob: Job? = null
+
         init {
+            binding.image.bindToLifecycle(mLifecycleOwner)
+            binding.image.regionDecoderFactory = SkiaPooledImageRegionDecoder.Factory()
             binding.image.addOnImageEventListener(object : OnImageEventListener {
-                override fun onImageLoadError(e: Throwable) { }
                 override fun onImageLoaded() { }
                 override fun onPreviewLoadError(e: Throwable) { }
                 override fun onPreviewReleased() { }
-                override fun onReady() {
-                    binding.image.maxScale = 2f * maxOf(
-                        binding.image.width / binding.image.sWidth.toFloat(),
-                        binding.image.height / binding.image.sHeight.toFloat(),
-                    )
-                    binding.image.animateFadeIn()
-                }
                 override fun onTileLoadError(e: Throwable) { }
+                override fun onImageLoadError(e: Throwable) {
+                    binding.loading.isInvisible = true
+                    binding.loadingText.isInvisible = true
+                    binding.retry.isVisible = true
+                    binding.retry.doOnClickInterval {
+                        binding.retry.isGone = true
+                        binding.loading.isInvisible = false
+                        binding.loadingText.isInvisible = false
+                        val item = getItem(absoluteAdapterPosition)
+                        if (item is Content) {
+                            (itemView.context as LifecycleOwner).launchDelay(BASE_ANIM_300L) {
+                                onBind(when {
+                                    item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${MangaXAccountConfig.mResolution}x.")
+                                    item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${MangaXAccountConfig.mResolution}x.")
+                                    item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${MangaXAccountConfig.mResolution}x.")
+                                    else -> item.mImageUrl
+                                })
+                            }
+                        }
+                    }
+                }
+                override fun onReady() {
+                    binding.image.apply {
+                        minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
+                        maxScale = 2f * maxOf(
+                            width / sWidth.toFloat(),
+                            height / sHeight.toFloat(),
+                        )
+                        animateFadeIn()
+                    }
+                }
             })
         }
 
-
         fun onBind(imageUrl: String) {
-            binding.loading.isInvisible = false
-            binding.loadingText.isInvisible = false
-            binding.retry.isGone = true
-            binding.loadingText.text = AppProgressFactory.PERCENT_0
-            binding.image.setImage(ImageSource.Bitmap(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)))
-            mAppProgressFactory?.removeProgressListener()?.remove()
-            mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> binding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
-            app.imageLoader.enqueue(
-                ImageRequest.Builder(itemView.context)
-                    .listener(
-                        onSuccess = { _, _ ->
-                            binding.loading.isInvisible = true
-                            binding.loadingText.isInvisible = true
-                            binding.retry.isGone = true
-                        },
-                        onError = { _, _ ->
-                            binding.loading.isInvisible = true
-                            binding.loadingText.isInvisible = true
-                            binding.retry.isVisible = true
-                            binding.retry.doOnClickInterval {
-                                binding.loading.isInvisible = false
-                                binding.loadingText.isInvisible = false
-                                it.mType.isGone = true
-                                (itemView.context as LifecycleOwner).launchDelay(BASE_ANIM_300L) { onBind(imageUrl) }
-                            }
-                        },
-                    )
-                    .data(imageUrl)
-                    .decoderFactory { source, option, _ ->
-                        Decoder {
-                            val bitmap = BitmapFactory.decodeStream(source.source.source().inputStream())
-                            DecodeResult(drawable =bitmap.toDrawable(app.resources), false)
+            binding.apply {
+                mPrevJob?.cancel()
+                mPrevJob = mLifecycleOwner.lifecycleScope.launch {
+                    image.recycle()
+                    retry.isGone = true
+                    loading.isInvisible = false
+                    loadingText.isInvisible = false
+                    loadingText.text = AppProgressFactory.PERCENT_0
+                    mAppProgressFactory?.removeProgressListener()?.remove()
+                    mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> loadingText.text = AppProgressFactory.formateProgress(percentage) }
+                    async(Dispatchers.IO) {
+                        app.imageLoader.execute(ImageRequest.Builder(image.context)
+                            .addListener(imageUrl)
+                            .data(imageUrl)
+                            .decoderFactory { source, _, _ -> Decoder { DecodeResult(drawable =BitmapFactory.decodeStream(source.source.source().inputStream()).toDrawable(app.resources), false) } }
+                            .build()
+                        )
+                    }.await().also {  result -> image.setImage(ImageSource.Bitmap((result.drawable as BitmapDrawable).bitmap, isCached = true)) }
+                }
+            }
+        }
+
+        private fun ImageRequest.Builder.addListener(imageUrl: String): ImageRequest.Builder {
+            binding.apply {
+                return listener(
+                    onSuccess = { _, _ ->
+                        loading.isInvisible = true
+                        loadingText.isInvisible = true
+                        retry.isGone = true
+                    },
+                    onError = { _, _ ->
+                        loading.isInvisible = true
+                        loadingText.isInvisible = true
+                        retry.isVisible = true
+                        retry.doOnClickInterval {
+                            retry.isGone = true
+                            loading.isInvisible = false
+                            loadingText.isInvisible = false
+                            (itemView.context as LifecycleOwner).launchDelay(BASE_ANIM_300L) { onBind(imageUrl) }
                         }
-                    }
-                    .target {
-                        mScope.launch {
-                            val bitmap = it.toBitmap()
-                            binding.image.post { binding.image.setImage(ImageSource.Bitmap(bitmap)) }
-                        }
-                    }
-                    .build()
-            )
+                    },
+                )
+            }
         }
     }
 
@@ -218,6 +245,11 @@ class ComicPageHorizontalRvAdapter(val onRetry: (uuid: String, isNext: Boolean) 
         }
     }
 
+    override fun onViewRecycled(vh: RecyclerView.ViewHolder) {
+        if (vh is PageViewHolder) { vh.binding.image.recycle() }
+        super.onViewRecycled(vh)
+    }
+
     override fun getItemCount(): Int = mDiffer.currentList.size
 
     override fun getItemViewType(position: Int): Int {
@@ -246,7 +278,5 @@ class ComicPageHorizontalRvAdapter(val onRetry: (uuid: String, isNext: Boolean) 
     fun getCurrentList() = mDiffer.currentList
 
     fun submitList(contents: MutableList<Any>, runnable: Runnable) = mDiffer.submitList(contents) { runnable.run() }
-
-    fun onDestroy() { mScope.cancel() }
 
 }
