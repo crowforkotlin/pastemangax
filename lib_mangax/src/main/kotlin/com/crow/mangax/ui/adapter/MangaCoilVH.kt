@@ -23,10 +23,14 @@ import com.crow.base.app.app
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.log
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHolder(binding.root) {
 
@@ -51,13 +55,13 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
         mRetry = button
     }
 
-    fun loadImageWithRetry(imageUrl: String) {
+    fun loadImageWithRetry(url: String) {
+        mRetry?.isGone = true
         mLoading.isInvisible = false
         mLoadingText.isInvisible = false
-        mRetry?.isGone = true
         mLoadingText.text = AppProgressFactory.PERCENT_0
         mAppProgressFactory?.removeProgressListener()?.remove()
-        mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> mLoadingText.text = AppProgressFactory.formateProgress(percentage) }
+        mAppProgressFactory = AppProgressFactory.createProgressListener(url) { _, _, percentage, _, _ -> mLoadingText.text = AppProgressFactory.formateProgress(percentage) }
         val isNull = itemView.tag == null
         if (isNull) {
             itemView.tag = itemView
@@ -65,7 +69,6 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
         } else {
             itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = MATCH_PARENT }
         }
-
         app.imageLoader.enqueue(
             ImageRequest.Builder(itemView.context)
                 .listener(
@@ -87,20 +90,20 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
                             mLoading.isInvisible = false
                             mLoadingText.isInvisible = false
                             it.mType.isGone = true
-                            (itemView.context as LifecycleOwner).launchDelay(BASE_ANIM_300L) { loadImageWithRetry(imageUrl) }
+                            (itemView.context as LifecycleOwner).launchDelay(BASE_ANIM_300L) { loadImageWithRetry(url) }
                         }
                     },
                 )
-                .data(imageUrl)
+                .data(url)
                 .scale(Scale.FIT)
                 .decoderFactory { source, option, _ -> Decoder { DecodeResult(drawable =BitmapFactory.decodeStream(source.source.source().inputStream()).toDrawable(option.context.resources), false) } }
                 .target(mImage)
                 .build()
         )
-
     }
 
-    fun loadCoverImage(imageUrl: String) {
+    fun loadCoverImage(url: String) {
+        val cover = if(CatlogConfig.mCoverOrinal) getOrignalCover(url) else url
         mLoading.isInvisible = false
         mLoadingText.isInvisible = false
         mLoadingText.text = AppProgressFactory.PERCENT_0
@@ -108,7 +111,6 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
             removeProgressListener()
             remove()
         }
-        val cover = if(CatlogConfig.mCoverOrinal) getOrignalCover(imageUrl) else imageUrl
         mAppProgressFactory = AppProgressFactory.createProgressListener(cover) { _, _, percentage, _, _ -> mLoadingText.text = AppProgressFactory.formateProgress(percentage) }
         app.imageLoader.enqueue(
             ImageRequest.Builder(itemView.context)
@@ -123,5 +125,16 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
                 .target(mImage)
                 .build()
         )
+    }
+    private fun getImageUrl(url: String): String {
+        return if ((AppConfig.getInstance()?.mApiSecret?.length ?: 0) >= 20 && CatlogConfig.mApiImageProxyEnable) {
+            url.toHttpUrl() .newBuilder()
+                .host(BaseStrings.URL.WUYA_API_IMAGE)
+                .scheme(BaseStrings.URL.SCHEME_HTTPS)
+                .build()
+                .toString().also { it.log() }
+        } else {
+            url.also { it.log() }
+        }
     }
 }

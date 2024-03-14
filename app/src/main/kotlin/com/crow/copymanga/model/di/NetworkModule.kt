@@ -6,6 +6,7 @@ import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.copymanga.okhttp.AppProgressResponseBody
 import com.crow.base.tools.extensions.baseMoshi
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.network.FlowCallAdapterFactory
 import com.crow.mangax.copymanga.BaseStrings.URL
 import com.crow.mangax.copymanga.entity.AppConfig
@@ -68,21 +69,23 @@ val networkModule = module {
         OkHttpClient.Builder().apply {
             addInterceptor { chain ->
                 val request = chain.request()
-                val response = chain.proceed(request)
-                val url = if (!CatlogConfig.mApiImageProxyEnable) {
-                    request.url.toString()
+                /*val url = if (!CatlogConfig.mApiImageProxyEnable) {
+                    request.url
                 } else {
                     if ((AppConfig.getInstance()?.mApiSecret?.length ?: 0) >= 20) {
-                        request.url.newBuilder().scheme(URL.SCHEME_HTTPS).host(URL.WUYA_API_IMAGE).build().toString()
+                        request.url.newBuilder().scheme(URL.SCHEME_HTTPS).host(URL.WUYA_API_IMAGE).build()
                     } else {
-                        request.url.toString()
+                        request.url
                     }
-                }
-                val progressFactory = AppProgressFactory.getProgressFactory(url)
+                }*/
+//                val response = chain.proceed(request.newBuilder().addHeader("x-api-key", AppConfig.getInstance()?.mApiSecret ?: "").build())
+                val response = chain.proceed(request)
+                val urlString = request.url.toString()
+                val progressFactory = AppProgressFactory.getProgressFactory(urlString)
                 if (progressFactory == null) {
                     response
                 } else {
-                    response.newBuilder().body(AppProgressResponseBody(url, progressFactory.mRequestProgressListener, response.body)).build()
+                    response.newBuilder().body(AppProgressResponseBody(urlString, progressFactory.mRequestProgressListener, response.body)).build()
                 }
             }
             sslSocketFactory(SSLSocketClient.sSLSocketFactory, SSLSocketClient.geX509tTrustManager())
