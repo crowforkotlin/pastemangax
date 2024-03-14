@@ -74,7 +74,6 @@ object StriptLoader {
     }
 
     fun obtaintCurrentPos(chapterId: Int, pages: List<Pair<Int, ReaderContent>>, position: Int): Int {
-        position.log()
         val pageSize = pages.size
         if (pageSize == 1) {
             return position + 1
