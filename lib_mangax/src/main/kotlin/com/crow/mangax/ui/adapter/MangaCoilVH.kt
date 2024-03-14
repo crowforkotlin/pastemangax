@@ -132,9 +132,9 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
                 .host(BaseStrings.URL.WUYA_API_IMAGE)
                 .scheme(BaseStrings.URL.SCHEME_HTTPS)
                 .build()
-                .toString().also { it.log() }
+                .toString()
         } else {
-            url.also { it.log() }
+            url
         }
     }
 }
