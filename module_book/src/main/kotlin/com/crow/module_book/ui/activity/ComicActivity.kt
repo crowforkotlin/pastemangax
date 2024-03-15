@@ -1,6 +1,7 @@
 package com.crow.module_book.ui.activity
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Build
@@ -15,6 +16,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.activity.addCallback
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -339,7 +341,9 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
         mBinding.root.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) { }
             override fun onDrawerClosed(drawerView: View) { }
-            override fun onDrawerStateChanged(newState: Int) { }
+            override fun onDrawerStateChanged(newState: Int) {
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(mBinding.root.windowToken, 0)
+            }
             override fun onDrawerOpened(drawerView: View) {
                 sendFragmentResult(ReaderEvent.OPEN_DRAWER)
                 lifecycleScope.tryConvert(mVM.mComicInfo.mSubTitle) {

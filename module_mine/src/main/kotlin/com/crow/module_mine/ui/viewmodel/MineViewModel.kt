@@ -21,6 +21,7 @@ import com.crow.base.tools.extensions.toTypeEntity
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.MangaXAccountConfig
+import com.crow.mangax.copymanga.getImageUrl
 import com.crow.module_mine.model.MineIntent
 import com.crow.module_mine.model.resp.MineLoginResultsOkResp
 import com.crow.module_mine.model.resp.MineResultErrorResp
@@ -115,7 +116,7 @@ class MineViewModel(private val repository: MineRepository) : BaseMviViewModel<M
         if (needApply) {
             app.imageLoader.enqueue(
                 ImageRequest.Builder(context)
-                    .data(if (mIconUrl == null) mangaR.drawable.base_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl)) // 加载的图片地址或占位符
+                    .data(if (mIconUrl == null) mangaR.drawable.base_icon_app else getImageUrl(BaseStrings.URL.MangaFuna.plus(mIconUrl))) // 加载的图片地址或占位符
                     .allowConversionToBitmap(true)
                     .placeholder(mangaR.drawable.base_icon_app) // 设置占位符
                     .transformations(CircleCropTransformation()) // 应用圆形裁剪
@@ -132,7 +133,7 @@ class MineViewModel(private val repository: MineRepository) : BaseMviViewModel<M
         }
         app.imageLoader.enqueue(
             ImageRequest.Builder(context)
-                .data(if (mIconUrl == null) mangaR.drawable.base_icon_app else BaseStrings.URL.MangaFuna.plus(mIconUrl)) // 加载的图片地址或占位符
+                .data(if (mIconUrl == null) mangaR.drawable.base_icon_app else getImageUrl(BaseStrings.URL.MangaFuna.plus(mIconUrl))) // 加载的图片地址或占位符
                 .placeholder(mangaR.drawable.base_icon_app) // 设置占位符
                 .target { doOnReady(it) }
                 .decoderFactory { source, option, _ -> Decoder {

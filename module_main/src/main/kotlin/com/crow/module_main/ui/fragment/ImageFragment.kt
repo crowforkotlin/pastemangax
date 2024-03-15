@@ -1,6 +1,9 @@
 package com.crow.module_main.ui.fragment
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -9,11 +12,14 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
+import coil.decode.DecodeResult
+import coil.decode.Decoder
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.crow.base.app.app
@@ -31,11 +37,15 @@ import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.entity.CatlogConfig
+import com.crow.mangax.copymanga.getImageUrl
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentImageBinding
 import com.crow.module_main.ui.viewmodel.ImageViewModel
+import com.davemorrissey.labs.subscaleview.ImageSource
+import com.davemorrissey.labs.subscaleview.OnImageEventListener
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -78,6 +88,8 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
      */
     private val mImageVM: ImageViewModel by viewModel()
 
+    private var mBitmap: Bitmap? = null
+
     /**
      * ⦁ Reuqest Permission
      *
@@ -119,7 +131,7 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
      */
     private fun saveBitmapToDCIM() {
         viewLifecycleOwner.lifecycleScope.launch {
-            mImageVM.saveBitmapToDCIM((mBinding.photoview.drawable ?: return@launch).toBitmap(), mImageName!!).collect { state ->
+            mImageVM.saveBitmapToDCIM(mBitmap ?: return@launch, mImageName!!).collect { state ->
                 state.second
                     .doOnLoading { showLoadingAnim() }
                     .doOnResult {
@@ -168,7 +180,24 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
                 .build()
         )*/
 
-        mImageUrl?.let { url ->
+        mBinding.photoview.addOnImageEventListener(object : OnImageEventListener {
+            override fun onImageLoadError(e: Throwable) { }
+            override fun onImageLoaded() { }
+            override fun onPreviewLoadError(e: Throwable) { }
+            override fun onPreviewReleased() { }
+            override fun onTileLoadError(e: Throwable) { }
+            override fun onReady() {
+                mBinding.photoview.apply {
+                    maxScale = 1.5f * maxOf(
+                        width / sWidth.toFloat(),
+                        height / sHeight.toFloat(),
+                    )
+                }
+            }
+        })
+
+        mImageUrl?.let {
+            val url = getImageUrl(it)
             mProgressFactory = AppProgressFactory.createProgressListener(url) { _, _, percentage, _, _ -> mBinding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
             app.imageLoader.enqueue(
                 ImageRequest.Builder(mContext)
@@ -180,9 +209,8 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
                         onError = { _, _ -> mBinding.loadingText.text = "-1%" },
                     )
                     .data(url)
-                    .target(mBinding.photoview)
-                    .allowHardware(false)
-                    .allowConversionToBitmap(true)
+                    .decoderFactory { result, option, _-> Decoder { DecodeResult(drawable = BitmapFactory.decodeStream(result.source.source().inputStream()).toDrawable(option.context.resources), false) } }
+                    .target { mBinding.photoview.setImage(ImageSource.Bitmap((it as BitmapDrawable).bitmap.also { mBitmap = it }, true)) }
                     .build()
             )
         }
@@ -201,6 +229,8 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
     }
 
     override fun onDestroyView() {
+        mBinding.photoview.recycle()
+        mBitmap = null
         super.onDestroyView()
         mProgressFactory?.apply {
             remove()

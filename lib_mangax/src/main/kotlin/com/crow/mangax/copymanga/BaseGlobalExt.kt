@@ -30,6 +30,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDivider
 import com.squareup.moshi.JsonDataException
 import kotlinx.coroutines.launch
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -149,4 +150,18 @@ fun View.processTokenError(code: Int, msg: String?, doOnCancel: (MaterialAlertDi
 
 inline fun LifecycleCoroutineScope.tryConvert(text: String, crossinline result: (String) -> Unit) {
    if (CatlogConfig.mChineseConvert) { launch { result(ChineseConverter.convert(text)) } } else result(text)
+}
+
+fun getImageUrl(url: String): String {
+    return if ((AppConfig.getInstance()?.mApiSecret?.length ?: 0) >= 20 && CatlogConfig.mApiImageProxyEnable) {
+        val httpUrl = url.toHttpUrl()
+        httpUrl.newBuilder()
+            .host(BaseStrings.URL.WUYA_API_IMAGE)
+            .scheme(BaseStrings.URL.SCHEME_HTTPS)
+            .addQueryParameter("image_host", httpUrl.host)
+            .build()
+            .toString()
+    } else {
+        url
+    }
 }

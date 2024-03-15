@@ -34,6 +34,7 @@ import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.CatlogConfig.mChineseConvert
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.mangax.copymanga.formatHotValue
+import com.crow.mangax.copymanga.getImageUrl
 import com.crow.mangax.copymanga.getSpannableString
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.tools.language.ChineseConverter
@@ -85,7 +86,9 @@ class ComicInfoFragment : InfoFragment() {
         // 在DB中查找已读章节
         mVM.findReadedBookChapterOnDB(comicInfoPage.mUuid, BookType.COMIC)
 
-        mProgressFactory = AppProgressFactory.createProgressListener(comicInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
+        val cover = getImageUrl(comicInfoPage.mCover)
+
+        mProgressFactory = AppProgressFactory.createProgressListener(cover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
 
         app.imageLoader.enqueue(
             ImageRequest.Builder(mContext)
@@ -96,7 +99,7 @@ class ComicInfoFragment : InfoFragment() {
                     },
                     onError = { _, _ -> mBinding.bookInfoProgressText.text = "-1%" },
                 )
-                .data(comicInfoPage.mCover)
+                .data(cover)
                 .target(mBinding.bookInfoImage)
                 .build()
         )

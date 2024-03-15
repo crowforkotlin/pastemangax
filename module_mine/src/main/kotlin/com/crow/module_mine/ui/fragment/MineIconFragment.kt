@@ -28,6 +28,7 @@ import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.popAsyncWithClear
 import com.crow.base.ui.fragment.BaseMviFragment
+import com.crow.mangax.copymanga.getImageUrl
 import com.crow.module_mine.R
 import com.crow.module_mine.databinding.MineFragmentIconBinding
 import com.crow.module_mine.ui.viewmodel.MineViewModel
@@ -117,7 +118,7 @@ class MineIconFragment : BaseMviFragment<MineFragmentIconBinding>() {
                                 override fun loadImage(context: Context, url: String, imageView: ImageView) {
                                     app.imageLoader.enqueue(
                                         ImageRequest.Builder(context)
-                                            .data(url)
+                                            .data(getImageUrl(url))
                                             .target(imageView)
                                             .build()
                                     )

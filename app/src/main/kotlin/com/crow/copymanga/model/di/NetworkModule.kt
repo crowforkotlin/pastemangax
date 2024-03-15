@@ -68,19 +68,20 @@ val networkModule = module {
     single(named_Progress) {
         OkHttpClient.Builder().apply {
             addInterceptor { chain ->
-                val request = chain.request()
-                /*val url = if (!CatlogConfig.mApiImageProxyEnable) {
-                    request.url
+                val request = if (!CatlogConfig.mApiImageProxyEnable) {
+                    chain.request()
                 } else {
                     if ((AppConfig.getInstance()?.mApiSecret?.length ?: 0) >= 20) {
-                        request.url.newBuilder().scheme(URL.SCHEME_HTTPS).host(URL.WUYA_API_IMAGE).build()
+                        chain.request().newBuilder()
+                            .addHeader("x-api-key", AppConfig.getInstance()?.mApiSecret ?: "")
+                            .build()
                     } else {
-                        request.url
+                        chain.request()
                     }
-                }*/
-//                val response = chain.proceed(request.newBuilder().addHeader("x-api-key", AppConfig.getInstance()?.mApiSecret ?: "").build())
+                }
                 val response = chain.proceed(request)
                 val urlString = request.url.toString()
+                urlString.log()
                 val progressFactory = AppProgressFactory.getProgressFactory(urlString)
                 if (progressFactory == null) {
                     response

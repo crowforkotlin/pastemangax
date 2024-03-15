@@ -36,6 +36,7 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
 import com.crow.mangax.copymanga.entity.CatlogConfig.mChineseConvert
+import com.crow.mangax.copymanga.getImageUrl
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_anime.R
 import com.crow.module_anime.databinding.AnimeFragmentInfoBinding
@@ -265,7 +266,9 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
 
         val anim = info.mCartoon
 
-        mProgressFactory = AppProgressFactory.createProgressListener(anim.mCover) { _, _, percentage, _, _ -> mBinding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
+        val cover = getImageUrl(anim.mCover)
+
+        mProgressFactory = AppProgressFactory.createProgressListener(cover) { _, _, percentage, _, _ -> mBinding.loadingText.text = AppProgressFactory.formateProgress(percentage) }
 
         app.imageLoader.enqueue(
             ImageRequest.Builder(mContext)
@@ -276,7 +279,7 @@ class AnimeInfoFragment : BaseMviFragment<AnimeFragmentInfoBinding>() {
                     },
                     onError = { _, _ -> mBinding.loadingText.text = "-1%" },
                 )
-                .data(anim.mCover)
+                .data(cover)
                 .target(mBinding.image)
                 .build()
         )

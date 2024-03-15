@@ -42,5 +42,5 @@
     <string name="main_api_input_tips">请输入密钥！</string>
 	<string name="main_api_length_tips">密钥最小长度为20！</string>
 	<string name="main_proxy_switch_tips">⦁ 专用线路密钥代理</string>
-	<string name="main_image_proxy_switch_tips">⦁ 专用图床密钥代理（修复中…）</string>
+	<string name="main_image_proxy_switch_tips">⦁ 专用图床密钥代理</string>
 </resources>

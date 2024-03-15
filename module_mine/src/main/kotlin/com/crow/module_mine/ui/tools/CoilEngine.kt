@@ -5,6 +5,7 @@ import android.widget.ImageView
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.crow.base.app.app
+import com.crow.mangax.copymanga.getImageUrl
 import com.luck.picture.lib.engine.ImageEngine
 import com.luck.picture.lib.utils.ActivityCompatHelper
 import kotlinx.coroutines.CoroutineScope
