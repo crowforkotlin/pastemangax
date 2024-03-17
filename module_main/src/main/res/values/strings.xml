@@ -23,8 +23,8 @@
 	<string name="main_proxy_overseas_route" translatable="false">港台、海外路线</string>
 
 	<string name="main_site_current" translatable="false">当前站点：%s</string>
-	<string name="main_site_one" translatable="false">（无需梯子-推荐）站点① </string>
-	<string name="main_site_two" translatable="false">（需要梯子-次选）站点② </string>
+	<string name="main_site_one" translatable="false">（无需魔法-推荐）站点① </string>
+	<string name="main_site_two" translatable="false">（需要魔法-次选）站点② </string>
 	<string name="main_permission_tips" translatable="false">您需要同意写入权限才可保存图片到本地！</string>
 	<string name="main_about_crow_email" translatable="false">⦁ 电子邮箱：crowforkotlin@gmail.com</string>
 	<string name="main_about_crow_help" translatable="false">⦁ 如有Bug请电邮联系，感谢各位以来的长期支持！</string>
