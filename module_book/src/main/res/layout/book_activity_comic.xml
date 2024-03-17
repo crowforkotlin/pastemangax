@@ -9,7 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/book_ant_10"
+        android:background="@android:color/black"
         tools:visibility="visible">
 
         <androidx.fragment.app.FragmentContainerView

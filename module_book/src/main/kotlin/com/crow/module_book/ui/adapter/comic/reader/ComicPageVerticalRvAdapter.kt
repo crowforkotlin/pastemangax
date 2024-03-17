@@ -68,11 +68,11 @@ class ComicPageVerticalRvAdapter(val mLifecycleOwner: LifecycleOwner, val onRetr
             binding.retryLeft.doOnClickInterval {
                 val item = getItem(absoluteAdapterPosition)
                 if (item is ReaderPageLoading) {
-                    binding.retryRight.animateFadeOut()
+                    binding.retryLeft.animateFadeOut()
                         .withEndAction(object : Runnable {
                             override fun run() {
-                                binding.retryRight.isGone = true
-                                binding.loadingRight.animateFadeIn() .withEndAction { onRetry(item.mNextUuid ?: return@withEndAction, false) }
+                                binding.retryLeft.isGone = true
+                                binding.loadingLeft.animateFadeIn() .withEndAction { onRetry(item.mNextUuid ?: return@withEndAction, false) }
                             }
                         })
                 }

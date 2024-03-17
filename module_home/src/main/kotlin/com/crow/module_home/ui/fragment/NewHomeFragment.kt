@@ -2,19 +2,31 @@
 package com.crow.module_home.ui.fragment
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.os.bundleOf
 import androidx.core.view.get
 import androidx.core.view.isGone
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.GridLayoutManager
+import coil.decode.DecodeResult
+import coil.decode.Decoder
+import coil.imageLoader
+import coil.request.ImageRequest
+import coil.size.Scale
+import coil.transform.CircleCropTransformation
+import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseEventEnum
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseStrings.ID
@@ -29,11 +41,15 @@ import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
+import com.crow.base.tools.extensions.dp2px
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
+import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.toJson
 import com.crow.base.tools.extensions.toast
 import com.crow.base.tools.extensions.withLifecycle
@@ -44,8 +60,10 @@ import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.view.event.BaseEventEntity
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.crow.base.ui.viewmodel.doOnError
+import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnSuccess
+import com.crow.mangax.copymanga.getImageUrl
 import com.crow.module_home.R
 import com.crow.module_home.databinding.HomeFragmentNewBinding
 import com.crow.module_home.databinding.HomeFragmentSearchViewBinding
@@ -60,6 +78,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import org.koin.android.ext.android.get
@@ -134,23 +153,6 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      * ⦁ 2023-09-17 01:47:09 周日 上午
      */
     private var mSearchBinding: HomeFragmentSearchViewBinding? = null
-
-    /**
-     * ⦁ 注册FlowBus 设置主页头像
-     *
-     * ⦁ 2023-09-17 01:28:24 周日 上午
-     */
-    init {
-        FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).register(this) { drawable ->
-            if (!isHidden) {
-                lifecycleScope.launch(CoroutineName(this::class.java.simpleName) + baseCoroutineException) {
-                    withStarted {
-                        mBinding.homeToolbar.navigationIcon = drawable
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * ⦁ 导航至BookComicInfo
@@ -384,6 +386,8 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             }
         }
 
+        sendOptionResult(BaseEventEnum.GetIconUrl.name, null)
+
         // 初始化viewstub
         mBaseErrorViewStub = baseErrorViewStub(mBinding.error, lifecycle) { mBinding.homeRefresh.autoRefresh() }
 
@@ -418,6 +422,31 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
      */
     override fun initListener() {
 
+        parentFragmentManager.setFragmentResultListener(BaseStrings.OPTION, viewLifecycleOwner) { key, bundle ->
+            when(bundle.getString(BaseStrings.EVENT)) {
+                BaseEventEnum.SetIcon.name -> {
+                    val url = bundle.getString(BaseStrings.VALUE)
+                    mContext.imageLoader.enqueue(
+                        ImageRequest.Builder(mContext)
+                            .data(if (url.isNullOrEmpty()) mangaR.drawable.base_icon_app else getImageUrl(BaseStrings.URL.MangaFuna.plus(url))) // 加载的图片地址或占位符
+                            .allowConversionToBitmap(true)
+                            .placeholder(mangaR.drawable.base_icon_app) // 设置占位符
+                            .transformations(CircleCropTransformation()) // 应用圆形裁剪
+                            .scale(Scale.FIT)
+                            .decoderFactory { source, option, _ ->
+                                Decoder {
+                                    val size = mContext.dp2px(48f).toInt()
+                                    val bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(source.source.source().inputStream()), size, size, true)
+                                    DecodeResult(drawable = bitmap.toDrawable(option.context.resources), false)
+                                }
+                            }
+                            .target { mBinding.homeToolbar.navigationIcon = it}
+                            .build()
+                    )
+                }
+            }
+        }
+
         // 设置容器Fragment的回调监听
         parentFragmentManager.setFragmentResultListener(HOME, this) { _, bundle ->
             if (bundle.getInt(ID) == 0) {
@@ -450,28 +479,34 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             }
         }
 
-        // 搜索
-        mBinding.homeToolbar.menu[0].doOnClickInterval {
-            if (mBinding.searchView.isShowing) {
-                mSearchBinding?.homeSearchVp?.let {  vp ->
-                    when(vp.currentItem) {
-                        0 -> { (childFragmentManager.fragments[0] as SearchComicFragment).doInputSearchComicIntent() }
-                        1 -> { (childFragmentManager.fragments[1] as SearchNovelFragment).doInputSearchNovelIntent() }
-                    }
-                }
-            } else {
-                initSearchView()
-                mBinding.searchView.show()
+        mBinding.homeToolbar.apply {
+            menu[0].doOnClickInterval {
+                sendOptionResult(BaseEventEnum.GetNotice.name, null)
             }
-        }
 
-        // 设置
-        mBinding.homeToolbar.menu[1].doOnClickInterval { navigateSettings() }
+            // 搜索
+            menu[1].doOnClickInterval {
+                if (mBinding.searchView.isShowing) {
+                    mSearchBinding?.homeSearchVp?.let {  vp ->
+                        when(vp.currentItem) {
+                            0 -> { (childFragmentManager.fragments[0] as SearchComicFragment).doInputSearchComicIntent() }
+                            1 -> { (childFragmentManager.fragments[1] as SearchNovelFragment).doInputSearchNovelIntent() }
+                        }
+                    }
+                } else {
+                    initSearchView()
+                    mBinding.searchView.show()
+                }
+            }
 
-        // MaterialToolBar NavigateIcon 点击事件
-        mBinding.homeToolbar.navigateIconClickGap(flagTime = BaseEvent.BASE_FLAG_TIME_300 shl 1) {
-            mBinding.homeRv.stopScroll()
-            get<BottomSheetDialogFragment>(named(Fragments.Mine.name)).show(requireParentFragment().parentFragmentManager, null)
+            // 设置
+            menu[2].doOnClickInterval { navigateSettings() }
+
+            // MaterialToolBar NavigateIcon 点击事件
+            navigateIconClickGap(flagTime = BaseEvent.BASE_FLAG_TIME_300 shl 1) {
+                mBinding.homeRv.stopScroll()
+                get<BottomSheetDialogFragment>(named(Fragments.Mine.name)).show(requireParentFragment().parentFragmentManager, null)
+            }
         }
 
         // 刷新
@@ -556,5 +591,14 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
                 }
             }
         }
+    }
+
+    private fun sendOptionResult(event: String, type: Any?) {
+        requireParentFragment().parentFragmentManager.setFragmentResult(BaseStrings.OPTION,
+            bundleOf(
+                BaseStrings.EVENT to event,
+                BaseStrings.VALUE to type
+            )
+        )
     }
 }

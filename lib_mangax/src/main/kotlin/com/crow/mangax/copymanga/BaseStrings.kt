@@ -10,6 +10,9 @@ object BaseStrings {
     const val ID = "id"
     const val ENABLE_DELAY = "enable_delay"
     const val BACKPRESS = "onBackPress"
+    const val EVENT = "EVENT"
+    const val OPTION = "OPTION"
+    const val VALUE = "VALUE"
 
     object URL {
 
@@ -80,5 +83,6 @@ object BaseStrings {
         const val UpdateInfo = "https://gitlab.com/crowforkotlin/copymangax/-/raw/main/updateInfo.json"
         const val GROUP = "https://gitlab.com/crowforkotlin/copymangax/-/raw/main/group.json"
         const val UpdateHistory = "https://gitlab.com/crowforkotlin/copymangax/-/raw/main/updateHistory.json"
+        const val NOTICE = "https://gitlab.com/crowforkotlin/copymangax/-/raw/main/notice.json?ref_type=heads"
     }
 }

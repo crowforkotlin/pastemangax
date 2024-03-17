@@ -54,7 +54,7 @@ class MineViewModel(private val repository: MineRepository) : BaseMviViewModel<M
 
     init {
         // 初始化 用户信息
-        viewModelScope.launch(Dispatchers.IO) { _userInfo.emit((toTypeEntity<MineLoginResultsOkResp>(DataStoreAgent.DATA_USER.asyncDecode())).also { mIconUrl = it?.mIconUrl }) }
+        viewModelScope.launch(Dispatchers.IO) { _userInfo.value = (toTypeEntity<MineLoginResultsOkResp>(DataStoreAgent.DATA_USER.asyncDecode())).also { mIconUrl = it?.mIconUrl } }
     }
 
     override fun dispatcher(intent: MineIntent) {

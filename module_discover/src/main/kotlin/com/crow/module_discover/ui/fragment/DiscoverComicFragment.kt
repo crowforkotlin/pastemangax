@@ -274,10 +274,11 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         val chipTextSize = mContext.px2sp(resources.getDimension(baseR.dimen.base_sp12_5))
         var job: Job? = null
         val dialog = mContext.newMaterialDialog {
-            it.setTitle(getString(type))
             it.setView(binding.root)
             it.setOnDismissListener { job?.cancel() }
         }
+        binding.title.text = getString(type)
+        binding.close.doOnClickInterval { dialog.dismiss() }
         when(type) {
             R.string.discover_tag -> {
                 job = viewLifecycleOwner.lifecycleScope.launch {
@@ -341,9 +342,7 @@ class DiscoverComicFragment : BaseMviFragment<DiscoverFragmentComicBinding>() {
         mAdapter = DiscoverComicAdapter(lifecycleScope) { navigateBookComicInfo(it.mName, it.mPathWord) }
 
         // 设置适配器
-        mBinding.list.adapter = mAdapter.withLoadStateFooter(BaseLoadStateAdapter {
-
-            mAdapter.retry() })
+        mBinding.list.adapter = mAdapter.withLoadStateFooter(BaseLoadStateAdapter { mAdapter.retry() })
 
         // 设置加载动画独占1行，漫画卡片3行
         (mBinding.list.layoutManager as GridLayoutManager).apply {

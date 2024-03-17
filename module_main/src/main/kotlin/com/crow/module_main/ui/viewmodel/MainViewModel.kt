@@ -7,6 +7,7 @@ import com.crow.mangax.copymanga.entity.CatlogConfig.mDarkMode
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.base.tools.extensions.SpNameSpace
 import com.crow.base.tools.extensions.getSharedPreferences
+import com.crow.base.tools.extensions.log
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.MangaXAccountConfig
@@ -87,12 +88,19 @@ class MainViewModel(val repository: AppRepository) : BaseMviViewModel<AppIntent>
         flowResult(intent, repository.getSite()) { value -> intent.copy(siteResp = value) }
     }
 
+    private fun getNotice(intent: AppIntent.GetNotice) {
+        flowResult(intent, repository.getNotice()) { value ->
+            intent.copy(notice = value)
+        }
+    }
+
     override fun dispatcher(intent: AppIntent) {
         when(intent) {
             is AppIntent.GetUpdateHistory -> getUpdateHistory(intent)
             is AppIntent.GetUpdateInfo -> getUupdateInfo(intent)
             is AppIntent.GetQQGroup -> getQQGropu(intent)
             is AppIntent.GetDynamicSite -> getSite(intent)
+            is AppIntent.GetNotice -> getNotice(intent)
         }
     }
 }

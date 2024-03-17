@@ -307,7 +307,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
             mReaderMode = ComicCategories.Type.STANDARD,
             mReaderContent = mVM.mChapterPageMapper[chapterId] ?: return,
             mChapterID = chapterId,
-            mTotalPages = list.size,
+            mTotalPages = list.size - 2,
             mCurrentPagePos = centerViewPos,
             mCurrentPagePosOffset = offsetInt
         ))

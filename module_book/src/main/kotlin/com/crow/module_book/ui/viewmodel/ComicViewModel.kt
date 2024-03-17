@@ -367,4 +367,30 @@ class ComicViewModel(val repository: BookRepository) : BaseMviViewModel<BookInte
             mComicDBDao.upSertSetting(setting)
         }.await()
     }
+
+    /**
+     * ⦁ 更新阅读模式
+     *
+     * ⦁ 2024-03-10 22:39:47 周日 下午
+     * @author crowforkotlin
+     */
+    suspend fun updateReaderSettings(setting: MineReaderSettingEntity) {
+        viewModelScope.async(Dispatchers.IO) {
+            mReaderSetting = setting
+            mComicDBDao.upSertSetting(setting)
+        }.await()
+    }
+
+    fun getReaderSetting(): MineReaderSettingEntity {
+        return mReaderSetting ?: run {
+            val time = Date(System.currentTimeMillis())
+            MineReaderSettingEntity(
+                mAccount = MangaXAccountConfig.mAccount,
+                mLight = 0,
+                mReadMode = ComicCategories.CURRENT_TYPE,
+                mCreatedAt = time,
+                mUpdatedAt = time
+            )
+        }
+    }
 }

@@ -104,7 +104,6 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
 
     fun loadCoverImage(url: String) {
         val cover = if(CatlogConfig.mCoverOrinal) getImageUrl(getOrignalCover(url)) else getImageUrl(url)
-        cover.log()
         mLoading.isInvisible = false
         mLoadingText.isInvisible = false
         mLoadingText.text = AppProgressFactory.PERCENT_0

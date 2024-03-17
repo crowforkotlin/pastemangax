@@ -9,7 +9,7 @@ class ComicCommentDataSource(inline val onResult: suspend (position: Int, pageSi
 
     companion object {
         private const val START_POSITION = 0
-        private const val LOAD_POSITION = 100
+        private const val LOAD_POSITION = 20
     }
 
     // 当刷新时调用

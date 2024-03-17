@@ -67,6 +67,8 @@ class ComicPageVerticalFragment : BaseMviFragment<BookFragmentComicPageBinding>(
 
     private var mCurrentChapterPageID = -1
 
+    private var mReverse: Boolean = false
+
     override fun getViewBinding(inflater: LayoutInflater) = BookFragmentComicPageBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,10 +78,14 @@ class ComicPageVerticalFragment : BaseMviFragment<BookFragmentComicPageBinding>(
         super.onViewCreated(view, savedInstanceState)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        arguments?.let { bundle -> mReverse = bundle.getBoolean("REVERSE", false) }
+        super.onCreate(savedInstanceState)
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
 
-
-        mBinding.pager.layoutManager = LinearLayoutManager((requireActivity() as ComicActivity), LinearLayoutManager.VERTICAL, false)
+        mBinding.pager.layoutManager = LinearLayoutManager((requireActivity() as ComicActivity), LinearLayoutManager.VERTICAL, mReverse)
 
         PagerSnapHelper().attachToRecyclerView(mBinding.pager)
 
@@ -124,7 +130,7 @@ class ComicPageVerticalFragment : BaseMviFragment<BookFragmentComicPageBinding>(
                     if (position == -1) {
                         mBinding.pager.post {
                             mBinding.pager.post {
-                                mBinding.pager.scrollBy(0, resources.displayMetrics.heightPixels)
+                                mBinding.pager.scrollBy(0, if(mReverse) -resources.displayMetrics.heightPixels else resources.displayMetrics.heightPixels)
                                 getPosItem { index, pagePos, pageId, itemPos -> updateUiState(-1, positionOffset, pageId) }
                             }
                         }
@@ -202,8 +208,7 @@ class ComicPageVerticalFragment : BaseMviFragment<BookFragmentComicPageBinding>(
         mBinding.pager.setNestedPreScrollListener { dx, dy, position ->
             if (position < 0) return@setNestedPreScrollListener
             getPosItem(position) { _, pagePos, pageId, _ ->
-                val top = (mBinding.pager.layoutManager as LinearLayoutManager).findViewByPosition(position)?.top ?: 0
-                updateUiState(pagePos, top, pageId)
+                updateUiState(pagePos, 0, pageId)
             }
         }
     }
@@ -220,7 +225,7 @@ class ComicPageVerticalFragment : BaseMviFragment<BookFragmentComicPageBinding>(
                 is BookIntent.GetComicPage -> {
                     intent.mViewState
                         .doOnError { _, _ ->
-                            mAdapter?.submitList(PagerLoader.obtainErrorPages((mAdapter ?: return@doOnError).getCurrentList().toMutableList(), intent.isNext) ?: return@doOnError) { }
+                            mAdapter?.submitList(PagerLoader.obtainErrorPages((mAdapter ?: return@doOnError).getCurrentList().toMutableList(), intent.isNext, mReverse) ?: return@doOnError) { }
                         }
                         .doOnResult {
                             if (intent.comicpage == null) mVM.mLoadingJob?.cancel()
@@ -231,7 +236,11 @@ class ComicPageVerticalFragment : BaseMviFragment<BookFragmentComicPageBinding>(
 
         mVM.mUnitPages.onCollect(this) {
             if (it == null) return@onCollect
-            mAdapter?.submitList(PagerLoader.obtainPagerPages(mContext, mVM.mChapterPageList).toMutableList()) {
+            mAdapter?.submitList(PagerLoader.obtainPagerPages(
+                mContext,
+                mVM.mChapterPageList,
+                mReverse
+            ).toMutableList()) {
                 mVM.mLoadingJob?.cancel()
             }
         }
@@ -294,7 +303,7 @@ class ComicPageVerticalFragment : BaseMviFragment<BookFragmentComicPageBinding>(
         }
         mVM.updateUiState(
             ReaderUiState(
-                mReaderMode = ComicCategories.Type.PAGE_VERTICAL,
+                mReaderMode = ComicCategories.Type.PAGE_VERTICAL_TTB,
                 mReaderContent =  reader,
                 mChapterID = chapterPageID,
                 mTotalPages = reader.mPages.size,

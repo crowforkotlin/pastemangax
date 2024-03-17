@@ -9,6 +9,7 @@ import androidx.annotation.IdRes
 import androidx.core.graphics.ColorUtils
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
+import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.ui.fragment.BaseMviBottomSheetDialogFragment
 import com.crow.base.ui.view.event.BaseEvent
@@ -17,6 +18,7 @@ import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.module_book.databinding.BookFragmentComicBottomBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderEvent
+import com.crow.module_book.model.entity.comic.reader.ReaderEvent.READER_MODE
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.fragment.comic.reader.ComicCategories
 import com.crow.module_book.ui.viewmodel.ComicViewModel
@@ -51,10 +53,10 @@ class ComicBottomSheetFragment : BaseMviBottomSheetDialogFragment<BookFragmentCo
             }
 
             // 设置BottomSheet的 高度
-            dialog.findViewById<View>(R.id.design_bottom_sheet)?.apply {
+            /*dialog.findViewById<View>(R.id.design_bottom_sheet)?.apply {
                 layoutParams!!.height = ViewGroup.LayoutParams.MATCH_PARENT
                 layoutParams!!.width = ViewGroup.LayoutParams.MATCH_PARENT
-            }
+            }*/
         }
     }
 
@@ -67,11 +69,17 @@ class ComicBottomSheetFragment : BaseMviBottomSheetDialogFragment<BookFragmentCo
                 ComicCategories.Type.STRIPT -> {
                     mBinding.buttonStript.isChecked = true
                 }
-                ComicCategories.Type.PAGE_HORIZONTAL -> {
-                    mBinding.buttonPageHorizontal.isChecked = true
+                ComicCategories.Type.PAGE_HORIZONTAL_LTR -> {
+                    mBinding.buttonPageHorizontalLtr.isChecked = true
                 }
-                ComicCategories.Type.PAGE_VERTICAL -> {
-                    mBinding.buttonPageVertical.isChecked = true
+                ComicCategories.Type.PAGE_VERTICAL_TTB -> {
+                    mBinding.buttonPageVerticalTtb.isChecked = true
+                }
+                ComicCategories.Type.PAGE_HORIZONTAL_RTL -> {
+                    mBinding.buttonPageHorizontalRtl.isChecked = true
+                }
+                ComicCategories.Type.PAGE_VERTICAL_BTT -> {
+                    mBinding.buttonPageVerticalBtt.isChecked = true
                 }
                 else -> {
                     mBinding.buttonStandard.isChecked = true
@@ -82,6 +90,7 @@ class ComicBottomSheetFragment : BaseMviBottomSheetDialogFragment<BookFragmentCo
 
     override fun initView(bundle: Bundle?) {
 
+        mBinding.buttonPageHorizontalLtr.isSelected = true
     }
 
     override fun initListener() {
@@ -97,11 +106,17 @@ class ComicBottomSheetFragment : BaseMviBottomSheetDialogFragment<BookFragmentCo
                         mBinding.buttonStript.id -> {
                             mBinding.buttonStript.isChecked = true
                         }
-                        mBinding.buttonPageHorizontal.id -> {
-                            mBinding.buttonPageHorizontal.isChecked = true
+                        mBinding.buttonPageHorizontalLtr.id -> {
+                            mBinding.buttonPageHorizontalLtr.isChecked = true
                         }
-                        mBinding.buttonPageVertical.id -> {
-                            mBinding.buttonPageVertical.isChecked = true
+                        mBinding.buttonPageVerticalTtb.id -> {
+                            mBinding.buttonPageVerticalTtb.isChecked = true
+                        }
+                        mBinding.buttonPageHorizontalRtl.id -> {
+                            mBinding.buttonPageHorizontalRtl.isChecked = true
+                        }
+                        mBinding.buttonPageVerticalBtt.id -> {
+                            mBinding.buttonPageVerticalBtt.isChecked = true
                         }
                     }
                 }
@@ -109,21 +124,28 @@ class ComicBottomSheetFragment : BaseMviBottomSheetDialogFragment<BookFragmentCo
                     checkedId = id
                     if (isChecked) {
                         when(id) {
-                            mBinding.buttonStandard.id -> { sendOptionResult(ComicCategories.Type.STANDARD.id) }
-                            mBinding.buttonStript.id -> { sendOptionResult(ComicCategories.Type.STRIPT.id) }
-                            mBinding.buttonPageHorizontal.id -> { sendOptionResult(ComicCategories.Type.PAGE_HORIZONTAL.id) }
-                            mBinding.buttonPageVertical.id -> { sendOptionResult(ComicCategories.Type.PAGE_VERTICAL.id)}
+                            mBinding.buttonStandard.id -> { sendOptionResult(READER_MODE, ComicCategories.Type.STANDARD.id) }
+                            mBinding.buttonStript.id -> { sendOptionResult(READER_MODE, ComicCategories.Type.STRIPT.id) }
+                            mBinding.buttonPageHorizontalLtr.id -> { sendOptionResult(READER_MODE, ComicCategories.Type.PAGE_HORIZONTAL_LTR.id) }
+                            mBinding.buttonPageVerticalTtb.id -> { sendOptionResult(READER_MODE, ComicCategories.Type.PAGE_VERTICAL_TTB.id)}
+                            mBinding.buttonPageHorizontalRtl.id -> { sendOptionResult(READER_MODE, ComicCategories.Type.PAGE_HORIZONTAL_RTL.id) }
+                            mBinding.buttonPageVerticalBtt.id -> { sendOptionResult(READER_MODE, ComicCategories.Type.PAGE_VERTICAL_BTT.id)}
                         }
                     }
                 }
             })
         }
+//        mBinding.hideBottomPage.doOnClickInterval { sendOptionResult(ReaderEvent.HIDE_INFOBAR_BOTTOM, mBinding.hideBottomPage.isChecked) }
+//        mBinding.hideChapter.doOnClickInterval { sendOptionResult(ReaderEvent.HIDE_INFOBAR_CHAPTER, mBinding.hideChapter.isChecked) }
+//        mBinding.hidePage.doOnClickInterval { sendOptionResult(ReaderEvent.HIDE_INFOBAR_PAGE, mBinding.hidePage.isChecked) }
+//        mBinding.hidePagePercent.doOnClickInterval { sendOptionResult(ReaderEvent.HIDE_INFOBAR_PAGE_PERCENT, mBinding.hidePagePercent.isChecked) }
+//        mBinding.hideTime.doOnClickInterval { sendOptionResult(ReaderEvent.HIDE_INFOBAR_TIME, mBinding.hideTime.isChecked) }
     }
 
-    private fun sendOptionResult(type: Int) {
+    private fun sendOptionResult(event: Int, type: Any) {
         parentFragmentManager.setFragmentResult(ComicActivity.ACTIVITY_OPTION,
             bundleOf(
-                ComicActivity.EVENT to ReaderEvent.READER_MODE,
+                ComicActivity.EVENT to event,
                 ComicActivity.VALUE to type
             )
         )

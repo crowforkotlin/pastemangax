@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
         app:backgroundTint="@android:color/transparent"
-        app:icon="@drawable/anim_ic_close_24dp"
+        app:icon="@drawable/mangax_ic_close_24dp"
         app:iconSize="@dimen/base_dp20"
         android:layout_marginEnd="@dimen/base_dp10"
         app:layout_constraintBottom_toBottomOf="@+id/title"

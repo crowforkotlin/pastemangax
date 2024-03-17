@@ -17,7 +17,6 @@ import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.error
 import com.crow.base.tools.extensions.findCenterViewPosition
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -68,6 +67,8 @@ class ComicPageHorizontalFragment : BaseMviFragment<BookFragmentComicPageBinding
 
     private var mCurrentChapterPageID = -1
 
+    private var mReverse: Boolean = false
+
     override fun getViewBinding(inflater: LayoutInflater) = BookFragmentComicPageBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,10 +78,14 @@ class ComicPageHorizontalFragment : BaseMviFragment<BookFragmentComicPageBinding
         super.onViewCreated(view, savedInstanceState)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        arguments?.let { bundle -> mReverse = bundle.getBoolean("REVERSE", false) }
+        super.onCreate(savedInstanceState)
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
 
-
-        mBinding.pager.layoutManager = LinearLayoutManager((requireActivity() as ComicActivity), LinearLayoutManager.HORIZONTAL, false)
+        mBinding.pager.layoutManager = LinearLayoutManager((requireActivity() as ComicActivity), LinearLayoutManager.HORIZONTAL, mReverse)
 
         PagerSnapHelper().attachToRecyclerView(mBinding.pager)
 
@@ -125,7 +130,7 @@ class ComicPageHorizontalFragment : BaseMviFragment<BookFragmentComicPageBinding
                     if (position == -1) {
                         mBinding.pager.post {
                             mBinding.pager.post {
-                                mBinding.pager.scrollBy(resources.displayMetrics.widthPixels, 0)
+                                mBinding.pager.scrollBy(if(mReverse) -resources.displayMetrics.widthPixels else resources.displayMetrics.widthPixels, 0)
                                 getPosItem { index, pagePos, pageId, itemPos -> updateUiState(-1, positionOffset, pageId) }
                             }
                         }
@@ -197,14 +202,13 @@ class ComicPageHorizontalFragment : BaseMviFragment<BookFragmentComicPageBinding
         }
 
         mBinding.pager.setPreScrollListener { dx, dy, position ->
-            mVM.onScroll(dx, position, 1)
+            mVM.onScroll(if(mReverse) -dx else dx, position, 1)
         }
 
         mBinding.pager.setNestedPreScrollListener { dx, dy, position ->
             if (position < 0) return@setNestedPreScrollListener
             getPosItem(position) { _, pagePos, pageId, _ ->
-                val top = (mBinding.pager.layoutManager as LinearLayoutManager).findViewByPosition(position)?.top ?: 0
-                updateUiState(pagePos, top, pageId)
+                updateUiState(pagePos, 0, pageId)
             }
         }
     }
@@ -221,7 +225,7 @@ class ComicPageHorizontalFragment : BaseMviFragment<BookFragmentComicPageBinding
                 is BookIntent.GetComicPage -> {
                     intent.mViewState
                         .doOnError { _, _ ->
-                            mAdapter?.submitList(PagerLoader.obtainErrorPages((mAdapter ?: return@doOnError).getCurrentList().toMutableList(), intent.isNext) ?: return@doOnError) { }
+                            mAdapter?.submitList(PagerLoader.obtainErrorPages((mAdapter ?: return@doOnError).getCurrentList().toMutableList(), intent.isNext, mReverse) ?: return@doOnError) { }
                         }
                         .doOnResult {
                             if (intent.comicpage == null) mVM.mLoadingJob?.cancel()
@@ -232,7 +236,7 @@ class ComicPageHorizontalFragment : BaseMviFragment<BookFragmentComicPageBinding
 
         mVM.mUnitPages.onCollect(this) {
             if (it == null) return@onCollect
-            mAdapter?.submitList(PagerLoader.obtainPagerPages(mContext, mVM.mChapterPageList).toMutableList()) {
+            mAdapter?.submitList(PagerLoader.obtainPagerPages(mContext, mVM.mChapterPageList, mReverse).toMutableList()) {
                 mVM.mLoadingJob?.cancel()
             }
         }
@@ -295,7 +299,7 @@ class ComicPageHorizontalFragment : BaseMviFragment<BookFragmentComicPageBinding
         }
         mVM.updateUiState(
             ReaderUiState(
-                mReaderMode = ComicCategories.Type.PAGE_HORIZONTAL,
+                mReaderMode = ComicCategories.Type.PAGE_HORIZONTAL_LTR,
                 mReaderContent =  reader,
                 mChapterID = chapterPageID,
                 mTotalPages = reader.mPages.size,

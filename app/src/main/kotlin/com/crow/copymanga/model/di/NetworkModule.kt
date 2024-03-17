@@ -81,7 +81,6 @@ val networkModule = module {
                 }
                 val response = chain.proceed(request)
                 val urlString = request.url.toString()
-                urlString.log()
                 val progressFactory = AppProgressFactory.getProgressFactory(urlString)
                 if (progressFactory == null) {
                     response

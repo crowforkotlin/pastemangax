@@ -311,6 +311,8 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
 
         // 刷新
         mBinding.bookInfoRefresh.setOnRefreshListener { mBaseEvent.doOnInterval { onRefresh() } ?: mBinding.bookInfoRefresh.finishRefresh() }
+
+        mBinding.bookInfoDownload.doOnClickInterval { toast("很抱歉暂未开发完成...") }
     }
 
     /** ⦁ Lifecycle onDestoryView */

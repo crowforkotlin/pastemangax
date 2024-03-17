@@ -13,6 +13,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.setPadding
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.crow.base.app.app
+import com.crow.base.tools.extensions.log
 import com.crow.mangax.R
 import com.crow.base.R as baseR
 import com.crow.mangax.copymanga.resp.BaseContentInvalidResp
@@ -34,6 +35,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
+import kotlin.system.measureTimeMillis
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -154,13 +156,7 @@ inline fun LifecycleCoroutineScope.tryConvert(text: String, crossinline result: 
 
 fun getImageUrl(url: String): String {
     return if ((AppConfig.getInstance()?.mApiSecret?.length ?: 0) >= 20 && CatlogConfig.mApiImageProxyEnable) {
-        val httpUrl = url.toHttpUrl()
-        httpUrl.newBuilder()
-            .host(BaseStrings.URL.WUYA_API_IMAGE)
-            .scheme(BaseStrings.URL.SCHEME_HTTPS)
-            .addQueryParameter("image_host", httpUrl.host)
-            .build()
-            .toString()
+        with(url.toHttpUrl()) { "${scheme}://${BaseStrings.URL.WUYA_API_IMAGE}/${host}${encodedPath}" }
     } else {
         url
     }
