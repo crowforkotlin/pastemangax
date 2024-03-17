@@ -32,6 +32,7 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.entity.CatlogConfig.mChineseConvert
+import com.crow.mangax.copymanga.getImageUrl
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_book.R
 import com.crow.module_book.model.database.model.BookChapterEntity
@@ -74,7 +75,8 @@ class NovelInfoFragment : InfoFragment() {
     private fun showNovelInfoPage() {
         val novelInfoPage = mVM.mNovelInfoPage?.mNovel ?: return
         mVM.findReadedBookChapterOnDB(novelInfoPage.mUuid, BookType.NOVEL)
-        mProgressFactory = AppProgressFactory.createProgressListener(novelInfoPage.mCover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
+        val cover = getImageUrl(novelInfoPage.mCover)
+        mProgressFactory = AppProgressFactory.createProgressListener(cover) { _, _, percentage, _, _ -> mBinding.bookInfoProgressText.text = AppProgressFactory.formateProgress(percentage) }
         app.imageLoader.enqueue(
             ImageRequest.Builder(mContext)
                 .listener(
@@ -84,7 +86,7 @@ class NovelInfoFragment : InfoFragment() {
                     },
                     onError = { _, _ -> mBinding.bookInfoProgressText.text = "-1%" },
                 )
-                .data(novelInfoPage.mCover)
+                .data(cover)
                 .target(mBinding.bookInfoImage)
                 .build()
         )

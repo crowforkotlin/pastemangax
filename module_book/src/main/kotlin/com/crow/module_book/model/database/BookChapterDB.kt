@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.crow.module_book.model.database.dao.BookChapterDao
 import com.crow.module_book.model.database.model.BookChapterEntity
 
-@Database(entities = [BookChapterEntity::class], version = 5)
+@Database(entities = [BookChapterEntity::class], version = 6)
 abstract class BookChapterDB : RoomDatabase() {
     abstract fun bookChapterDao(): BookChapterDao
 }

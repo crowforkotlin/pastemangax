@@ -13,6 +13,7 @@
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/app_ic_launcher"
+        android:roundIcon="@mipmap/app_ic_launcher_round"
         android:label="@string/base_app_name"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"

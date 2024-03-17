@@ -29,6 +29,7 @@ import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.error
 import com.crow.mangax.copymanga.MangaXAccountConfig
+import com.crow.mangax.copymanga.getImageUrl
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_book.databinding.BookComicLoadingVerticalPageRvBinding
@@ -67,11 +68,11 @@ class ComicPageVerticalRvAdapter(val mLifecycleOwner: LifecycleOwner, val onRetr
             binding.retryLeft.doOnClickInterval {
                 val item = getItem(absoluteAdapterPosition)
                 if (item is ReaderPageLoading) {
-                    binding.retryRight.animateFadeOut()
+                    binding.retryLeft.animateFadeOut()
                         .withEndAction(object : Runnable {
                             override fun run() {
-                                binding.retryRight.isGone = true
-                                binding.loadingRight.animateFadeIn() .withEndAction { onRetry(item.mNextUuid ?: return@withEndAction, false) }
+                                binding.retryLeft.isGone = true
+                                binding.loadingLeft.animateFadeIn() .withEndAction { onRetry(item.mNextUuid ?: return@withEndAction, false) }
                             }
                         })
                 }
@@ -165,7 +166,8 @@ class ComicPageVerticalRvAdapter(val mLifecycleOwner: LifecycleOwner, val onRetr
             })
         }
 
-        fun onBind(imageUrl: String) {
+        fun onBind(url: String) {
+            val imageUrl = getImageUrl(url)
             binding.apply {
                 mPrevJob?.cancel()
                 mPrevJob = mLifecycleOwner.lifecycleScope.launch {
@@ -178,12 +180,15 @@ class ComicPageVerticalRvAdapter(val mLifecycleOwner: LifecycleOwner, val onRetr
                     mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> loadingText.text = AppProgressFactory.formateProgress(percentage) }
                     async(Dispatchers.IO) {
                         app.imageLoader.execute(ImageRequest.Builder(image.context)
-                            .addListener(imageUrl)
+                            .addListener(url)
                             .data(imageUrl)
                             .decoderFactory { source, _, _ -> Decoder { DecodeResult(drawable =BitmapFactory.decodeStream(source.source.source().inputStream()).toDrawable(app.resources), false) } }
                             .build()
                         )
-                    }.await().also {  result -> image.setImage(ImageSource.Bitmap((result.drawable as BitmapDrawable).bitmap, isCached = true)) }
+                    }.await().also {  result ->
+                        result.drawable?.let { drawable ->
+                            image.setImage(ImageSource.Bitmap((drawable as BitmapDrawable).bitmap, isCached = true)) }
+                        }
                 }
             }
         }

@@ -20,6 +20,7 @@ import com.crow.mangax.copymanga.appComicCardHeight
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.mangax.copymanga.formatHotValue
+import com.crow.mangax.copymanga.getImageUrl
 import com.crow.mangax.copymanga.tryConvert
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_home.databinding.HomeFragmentComicRvBodyBinding
@@ -130,7 +131,7 @@ class NewHomeComicRvAdapter(
                 is Topices -> {
                     app.imageLoader.enqueue(
                         ImageRequest.Builder(itemView.context)
-                            .data(if(CatlogConfig.mCoverOrinal) getOrignalCover(item.mImageUrl) else item.mImageUrl)
+                            .data(if(CatlogConfig.mCoverOrinal) getImageUrl(getOrignalCover(item.mImageUrl)) else getImageUrl(item.mImageUrl))
                             .target(binding.image)
                             .build()
                     )

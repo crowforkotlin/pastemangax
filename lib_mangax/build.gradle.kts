@@ -104,4 +104,5 @@ dependencies {
     // Base 库
     implementation(project(":lib_base"))
 
+    api(libs.subsampling.scale.image.view)
 }

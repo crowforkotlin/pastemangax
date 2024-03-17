@@ -20,4 +20,6 @@ class AppRepository(val service: AppService) {
     fun getQQGroup() = service.getGroup().flowOn(Dispatchers.IO)
 
     fun getSite() = service.getSite().flowOn(Dispatchers.IO)
+
+    fun getNotice() = service.getNotice().flowOn(Dispatchers.IO)
 }

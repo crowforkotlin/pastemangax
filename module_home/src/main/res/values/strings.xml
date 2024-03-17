@@ -1,5 +1,6 @@
 <resources>
 	<string name="home_search">搜索</string>
+	<string name="home_notice">公告</string>
 	<string name="home_settings">设置</string>
 	<string name="home_homepage">主页</string>
 	<string name="home_recovery">发现</string>

@@ -84,8 +84,8 @@ object AppConfigs {
 
     const val version_code_internal = 100001
     const val version_name_internal = "测试版1.1"
-    const val version_code_release = 21
-    const val version_name_release = "1.3.8"
+    const val version_code_release = 22
+    const val version_name_release = "1.3.9"
 
     // jvm版本
     const val jvm_target = "11"

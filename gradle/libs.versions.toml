@@ -43,6 +43,7 @@ photoview = "2.0.0"
 smartrefresh = "2.0.5"
 
 glide = "5.0.0-rc01"
+subsampling-scale-image-view = "1b19231b2f"
 
 
 [libraries]
@@ -105,3 +106,5 @@ glide-okhttp3-integration = { group = "com.github.bumptech.glide", name = "okhtt
 coil = { module = "io.coil-kt:coil", version = "2.5.0"}
 
 crow-component-AttrTextLayout = { module = "com.kotlincrow.android.component:AttrTextLayout", version = "1.0" }
+
+subsampling-scale-image-view = { module = "com.github.KotatsuApp:subsampling-scale-image-view", version.ref = "subsampling-scale-image-view" }

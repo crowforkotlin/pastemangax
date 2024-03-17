@@ -20,5 +20,4 @@ open class HomeIntent : BaseMviIntent() {
     data class SearchNovel(val keyword: String, val type: String, val searchNovelResp: SearchNovelResp? = null) : HomeIntent()
 
     data class GetTopic(val pathword: String, val topicResp: TopicResp? = null) : HomeIntent()
-
 }

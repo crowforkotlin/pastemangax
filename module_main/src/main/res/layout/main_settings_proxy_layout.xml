@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/base_dp10"
         app:backgroundTint="@android:color/transparent"
-        app:icon="@drawable/anim_ic_close_24dp"
+        app:icon="@drawable/mangax_ic_close_24dp"
         app:iconSize="@dimen/base_dp20"
         app:layout_constraintBottom_toBottomOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
@@ -160,7 +160,6 @@
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/image_proxy_switch"
                 android:layout_width="0dp"
-                android:enabled="false"
                 app:layout_constraintStart_toStartOf="@id/proxy_input_layout"
                 android:layout_height="wrap_content"
                 app:layout_constraintVertical_bias="0"

@@ -13,6 +13,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.setPadding
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.crow.base.app.app
+import com.crow.base.tools.extensions.log
 import com.crow.mangax.R
 import com.crow.base.R as baseR
 import com.crow.mangax.copymanga.resp.BaseContentInvalidResp
@@ -30,9 +31,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.divider.MaterialDivider
 import com.squareup.moshi.JsonDataException
 import kotlinx.coroutines.launch
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
+import kotlin.system.measureTimeMillis
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -149,4 +152,12 @@ fun View.processTokenError(code: Int, msg: String?, doOnCancel: (MaterialAlertDi
 
 inline fun LifecycleCoroutineScope.tryConvert(text: String, crossinline result: (String) -> Unit) {
    if (CatlogConfig.mChineseConvert) { launch { result(ChineseConverter.convert(text)) } } else result(text)
+}
+
+fun getImageUrl(url: String): String {
+    return if ((AppConfig.getInstance()?.mApiSecret?.length ?: 0) >= 20 && CatlogConfig.mApiImageProxyEnable) {
+        with(url.toHttpUrl()) { "${scheme}://${BaseStrings.URL.WUYA_API_IMAGE}/${host}${encodedPath}" }
+    } else {
+        url
+    }
 }

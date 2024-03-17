@@ -66,6 +66,8 @@ class AboutAuthorFragment : BaseMviFragment<MainFragmentAboutBinding>() {
         )
 
         val builder = SpannableStringBuilder()
+        builder.appendLine(mContext.getString(R.string.main_about_group))
+        builder.appendLine()
         builder.appendLine(mContext.getString(R.string.main_about_crow_email))
         builder.appendLine()
         builder.appendLine(mContext.getString(R.string.main_about_crow_help))

@@ -56,6 +56,7 @@ import coil.compose.AsyncImage
 import com.crow.base.R.color.base_grey_500_75
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.entity.CatlogConfig
+import com.crow.mangax.copymanga.getImageUrl
 import com.crow.mangax.tools.language.ChineseConverter
 import com.crow.module_home.model.resp.homepage.Banner
 import kotlinx.coroutines.delay
@@ -221,7 +222,7 @@ fun BannerItem(
                 }
         )*/
         AsyncImage(
-            model = banner.mImgUrl,
+            model = getImageUrl(banner.mImgUrl),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             placeholder = ColorPainter(MaterialTheme.colorScheme.surface),

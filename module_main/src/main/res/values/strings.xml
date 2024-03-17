@@ -1,5 +1,6 @@
 <resources>
 
+	<string name="main_edit">⦁ 编辑：%s</string>
 	<string name="main_user" translatable="false">用户</string>
 	<string name="main_update_go" translatable="false">前往更新</string>
 	<string name="main_update_time" translatable="false">⦁ 更新日期：%s</string>
@@ -22,11 +23,12 @@
 	<string name="main_proxy_overseas_route" translatable="false">港台、海外路线</string>
 
 	<string name="main_site_current" translatable="false">当前站点：%s</string>
-	<string name="main_site_one" translatable="false">（无需梯子-推荐）站点① </string>
-	<string name="main_site_two" translatable="false">（需要梯子-次选）站点② </string>
+	<string name="main_site_one" translatable="false">（无需魔法-推荐）站点① </string>
+	<string name="main_site_two" translatable="false">（需要魔法-次选）站点② </string>
 	<string name="main_permission_tips" translatable="false">您需要同意写入权限才可保存图片到本地！</string>
 	<string name="main_about_crow_email" translatable="false">⦁ 电子邮箱：crowforkotlin@gmail.com</string>
 	<string name="main_about_crow_help" translatable="false">⦁ 如有Bug请电邮联系，感谢各位以来的长期支持！</string>
+	<string name="main_about_group" translatable="false">⦁ Group : 681109689</string>
 	<string name="main_about_crow_cmmunication" translatable="false">⦁ 闲聊、技术都可加群交流、非常欢迎^_^</string>
 	<string name="main_about_join_telegram_group" translatable="false">Telegram Group</string>
 	<string name="main_about_app_version" translatable="false">当前版本：%s</string>
@@ -42,5 +44,5 @@
     <string name="main_api_input_tips">请输入密钥！</string>
 	<string name="main_api_length_tips">密钥最小长度为20！</string>
 	<string name="main_proxy_switch_tips">⦁ 专用线路密钥代理</string>
-	<string name="main_image_proxy_switch_tips">⦁ 专用图床密钥代理（修复中…）</string>
+	<string name="main_image_proxy_switch_tips">⦁ 专用图床密钥代理</string>
 </resources>

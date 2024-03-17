@@ -3,6 +3,7 @@ package com.crow.module_main.network
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.module_main.model.resp.MainAppUpdateHistoryResp
 import com.crow.module_main.model.resp.MainAppUpdateInfoResp
+import com.crow.module_main.model.resp.MainNoticeResp
 import com.crow.module_main.model.resp.MainSiteResp
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
@@ -30,4 +31,7 @@ interface AppService {
 
     @GET
     fun getSite(@Url url: String = BaseStrings.Repository.SITE): Flow<MainSiteResp>
+
+    @GET
+    fun getNotice(@Url url: String = BaseStrings.Repository.NOTICE) : Flow<MainNoticeResp>
 }

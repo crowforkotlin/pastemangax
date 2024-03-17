@@ -1,6 +1,9 @@
 package com.crow.module_main.ui.fragment
 
+import android.R.attr.bitmap
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Base64
@@ -12,21 +15,22 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.isGone
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.withResumed
 import androidx.viewpager2.widget.ViewPager2
 import com.crow.base.R.string.base_exit_app
-import com.crow.mangax.copymanga.BaseEventEnum
-import com.crow.mangax.copymanga.BaseStrings
-import com.crow.mangax.copymanga.BaseStrings.ID
-import com.crow.mangax.copymanga.MangaXAccountConfig
-import com.crow.mangax.copymanga.appEvent
-import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
 import com.crow.base.tools.extensions.BASE_ANIM_300L
+import com.crow.base.tools.extensions.animateFadeIn
+import com.crow.base.tools.extensions.animateFadeOut
+import com.crow.base.tools.extensions.animateFadeOutGone
+import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
@@ -45,12 +49,19 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnErrorInCoroutine
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnResultInCoroutine
+import com.crow.mangax.copymanga.BaseEventEnum
+import com.crow.mangax.copymanga.BaseStrings
+import com.crow.mangax.copymanga.BaseStrings.ID
+import com.crow.mangax.copymanga.MangaXAccountConfig
+import com.crow.mangax.copymanga.appEvent
+import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.module_anime.ui.fragment.AnimeFragment
 import com.crow.module_bookshelf.ui.fragment.BookshelfFragment
 import com.crow.module_discover.ui.fragment.DiscoverComicFragment
 import com.crow.module_home.ui.fragment.NewHomeFragment
 import com.crow.module_main.R
 import com.crow.module_main.databinding.MainFragmentContainerBinding
+import com.crow.module_main.databinding.MainNoticeLayoutBinding
 import com.crow.module_main.databinding.MainUpdateLayoutBinding
 import com.crow.module_main.databinding.MainUpdateUrlLayoutBinding
 import com.crow.module_main.model.intent.AppIntent
@@ -65,6 +76,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.qualifier.named
 import kotlin.system.exitProcess
 
+
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
  * @Path: module_home/src/main/kotlin/com/crow/module_home/ui/fragment
@@ -77,7 +89,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     init {
         FlowBus.with<Unit>(BaseEventEnum.UpdateApp.name).register(this) {
-            mContainerVM.input(AppIntent.GetUpdateInfo())
+            mVM.input(AppIntent.GetUpdateInfo())
         }
     }
 
@@ -85,13 +97,14 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     private var mContainerAdapter: ContainerAdapter? = null
 
     /** ⦁ （Activity级别）容器VM */
-    private val mContainerVM by activityViewModel<MainViewModel>()
+    private val mVM by activityViewModel<MainViewModel>()
 
     /** ⦁ （Activity级别）用户VM */
     private val mUserVM by activityViewModel<MineViewModel>()
 
     /** ⦁ 碎片集 */
     private val mFragmentList by lazy { mutableListOf<Fragment>(NewHomeFragment(), DiscoverComicFragment(), BookshelfFragment(), AnimeFragment()) }
+
 
     /**
      * ⦁ 手势检测
@@ -117,6 +130,8 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
      */
     private val mEvent: BaseEvent by lazy { BaseEvent.getSIngleInstance() }
 
+    private var mNoticeBinding: MainNoticeLayoutBinding? = null
+
     /** ⦁ 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
@@ -126,32 +141,68 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // 用户信息 收集
         mUserVM.userInfo.onCollect(this) {
 
-            // 加载 Icon  无链接或加载失败 则默认Drawable
-            mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
-
             // 初始化 用户Tokne
             it?.apply {
-
                 MangaXAccountConfig.mAccountToken = mToken
                 MangaXAccountConfig.mAccount = mUsername
             }
         }
 
         // 观察ContainerVM
-        mContainerVM.onOutput { intent ->
+        mVM.onOutput { intent ->
             when(intent) {
                 is AppIntent.GetDynamicSite -> {
                     intent.mViewState
-                        .doOnErrorInCoroutine { _, _ -> mContainerVM.saveAppConfig() }
+                        .doOnErrorInCoroutine { _, _ -> mVM.saveAppConfig() }
                         .doOnResultInCoroutine {
                             BaseStrings.URL.COPYMANGA = Base64.decode(intent.siteResp!!.mSiteList!!.first()!!.mEncodeSite, Base64.DEFAULT).decodeToString()
-                            mContainerVM.saveAppConfig()
+                            mVM.saveAppConfig()
                         }
                 }
                 is AppIntent.GetUpdateInfo -> {
                     intent.mViewState
                         .doOnError { _, _ -> toast(getString(R.string.main_update_error)) }
                         .doOnResult { doUpdateChecker(saveInstanceState, intent.appUpdateResp!!) }
+                }
+                is AppIntent.GetNotice -> {
+                        intent.mViewState
+                            .doOnError { _, _ ->
+                                mNoticeBinding?.let { binding ->
+                                    if (binding.content.isVisible) {
+                                        binding.author.animateFadeOutInVisibility()
+                                        binding.time.animateFadeOutInVisibility()
+                                        binding.content.animateFadeOutInVisibility()
+                                    }
+                                    if (binding.loading.isVisible) {
+                                        binding.loading.animateFadeOut()
+                                            .withEndAction {
+                                                binding.loading.isInvisible = true
+                                                if (binding.retry.isGone) binding.retry.animateFadeIn()
+                                            }
+                                    } else {
+                                        if (binding.retry.isGone) binding.retry.animateFadeIn()
+                                    }
+                                }
+                            }
+                            .doOnResult {
+                                mNoticeBinding?.let { binding ->
+                                    intent.notice?.apply {
+                                        if (binding.retry.isVisible) binding.retry.animateFadeOutGone()
+                                        binding.loading.animateFadeOut()
+                                            .withEndAction {
+                                                binding.loading.isInvisible = true
+                                                if (binding.content.isInvisible) {
+                                                    binding.author.animateFadeIn()
+                                                    binding.time.animateFadeIn()
+                                                    binding.content.animateFadeIn()
+                                                }
+                                                binding.author.text = getString(R.string.main_edit, this.mAuthor)
+                                                binding.time.text = getString(R.string.main_update_time, this.mTime)
+                                                binding.content.text = this.mContent
+                                            }
+                                    }
+                            }
+                    }
                 }
             }
         }
@@ -209,7 +260,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
-            mContainerVM.mIsRestarted = true
+            mVM.mIsRestarted = true
             if (!isHidden) onNotifyPage()
         } else {
             saveItemPageID(0)
@@ -224,7 +275,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mContainerVM.input(AppIntent.GetUpdateInfo())
+        mVM.input(AppIntent.GetUpdateInfo())
     }
 
     /**
@@ -233,6 +284,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
      * ⦁ 2023-07-02 20:22:59 周日 下午
      */
     override fun onDestroyView() {
+        mNoticeBinding = null
         super.onDestroyView()
         mFragmentList.forEach { mEvent.remove(it.hashCode().toString()) }
     }
@@ -244,7 +296,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         if (hidden) return
 
         // 可见： 当返回ContainerFragment时回调此方法 则通知设置Icon
-        mUserVM.doLoadIcon(mContext, true) { resource -> FlowBus.with<Drawable>(BaseEventEnum.SetIcon.name).post(this, resource) }
+        sendOptionResult(BaseEventEnum.SetIcon.name, mUserVM.mIconUrl ?: "")
 
         onNotifyPage()
     }
@@ -252,6 +304,36 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     /** ⦁ 初始化监听器 */
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
+
+        // 通用事件
+        parentFragmentManager.setFragmentResultListener(BaseStrings.OPTION, viewLifecycleOwner) { key, bundle ->
+            val event = bundle.getString(BaseStrings.EVENT)
+             when(event) {
+                 BaseEventEnum.GetNotice.name -> {
+                     val binding = MainNoticeLayoutBinding.inflate(layoutInflater).also { mNoticeBinding = it }
+                     val dialog = mContext.newMaterialDialog {
+                         it.setView(binding.root)
+                     }
+                     val screenHeight = resources.displayMetrics.heightPixels / 2.25
+                     (binding.scrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = screenHeight.toInt()
+                     binding.retry.doOnClickInterval {
+                         if (binding.content.isVisible) binding.content.animateFadeOut()
+                         binding.retry.animateFadeOut()
+                             .withEndAction {
+                                 binding.retry.isGone = true
+                                 binding.loading.animateFadeIn()
+                                     .withEndAction { mVM.input(AppIntent.GetNotice()) }
+                             }
+                     }
+                     binding.close.doOnClickInterval {
+                         mNoticeBinding = null
+                         dialog.dismiss()
+                     }
+                     mVM.input(AppIntent.GetNotice())
+                 }
+                 BaseEventEnum.GetIconUrl.name -> { sendOptionResult(BaseEventEnum.SetIcon.name, mUserVM.mIconUrl ?: "") }
+             }
+        }
 
         // 登录类别
         parentFragmentManager.setFragmentResultListener(BaseEventEnum.LoginCategories.name, viewLifecycleOwner) { _, bundle ->
@@ -321,8 +403,8 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
      * ⦁ 2023-06-29 01:28:48 周四 上午
      */
     private fun onNotifyPage() {
-        if (mContainerVM.mIsRestarted) {
-            mContainerVM.mIsRestarted = false
+        if (mVM.mIsRestarted) {
+            mVM.mIsRestarted = false
             val bundle = bundleOf(ID to (arguments?.getInt(ID) ?: 0).also {
                 saveItemPageID(it)
                 mEvent.setBoolean(mFragmentList[it].hashCode().toString(), true)
@@ -412,5 +494,14 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             )
             updateDialog.dismiss()
         }
+    }
+
+    private fun sendOptionResult(event: String, type: Any) {
+        childFragmentManager.setFragmentResult(BaseStrings.OPTION,
+            bundleOf(
+                BaseStrings.EVENT to event,
+                BaseStrings.VALUE to type
+            )
+        )
     }
 }

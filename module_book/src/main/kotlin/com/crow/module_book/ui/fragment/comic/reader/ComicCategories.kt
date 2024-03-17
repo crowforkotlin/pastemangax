@@ -17,7 +17,10 @@ import org.koin.core.qualifier.named
  * ⦁ 2023-11-05 02:25:40 周日 上午
  * @author crowforkotlin
  */
-class ComicCategories(private val mActivity: ComicActivity, private val host: FragmentContainerView) {
+class ComicCategories(
+    private val mActivity: ComicActivity,
+    private val host: FragmentContainerView
+) {
 
     /**
      * ⦁ StaticArea
@@ -39,8 +42,10 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
     enum class Type(@IdRes val id: Int) {
         STRIPT(R.string.book_comic_stript),
         STANDARD(R.string.book_comic_standard),
-        PAGE_HORIZONTAL(R.string.book_comic_page_horizontal),
-        PAGE_VERTICAL(R.string.book_comic_page_vertical),
+        PAGE_HORIZONTAL_LTR(R.string.book_comic_page_horizontal_ltr),
+        PAGE_HORIZONTAL_RTL(R.string.book_comic_page_horizontal_rtl),
+        PAGE_VERTICAL_TTB(R.string.book_comic_page_vertical_ttb),
+        PAGE_VERTICAL_BTT(R.string.book_comic_page_vertical_btt),
     }
 
 
@@ -52,11 +57,38 @@ class ComicCategories(private val mActivity: ComicActivity, private val host: Fr
      */
     fun apply(type: Type) {
         CURRENT_TYPE = type
-        when (type) {
-            Type.STRIPT -> mActivity.supportFragmentManager.navigate(host.id, ComicStriptFragment())
-            Type.STANDARD -> mActivity.supportFragmentManager.navigate(host.id, ComicStandardFragment())
-            Type.PAGE_HORIZONTAL -> { mActivity.supportFragmentManager.navigate(host.id, mActivity.get<Fragment>(named(Fragments.ComicPageHorizontal.name)).also { it.arguments = bundleOf("CATEGORIES" to type.id) }) }
-            Type.PAGE_VERTICAL -> { mActivity.supportFragmentManager.navigate(host.id, mActivity.get<Fragment>(named(Fragments.ComicPageVertical.name)).also { it.arguments = bundleOf("CATEGORIES" to type.id) }) }
+        val hostId = host.id
+        mActivity.supportFragmentManager.apply {
+            when (type) {
+                Type.STRIPT -> {
+                    navigate(hostId, ComicStriptFragment())
+                }
+                Type.STANDARD -> {
+                    navigate(hostId, ComicStandardFragment())
+                }
+                Type.PAGE_HORIZONTAL_LTR -> {
+                    navigate(hostId,
+                        mActivity.get<Fragment>(named(Fragments.ComicPageHorizontal.name))
+                            .also { it.arguments = bundleOf("CATEGORIES" to type.id, "REVERSE" to false) })
+                }
+                Type.PAGE_VERTICAL_TTB -> {
+                    navigate(
+                        hostId,
+                        mActivity.get<Fragment>(named(Fragments.ComicPageVertical.name))
+                            .also { it.arguments = bundleOf("CATEGORIES" to type.id, "REVERSE" to false) })
+                }
+                Type.PAGE_HORIZONTAL_RTL -> {
+                    navigate(hostId,
+                        mActivity.get<Fragment>(named(Fragments.ComicPageHorizontal.name))
+                            .also { it.arguments = bundleOf("CATEGORIES" to type.id, "REVERSE" to true) })
+                }
+                Type.PAGE_VERTICAL_BTT -> {
+                    navigate(
+                        hostId,
+                        mActivity.get<Fragment>(named(Fragments.ComicPageVertical.name))
+                            .also { it.arguments = bundleOf("CATEGORIES" to type.id, "REVERSE" to true) })
+                }
+            }
         }
     }
 }
