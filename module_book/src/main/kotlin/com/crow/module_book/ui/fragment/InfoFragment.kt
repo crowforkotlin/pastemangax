@@ -17,10 +17,12 @@ import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
+import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.popSyncWithClear
 import com.crow.base.tools.extensions.showSnackBar
 import com.crow.base.tools.extensions.toast
+import com.crow.base.tools.extensions.updatePadding
 import com.crow.base.ui.fragment.BaseMviFragment
 import com.crow.base.ui.view.event.BaseEvent
 import com.crow.base.ui.viewmodel.doOnError
@@ -150,7 +152,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
     protected fun<T> doOnBookPageChapterIntent(intent: BookIntent) {
         intent.mViewState
             .doOnError { _, _ ->
-                if (mBinding.bookInfoRvChapter.adapter?.itemCount == 0) {
+                if (mBinding.chapterList.adapter?.itemCount == 0) {
                     if (mBinding.bookInfoLinearChapter.isVisible) mBinding.bookInfoLinearChapter.animateFadeOutInVisibility()
                 }
                 if (mBinding.bookInfoRefresh.isRefreshing) processChapterErrorResult()
@@ -180,7 +182,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
     protected fun processChapterErrorResult() {
         if (!mBinding.comicInfoErrorTips.isVisible) {
             mBinding.comicInfoErrorTips.animateFadeIn()
-            mBinding.bookInfoRvChapter.animateFadeOutInVisibility()
+            mBinding.chapterList.animateFadeOutInVisibility()
         } else mBinding.comicInfoErrorTips.animateFadeIn()
     }
 
@@ -234,7 +236,11 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
 
         // 设置 内边距属性 实现沉浸式效果
-        immersionRoot()
+        immersionPadding(mBinding.root) { view, insets, _ ->
+            view.updatePadding(top = insets.top)
+            mBinding.chapterList.updatePadding(bottom = insets.bottom)
+            mBinding.bottomAppbar.updatePadding(bottom = insets.bottom)
+        }
 
         // 设置 漫画图的卡片 宽高
         mBinding.bookInfoCardview.layoutParams.height = appComicCardHeight

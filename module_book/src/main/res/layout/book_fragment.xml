@@ -144,7 +144,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_cardview"
         app:layout_constraintTop_toBottomOf="@+id/author"
-        tools:text="@string/base_todo_textview" />
+        tools:text="热度：123.5W" />
 
     <TextView
         android:id="@+id/update"
@@ -187,13 +187,14 @@
         android:text="@string/book_comic_add_to_bookshelf"
         android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
+        android:visibility="gone"
         app:icon="@drawable/book_ic_add_to_bookshelf_24dp"
         app:iconGravity="top"
         app:iconSize="@dimen/base_dp24"
         app:layout_constraintEnd_toStartOf="@+id/book_info_download"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/book_info_download"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_download"
@@ -206,44 +207,47 @@
         android:text="@string/BookComicDownLoad"
         android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
+        android:visibility="gone"
         app:icon="@drawable/base_ic_download_24dp"
         app:iconGravity="top"
         app:iconSize="@dimen/base_dp24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/book_info_cardview"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/book_info_readnow"
+        style="@style/MangaX.Theme.Button.Icon.Tint.Text"
         android:layout_width="wrap_content"
-       style="@style/MangaX.Theme.Button.Icon.Tint.Text"
         android:layout_height="wrap_content"
         android:minWidth="@dimen/base_dp48"
         android:minHeight="@dimen/base_dp48"
         android:text="@string/BookComicReadNow"
         android:textSize="@dimen/base_sp12_5"
         android:textStyle="bold"
+        android:visibility="gone"
         app:icon="@drawable/book_ic_readnow_24dp"
         app:iconGravity="top"
         app:iconSize="@dimen/base_dp24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/book_info_download"
         app:layout_constraintTop_toTopOf="@+id/book_info_download"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/book_info_refresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/base_dp10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_info_download">
+        app:layout_constraintTop_toBottomOf="@+id/book_info_cardview">
 
         <com.scwang.smart.refresh.header.MaterialHeader
             android:layout_width="match_parent"
-            android:layout_height="@dimen/base_dp40" />
+            android:layout_height="match_parent" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/bookCoordinatorlayout"
@@ -254,19 +258,18 @@
                 android:id="@+id/book_info_appbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent">
+                android:backgroundTint="@android:color/transparent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap">
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/book_info_theme_chip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/base_dp10"
-                        android:layout_marginTop="@dimen/base_dp10"
                         android:layout_marginEnd="@dimen/base_dp10"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -287,23 +290,42 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/book_info_theme_chip"
                         tools:text="@string/base_todo_textview" />
-                    <!--<com.crow.base.ui.view.atrr_text_layout.BaseAttrTextLayout
-                        android:id="@+id/desc"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/base_dp70"
-                        android:layout_marginStart="@dimen/base_dp10"
-                        android:layout_marginTop="@dimen/base_dp10"
-                        android:layout_marginEnd="@dimen/base_dp10"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/book_info_theme_chip"
-                        tools:text="@string/BaseTodoTextView" />
--->
+
+                    <!--                    <com.crow.mangax.ui.text.AttrTextLayout
+                                            android:id="@+id/desc"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="@dimen/base_dp10"
+                                            android:layout_marginTop="@dimen/base_dp10"
+                                            android:layout_marginEnd="@dimen/base_dp10"
+                                            app:layout_constraintEnd_toEndOf="parent"
+                                            app:layout_constraintStart_toStartOf="parent"
+                                            app:layout_constraintTop_toBottomOf="@id/book_info_theme_chip"
+                                            app:singleTextAnimationEnable="true"
+                                            app:textAnimationMode="move_y"
+                                            app:textAnimationSpeed="14"
+                                            app:textAnimationStrategy="continua"
+                                            app:textAnimationX="left"
+                                            app:textAnimationY="top"
+                                            app:textAntiAliasEnable="true"
+                                            app:textBoldEnable="false"
+                                            app:textColor="@color/black"
+                                            app:textFakeBoldEnable="false"
+                                            app:textGravity="top_start"
+                                            app:textItalicEnable="false"
+                                            app:textLines="4"
+                                            app:textMonoSpaceEnable="true"
+                                            app:textMultipleLineEnable="true"
+                                            app:textResidenceTime="1000"
+                                            app:textSize="@dimen/base_sp12_5"
+                                            app:textSizeUnitStrategy="defaultOrSp"
+                                            app:textUpdateStrategy="all" />-->
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <LinearLayout
                 android:id="@+id/book_info_linear_chapter"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -314,12 +336,26 @@
                 tools:visibility="visible">
 
                 <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/info_tab_selector"
+                    style="@style/ShapeAppearance.Material3.Corner.None"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/base_dp5"
+                    android:layout_marginEnd="@dimen/base_dp5"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/base_app_name"
+                    android:visibility="gone"
+                    app:tabIndicatorFullWidth="true"
+                    app:tabMode="scrollable"
+                    app:tabTextAppearance="@style/MangaX.Tablayout.TextAppearance"
+                    tools:visibility="visible" />
+
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/book_info_rv_chapter_selector"
                     style="@style/ShapeAppearance.Material3.Corner.None"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/base_dp5"
-                    android:layout_marginTop="@dimen/base_dp10"
                     android:layout_marginEnd="@dimen/base_dp5"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/base_app_name"
@@ -330,17 +366,17 @@
                     tools:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/book_info_rv_chapter"
+                    android:id="@+id/chapter_list"
                     android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/base_dp1"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/base_dp10"
                     android:visibility="invisible"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:spanCount="3"
                     tools:listitem="@layout/book_fragment_chapter_rv"
                     tools:visibility="visible" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/comic_info_error_tips"
@@ -352,6 +388,27 @@
                 android:textStyle="bold"
                 android:visibility="gone"
                 tools:visibility="visible" />
+
+            <com.google.android.material.bottomappbar.BottomAppBar
+                android:id="@+id/bottom_appbar"
+                style="@style/Widget.Material3.BottomAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:elevation="@dimen/base_dp5"
+                app:fabAlignmentMode="center"
+                app:addElevationShadow="true"
+                app:fabAnchorMode="cradle"
+                app:menu="@menu/menu_info_bottom"
+                app:menuAlignmentMode="auto"
+                app:fabAnimationMode="scale"
+                app:fabCradleRoundedCornerRadius="@dimen/base_dp99"
+                app:hideOnScroll="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+            </com.google.android.material.bottomappbar.BottomAppBar>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

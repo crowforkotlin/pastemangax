@@ -19,6 +19,7 @@
         <item name="android:textColor">@color/mangax_color_asc</item>
         <item name="colorPrimary">@color/mangax_color_asc</item>
         <item name="colorOnPrimary">@color/mangax_color_desc</item>
+        <item name="colorSurfaceContainer">@color/mangax_color_desc</item>
         <item name="bottomSheetDialogTheme">@style/MangaX.ModalBottomSheetDialog</item>
     </style>
     <style name="MangaX.ModalBottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">

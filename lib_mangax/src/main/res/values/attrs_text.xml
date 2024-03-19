@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="AttrTextLayout">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <declare-styleable name="AttrTextLayout" tools:ignore="ResourceName">
         <attr name="text" format="string" />
         <attr name="textBoldEnable" format="boolean" />
         <attr name="textFakeBoldEnable" format="boolean" />
@@ -10,6 +10,12 @@
         <attr name="singleTextAnimationEnable" format="boolean" />
         <attr name="textItalicEnable" format="boolean" />
         <attr name="textFakeItalicEnable" format="boolean" />
+        <attr name="textFrameLeft" format="boolean" />
+        <attr name="textFrameTop" format="boolean" />
+        <attr name="textFrameRight" format="boolean" />
+        <attr name="textFrameBottom" format="boolean" />
+        <attr name="textFrameColor" format="color" />
+        <attr name="textFrameLineWidth" format="dimension" />
         <attr name="textSize" format="dimension" />
         <attr name="textRowMargin" format="dimension" />
         <attr name="textCharSpacing" format="dimension" />
@@ -47,6 +53,11 @@
             <enum name="bottom_start" value="7" />
             <enum name="bottom_center" value="8" />
             <enum name="bottom_end" value="9" />
+        </attr>
+        <attr name="textFrameGradient" format="enum">
+            <enum name="bevel" value="10" />
+            <enum name="horizontal" value="11" />
+            <enum name="vertical" value="12" />
         </attr>
         <attr name="textGradientDirection" format="enum">
             <enum name="bevel" value="10" />
