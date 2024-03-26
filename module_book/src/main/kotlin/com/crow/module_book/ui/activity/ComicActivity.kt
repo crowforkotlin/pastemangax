@@ -194,10 +194,14 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
             mBinding.bottomAppbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin =  dp5 + insets.bottom }
         }
 
+        // 初始化适配器
         mBinding.commentList.adapter = ComicCommentRvAdapter(lifecycleScope) { }.run {
             mCommentAdapter = this
             withLoadStateFooter(BaseLoadStateAdapter { retry() })
         }
+
+        // 禁止滑动
+        mBinding.root.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         // 沉浸式状态栏和工具栏
         immersionBarStyle()
