@@ -235,7 +235,6 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                 if (!mIsSliding) { supportFragmentManager.setFragmentResult(SLIDE, bundleOf(SLIDE to slider.value.toInt())) }
                 mIsSliding = true
                 mBinding.slider.addOnChangeListener(slideListener)
-
             }
             override fun onStopTrackingTouch(p0: Slider) {
                 mIsSliding = false
@@ -328,12 +327,17 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
 
         mBinding.root.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) { }
-            override fun onDrawerClosed(drawerView: View) { }
+            override fun onDrawerClosed(drawerView: View) {
+                // 禁止滑动
+                mBinding.root.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
             override fun onDrawerStateChanged(newState: Int) {
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(mBinding.root.windowToken, 0)
             }
             override fun onDrawerOpened(drawerView: View) {
                 sendFragmentResult(ReaderEvent.OPEN_DRAWER)
+                // 允许滑动
+                mBinding.root.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                 lifecycleScope.tryConvert(mVM.mComicInfo.mSubTitle) {
                     if (mBinding.commentTopbar.subtitle != it) {
                         mBinding.commentTopbar.subtitle = it
