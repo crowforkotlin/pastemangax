@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.findCenterViewPosition
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
+import com.crow.base.tools.extensions.info
 import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
@@ -38,6 +39,7 @@ import com.crow.module_book.ui.fragment.comic.BaseComicFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.crow.module_book.ui.viewmodel.comic.StandardLoader
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import com.crow.base.R as baseR
@@ -76,7 +78,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
      * @author crowforkotlin
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mAdapter = ComicStandardRvAdapter { reader ->
+        mAdapter = ComicStandardRvAdapter(viewLifecycleOwner.lifecycleScope, { reader ->
             val isUUIDEmpty = reader.mUuid.isNullOrEmpty()
             val message = when {
                 reader.mIsNext && isUUIDEmpty -> getString(R.string.book_no_next)
@@ -85,7 +87,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
             }
             if (reader.mUuid == null || message != null) { return@ComicStandardRvAdapter toast(message ?: getString(mangaR.string.mangax_error, "uuid is null !")) }
             mVM.input(BookIntent.GetComicPage(mVM.mPathword, reader.mUuid, isNext = reader.mIsNext, isReloadEnable = true))
-        }
+        })
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -163,11 +165,12 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
                     if (mBinding.list.tag == null) {
                         mBinding.list.tag = mBinding.list
                         mBinding.list.post {
+                            mBinding.list.scrollToPosition(position)
                             (mBinding.list.layoutManager as LinearLayoutManager).apply {
                                 if (!isAttachedToWindow) return@post
                                 findViewByPosition(mBinding.list.findFisrtVisibleViewPosition())?.post {
                                     if (!isAttachedToWindow) return@post
-                                    scrollToPositionWithOffset(position, positionOffset)
+                                   scrollToPositionWithOffset(position, positionOffset)
                                     mBinding.list.post {
                                         if (!isAttachedToWindow) return@post
                                         getPosItem(position) { index, pagePos, pageId, itemPos ->

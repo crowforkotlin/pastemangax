@@ -4,23 +4,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.annotation.IntRange
-import androidx.core.view.isGone
-import androidx.core.view.isInvisible
 import androidx.core.view.updateLayoutParams
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.crow.base.app.app
+import com.crow.base.tools.coroutine.launchDelay
+import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.mangax.copymanga.MangaXAccountConfig
-import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
-import com.crow.mangax.ui.adapter.MangaCoilVH
-import com.crow.base.ui.view.event.BaseEvent
 import com.crow.module_book.databinding.BookComicRvBinding
 import com.crow.module_book.databinding.BookFragmentClassicIntentRvBinding
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
 import com.crow.module_book.model.resp.comic_page.Content
+import kotlinx.coroutines.Job
 
 /*************************
  * @Machine: RedmiBook Pro 15 Win11
@@ -29,7 +28,10 @@ import com.crow.module_book.model.resp.comic_page.Content
  * @Author: CrowForKotlin
  * @formatter:on
  **************************/
-class ComicStandardRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ComicStandardRvAdapter(
+    val mLifecycleOwner: LifecycleCoroutineScope,
+    val onPrevNext: (ReaderPrevNextInfo) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val Header = 0
@@ -62,25 +64,36 @@ class ComicStandardRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Rec
     private val mDiffer = AsyncListDiffer(this, mDiffCallback)
 
 
-    inner class BodyViewHolder(binding: BookComicRvBinding) : MangaCoilVH<BookComicRvBinding>(binding) {
-        init { initComponent(binding.loading, binding.loadingText, binding.image, binding.retry) }
+    inner class BodyViewHolder(val binding: BookComicRvBinding) : ComicVH<BookComicRvBinding>(mLifecycleOwner, binding) {
 
-        fun onBind(item: Content) {
-            loadImageWithRetry(when {
-                item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${MangaXAccountConfig.mResolution}x.")
-                item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${MangaXAccountConfig.mResolution}x.")
-                item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${MangaXAccountConfig.mResolution}x.")
-                else -> item.mImageUrl
-            })
+        private var mCurrentImage: String? = null
+        private var mPrevJob: Job? = null
+
+        init {
+
+            init(
+                loading = binding.loading,
+                loadingText = binding.loadingText,
+                image = binding.image,
+                retry = binding.retry
+            )
+
+            initImageListener {
+                val item = getItem(absoluteAdapterPosition)
+                if (item is Content) {
+                    (itemView.context as LifecycleOwner).launchDelay(BASE_ANIM_300L) {
+                        onBind(when {
+                            item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${MangaXAccountConfig.mResolution}x.")
+                            item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${MangaXAccountConfig.mResolution}x.")
+                            item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${MangaXAccountConfig.mResolution}x.")
+                            else -> item.mImageUrl
+                        })
+                    }
+                }
+            }
         }
 
-        private fun setLoadingState(hide: Boolean) {
-            binding.loading.isInvisible = hide
-            binding.loadingText.isInvisible = hide
-        }
-        private fun setRetryState(hide: Boolean) {
-            binding.retry.isGone = hide
-        }
+        fun onBind(link: String) { loadLongStriptImage(link) }
     }
 
     inner class IntentViewHolder(val binding: BookFragmentClassicIntentRvBinding, isNext: Boolean) : RecyclerView.ViewHolder(binding.root) {
@@ -123,15 +136,24 @@ class ComicStandardRvAdapter(val onPrevNext: (ReaderPrevNextInfo) -> Unit) : Rec
     }
 
     override fun onViewRecycled(vh: RecyclerView.ViewHolder) {
-        super.onViewRecycled(vh)
-        when(vh) {
-            is BodyViewHolder -> { vh.itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = MATCH_PARENT } }
+        if (vh is BodyViewHolder) {
+            vh.binding.image.recycle()
+//            vh.itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = MATCH_PARENT }
         }
+        super.onViewRecycled(vh)
     }
 
     override fun onBindViewHolder(vh: RecyclerView.ViewHolder, position: Int) {
         when(vh) {
-            is BodyViewHolder -> vh.onBind(getItem(position) as Content)
+            is BodyViewHolder -> {
+                val item = getItem(position) as Content
+                vh.onBind(when {
+                    item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${MangaXAccountConfig.mResolution}x.")
+                    item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${MangaXAccountConfig.mResolution}x.")
+                    item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${MangaXAccountConfig.mResolution}x.")
+                    else -> item.mImageUrl
+                })
+            }
             is IntentViewHolder -> vh.onBind(getItem(position) as ReaderPrevNextInfo)
         }
     }

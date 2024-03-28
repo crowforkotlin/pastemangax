@@ -74,7 +74,7 @@ class ComicStriptRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit)
     inner class PageViewHolder(binding: BookComicRvBinding) : MangaCoilVH<BookComicRvBinding>(binding) {
 
        init {
-           initComponent(binding.loading, binding.loadingText, binding.image, binding.retry)
+           initComponent(binding.loading, binding.loadingText, subsamplingScaleImageView = binding.image, button = binding.retry)
        }
 
         fun onBind(item: Content) {

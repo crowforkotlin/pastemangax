@@ -47,6 +47,7 @@ import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.immersionFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
 import com.crow.base.tools.extensions.isAllWhiteSpace
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toJson
@@ -221,9 +222,7 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     override fun initListener() {
 
         val slideListener = Slider.OnChangeListener  { _, value, _ ->
-            if (mVM.mReaderSetting?.mReadMode != null) {
-                supportFragmentManager.setFragmentResult(SLIDE, bundleOf(SLIDE to value.toInt()))
-            }
+            supportFragmentManager.setFragmentResult(SLIDE, bundleOf(SLIDE to value.toInt()))
         }
 
         mGestureHelper =  GestureHelper(this, this)
@@ -429,10 +428,10 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                         intent.mViewState
                             .doOnError { _, _ -> showErrorPage() }
                             .doOnResult {
-                                this.intent.putExtra("INIT", true)
-                                setChapterResult(-1, mVM.getPosOffset())
                                 val page = intent.comicpage
                                 if (page != null) {
+                                    this.intent.putExtra("INIT", true)
+                                    setChapterResult(-1, mVM.getPosOffset())
                                     if(mBinding.loading.isVisible) mBinding.loading.animateFadeOutGone()
                                     lifecycleScope.tryConvert(page.mComic.mName, mBinding.topAppbar::setTitle)
                                     lifecycleScope.tryConvert(page.mChapter.mName) {

@@ -179,8 +179,7 @@ class ComicPageHorizontalRvAdapter(
                     loading.isInvisible = false
                     loadingText.isInvisible = false
                     loadingText.text = AppProgressFactory.PERCENT_0
-                    mAppProgressFactory?.removeProgressListener()?.remove()
-                    mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> loadingText.text = AppProgressFactory.formateProgress(percentage) }
+                    loading(imageUrl) { loadingText.text = it }
                     async(Dispatchers.IO) {
                         app.imageLoader.execute(ImageRequest.Builder(image.context)
                             .addListener(url)

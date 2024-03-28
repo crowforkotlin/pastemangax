@@ -1,6 +1,7 @@
 package com.crow.mangax.ui.adapter
 
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -22,15 +23,21 @@ import coil.size.Scale
 import com.crow.base.app.app
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
+import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.log
+import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.mangax.copymanga.getImageUrl
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
+import com.davemorrissey.labs.subscaleview.ImageSource
+import com.davemorrissey.labs.subscaleview.OnImageEventListener
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import kotlinx.coroutines.Job
 
-open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHolder(binding.root) {
+open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : LoadingVH<VB>(binding) {
 
     companion object {
         val mRegex = Regex("""\.(jpg|jpeg|png|gif|webp|jfif)(\.\d+x\d+\..+)""", RegexOption.IGNORE_CASE)
@@ -41,17 +48,18 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
         }
     }
 
-    var mAppProgressFactory: AppProgressFactory? = null
     protected lateinit var mLoading: CircularProgressIndicator
     protected lateinit var mLoadingText: TextView
     protected lateinit var mImage: ImageView
-    protected var mRetry: MaterialButton? = null
+    protected lateinit var mSubsamplingScaleImageView: SubsamplingScaleImageView
+    protected lateinit var mRetry: MaterialButton
 
-    fun initComponent(loading: CircularProgressIndicator, text: TextView, image: ImageView, button: MaterialButton? = null) {
+    fun initComponent(loading: CircularProgressIndicator, text: TextView, image: ImageView? = null, button: MaterialButton? = null, subsamplingScaleImageView: SubsamplingScaleImageView? = null) {
         mLoading = loading
         mLoadingText = text
-        mImage = image
-        mRetry = button
+        if (image != null) { mImage = image }
+        if (button != null) { mRetry = button }
+        if (subsamplingScaleImageView != null) { mSubsamplingScaleImageView = subsamplingScaleImageView }
     }
 
     fun loadImageWithRetry(url: String) {
@@ -60,8 +68,7 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
         mLoading.isInvisible = false
         mLoadingText.isInvisible = false
         mLoadingText.text = AppProgressFactory.PERCENT_0
-        mAppProgressFactory?.removeProgressListener()?.remove()
-        mAppProgressFactory = AppProgressFactory.createProgressListener(imageUrl) { _, _, percentage, _, _ -> mLoadingText.text = AppProgressFactory.formateProgress(percentage) }
+        loading(imageUrl) { mLoadingText.text = it }
         val isNull = itemView.tag == null
         if (isNull) {
             itemView.tag = itemView
@@ -97,7 +104,9 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
                 .data(imageUrl)
                 .scale(Scale.FIT)
                 .decoderFactory { source, option, _ -> Decoder { DecodeResult(drawable =BitmapFactory.decodeStream(source.source.source().inputStream()).toDrawable(option.context.resources), false) } }
-                .target(mImage)
+                .target {
+                    mSubsamplingScaleImageView.setImage(ImageSource.Bitmap((it as BitmapDrawable).bitmap))
+                }
                 .build()
         )
     }
@@ -107,11 +116,7 @@ open class MangaCoilVH<VB: ViewBinding>(val binding: VB) : RecyclerView.ViewHold
         mLoading.isInvisible = false
         mLoadingText.isInvisible = false
         mLoadingText.text = AppProgressFactory.PERCENT_0
-        mAppProgressFactory?.apply {
-            removeProgressListener()
-            remove()
-        }
-        mAppProgressFactory = AppProgressFactory.createProgressListener(cover) { _, _, percentage, _, _ -> mLoadingText.text = AppProgressFactory.formateProgress(percentage) }
+        loading(cover) { mLoadingText.text = it }
         app.imageLoader.enqueue(
             ImageRequest.Builder(itemView.context)
                 .listener(
