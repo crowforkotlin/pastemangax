@@ -63,7 +63,6 @@ class ComicStandardRvAdapter(
      */
     private val mDiffer = AsyncListDiffer(this, mDiffCallback)
 
-
     inner class BodyViewHolder(val binding: BookComicRvBinding) : ComicVH<BookComicRvBinding>(mLifecycleOwner, binding) {
 
         private var mCurrentImage: String? = null
@@ -93,7 +92,14 @@ class ComicStandardRvAdapter(
             }
         }
 
-        fun onBind(link: String) { loadLongStriptImage(link) }
+        fun onBind(url: String) {
+            loadLongStriptImage(when {
+                url.contains("c800x.") -> url.replace("c800x.", "c${MangaXAccountConfig.mResolution}x.")
+                url.contains("c1200x.") -> url.replace("c1200x.", "c${MangaXAccountConfig.mResolution}x.")
+                url.contains("c1500x.") -> url.replace("c1500x.", "c${MangaXAccountConfig.mResolution}x.")
+                else -> url
+            })
+        }
     }
 
     inner class IntentViewHolder(val binding: BookFragmentClassicIntentRvBinding, isNext: Boolean) : RecyclerView.ViewHolder(binding.root) {
@@ -110,9 +116,7 @@ class ComicStandardRvAdapter(
             }
         }
 
-        fun onBind(item: ReaderPrevNextInfo) {
-            binding.comicNext.text = item.mInfo
-        }
+        fun onBind(item: ReaderPrevNextInfo) { binding.comicNext.text = item.mInfo }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -127,7 +131,6 @@ class ComicStandardRvAdapter(
     override fun getItemCount(): Int = mDiffer.currentList.size
 
     override fun getItemViewType(position: Int): Int {
-
         return when(position) {
             0 -> Header
             itemCount - 1 -> Footer
@@ -136,23 +139,14 @@ class ComicStandardRvAdapter(
     }
 
     override fun onViewRecycled(vh: RecyclerView.ViewHolder) {
-        if (vh is BodyViewHolder) {
-            vh.binding.image.recycle()
-//            vh.itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = MATCH_PARENT }
-        }
+        if (vh is BodyViewHolder) { vh.binding.image.recycle() }
         super.onViewRecycled(vh)
     }
 
     override fun onBindViewHolder(vh: RecyclerView.ViewHolder, position: Int) {
         when(vh) {
             is BodyViewHolder -> {
-                val item = getItem(position) as Content
-                vh.onBind(when {
-                    item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${MangaXAccountConfig.mResolution}x.")
-                    item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${MangaXAccountConfig.mResolution}x.")
-                    item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${MangaXAccountConfig.mResolution}x.")
-                    else -> item.mImageUrl
-                })
+                vh.onBind((getItem(position) as Content).mImageUrl)
             }
             is IntentViewHolder -> vh.onBind(getItem(position) as ReaderPrevNextInfo)
         }
@@ -161,7 +155,6 @@ class ComicStandardRvAdapter(
     private fun getItem(@IntRange(from = 0) position: Int) = mDiffer.currentList[position]
 
     fun getCurrentList() = mDiffer.currentList
-
     fun submitList(pages: MutableList<Any>) = mDiffer.submitList(pages)
     fun submitList(pages: MutableList<Any>, callback: Runnable) = mDiffer.submitList(pages, callback)
 }

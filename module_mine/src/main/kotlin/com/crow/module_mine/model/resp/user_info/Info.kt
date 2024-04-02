@@ -20,10 +20,10 @@ import com.squareup.moshi.Json
 data class Info(
 
     @Json(name =  "avatar")
-    val mIconUrl: String,
+    val mIconUrl: String?,
 
     @Json(name =  "avatar_rp")
-    val mIconUrlRP: String,
+    val mIconUrlRP: String?,
 
     @Json(name =  "gender")
     val mGender: GenderX,
