@@ -5,6 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.crow.base.tools.extensions.log
 import com.crow.base.ui.viewmodel.mvi.BaseMviViewModel
 import com.crow.module_discover.model.intent.DiscoverIntent
 import com.crow.module_discover.model.resp.DiscoverComicTagResp
