@@ -20,6 +20,8 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+
+
 /**
  * App 全局配置
  *
@@ -28,8 +30,10 @@ import kotlinx.coroutines.launch
  * @property mCopyMangaSite CopyManga站点
  * @property mRoute 路线 "0", "1"
  * @property mResolution 分辨率 800、1200、1500
+ * @property mNoticeVersion 公告通知版本
  * @constructor Create empty App config entity
  */
+
 data class AppConfig(
 
     @Json(name = "App_FirstInit")
@@ -48,7 +52,10 @@ data class AppConfig(
     val mResolution: Int = MangaXAccountConfig.mResolution,
 
     @Json(name = "ApiSecret")
-    val mApiSecret: String? = null
+    val mApiSecret: String? = null,
+
+    @Json(name = "NoticeVersion")
+    val mNoticeVersion: Long = 0
 ) {
     companion object {
 

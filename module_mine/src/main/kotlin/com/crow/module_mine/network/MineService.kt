@@ -31,7 +31,8 @@ interface MineService {
     @POST(BaseStrings.URL.Reg)
     @FormUrlEncoded
     fun reg(
-        @Field("username") username: String, @Field("password") password: String,
+        @Field("username") username: String,
+        @Field("password") password: String,
         @Field("source") source: String = "freeSite",
         @Field("version") version: String = "2024.01.01",
         @Field("platform") platform: String = "1"

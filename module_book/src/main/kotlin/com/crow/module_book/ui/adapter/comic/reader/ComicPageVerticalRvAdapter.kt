@@ -160,7 +160,6 @@ class ComicPageVerticalRvAdapter(val mLifecycleOwner: LifecycleOwner, val onRetr
                             width / sWidth.toFloat(),
                             height / sHeight.toFloat(),
                         )
-                        animateFadeIn()
                     }
                 }
             })

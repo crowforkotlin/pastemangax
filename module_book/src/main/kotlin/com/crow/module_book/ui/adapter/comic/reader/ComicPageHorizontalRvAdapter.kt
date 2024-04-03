@@ -163,7 +163,6 @@ class ComicPageHorizontalRvAdapter(
                             width / sWidth.toFloat(),
                             height / sHeight.toFloat(),
                         )
-                        animateFadeIn()
                     }
                 }
             })

@@ -9,5 +9,5 @@ data class Groups(
     val mDefault: Default?,
 
     @Json(name = "karapeji")
-    val mQuanCai: QuanCai?
+    val mQuanCai: QuanCai? = null
 )

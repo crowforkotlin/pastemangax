@@ -21,5 +21,8 @@ data class RegReq(
     val mSource: String = "Offical",
 
     @Json(name = "platform")
-    val mPlatform: String = "1"
+    val mPlatform: String = "1",
+
+    @Json(name = "version")
+    val mVersion: String = "2024.01.01"
 )

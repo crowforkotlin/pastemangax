@@ -91,7 +91,10 @@ fun JSONObject.toJsonRequestBody(): RequestBody {
 * @author CrowForKotlin
 * @date 2021/11/4 3:58 下午
 * */
-val baseMoshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+
+
+val baseMoshi = Moshi.Builder().add(KotlinJsonAdapterFactory())
+    .build()
 
 inline fun <reified T> toTypeEntity(value: Any?, moshi: Moshi = baseMoshi): T? {
     if (value == null) return null

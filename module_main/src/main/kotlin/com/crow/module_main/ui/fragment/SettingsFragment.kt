@@ -150,6 +150,8 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
         val alertDialog = mContext.newMaterialDialog { dialog -> dialog.setView(binding.root) }
 
+        alertDialog.setCancelable(false)
+
         binding.close.doOnClickInterval { alertDialog.dismiss() }
 
         when(appConfig.mResolution) {
@@ -178,7 +180,10 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
         mSiteDialogBinding = MainSettingsSiteLayoutBinding.inflate(layoutInflater)
 
         mSiteDialogBinding?.apply {
-            mSiteAlertDialog = mContext.newMaterialDialog { dialog -> dialog.setView(root) }
+            mSiteAlertDialog = mContext.newMaterialDialog { dialog ->
+                dialog.setCancelable(false)
+                dialog.setView(root)
+            }
 
             close.doOnClickInterval { mSiteAlertDialog?.dismiss() }
 
@@ -237,7 +242,10 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
 
         val binding = MainSettingsProxyLayoutBinding.inflate(layoutInflater)
 
-        val alertDialog = mContext.newMaterialDialog { dialog -> dialog.setView(binding.root) }
+        val alertDialog = mContext.newMaterialDialog { dialog ->
+            dialog.setCancelable(false)
+            dialog.setView(binding.root)
+        }
 
         alertDialog.setOnDismissListener {
             val text = binding.proxyInputEdit.text

@@ -3,6 +3,7 @@ package com.crow.module_book.ui.adapter.comic.reader
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.TextView
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isGone
@@ -62,6 +63,7 @@ open class ComicVH<VB : ViewBinding>(val lifecycleCoroutineScope: LifecycleCorou
         mRetry = retry
         mSubsamplingScaleImageView = image
         mSubsamplingScaleImageView.regionDecoderFactory = SkiaPooledImageRegionDecoder.Factory()
+        mLoadingText.updateLayoutParams<ViewGroup.LayoutParams> { height = itemView.context.resources.displayMetrics.heightPixels }
     }
 
     fun initImageListener(onRetry: () -> Unit) {
@@ -81,23 +83,19 @@ open class ComicVH<VB : ViewBinding>(val lifecycleCoroutineScope: LifecycleCorou
                     onRetry()
                 }
             }
-
-            override fun onReady() {
-//                itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = ViewGroup.LayoutParams.WRAP_CONTENT }
-            }
+            override fun onReady() { }
         })
     }
 
     fun loadLongStriptImage(link: String) {
-        val imageLink = getImageUrl(link)
         mLoadingJob?.cancel()
         mLoadingJob = lifecycleCoroutineScope.launch {
+            val imageLink = getImageUrl(link)
             initComponent(imageLink)
-            val init = initItemViewHeight()
             async(Dispatchers.IO) {
                 app.imageLoader.execute(
                     ImageRequest.Builder(itemView.context)
-                        .addListener(imageLink, init)
+                        .addListener(imageLink, true)
                         .data(imageLink)
                         .decoderFactory { source, _, _ ->
                             Decoder {
@@ -158,8 +156,8 @@ open class ComicVH<VB : ViewBinding>(val lifecycleCoroutineScope: LifecycleCorou
     private fun initComponent(link: String) {
         mSubsamplingScaleImageView.recycle()
         mRetry.isGone = true
-        mLoading.isInvisible = false
-        mLoadingText.isInvisible = false
+        mLoading.isVisible = true
+        mLoadingText.isVisible = true
         mLoadingText.text = AppProgressFactory.PERCENT_0
         loading(link) { mLoadingText.text = it }
     }
@@ -174,7 +172,7 @@ open class ComicVH<VB : ViewBinding>(val lifecycleCoroutineScope: LifecycleCorou
                 setItemViewHeight(isInit)
             },
             onError = { _, _ ->
-                setCompoenntCompleteState()
+                setCompoenntCompleteState(true)
                 setRetryListener(imageLink)
             },
         )
@@ -182,10 +180,12 @@ open class ComicVH<VB : ViewBinding>(val lifecycleCoroutineScope: LifecycleCorou
 
     private fun ImageRequest.Builder.addListener(link: String): ImageRequest.Builder {
         return listener(
-            onSuccess = { _, _ -> setCompoenntCompleteState() },
-            onError = { _, _ ->
+            onSuccess = { _, _ ->
                 setCompoenntCompleteState()
-//                setRetryListener(link)
+            },
+            onError = { _, _ ->
+                setCompoenntCompleteState(true)
+                setRetryListener(link)
             }
         )
 
@@ -204,21 +204,15 @@ open class ComicVH<VB : ViewBinding>(val lifecycleCoroutineScope: LifecycleCorou
 
     private fun setItemViewHeight(isNull: Boolean) {
         if (isNull) {
-            itemView.post {
-                itemView.updateLayoutParams<ViewGroup.LayoutParams> {
-                    height = ViewGroup.LayoutParams.WRAP_CONTENT
-                }
-            }
+            mLoadingText.updateLayoutParams<ViewGroup.LayoutParams> { height = WRAP_CONTENT  }
         } else {
-            itemView.updateLayoutParams<ViewGroup.LayoutParams> {
-                height = ViewGroup.LayoutParams.WRAP_CONTENT
-            }
+            mLoadingText.updateLayoutParams<ViewGroup.LayoutParams> { height = WRAP_CONTENT  }
         }
     }
 
-    private fun setCompoenntCompleteState() {
+    private fun setCompoenntCompleteState(retryVisible: Boolean = false) {
+        mRetry.isVisible = retryVisible
         mLoading.isInvisible = true
         mLoadingText.isInvisible = true
-        mRetry.isGone = true
     }
 }

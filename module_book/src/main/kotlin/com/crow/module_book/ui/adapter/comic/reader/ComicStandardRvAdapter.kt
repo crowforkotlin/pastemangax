@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.crow.base.app.app
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -65,16 +66,13 @@ class ComicStandardRvAdapter(
 
     inner class BodyViewHolder(val binding: BookComicRvBinding) : ComicVH<BookComicRvBinding>(mLifecycleOwner, binding) {
 
-        private var mCurrentImage: String? = null
-        private var mPrevJob: Job? = null
-
         init {
 
             init(
                 loading = binding.loading,
                 loadingText = binding.loadingText,
-                image = binding.image,
-                retry = binding.retry
+                image = binding.subImage,
+                retry = binding.retry,
             )
 
             initImageListener {
@@ -139,7 +137,7 @@ class ComicStandardRvAdapter(
     }
 
     override fun onViewRecycled(vh: RecyclerView.ViewHolder) {
-        if (vh is BodyViewHolder) { vh.binding.image.recycle() }
+        if (vh is BodyViewHolder) { vh.binding.subImage.recycle() }
         super.onViewRecycled(vh)
     }
 

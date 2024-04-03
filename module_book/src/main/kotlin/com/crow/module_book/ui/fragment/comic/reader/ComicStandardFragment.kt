@@ -7,6 +7,10 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
+import androidx.core.view.children
+import androidx.core.view.get
+import androidx.core.view.postDelayed
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +42,7 @@ import com.crow.module_book.ui.fragment.InfoFragment
 import com.crow.module_book.ui.fragment.comic.BaseComicFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.crow.module_book.ui.viewmodel.comic.StandardLoader
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -170,7 +175,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
                                 if (!isAttachedToWindow) return@post
                                 findViewByPosition(mBinding.list.findFisrtVisibleViewPosition())?.post {
                                     if (!isAttachedToWindow) return@post
-                                   scrollToPositionWithOffset(position, positionOffset)
+                                    scrollToPositionWithOffset(position, positionOffset)
                                     mBinding.list.post {
                                         if (!isAttachedToWindow) return@post
                                         getPosItem(position) { index, pagePos, pageId, itemPos ->

@@ -21,5 +21,5 @@ open class AppIntent : BaseMviIntent() {
     data class GetDynamicSite(val siteResp: MainSiteResp? = null) : AppIntent()
 
     // 获取通知
-    data class GetNotice(val notice: MainNoticeResp? = null) : AppIntent()
+    data class GetNotice(val force: Boolean, val notice: MainNoticeResp? = null) : AppIntent()
 }

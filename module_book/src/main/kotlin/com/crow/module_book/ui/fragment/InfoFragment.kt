@@ -239,7 +239,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
         immersionPadding(mBinding.root) { view, insets, _ ->
             view.updatePadding(top = insets.top)
             mBinding.chapterList.updatePadding(bottom = insets.bottom)
-            mBinding.bottomAppbar.updatePadding(bottom = insets.bottom)
+//            mBinding.bottomAppbar.updatePadding(bottom = insets.bottom)
         }
 
         // 设置 漫画图的卡片 宽高
