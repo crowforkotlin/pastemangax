@@ -10,5 +10,14 @@ data class MainNoticeResp(
     val mContent: String,
 
     @Json(name = "time")
-    val mTime: String
+    val mTime: String,
+
+    @Json(name = "force_time")
+    val mForceTime: Int,
+
+    @Json(name = "version")
+    val mVersion: Long,
+
+    @Json(name = "force_content")
+    val mForceContent: String
 )

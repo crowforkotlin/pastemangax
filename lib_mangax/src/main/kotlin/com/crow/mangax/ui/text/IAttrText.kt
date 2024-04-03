@@ -1,6 +1,6 @@
 @file:Suppress("SpellCheckingInspection", "unused", "DEPRECATION", "LocalVariableName", "AnnotateVersionCheck")
 
-package com.crow.mangax.ui.text
+package  com.crow.mangax.ui.text
 
 import android.content.Context
 import android.graphics.Canvas
@@ -9,12 +9,6 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Region
 import android.util.Log
-import com.crow.mangax.ui.text.debug
-import com.crow.mangax.ui.text.debugAnimation
-import com.crow.mangax.ui.text.drawX
-import com.crow.mangax.ui.text.drawY
-import com.crow.mangax.ui.text.withApiO
-import com.crow.mangax.ui.text.withSizeUnit
 import kotlin.math.sqrt
 
 internal interface IAttrText {

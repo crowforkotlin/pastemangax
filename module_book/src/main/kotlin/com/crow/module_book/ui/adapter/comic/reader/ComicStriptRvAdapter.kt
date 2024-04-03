@@ -10,10 +10,14 @@ import androidx.annotation.IntRange
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.app.app
+import com.crow.base.tools.coroutine.launchDelay
+import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutGone
 import com.crow.base.tools.extensions.doOnClickInterval
@@ -34,7 +38,9 @@ import com.crow.module_book.model.resp.comic_page.Content
  * @Description: ComicInfoChapterRvAdapter
  * @formatter:on
  **************************/
-class ComicStriptRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ComicStriptRvAdapter(
+    val mLifecycleCoroutineScope: LifecycleCoroutineScope,
+    val onRetry: (uuid: String, isNext: Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val LOADING_VIEW = 0
@@ -71,18 +77,38 @@ class ComicStriptRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit)
        runnable.run()
     }
 
-    inner class PageViewHolder(binding: BookComicRvBinding) : MangaCoilVH<BookComicRvBinding>(binding) {
+    inner class PageViewHolder(val binding: BookComicRvBinding) : ComicVH<BookComicRvBinding>(mLifecycleCoroutineScope, binding) {
 
-       init {
-           initComponent(binding.loading, binding.loadingText, binding.image, binding.retry)
-       }
+        init {
 
-        fun onBind(item: Content) {
-            loadImageWithRetry(when {
-                item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${MangaXAccountConfig.mResolution}x.")
-                item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${MangaXAccountConfig.mResolution}x.")
-                item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${MangaXAccountConfig.mResolution}x.")
-                else -> item.mImageUrl
+            init(
+                loading = binding.loading,
+                loadingText = binding.loadingText,
+                image = binding.subImage,
+                retry = binding.retry,
+            )
+
+            initImageListener {
+                val item = getItem(absoluteAdapterPosition)
+                if (item is Content) {
+                    (itemView.context as LifecycleOwner).launchDelay(BASE_ANIM_300L) {
+                        onBind(when {
+                            item.mImageUrl.contains("c800x.") -> item.mImageUrl.replace("c800x.", "c${MangaXAccountConfig.mResolution}x.")
+                            item.mImageUrl.contains("c1200x.") -> item.mImageUrl.replace("c1200x.", "c${MangaXAccountConfig.mResolution}x.")
+                            item.mImageUrl.contains("c1500x.") -> item.mImageUrl.replace("c1500x.", "c${MangaXAccountConfig.mResolution}x.")
+                            else -> item.mImageUrl
+                        })
+                    }
+                }
+            }
+        }
+
+        fun onBind(url: String) {
+            loadLongStriptImage(when {
+                url.contains("c800x.") -> url.replace("c800x.", "c${MangaXAccountConfig.mResolution}x.")
+                url.contains("c1200x.") -> url.replace("c1200x.", "c${MangaXAccountConfig.mResolution}x.")
+                url.contains("c1500x.") -> url.replace("c1500x.", "c${MangaXAccountConfig.mResolution}x.")
+                else -> url
             })
         }
     }
@@ -152,15 +178,13 @@ class ComicStriptRvAdapter(val onRetry: (uuid: String, isNext: Boolean) -> Unit)
     }
 
     override fun onViewRecycled(vh: RecyclerView.ViewHolder) {
+        if (vh is PageViewHolder) { vh.binding.subImage.recycle() }
         super.onViewRecycled(vh)
-        when(vh) {
-            is PageViewHolder -> { vh.itemView.updateLayoutParams<ViewGroup.LayoutParams> { height = MATCH_PARENT } }
-        }
     }
 
     override fun onBindViewHolder(vh: RecyclerView.ViewHolder, position: Int) {
         when(vh) {
-            is PageViewHolder -> vh.onBind(getItem(position) as Content)
+            is PageViewHolder -> vh.onBind((getItem(position) as Content).mImageUrl)
             is PageMoreViewHolder -> vh.onBind(getItem(position) as ReaderLoading)
         }
     }

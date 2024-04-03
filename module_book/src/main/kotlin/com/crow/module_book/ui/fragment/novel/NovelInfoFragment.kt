@@ -200,7 +200,7 @@ class NovelInfoFragment : InfoFragment() {
 
             if (!mBinding.bookInfoLinearChapter.isVisible)  mBinding.bookInfoLinearChapter.animateFadeIn()
 
-            if (!mBinding.bookInfoRvChapter.isVisible) mBinding.bookInfoRvChapter.animateFadeIn()
+            if (!mBinding.chapterList.isVisible) mBinding.chapterList.animateFadeIn()
 
             notifyChapterPageShowNow(chapterResp)
         }
@@ -231,7 +231,7 @@ class NovelInfoFragment : InfoFragment() {
 
 
         // 设置适配器
-        mBinding.bookInfoRvChapter.adapter = mAdapter!!
+        mBinding.chapterList.adapter = mAdapter!!
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

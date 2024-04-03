@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootView"
@@ -10,43 +9,49 @@
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loading"
+        android:padding="@dimen/base_dp10"
         style="@style/Widget.Material3.CircularProgressIndicator.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true"
         app:indicatorColor="@color/base_white"
-        app:trackThickness="@dimen/base_dp3"
         app:indicatorSize="@dimen/base_dp36"
-        app:trackCornerRadius="@dimen/base_dp99" />
+        app:trackCornerRadius="@dimen/base_dp99"
+        app:trackThickness="@dimen/base_dp3" />
 
     <TextView
         android:id="@+id/loading_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
         android:layout_gravity="center"
+        android:gravity="center"
         android:text="@string/mangax_zero"
+        android:textColor="@android:color/white"
         android:textSize="@dimen/base_sp10"
         android:textStyle="bold" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/retry"
         style="@style/Widget.Material3.Button.TonalButton"
-        app:cornerRadius="@dimen/base_dp10"
-        app:backgroundTint="@color/base_white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/base_retry"
         android:visibility="gone"
+        app:backgroundTint="@color/base_white"
+        app:cornerRadius="@dimen/base_dp10"
         tools:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/image"
+    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+        android:id="@+id/subImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/base_todo_textview"/>
+        android:layout_gravity="center"
+        android:contentDescription="@string/base_todo_textview"
+        app:panEnabled="false"
+        app:quickScaleEnabled="false"
+        app:restoreStrategy="deferred"
+        app:zoomEnabled="false" />
 
 </FrameLayout>

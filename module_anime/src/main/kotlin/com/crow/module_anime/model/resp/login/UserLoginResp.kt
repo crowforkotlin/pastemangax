@@ -9,7 +9,7 @@ data class UserLoginResp(
     val mAdsVipEnd: Any?,
 
     @Json(name = "avatar")
-    val mAvatar: String,
+    val mAvatar: String?,
 
     @Json(name = "b_sstv")
     val mBSstv: Boolean,

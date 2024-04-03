@@ -7,4 +7,7 @@ data class Groups(
 
     @Json(name =  "default")
     val mDefault: Default?,
+
+    @Json(name = "karapeji")
+    val mQuanCai: QuanCai? = null
 )

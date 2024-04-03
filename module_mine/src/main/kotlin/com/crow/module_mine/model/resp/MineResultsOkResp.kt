@@ -6,7 +6,7 @@ import com.squareup.moshi.Json
 data class MineResultsOkResp(
 
     @Json(name =  "avatar")
-    val mAvatar: String,
+    val mAvatar: String?,
 
     @Json(name =  "datetime_created")
     val mDatetimeCreated: String,

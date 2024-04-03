@@ -22,15 +22,25 @@ interface MineService {
 
     @POST(BaseStrings.URL.Login)
     @FormUrlEncoded
-    fun login(@Field("username") username: String, @Field("password") password: String, @Field("salt") salt: String) : Flow<BaseResultResp<Any>>
+    fun login(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("salt") salt: String
+    ): Flow<BaseResultResp<Any>>
 
     @POST(BaseStrings.URL.Reg)
     @FormUrlEncoded
-    fun reg(@Field("username") username: String, @Field("password") password: String): Flow<BaseResultResp<Any>>
+    fun reg(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("source") source: String = "freeSite",
+        @Field("version") version: String = "2024.01.01",
+        @Field("platform") platform: String = "1"
+    ): Flow<BaseResultResp<Any>>
 
     @GET(BaseStrings.URL.UserUpdateInfo)
-    fun getUserUpdateInfo() : Flow<BaseResultResp<MineUpdateInfoResp>>
+    fun getUserUpdateInfo(): Flow<BaseResultResp<MineUpdateInfoResp>>
 
     @GET(BaseStrings.URL.UserInfo)
-    fun getUserInfo() : Flow<BaseResultResp<MineLoginResultsOkResp>>
+    fun getUserInfo(): Flow<BaseResultResp<MineLoginResultsOkResp>>
 }

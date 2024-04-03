@@ -7,12 +7,30 @@
     android:layout_margin="@dimen/base_dp10">
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/timer"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="?android:dialogPreferredPadding"
+        android:textAppearance="@style/MangaX.TextAppearance.Material3.ActionBar.Title.Bold"
+        app:layout_constraintBottom_toBottomOf="@+id/close"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/close"
+        app:layout_constraintStart_toStartOf="@+id/close"
+        app:layout_constraintTop_toTopOf="@+id/close"
+        tools:text="1" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:maxLines="3"
+        android:ellipsize="end"
+        app:layout_constraintHorizontal_bias="0"
         android:layout_height="wrap_content"
         android:layout_margin="?android:dialogPreferredPadding"
         android:text="@string/home_notice"
         android:textAppearance="@style/MangaX.TextAppearance.Material3.ActionBar.Title.Bold"
+        app:layout_constraintEnd_toStartOf="@+id/close"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,11 +50,11 @@
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider"
         android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/base_dp10"
         android:layout_height="@dimen/base_dp1"
-        android:layout_marginTop="@dimen/base_dp5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/close" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollview"
@@ -75,17 +93,17 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/base_dp20"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:layout_marginEnd="@dimen/base_dp20"
                 android:layout_marginTop="@dimen/base_dp2_5"
+                android:layout_marginEnd="@dimen/base_dp20"
                 android:drawablePadding="@dimen/base_dp5"
-                tools:text="@string/base_todo_textview"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textSize="@dimen/base_sp12"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/author" />
+                app:layout_constraintTop_toBottomOf="@id/author"
+                tools:text="@string/base_todo_textview" />
 
             <TextView
                 android:id="@+id/content"
@@ -134,7 +152,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/loading"
                 app:layout_constraintStart_toStartOf="@+id/loading"
                 app:layout_constraintTop_toTopOf="@+id/loading"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

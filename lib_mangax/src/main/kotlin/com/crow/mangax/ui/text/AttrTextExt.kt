@@ -8,9 +8,8 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.text.TextPaint
 import android.util.Log
-import com.crow.mangax.ui.text.AttrTextLayout
-import com.crow.mangax.ui.text.IAttrText
 import java.lang.reflect.Constructor
 
 

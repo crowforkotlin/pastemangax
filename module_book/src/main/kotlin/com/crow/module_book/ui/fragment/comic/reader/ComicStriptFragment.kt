@@ -71,7 +71,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
     override fun getViewBinding(inflater: LayoutInflater) = BookFragmentComicBinding.inflate(inflater)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mAdapter = ComicStriptRvAdapter { uuid, isNext ->
+        mAdapter = ComicStriptRvAdapter(viewLifecycleOwner.lifecycleScope) { uuid, isNext ->
             launchDelay(BASE_ANIM_300L) { mVM.input(BookIntent.GetComicPage(mVM.mPathword, uuid, isNext)) }
         }
         super.onViewCreated(view, savedInstanceState)

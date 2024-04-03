@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonFrame xmlns:android="http://schemas.android.com/apk/res/android"
+<com.crow.module_book.ui.view.comic.rv.ComicScalingFrame xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/comic_frame"
     android:layout_width="match_parent"
@@ -7,10 +7,10 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragment.comic.reader.ComicStandardFragment">
 
-    <eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonRecyclerView
+    <com.crow.module_book.ui.view.comic.rv.ComicRecyclerView
         android:id="@+id/list"
         tools:listitem="@layout/book_comic_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-</eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonFrame>
+</com.crow.module_book.ui.view.comic.rv.ComicScalingFrame>

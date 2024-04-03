@@ -35,9 +35,7 @@ import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_TOP_CENTER
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_TOP_END
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.GRAVITY_TOP_START
 import com.crow.mangax.ui.text.AttrTextLayout.Companion.STRATEGY_DIMENSION_PX_OR_DEFAULT
-import com.crow.mangax.ui.text.debugText
-import com.crow.mangax.ui.text.withApiO
-import com.crow.mangax.ui.text.withPath
+import java.util.TimerTask
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.properties.Delegates
@@ -275,6 +273,10 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
      * @author crowforkotlin
      */
     override var mTextSizeUnitStrategy: Short = STRATEGY_DIMENSION_PX_OR_DEFAULT
+
+    init {
+        setLayerType(LAYER_TYPE_HARDWARE, null)
+    }
 
     /**
      * ⦁ 绘制文本
@@ -582,7 +584,7 @@ internal class AttrTextView internal constructor(context: Context) : View(contex
             val textMarginRow = if (mTextRowMargin >= heightHalf) heightHalf.toFloat() else mTextRowMargin
             val textYIncremenet = textHeight + textMarginRow
             val textHeightWithMargin = textHeight + textMarginRow
-            val textMaxLine = min(if (measuredHeight < textHeightWithMargin) 1 else (measuredHeight / textHeightWithMargin).toInt(), mTextLines)
+            val textMaxLine = min(if (measuredHeight < textHeightWithMargin) 1 else (measuredHeight / textHeightWithMargin).toInt(), textListSize)
             var textStartPos = mListPosition * textMaxLine
             mTextY = onInitializaTextY(abs(fontMetrics.ascent))
             repeat(textMaxLine) {

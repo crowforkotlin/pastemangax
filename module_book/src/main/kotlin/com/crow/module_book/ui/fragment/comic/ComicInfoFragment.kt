@@ -17,7 +17,6 @@ import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.px2sp
@@ -200,7 +199,7 @@ class ComicInfoFragment : InfoFragment() {
 
             if (!mBinding.bookInfoLinearChapter.isVisible) mBinding.bookInfoLinearChapter.animateFadeIn()
 
-            if (!mBinding.bookInfoRvChapter.isVisible) { mBinding.bookInfoRvChapter.animateFadeIn() }
+            if (!mBinding.chapterList.isVisible) { mBinding.chapterList.animateFadeIn() }
 
             notifyChapterPageShowNow(chapterResp)
         }
@@ -244,7 +243,7 @@ class ComicInfoFragment : InfoFragment() {
         super.initView(savedInstanceState)
 
         // 设置适配器
-        mBinding.bookInfoRvChapter.adapter = mAdapter!!
+        mBinding.chapterList.adapter = mAdapter!!
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

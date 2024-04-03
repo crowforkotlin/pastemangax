@@ -6,7 +6,7 @@ import com.squareup.moshi.Json
 data class UserRegResp(
 
     @Json(name = "avatar")
-    val mAvatar: String,
+    val mAvatar: String?,
 
     @Json(name = "cartoon_vip")
     val mCartoonVip: Int,

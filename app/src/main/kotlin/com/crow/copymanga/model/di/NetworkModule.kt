@@ -6,6 +6,7 @@ import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.okhttp.AppProgressFactory
 import com.crow.mangax.copymanga.okhttp.AppProgressResponseBody
 import com.crow.base.tools.extensions.baseMoshi
+import com.crow.base.tools.extensions.info
 import com.crow.base.tools.extensions.log
 import com.crow.base.tools.network.FlowCallAdapterFactory
 import com.crow.mangax.copymanga.BaseStrings.URL

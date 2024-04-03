@@ -202,7 +202,7 @@ class ComicPageVerticalFragment : BaseMviFragment<BookFragmentComicPageBinding>(
         }
 
         mBinding.pager.setPreScrollListener { dx, dy, position ->
-            mVM.onScroll(dy, position, 1)
+            mVM.onScroll(if(mReverse) -dy else dy, position, 1)
         }
 
         mBinding.pager.setNestedPreScrollListener { dx, dy, position ->

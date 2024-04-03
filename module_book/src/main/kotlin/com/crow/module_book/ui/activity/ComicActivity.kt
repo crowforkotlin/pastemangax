@@ -47,6 +47,7 @@ import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.immersionFullView
 import com.crow.base.tools.extensions.immerureCutoutCompat
 import com.crow.base.tools.extensions.isAllWhiteSpace
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.repeatOnLifecycle
 import com.crow.base.tools.extensions.toJson
@@ -194,10 +195,14 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
             mBinding.bottomAppbar.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin =  dp5 + insets.bottom }
         }
 
+        // 初始化适配器
         mBinding.commentList.adapter = ComicCommentRvAdapter(lifecycleScope) { }.run {
             mCommentAdapter = this
             withLoadStateFooter(BaseLoadStateAdapter { retry() })
         }
+
+        // 禁止滑动
+        mBinding.root.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         // 沉浸式状态栏和工具栏
         immersionBarStyle()
@@ -217,9 +222,7 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
     override fun initListener() {
 
         val slideListener = Slider.OnChangeListener  { _, value, _ ->
-            if (mVM.mReaderSetting?.mReadMode != null) {
-                supportFragmentManager.setFragmentResult(SLIDE, bundleOf(SLIDE to value.toInt()))
-            }
+            supportFragmentManager.setFragmentResult(SLIDE, bundleOf(SLIDE to value.toInt()))
         }
 
         mGestureHelper =  GestureHelper(this, this)
@@ -231,7 +234,6 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                 if (!mIsSliding) { supportFragmentManager.setFragmentResult(SLIDE, bundleOf(SLIDE to slider.value.toInt())) }
                 mIsSliding = true
                 mBinding.slider.addOnChangeListener(slideListener)
-
             }
             override fun onStopTrackingTouch(p0: Slider) {
                 mIsSliding = false
@@ -324,12 +326,17 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
 
         mBinding.root.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) { }
-            override fun onDrawerClosed(drawerView: View) { }
+            override fun onDrawerClosed(drawerView: View) {
+                // 禁止滑动
+                mBinding.root.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
             override fun onDrawerStateChanged(newState: Int) {
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(mBinding.root.windowToken, 0)
             }
             override fun onDrawerOpened(drawerView: View) {
                 sendFragmentResult(ReaderEvent.OPEN_DRAWER)
+                // 允许滑动
+                mBinding.root.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                 lifecycleScope.tryConvert(mVM.mComicInfo.mSubTitle) {
                     if (mBinding.commentTopbar.subtitle != it) {
                         mBinding.commentTopbar.subtitle = it
@@ -421,10 +428,10 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
                         intent.mViewState
                             .doOnError { _, _ -> showErrorPage() }
                             .doOnResult {
-                                this.intent.putExtra("INIT", true)
-                                setChapterResult(-1, mVM.getPosOffset())
                                 val page = intent.comicpage
                                 if (page != null) {
+                                    this.intent.putExtra("INIT", true)
+                                    setChapterResult(-1, mVM.getPosOffset())
                                     if(mBinding.loading.isVisible) mBinding.loading.animateFadeOutGone()
                                     lifecycleScope.tryConvert(page.mComic.mName, mBinding.topAppbar::setTitle)
                                     lifecycleScope.tryConvert(page.mChapter.mName) {
