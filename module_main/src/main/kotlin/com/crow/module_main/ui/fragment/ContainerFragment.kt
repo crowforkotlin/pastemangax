@@ -512,7 +512,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         val dialog = mContext.newMaterialDialog {
             it.setView(binding.root)
         }
-        val screenHeight = resources.displayMetrics.heightPixels / 2.25
+        val screenHeight = resources.displayMetrics.heightPixels / 2
         dialog.setCancelable(false)
         (binding.scrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = screenHeight.toInt()
         binding.retry.doOnClickInterval {
