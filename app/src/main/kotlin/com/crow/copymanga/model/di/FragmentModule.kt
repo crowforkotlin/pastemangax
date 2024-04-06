@@ -3,6 +3,7 @@ package com.crow.copymanga.model.di
 import androidx.fragment.app.Fragment
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.module_anime.ui.fragment.AnimeInfoFragment
+import com.crow.module_book.ui.fragment.BookInfoCommentBottomFragment
 import com.crow.module_book.ui.fragment.comic.ComicBottomSheetFragment
 import com.crow.module_book.ui.fragment.comic.ComicInfoFragment
 import com.crow.module_book.ui.fragment.comic.reader.ComicPageHorizontalFragment
@@ -39,6 +40,7 @@ import org.koin.dsl.module
 val fragmentModule = module {
     fragment<BottomSheetDialogFragment>(named(Fragments.Mine.name)) { MineBottomSheetFragment() }
     fragment<BottomSheetDialogFragment>(named(Fragments.ComicBottom.name)) { ComicBottomSheetFragment() }
+    fragment<BottomSheetDialogFragment>(named(Fragments.BookInfoComment.name)) { BookInfoCommentBottomFragment() }
     fragment<Fragment>(named(Fragments.Container.name)) { ContainerFragment() }
     fragment<Fragment>(named(Fragments.MineInfo.name)) { MineUpdateInfoFragment() }
     fragment<Fragment>(named(Fragments.Login.name)) { MineLoginFragment() }

@@ -42,5 +42,7 @@ class BookRepository(private val service: ComicService) {
 
     fun getComicComment(chapterId: String, position: Int, pagesize: Int) = service.getComicComment(chapterId, position, pagesize)
 
+    fun getComicTotalComment(comicId: String, position: Int, pagesize: Int) = service.getComicTotalComment(comicId, position, pagesize)
+
     fun submitComment(chapterId: String, content: String) = service.submitComment(chapterId, content)
 }

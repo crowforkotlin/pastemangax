@@ -57,13 +57,12 @@ class MainApplication : BaseApp(), ImageLoaderFactory {
         mDarkMode = sp.getBoolean(SpNameSpace.Key.ENABLE_DARK, false)
 
         mConfigJob = GlobalScope.launch(Dispatchers.IO) {
+            ChineseConverter.initialize(applicationContext)
             CatlogConfig.initialization(sp)
             AppConfig.readAppConfig()
         }
 
         AppCompatDelegate.setDefaultNightMode(if(mDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
-
-        ChineseConverter.initialize(applicationContext)
 
         Coil.setImageLoader(this)
 

@@ -29,5 +29,6 @@ enum class Fragments {
     ComicPageHorizontal,
     ComicPageVertical,
     ComicStript,
-    ComicBottom
+    ComicBottom,
+    BookInfoComment
 }

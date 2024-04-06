@@ -5,6 +5,7 @@ package com.crow.module_book.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.addCallback
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.crow.mangax.copymanga.BaseStrings
@@ -34,9 +35,12 @@ import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.ComicChapterResp
 import com.crow.module_book.model.resp.NovelChapterResp
 import com.crow.module_book.ui.viewmodel.BookViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
 import com.crow.mangax.R as mangaR
 import com.crow.base.R as baseR
 
@@ -49,7 +53,7 @@ import com.crow.base.R as baseR
  * @formatter:on
  **************************/
 
-abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
+abstract class BookInfoFragment : BaseMviFragment<BookFragmentBinding>() {
 
     companion object {
         const val LOGIN_CHAPTER_HAS_BEEN_SETED = "LOGIN_CHAPTER_HAS_BEEN_SETED"
@@ -61,6 +65,8 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
 
     /** ⦁ 书架VM */
     protected val mVM by viewModel<BookViewModel>()
+
+    private var mCommentFragment: BottomSheetDialogFragment? = null
 
     /** ⦁ 漫画点击实体 */
     protected val mPathword: String by lazy {
@@ -129,11 +135,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
         intent.mViewState
 
             // 发生错误 取消动画 退出界面 提示
-            .doOnError { _, _ ->
-//                dismissLoadingAnim {}
-                toast(getString(baseR.string.base_loading_error))
-//                navigateUp()
-            }
+            .doOnError { _, _ -> toast(getString(baseR.string.base_loading_error)) }
 
             // 显示书页内容 根据意图类型 再次发送获取章节意图的请求
             .doOnResult {
@@ -211,16 +213,25 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
      * ⦁ 设置AddToBookshelf按钮
      */
     protected fun setButtonAddToBookshelf() {
-        mBinding.bookInfoAddToBookshelf.text = getString(R.string.book_comic_add_to_bookshelf)
-        mBinding.bookInfoAddToBookshelf.setIconResource(R.drawable.book_ic_add_to_bookshelf_24dp)
+        mBinding.bookInfoAddToBookshelf.tag = null
+        mBinding.bookInfoAddToBookshelf.setIconResource(R.drawable.book_ic_love_24dp)
     }
 
     /**
      * ⦁ 设置RemoveFromBookshelf按钮
      */
     protected fun setButtonRemoveFromBookshelf() {
-        mBinding.bookInfoAddToBookshelf.setIconResource(R.drawable.book_ic_remove_from_bookshelf_24dp)
-        mBinding.bookInfoAddToBookshelf.text = getString(R.string.book_comic_remove_from_bookshelf)
+        mBinding.bookInfoAddToBookshelf.tag = Unit
+        mBinding.bookInfoAddToBookshelf.setIconResource(R.drawable.book_ic_love_red_24dp)
+    }
+
+    protected fun navigateComment() {
+        val uuid = mVM.mUuid ?: return run { toast(getString(baseR.string.base_unknow_error)) }
+        if (mCommentFragment == null) {
+            mCommentFragment = get<BottomSheetDialogFragment>(named(Fragments.BookInfoComment.name))
+                .apply { arguments = bundleOf(BaseStrings.NAME to mName, BaseStrings.ID to uuid) }
+        }
+        mCommentFragment?.show(parentFragmentManager, null)
     }
 
     /** ⦁ 获取ViewBinding */
@@ -250,20 +261,6 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
         mBinding.bookInfoRefresh.setDisableContentWhenRefresh(true)
 
         val more = ". . ."
-        /*mBinding.desc.apply {
-            mFontSize = resources.getDimension(baseR.dimen.base_sp13)
-            mFontBold = true
-            mAnimationTop = true
-            mFontMonoSpace = true
-            mMultipleLineEnable = true
-            mEnableAntiAlias = true
-            mAnimationMode = BaseAttrTextLayout.ANIMATION_MOVE_Y
-            mFontColor = ContextCompat.getColor(mContext, mangaR.color.base_color_asc)
-            mGravity = BaseAttrTextLayout.GRAVITY_CENTER_START
-            mScrollSpeed = 11
-            mResidenceTime = 3 * 1000
-            mText =  more
-        }*/
         mBinding.desc.text = more
         mBinding.name.text = mName
         mBinding.status.text = getString(R.string.BookComicStatus, more)
@@ -323,8 +320,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
 
     /** ⦁ Lifecycle onDestoryView */
     override fun onDestroyView() {
-        super.onDestroyView()
-
+        mCommentFragment = null
         // 设置成false是因为 当View重新创建的时候 可以重新添加章节选择器
         mIsTabAlreadyAdded = false
 
@@ -332,6 +328,7 @@ abstract class InfoFragment : BaseMviFragment<BookFragmentBinding>() {
         mProgressFactory = null
 
         mBaseEvent.remove(LOGIN_CHAPTER_HAS_BEEN_SETED)
+        super.onDestroyView()
     }
 
     /**

@@ -41,13 +41,13 @@ import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.NovelChapterResp
 import com.crow.module_book.model.resp.comic_info.Status
 import com.crow.module_book.ui.adapter.novel.NovelChapterRvAdapter
-import com.crow.module_book.ui.fragment.InfoFragment
+import com.crow.module_book.ui.fragment.BookInfoFragment
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.core.qualifier.named
 
-class NovelInfoFragment : InfoFragment() {
+class NovelInfoFragment : BookInfoFragment() {
 
     /**
      * ⦁ Regist FlowBus
@@ -302,7 +302,7 @@ class NovelInfoFragment : InfoFragment() {
                 toast(getString(R.string.book_add_invalid))
                 return@doOnClickInterval
             }
-            mVM.input(BookIntent.AddNovelToBookshelf(mVM.mUuid ?: return@doOnClickInterval, if (mBinding.bookInfoAddToBookshelf.text == getString(R.string.book_comic_add_to_bookshelf)) 1 else 0))
+            mVM.input(BookIntent.AddNovelToBookshelf(mVM.mUuid ?: return@doOnClickInterval, if (mBinding.bookInfoAddToBookshelf.tag == null) 1 else 0))
         }
 
     }

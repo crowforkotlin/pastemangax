@@ -50,6 +50,7 @@ import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.BaseStrings.ID
 import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.appEvent
+import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.entity.Fragments
 import com.crow.module_anime.ui.fragment.AnimeFragment
 import com.crow.module_bookshelf.ui.fragment.BookshelfFragment
@@ -155,7 +156,7 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                         .doOnErrorInCoroutine { _, _ -> mVM.saveAppConfig() }
                         .doOnResultInCoroutine {
                             BaseStrings.URL.COPYMANGA = Base64.decode(intent.siteResp!!.mSiteList!!.first()!!.mEncodeSite, Base64.DEFAULT).decodeToString()
-                            mVM.saveAppConfig()
+                            mVM.saveAppConfig((AppConfig.getInstance() ?: mVM.getReadedAppConfig()) ?: return@doOnResultInCoroutine)
                         }
                 }
                 is AppIntent.GetUpdateInfo -> {
@@ -188,6 +189,8 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                                     if (intent.force) {
                                         lifecycleScope.launch {
                                             val config = mVM.getReadedAppConfig() ?: return@launch
+                                            config.log()
+                                            mVersion.log()
                                             if (config.mNoticeVersion >= mVersion) return@launch
                                             val binding = loadNoticeDialog {
                                                 lifecycleScope.launch {

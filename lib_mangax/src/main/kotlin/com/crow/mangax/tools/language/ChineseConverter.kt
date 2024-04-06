@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -49,14 +50,13 @@ object ChineseConverter {
      * ⦁ 2023-12-14 01:49:17 周四 上午
      * @author crowforkotlin
      */
-    fun initialize(context: Context) {
-        mConvertScope.launch(Dispatchers.IO) {
-            val lastDataFile = File(app.filesDir.toString() + "/opencc_data/zFinished2")
-            if (!lastDataFile.exists()) {
-                initialize(app)
-            }
-            context.copyFolder("opencc_data")
+    suspend fun initialize(context: Context) {
+        val lastDataFile = File(app.filesDir.toString() + "/opencc_data/zFinished2")
+        if (!lastDataFile.exists()) {
+            initialize(app)
+            delay(1000L)
         }
+        context.copyFolder("opencc_data")
     }
 
     /**

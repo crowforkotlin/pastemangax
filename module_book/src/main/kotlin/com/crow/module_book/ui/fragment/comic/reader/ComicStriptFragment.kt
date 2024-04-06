@@ -17,7 +17,6 @@ import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.error
 import com.crow.base.tools.extensions.findCenterViewPosition
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -36,7 +35,7 @@ import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.comic_page.Content
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicStriptRvAdapter
-import com.crow.module_book.ui.fragment.InfoFragment
+import com.crow.module_book.ui.fragment.BookInfoFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.crow.module_book.ui.viewmodel.comic.StriptLoader
 import kotlinx.coroutines.launch
@@ -327,7 +326,7 @@ class ComicStriptFragment : BaseMviFragment<BookFragmentComicBinding>() {
 
     private fun onErrorComicPage() {
         toast(getString(R.string.base_loading_error))
-        BaseEvent.getSIngleInstance().setBoolean(InfoFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
+        BaseEvent.getSIngleInstance().setBoolean(BookInfoFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 }

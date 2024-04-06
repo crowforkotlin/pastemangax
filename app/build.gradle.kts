@@ -56,11 +56,27 @@ android {
             ndkVersion = AppConfigs.ndk_version
 
             // 设置支持的SO库架构 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
-            abiFilters += listOf("x86", "x86_64", "armeabi-v7a", "arm64-v8a")
+//            abiFilters += listOf("x86", "x86_64", "armeabi-v7a", "arm64-v8a")
         }
 
         // 设置APK名
         setProperty("archivesBaseName", "CopyMangaX-$versionName")
+    }
+
+    // 打包时提供不同CPU架构的APK
+    splits {
+        abi {
+
+            // 清除ABI的所有配置
+            reset()
+
+            // 启用
+            isEnable = true
+
+            // 不集成 到单独一个APK，由于架构有4个，会增加APK体积
+            isUniversalApk = false
+            include("x86", "x86_64", "armeabi-v7a", "arm64-v8a")
+        }
     }
 
     // 应用程序的构建类型

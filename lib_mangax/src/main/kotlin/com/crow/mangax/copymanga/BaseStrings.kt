@@ -40,6 +40,7 @@ object BaseStrings {
         const val ComicSearch = "/api/v3/search/comic"
         const val ComicTopic = "/api/v3/topic/{$PATH_WORD}/contents"
         const val ComicCommentList = "/api/v3/roasts?_update=true"
+        const val ComicTotalComment = "/api/v3/comments?_update=true"
         const val ComicCommentSubmit = "/api/v3/member/roast"
 
         const val NovelInfo = "/api/v3/book/{pathword}?_update=true"

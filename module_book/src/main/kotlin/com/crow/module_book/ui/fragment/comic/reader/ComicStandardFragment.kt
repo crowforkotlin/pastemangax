@@ -7,19 +7,12 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
-import androidx.core.view.children
-import androidx.core.view.get
-import androidx.core.view.postDelayed
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.withStarted
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.findCenterViewPosition
 import com.crow.base.tools.extensions.findFisrtVisibleViewPosition
-import com.crow.base.tools.extensions.info
-import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.toast
 import com.crow.base.ui.view.event.BaseEvent
@@ -31,21 +24,16 @@ import com.crow.module_book.databinding.BookFragmentComicBinding
 import com.crow.module_book.model.database.model.BookChapterEntity
 import com.crow.module_book.model.entity.BookType
 import com.crow.module_book.model.entity.comic.reader.ReaderEvent
-import com.crow.module_book.model.entity.comic.reader.ReaderLoading
 import com.crow.module_book.model.entity.comic.reader.ReaderPrevNextInfo
 import com.crow.module_book.model.entity.comic.reader.ReaderUiState
 import com.crow.module_book.model.intent.BookIntent
 import com.crow.module_book.model.resp.comic_page.Content
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.reader.ComicStandardRvAdapter
-import com.crow.module_book.ui.fragment.InfoFragment
+import com.crow.module_book.ui.fragment.BookInfoFragment
 import com.crow.module_book.ui.fragment.comic.BaseComicFragment
 import com.crow.module_book.ui.viewmodel.ComicViewModel
 import com.crow.module_book.ui.viewmodel.comic.StandardLoader
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import com.google.android.material.button.MaterialButton
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import com.crow.base.R as baseR
 import com.crow.mangax.R as mangaR
@@ -287,7 +275,7 @@ class ComicStandardFragment : BaseComicFragment<BookFragmentComicBinding>() {
 
     private fun onErrorComicPage() {
         toast(getString(baseR.string.base_loading_error))
-        BaseEvent.getSIngleInstance().setBoolean(InfoFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
+        BaseEvent.getSIngleInstance().setBoolean(BookInfoFragment.LOGIN_CHAPTER_HAS_BEEN_SETED, true)
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 

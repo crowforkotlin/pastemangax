@@ -524,7 +524,10 @@ class ComicActivity : BaseComicActivity(), GestureHelper.GestureListener {
      */
     override fun onStart() {
         super.onStart()
-        onBackPressedDispatcher.addCallback(this) { finishActivity() }
+        onBackPressedDispatcher.addCallback(this) {
+            if (mBinding.root.isOpen) mBinding.root.closeDrawers()
+            else finishActivity()
+        }
     }
 
     /**

@@ -1,6 +1,10 @@
 package com.crow.module_book.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.crow.base.app.app
 import com.crow.base.tools.coroutine.baseCoroutineException
 import com.crow.base.tools.extensions.DBNameSpace
@@ -17,10 +21,17 @@ import com.crow.module_book.model.resp.ComicInfoResp
 import com.crow.module_book.model.resp.NovelChapterResp
 import com.crow.module_book.model.resp.NovelInfoResp
 import com.crow.module_book.model.resp.comic_browser.Browse
+import com.crow.module_book.model.resp.comic_comment.ComicCommentListResult
+import com.crow.module_book.model.resp.comic_comment_total.ComicTotalCommentResp
+import com.crow.module_book.model.resp.comic_comment_total.ComicTotalCommentResult
+import com.crow.module_book.model.source.ComicCommentDataSource
+import com.crow.module_book.model.source.ComicTotalCommentDataSource
 import com.crow.module_book.network.BookRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
 
@@ -56,6 +67,8 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
     /** ⦁ 轻小说信息页 */
     var mNovelInfoPage: NovelInfoResp? = null
         private set
+
+    var mComicCommentFlowPage : Flow<PagingData<ComicTotalCommentResult>>? = null
 
     /**
      * ⦁ 章节 数据库 DAO
@@ -98,7 +111,23 @@ class BookViewModel(val repository: BookRepository) : BaseMviViewModel<BookInten
             is BookIntent.GetNovelCatelogue -> getNovelCatelogue(intent)
             is BookIntent.AddComicToBookshelf -> addComicToBookshelf(intent)
             is BookIntent.AddNovelToBookshelf -> addNovelToBookshelf(intent)
+            is BookIntent.GetComicTotalComment -> getComicTotalComment(intent)
         }
+    }
+
+    private fun getComicTotalComment(intent: BookIntent.GetComicTotalComment) {
+        mComicCommentFlowPage = Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                initialLoadSize = 20,
+                enablePlaceholders = true,
+            ),
+            pagingSourceFactory = {
+                ComicTotalCommentDataSource { position, pagesize ->
+                    flowResult(repository.getComicTotalComment(intent.comicId, position, pagesize), intent) { value -> intent.copy(resp = value.mResults) }.mResults
+                }
+            }
+        ).flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
     }
 
 

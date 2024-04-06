@@ -25,6 +25,7 @@ import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
 import com.crow.base.tools.extensions.immersionPadding
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateIconClickGap
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
@@ -36,6 +37,7 @@ import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.mangax.copymanga.BaseStrings
 import com.crow.mangax.copymanga.MangaXAccountConfig
+import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.entity.CatlogConfig
 import com.crow.mangax.copymanga.entity.CatlogConfig.mApiImageProxyEnable
 import com.crow.mangax.copymanga.entity.CatlogConfig.mApiProxyEnable
@@ -460,8 +462,8 @@ class SettingsFragment : BaseMviFragment<MainFragmentSettingsBinding>() {
                                             if (isChecked) {
                                                 mSiteDialogBinding!!.siteRadioGroup.forEach { childView -> if (buttonView.id != (childView as MaterialRadioButton).id) childView.isChecked = false }
                                                 BaseStrings.URL.COPYMANGA = buttonView.tag.toString()
-                                                mVM.saveAppConfig()
                                                 mHandler.postDelayed({ mSiteAlertDialog?.dismiss() },BaseEvent.BASE_FLAG_TIME_300)
+                                                lifecycleScope.launch { mVM.saveAppConfig((AppConfig.getInstance() ?: mVM.getReadedAppConfig()) ?: return@launch) }
                                             }
                                         }
                                     })

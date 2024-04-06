@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/comment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/comment_topbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/base_ic_back_24dp"
+        app:navigationIconTint="@color/mangax_color_asc"
+        app:title="@string/book_comment_comic_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/top_appbar_diver"
+        app:dividerColor="@color/mangax_color_asc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/comment_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/base_dp0_5" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh"
+        app:layout_constraintBottom_toTopOf="@+id/comment_input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_appbar_diver"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <!--<com.scwang.smart.refresh.header.MaterialHeader
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/comment_list"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/book_comic_comment_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/base_dp10"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/comment_input_layout"
+        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+        app:boxBackgroundColor="@color/mangax_color_desc"
+        app:boxCornerRadiusBottomEnd="@dimen/base_dp7_5"
+        app:boxCornerRadiusBottomStart="@dimen/base_dp7_5"
+        app:boxCornerRadiusTopEnd="@dimen/base_dp7_5"
+        app:boxCornerRadiusTopStart="@dimen/base_dp7_5"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:counterEnabled="false"
+        app:endIconMode="clear_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/comment_submit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:startIconTint="@null"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/base_dp5"
+        android:layout_marginEnd="@dimen/base_dp5"
+        android:layout_marginBottom="@dimen/base_dp5"
+        android:elevation="@dimen/base_dp1"
+        android:hint="@string/book_comment_input_hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/comment_input_edit"
+            style="@style/Widget.Material3.TextInputEditText.FilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text|textNoSuggestions"
+            android:maxLength="200"
+            android:textStyle="bold" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/comment_submit"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        app:cornerRadius="@dimen/base_dp7_5"
+        app:elevation="@dimen/base_dp10"
+        app:layout_constraintBottom_toBottomOf="@+id/comment_input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/comment_input_layout"
+        app:strokeColor="@color/mangax_grey_400_40"
+        app:strokeWidth="@dimen/base_dp1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_dp5"
+        android:text="@string/book_comment_submit"
+        android:textSize="@dimen/base_sp13"
+        android:textStyle="bold" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

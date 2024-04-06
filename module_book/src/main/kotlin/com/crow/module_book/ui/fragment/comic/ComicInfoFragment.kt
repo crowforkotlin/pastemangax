@@ -17,6 +17,7 @@ import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
+import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.onCollect
 import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.px2sp
@@ -46,7 +47,7 @@ import com.crow.module_book.model.resp.ComicChapterResp
 import com.crow.module_book.model.resp.comic_info.Status
 import com.crow.module_book.ui.activity.ComicActivity
 import com.crow.module_book.ui.adapter.comic.ComicChapterRvAdapter
-import com.crow.module_book.ui.fragment.InfoFragment
+import com.crow.module_book.ui.fragment.BookInfoFragment
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
@@ -54,7 +55,7 @@ import org.koin.core.qualifier.named
 import com.crow.base.R as baseR
 import com.crow.mangax.R as mangaR
 
-class ComicInfoFragment : InfoFragment() {
+class ComicInfoFragment : BookInfoFragment() {
 
     /**
      * ⦁ Regist FlowBus
@@ -153,6 +154,7 @@ class ComicInfoFragment : InfoFragment() {
             .doOnError { _, _ -> dismissLoadingAnim { toast(getString(mangaR.string.mangax_unknow_error)) } }
             .doOnResult {
                 dismissLoadingAnim {
+                    intent.isCollect.log()
                     if (intent.isCollect == 1) {
                         toast(getString(R.string.book_add_success))
                         setButtonRemoveFromBookshelf()
@@ -317,8 +319,10 @@ class ComicInfoFragment : InfoFragment() {
                 toast(getString(R.string.book_add_invalid))
                 return@doOnClickInterval
             }
-            mVM.input(BookIntent.AddComicToBookshelf(mVM.mUuid ?: return@doOnClickInterval, if (mBinding.bookInfoAddToBookshelf.text == getString(R.string.book_comic_add_to_bookshelf)) 1 else 0))
+            mVM.input(BookIntent.AddComicToBookshelf(mVM.mUuid ?: return@doOnClickInterval, if (mBinding.bookInfoAddToBookshelf.tag == null) 1 else 0))
         }
+
+        mBinding.comment.doOnClickInterval { navigateComment() }
 
         // 阅读
         mBinding.bookInfoReadnow.doOnClickInterval {

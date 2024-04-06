@@ -4,10 +4,9 @@
 	<string name="BookComicStatus">状态：%s</string>
 	<string name="book_update">更新时间：%s</string>
 	<string name="book_new_chapter">最新一章：%s</string>
-	<string name="book_comic_add_to_bookshelf">加入书架</string>
-	<string name="book_comic_remove_from_bookshelf">取消收藏</string>
-	<string name="BookComicDownLoad">下载章节</string>
-	<string name="BookComicReadNow">开始阅读</string>
+	<string name="book_comic_add_to_bookshelf">收藏</string>
+	<string name="book_download">下载</string>
+	<string name="book_read_now">阅读</string>
 	<string name="book_readed_chapter">已阅读至：%s</string>
 	<string name="book_readed_chapter_offline">已离线阅读至：%s</string>
 	<string name="BookComicRequestThrottled">请求过于频繁！请等待 %s 秒后尝试！</string>
@@ -48,6 +47,8 @@
 	<string name="book_comment_input_hint">吐槽点什么(最大200字)</string>
 	<string name="book_comment_submit">提交</string>
 	<string name="book_comment_comic_title"><b>漫画评论</b></string>
+	<string name="book_comment_comic_title_count"><b>漫画评论 - %d条评论</b></string>
+	<string name="book_comment">评论</string>
 
 	<string name="book_comment_edit_not_empty">评论不能空！</string>
 	<string name="book_comment_edit_length_invalid">评论内容字数不能超过200！</string>

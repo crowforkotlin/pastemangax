@@ -12,14 +12,14 @@
 		app:showAsAction="ifRoom" />
 
 	<item
-		android:id="@+id/action_pages_thumbs"
-		android:icon="@drawable/book_ic_love_24dp"
+		android:id="@+id/download"
+		android:icon="@drawable/base_ic_download_24dp"
 		android:title="@string/base_app_name"
 		app:showAsAction="always" />
 
 	<item
-		android:id="@+id/action_options"
-		android:icon="@drawable/book_ic_love_24dp"
+		android:id="@+id/readnow"
+		android:icon="@drawable/book_ic_readnow_24dp"
 		android:title="@string/base_app_name"
 		app:showAsAction="always" />
 

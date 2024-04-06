@@ -11,6 +11,7 @@ import com.crow.module_book.model.resp.NovelCatelogueResp
 import com.crow.module_book.model.resp.NovelInfoResp
 import com.crow.module_book.model.resp.ComicCommentListResp
 import com.crow.module_book.model.resp.ComicCommentResp
+import com.crow.module_book.model.resp.comic_comment_total.ComicTotalCommentResp
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
 import retrofit2.http.Field
@@ -102,5 +103,13 @@ interface ComicService {
         @Field("chapter_id") chapterId: String,
         @Field("roast") content: String
     ): Flow<BaseNullableResultResp<ComicCommentResp?>>
+
+
+    @GET(URL.ComicTotalComment)
+    fun getComicTotalComment(
+        @Query("comic_id") comicId: String,
+        @Query("offset") position: Int,
+        @Query("limit") pagesize: Int
+    ): Flow<BaseResultResp<ComicTotalCommentResp>>
 
 }

@@ -16,6 +16,7 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isInvisible
+import androidx.core.view.postDelayed
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import coil.decode.DecodeResult
@@ -188,10 +189,14 @@ class ImageFragment : BaseMviFragment<MainFragmentImageBinding>() {
             override fun onTileLoadError(e: Throwable) { }
             override fun onReady() {
                 mBinding.photoview.apply {
-                    maxScale = 1.5f * maxOf(
+                    minimumScaleType = SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
+                    val scale = 2f * maxOf(
                         width / sWidth.toFloat(),
                         height / sHeight.toFloat(),
                     )
+                    maxScale = scale
+                    doubleTapZoomScale = scale
+                    resetScaleAndCenter()
                 }
             }
         })
