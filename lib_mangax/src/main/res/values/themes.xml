@@ -26,8 +26,11 @@
         <item name="bottomSheetStyle">@style/MangaX.ModalBottomSheet</item>
     </style>
     <style name="MangaX.ModalBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
-        <!-- Apply attributes here -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="backgroundTint">@color/mangax_bg</item>
     </style>
+
 
     <style name="MangaX.Theme.Button.Elevated.Icon" parent="Widget.Material3.Button.ElevatedButton.Icon" />
     <style name="MangaX.Theme.Button.Icon.Text" parent="Widget.Material3.Button.IconButton" />

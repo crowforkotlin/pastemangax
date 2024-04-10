@@ -42,7 +42,11 @@ class MainViewModel(val repository: AppRepository) : BaseMviViewModel<AppIntent>
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val config = AppConfig.readAppConfig() ?: AppConfig(mAppFirstInit = true)
+            val config = AppConfig.readAppConfig() ?: run {
+                "RUN".log()
+                saveAppConfig()
+                AppConfig(mAppFirstInit = true)
+            }
             BaseStrings.URL.COPYMANGA = config.mCopyMangaSite
             BaseStrings.URL.HotManga = config.mHotMangaSite
             MangaXAccountConfig.mRoute = config.mRoute

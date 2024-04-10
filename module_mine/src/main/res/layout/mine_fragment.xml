@@ -2,25 +2,17 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	style="@style/MangaX.Theme.BG"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent" >
-
-	<com.google.android.material.bottomsheet.BottomSheetDragHandleView
-		android:id="@+id/mine_botton_drag"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
 
 	<androidx.constraintlayout.utils.widget.ImageFilterButton
 		android:id="@+id/user_icon"
 		android:layout_width="@dimen/base_dp64"
 		android:layout_height="@dimen/base_dp64"
-		android:elevation="@dimen/base_dp1"
 		android:layout_marginStart="@dimen/base_dp20"
-		android:layout_marginTop="@dimen/base_dp20"
 		android:contentDescription="@string/base_todo_textview"
+		android:elevation="@dimen/base_dp1"
 		android:foreground="?android:attr/selectableItemBackground"
 		android:scaleType="centerCrop"
 		android:src="@drawable/base_icon_app"
@@ -49,7 +41,6 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/base_dp10"
-		android:background="@drawable/mine_bg_nickname_radius_shape"
 		android:elevation="@dimen/base_dp1"
 		android:padding="@dimen/base_dp10"
 		android:text="@string/mine_plese_login"
@@ -65,10 +56,11 @@
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		android:layout_marginEnd="@dimen/base_dp20"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintHorizontal_bias="0.0"
-		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintStart_toStartOf="@+id/user_name"
 		app:layout_constraintTop_toBottomOf="@+id/user_name"
 		tools:listitem="@layout/mine_fragment_rv" />
 

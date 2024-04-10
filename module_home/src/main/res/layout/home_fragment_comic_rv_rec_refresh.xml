@@ -10,6 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
+        app:strokeColor="@color/mangax_grey_400_40"
+        app:strokeWidth="@dimen/base_dp1"
         android:layout_marginEnd="@dimen/base_dp10"
         android:text="@string/home_refresh"
         android:textStyle="bold"

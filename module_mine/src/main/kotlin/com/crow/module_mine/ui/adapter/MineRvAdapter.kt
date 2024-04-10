@@ -25,7 +25,12 @@ class MineRvAdapter(
     inline val itemTap: (pos: Int, content: String) -> Unit
 ) : RecyclerView.Adapter<MineRvAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val rvBinding: MineFragmentRvBinding) : RecyclerView.ViewHolder(rvBinding.root)
+    inner class ViewHolder(val binding: MineFragmentRvBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun onBind(pair: Pair<Int, String>) {
+            binding.userButton.icon = ContextCompat.getDrawable(app, pair.first)
+            binding.userButton.text = pair.second
+        }
+    }
 
     private var mUserInfo: MineLoginResultsOkResp? = null
     private var mTextView: TextView? = null
@@ -35,15 +40,13 @@ class MineRvAdapter(
         vh.itemView.doOnClickInterval { itemTap(vh.absoluteAdapterPosition, datas[vh.absoluteAdapterPosition].second) }
     }
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
-        if (position == 0) {
+        /*if (position == 0) {
             vh.rvBinding.userRvImage.doOnLayout {
                 it.layoutParams.height = app.resources.getDimensionPixelSize(R.dimen.base_dp64)
                 it.layoutParams.width = app.resources.getDimensionPixelSize(R.dimen.base_dp64)
             }
-        }
-        val data = datas[position]
-        vh.rvBinding.userRvImage.setImageDrawable(ContextCompat.getDrawable(app, data.first))
-        vh.rvBinding.userRvText.text = data.second
+        }*/
+        vh.onBind(datas[position])
     }
 
     fun setData(userInfo: MineLoginResultsOkResp) { mUserInfo = userInfo }

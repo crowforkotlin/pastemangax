@@ -22,6 +22,7 @@ import androidx.lifecycle.lifecycleScope
 import coil.decode.DecodeResult
 import coil.decode.Decoder
 import coil.imageLoader
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.crow.base.app.app
 import com.crow.mangax.copymanga.BaseStrings

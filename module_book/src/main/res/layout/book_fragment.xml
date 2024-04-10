@@ -177,99 +177,109 @@
         app:layout_constraintTop_toBottomOf="@+id/update"
         tools:text="@string/base_todo_textview" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/book_info_add_to_bookshelf"
-        style="@style/MangaX.Theme.Button.Icon.Tint.Text"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linear_button"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/base_dp10"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/base_dp7_5"
-        android:text="@string/book_comic_add_to_bookshelf"
-        android:textSize="@dimen/base_sp10"
-        android:textStyle="bold"
-        app:iconGravity="top"
-        app:icon="@drawable/book_ic_love_24dp"
-        app:iconTint="@null"
-        app:layout_constraintStart_toStartOf="@+id/book_info_cardview"
-        app:layout_constraintTop_toBottomOf="@+id/book_info_cardview"
-        tools:visibility="visible" />
+        app:layout_constraintStart_toStartOf="@id/book_info_cardview"
+        app:layout_constraintTop_toBottomOf="@id/book_info_cardview">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/book_info_download"
-        style="@style/MangaX.Theme.Button.Icon.Tint.Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/base_dp1"
-        android:text="@string/book_download"
-        android:textSize="@dimen/base_sp10"
-        android:textStyle="bold"
-        app:iconGravity="top"
-        app:icon="@drawable/base_ic_download_24dp"
-        app:layout_constraintStart_toEndOf="@+id/diver_love"
-        app:layout_constraintTop_toTopOf="@+id/book_info_add_to_bookshelf"
-        tools:visibility="visible" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/book_info_add_to_bookshelf"
+            style="@style/MangaX.Theme.Button.Icon.Tint.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="@string/book_comic_add_to_bookshelf"
+            android:textStyle="bold"
+            app:iconSize="@dimen/base_dp20"
+            app:icon="@drawable/book_ic_love_24dp"
+            app:iconGravity="top"
+            tools:visibility="visible" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/comment"
-        style="@style/MangaX.Theme.Button.Icon.Tint.Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/base_dp1"
-        android:text="@string/book_comment"
-        android:textSize="@dimen/base_sp10"
-        android:textStyle="bold"
-        app:icon="@drawable/book_comment_24dp"
-        app:iconGravity="top"
-        app:layout_constraintStart_toEndOf="@+id/diver_download"
-        app:layout_constraintTop_toTopOf="@+id/book_info_add_to_bookshelf"
-        tools:visibility="visible" />
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/diver_love"
+            android:layout_width="@dimen/base_dp1"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/base_dp1"
+            android:layout_marginEnd="@dimen/base_dp1"
+            android:layout_marginTop="@dimen/base_dp5"
+            android:layout_marginBottom="@dimen/base_dp5" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/book_info_readnow"
-        style="@style/MangaX.Theme.Button.Icon.Tint.Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/base_dp1"
-        android:text="@string/book_read_now"
-        android:textSize="@dimen/base_sp10"
-        android:textStyle="bold"
-        app:icon="@drawable/book_ic_readnow_24dp"
-        app:iconGravity="top"
-        app:layout_constraintStart_toEndOf="@+id/diver_comment"
-        app:layout_constraintTop_toTopOf="@+id/book_info_add_to_bookshelf"
-        tools:visibility="visible" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/book_info_download"
+            style="@style/MangaX.Theme.Button.Icon.Tint.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:iconSize="@dimen/base_dp20"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/base_dp1"
+            android:layout_weight="1"
+            android:text="@string/book_download"
+            android:textSize="@dimen/base_sp10"
+            android:textStyle="bold"
+            app:icon="@drawable/base_ic_download_24dp"
+            app:iconGravity="top"
+            tools:visibility="visible" />
 
-    <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/diver_love"
-        android:layout_width="@dimen/base_dp1"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/base_dp5"
-        android:layout_marginBottom="@dimen/base_dp5"
-        android:layout_marginStart="@dimen/base_dp1"
-        app:layout_constraintBottom_toBottomOf="@id/book_info_add_to_bookshelf"
-        app:layout_constraintStart_toEndOf="@id/book_info_add_to_bookshelf"
-        app:layout_constraintTop_toTopOf="@id/book_info_add_to_bookshelf" />
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/diver_download"
+            android:layout_width="@dimen/base_dp1"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/base_dp1"
+            android:layout_marginEnd="@dimen/base_dp1"
+            android:layout_marginTop="@dimen/base_dp5"
+            android:layout_marginBottom="@dimen/base_dp5" />
 
-    <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/diver_download"
-        android:layout_width="@dimen/base_dp1"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/base_dp1"
-        app:layout_constraintBottom_toBottomOf="@id/book_info_add_to_bookshelf"
-        android:layout_marginTop="@dimen/base_dp5"
-        android:layout_marginBottom="@dimen/base_dp5"
-        app:layout_constraintStart_toEndOf="@id/book_info_download"
-        app:layout_constraintTop_toTopOf="@id/book_info_add_to_bookshelf" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/comment"
+            style="@style/MangaX.Theme.Button.Icon.Tint.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:iconSize="@dimen/base_dp20"
+            android:layout_marginStart="@dimen/base_dp1"
+            android:layout_weight="1"
+            android:text="@string/book_comment"
+            android:textSize="@dimen/base_sp10"
+            android:textStyle="bold"
+            app:icon="@drawable/book_comment_24dp"
+            app:iconGravity="top"
+            tools:visibility="visible" />
 
-    <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/diver_comment"
-        android:layout_width="@dimen/base_dp1"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/base_dp1"
-        app:layout_constraintBottom_toBottomOf="@id/book_info_add_to_bookshelf"
-        android:layout_marginTop="@dimen/base_dp5"
-        android:layout_marginBottom="@dimen/base_dp5"
-        app:layout_constraintStart_toEndOf="@id/comment"
-        app:layout_constraintTop_toTopOf="@id/book_info_add_to_bookshelf" />
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/diver_comment"
+            android:layout_width="@dimen/base_dp1"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/base_dp1"
+            android:layout_marginEnd="@dimen/base_dp1"
+            android:layout_marginTop="@dimen/base_dp5"
+            android:layout_marginBottom="@dimen/base_dp5" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/book_info_readnow"
+            style="@style/MangaX.Theme.Button.Icon.Tint.Text"
+            app:iconSize="@dimen/base_dp20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/base_dp1"
+            android:layout_weight="1"
+            android:text="@string/book_read_now"
+            android:textSize="@dimen/base_sp10"
+            android:textStyle="bold"
+            app:icon="@drawable/book_ic_readnow_24dp"
+            app:iconGravity="top"
+            tools:visibility="visible" />
+
+
+    </LinearLayout>
+
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/book_info_refresh"
@@ -278,7 +288,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_info_download">
+        app:layout_constraintTop_toBottomOf="@+id/linear_button">
 
         <com.scwang.smart.refresh.header.MaterialHeader
             android:layout_width="match_parent"

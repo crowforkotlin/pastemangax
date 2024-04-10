@@ -87,6 +87,8 @@ class MineBottomSheetFragment : BaseMviBottomSheetDialogFragment<MineFragmentBin
             // 配置行为
             (dialog as BottomSheetDialog).apply {
                 dismissWithAnimation = true
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.isDraggable = false
                 behavior.saveFlags = BottomSheetBehavior.SAVE_ALL
             }
 
@@ -102,8 +104,8 @@ class MineBottomSheetFragment : BaseMviBottomSheetDialogFragment<MineFragmentBin
 
             // 设置BottomSheet的 高度
             dialog.findViewById<View>(design_bottom_sheet)?.apply {
-                layoutParams!!.height = ViewGroup.LayoutParams.MATCH_PARENT
-                layoutParams!!.width = ViewGroup.LayoutParams.MATCH_PARENT
+                layoutParams!!.height = resources.displayMetrics.heightPixels
+                layoutParams!!.width = resources.displayMetrics.widthPixels
             }
         }
     }

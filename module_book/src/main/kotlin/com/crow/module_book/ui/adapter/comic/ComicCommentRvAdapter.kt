@@ -14,6 +14,8 @@ import coil.request.ImageRequest
 import coil.size.Scale
 import com.crow.base.app.app
 import com.crow.base.tools.extensions.log
+import com.crow.mangax.R
+import com.crow.mangax.R.drawable.base_icon_app
 import com.crow.mangax.copymanga.getImageUrl
 import com.crow.mangax.ui.adapter.MangaCoilVH
 import com.crow.module_book.databinding.BookComicCommentRvBinding
@@ -65,6 +67,7 @@ class ComicCommentRvAdapter(
             app.imageLoader.enqueue(ImageRequest.Builder(itemView.context)
                 .data(avatar)
                 .scale(Scale.FIT)
+                .placeholder(base_icon_app)
                 .decoderFactory { source, option, _ -> Decoder { DecodeResult(drawable = BitmapFactory.decodeStream(source.source.source().inputStream()).toDrawable(option.context.resources), false) } }
                 .target(binding.icon)
                 .build())

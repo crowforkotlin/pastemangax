@@ -56,7 +56,6 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/comment_input_layout"
         style="@style/Widget.Material3.TextInputLayout.FilledBox"
-        app:boxBackgroundColor="@color/mangax_color_desc"
         app:boxCornerRadiusBottomEnd="@dimen/base_dp7_5"
         app:boxCornerRadiusBottomStart="@dimen/base_dp7_5"
         app:boxCornerRadiusTopEnd="@dimen/base_dp7_5"

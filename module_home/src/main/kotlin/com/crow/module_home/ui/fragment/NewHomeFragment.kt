@@ -98,6 +98,7 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
     companion object {
         const val HOME = "Home"
         const val SEARCH_TAG = "INPUT"
+        const val ICON = "ICON"
     }
 
     /**
@@ -505,7 +506,8 @@ class NewHomeFragment : BaseMviFragment<HomeFragmentNewBinding>() {
             // MaterialToolBar NavigateIcon 点击事件
             navigateIconClickGap(flagTime = BaseEvent.BASE_FLAG_TIME_300 shl 1) {
                 mBinding.homeRv.stopScroll()
-                get<BottomSheetDialogFragment>(named(Fragments.Mine.name)).show(requireParentFragment().parentFragmentManager, null)
+                sendOptionResult(ICON, null)
+//                get<BottomSheetDialogFragment>(named(Fragments.Mine.name)).show(requireParentFragment().parentFragmentManager, null)
             }
         }
 

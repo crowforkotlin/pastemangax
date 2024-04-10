@@ -1,6 +1,9 @@
 package com.crow.module_main.ui.fragment
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Base64
 import android.view.GestureDetector
@@ -8,8 +11,10 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import com.crow.base.R as baseR
 import androidx.activity.addCallback
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
@@ -18,7 +23,12 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
+import coil.decode.DecodeResult
+import coil.decode.Decoder
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.crow.base.R.string.base_exit_app
+import com.crow.base.app.app
 import com.crow.base.tools.coroutine.FlowBus
 import com.crow.base.tools.coroutine.launchDelay
 import com.crow.base.tools.extensions.BASE_ANIM_200L
@@ -26,15 +36,16 @@ import com.crow.base.tools.extensions.BASE_ANIM_300L
 import com.crow.base.tools.extensions.animateFadeIn
 import com.crow.base.tools.extensions.animateFadeOut
 import com.crow.base.tools.extensions.animateFadeOutGone
-import com.crow.base.tools.extensions.animateFadeOutInVisibility
 import com.crow.base.tools.extensions.doOnClickInterval
 import com.crow.base.tools.extensions.doOnInterval
+import com.crow.base.tools.extensions.dp2px
 import com.crow.base.tools.extensions.immersionPadding
 import com.crow.base.tools.extensions.isLatestVersion
 import com.crow.base.tools.extensions.log
 import com.crow.base.tools.extensions.navigateToWithBackStack
 import com.crow.base.tools.extensions.newMaterialDialog
 import com.crow.base.tools.extensions.onCollect
+import com.crow.base.tools.extensions.px2dp
 import com.crow.base.tools.extensions.toast
 import com.crow.base.tools.extensions.updatePadding
 import com.crow.base.ui.fragment.BaseMviFragment
@@ -43,6 +54,7 @@ import com.crow.base.ui.view.event.BaseEventEntity
 import com.crow.base.ui.view.event.click.BaseIEventIntervalExt
 import com.crow.base.ui.viewmodel.doOnError
 import com.crow.base.ui.viewmodel.doOnErrorInCoroutine
+import com.crow.base.ui.viewmodel.doOnLoading
 import com.crow.base.ui.viewmodel.doOnResult
 import com.crow.base.ui.viewmodel.doOnResultInCoroutine
 import com.crow.mangax.copymanga.BaseEventEnum
@@ -52,6 +64,7 @@ import com.crow.mangax.copymanga.MangaXAccountConfig
 import com.crow.mangax.copymanga.appEvent
 import com.crow.mangax.copymanga.entity.AppConfig
 import com.crow.mangax.copymanga.entity.Fragments
+import com.crow.mangax.copymanga.getImageUrl
 import com.crow.module_anime.ui.fragment.AnimeFragment
 import com.crow.module_bookshelf.ui.fragment.BookshelfFragment
 import com.crow.module_discover.ui.fragment.DiscoverComicFragment
@@ -68,7 +81,9 @@ import com.crow.module_main.ui.adapter.ContainerAdapter
 import com.crow.module_main.ui.adapter.MainAppUpdateRv
 import com.crow.module_main.ui.view.DepthPageTransformer
 import com.crow.module_main.ui.viewmodel.MainViewModel
+import com.crow.module_mine.ui.adapter.MineRvAdapter
 import com.crow.module_mine.ui.viewmodel.MineViewModel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
@@ -85,6 +100,7 @@ import kotlin.system.exitProcess
  * @Description: HomeContainerFragment
  * @formatter:on
  **************************/
+
 class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     init {
@@ -104,6 +120,19 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
 
     /** ⦁ 碎片集 */
     private val mFragmentList by lazy { mutableListOf<Fragment>(NewHomeFragment(), DiscoverComicFragment(), BookshelfFragment(), AnimeFragment()) }
+
+    // 用户适配器数据
+    private val mAdapterData = mutableListOf (
+        com.crow.module_mine.R.drawable.mine_ic_login_24dp to app.getString(com.crow.module_mine.R.string.mine_login),
+        com.crow.module_mine.R.drawable.mine_ic_reg_24dp to app.getString(com.crow.module_mine.R.string.mine_reg),
+        com.crow.module_mine.R.drawable.mine_ic_history_24dp to app.getString(com.crow.module_mine.R.string.mine_browsing_history),
+        com.crow.mangax.R.drawable.base_ic_download_24dp to app.getString(com.crow.module_mine.R.string.mine_download),
+        com.crow.module_mine.R.drawable.mine_ic_about_24dp to app.getString(com.crow.module_mine.R.string.mine_about),
+        com.crow.module_mine.R.drawable.mine_ic_update_24dp to app.getString(com.crow.module_mine.R.string.mine_check_update),
+        com.crow.module_mine.R.drawable.mine_ic_update_history_24dp to app.getString(com.crow.module_mine.R.string.mine_update_history_title)
+    )
+
+    private var mClickClose: (() -> Unit)? = null
 
 
     /**
@@ -135,108 +164,16 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
     /** ⦁ 获取ViewBinding */
     override fun getViewBinding(inflater: LayoutInflater) = MainFragmentContainerBinding.inflate(inflater)
 
-    /** ⦁ 初始化观察者 */
-    override fun initObserver(saveInstanceState: Bundle?) {
-
-        // 用户信息 收集
-        mUserVM.userInfo.onCollect(this) {
-
-            // 初始化 用户Tokne
-            it?.apply {
-                MangaXAccountConfig.mAccountToken = mToken
-                MangaXAccountConfig.mAccount = mUsername
-            }
-        }
-
-        // 观察ContainerVM
-        mVM.onOutput { intent ->
-            when(intent) {
-                is AppIntent.GetDynamicSite -> {
-                    intent.mViewState
-                        .doOnErrorInCoroutine { _, _ -> mVM.saveAppConfig() }
-                        .doOnResultInCoroutine {
-                            BaseStrings.URL.COPYMANGA = Base64.decode(intent.siteResp!!.mSiteList!!.first()!!.mEncodeSite, Base64.DEFAULT).decodeToString()
-                            mVM.saveAppConfig((AppConfig.getInstance() ?: mVM.getReadedAppConfig()) ?: return@doOnResultInCoroutine)
-                        }
-                }
-                is AppIntent.GetUpdateInfo -> {
-                    intent.mViewState
-                        .doOnError { _, _ -> toast(getString(R.string.main_update_error)) }
-                        .doOnResult { doUpdateChecker(saveInstanceState, intent.appUpdateResp!!) }
-                }
-                is AppIntent.GetNotice -> {
-                        intent.mViewState
-                            .doOnError { _, _ ->
-                                mNoticeBinding?.let { binding ->
-                                    if (binding.content.isVisible) {
-                                        binding.author.animateFadeOutInVisibility()
-                                        binding.time.animateFadeOutInVisibility()
-                                        binding.content.animateFadeOutInVisibility()
-                                    }
-                                    if (binding.loading.isVisible) {
-                                        binding.loading.animateFadeOut()
-                                            .withEndAction {
-                                                binding.loading.isInvisible = true
-                                                if (binding.retry.isGone) binding.retry.animateFadeIn()
-                                            }
-                                    } else {
-                                        if (binding.retry.isGone) binding.retry.animateFadeIn()
-                                    }
-                                }
-                            }
-                            .doOnResult {
-                                intent.notice?.apply {
-                                    if (intent.force) {
-                                        lifecycleScope.launch {
-                                            val config = mVM.getReadedAppConfig() ?: return@launch
-                                            config.log()
-                                            mVersion.log()
-                                            if (config.mNoticeVersion >= mVersion) return@launch
-                                            val binding = loadNoticeDialog {
-                                                lifecycleScope.launch {
-                                                    mVM.saveAppConfig(config.copy(mNoticeVersion = mVersion))
-                                                }
-                                            }
-                                            if (mForceTime == 0) return@launch
-                                            binding.close.isClickable = false
-                                            binding.close.animateFadeOut().withEndAction {
-                                                binding.close.isInvisible = true
-                                                binding.timer.animateFadeIn().withEndAction {
-                                                    val max = mForceTime
-                                                    lifecycleScope.launch {
-                                                        repeat(max) {
-                                                            binding.timer.text = "${max - it}"
-                                                            delay(BaseEvent.BASE_FLAG_TIME_1000)
-                                                        }
-                                                        binding.timer.animateFadeOut()
-                                                            .withEndAction {
-                                                                binding.timer.isGone = true
-                                                                binding.close.isClickable = true
-                                                                binding.close.animateFadeIn()
-                                                            }
-                                                    }
-                                                }
-                                            }
-                                            loadNoticeContent(binding, true)
-                                        }
-                                    } else {
-                                       loadNoticeContent(mNoticeBinding ?: return@doOnResult)
-                                    }
-                                }
-                            }
-                    }
-                }
-        }
-    }
-
-
     /** ⦁ 初始化视图 */
     override fun initView(savedInstanceState: Bundle?) {
 
+
         // 沉浸式 VP BottomNavigation
         immersionPadding(mBinding.root) { view, insets, _ ->
-            mBinding.viewPager.updatePadding(top = insets.top)
+            val top = insets.top
+            mBinding.viewPager.updatePadding(top = top)
             mBinding.bottomNavigation.updatePadding(bottom = insets.bottom)
+            mBinding.drawerConstraint.updatePadding(top = top)
             view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 rightMargin= insets.right
@@ -248,6 +185,10 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         mBinding.viewPager.isUserInputEnabled = false
         mBinding.viewPager.setPageTransformer(DepthPageTransformer())
         mBinding.viewPager.adapter = ContainerAdapter(mFragmentList, childFragmentManager, viewLifecycleOwner.lifecycle)
+
+        mBinding.userRv.adapter = MineRvAdapter(mAdapterData) { pos, content ->
+            toast("$pos")
+        }
     }
 
     /**
@@ -333,10 +274,12 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
             val event = bundle.getString(BaseStrings.EVENT)
              when(event) {
                  BaseEventEnum.GetNotice.name -> {
-                     loadNoticeDialog()
                      mVM.input(AppIntent.GetNotice(force = false))
                  }
                  BaseEventEnum.GetIconUrl.name -> { sendOptionResult(BaseEventEnum.SetIcon.name, mUserVM.mIconUrl ?: "") }
+                 NewHomeFragment.ICON -> {
+                     mBinding.root.open()
+                 }
              }
         }
 
@@ -399,6 +342,234 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         // Item onTouchEvent 书架
         mBinding.bottomNavigation.setItemOnTouchListener(R.id.main_menu_bookshelf) { _, event ->
             mGestureDetector.onTouchEvent(event)
+        }
+    }
+
+    /** ⦁ 初始化观察者 */
+    override fun initObserver(saveInstanceState: Bundle?) {
+
+        // 用户信息 收集
+        mUserVM.userInfo.onCollect(this) {
+
+            // 初始化 用户Tokne
+            it?.apply {
+                MangaXAccountConfig.mAccountToken = mToken
+                MangaXAccountConfig.mAccount = mUsername
+            }
+        }
+
+        // 观察ContainerVM
+        mVM.onOutput { intent ->
+            when(intent) {
+                is AppIntent.GetDynamicSite -> {
+                    intent.mViewState
+                        .doOnErrorInCoroutine { _, _ -> mVM.saveAppConfig() }
+                        .doOnResultInCoroutine {
+                            BaseStrings.URL.COPYMANGA = Base64.decode(intent.siteResp!!.mSiteList!!.first()!!.mEncodeSite, Base64.DEFAULT).decodeToString()
+                            mVM.saveAppConfig((AppConfig.getInstance() ?: mVM.getReadedAppConfig()) ?: return@doOnResultInCoroutine)
+                        }
+                }
+                is AppIntent.GetUpdateInfo -> {
+                    intent.mViewState
+                        .doOnError { _, _ -> toast(getString(R.string.main_update_error)) }
+                        .doOnResult { doUpdateChecker(saveInstanceState, intent.appUpdateResp!!) }
+                }
+                is AppIntent.GetNotice -> {
+                    val isForce = intent.force
+                    intent.mViewState
+                        .doOnLoading { if(!isForce && mNoticeBinding == null) showDialog(false, null) }
+                        .doOnResult {
+                            if (!intent.force && mNoticeBinding == null) return@doOnResult
+                            intent.notice?.apply {
+                                showDialog(isForce, this) {
+                                    lifecycleScope.launch {
+                                        if (isForce) {
+                                            val config = mVM.getReadedAppConfig() ?: return@launch
+                                            config.log()
+                                            if (config.mNoticeVersion < mVersion) {
+                                                mVM.saveAppConfig(config.copy(mNoticeVersion = mVersion))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        /*.doOnError { _, _ ->
+                            mNoticeBinding?.let { binding ->
+                                if (binding.loading.isGone) return@doOnError
+                                binding.loading.animateFadeOutGone()
+                                    .withEndAction { binding.retry.animateFadeIn() }
+                                *//*if (binding.content.isVisible) {
+                                    binding.author.animateFadeOutInVisibility()
+                                    binding.time.animateFadeOutInVisibility()
+                                    binding.content.animateFadeOutInVisibility()
+                                }
+                                if (binding.loading.isVisible) {
+                                    binding.loading.animateFadeOut()
+                                        .withEndAction {
+                                            binding.loading.isInvisible = true
+                                            if (binding.retry.isGone) binding.retry.animateFadeIn()
+                                        }
+                                } else {
+                                    if (binding.retry.isGone) binding.retry.animateFadeIn()
+                                }*//*
+                            }
+                        }
+                        .doOnResult {
+                            intent.notice?.apply {
+                                if (isForce) {
+                                    lifecycleScope.launch {
+                                        val config = mVM.getReadedAppConfig() ?: return@launch
+                                        if (config.mNoticeVersion < mVersion) return@launch
+                                        if (mNoticeBinding != null) {
+                                            mClickClose = {
+                                                lifecycleScope.launch {
+                                                    mVM.saveAppConfig(config.copy(mNoticeVersion = mVersion))
+                                                }
+                                            }
+                                            mNoticeBinding!!.apply {
+                                                if (close.isVisible) {
+                                                    close.isClickable = false
+                                                    close.animateFadeOut()
+                                                }
+                                                loadForceNotice(this)
+                                            }
+                                        } else {
+                                            loadForceNotice(loadNoticeDialog(true) {
+                                                lifecycleScope.launch {
+                                                    mVM.saveAppConfig(config.copy(mNoticeVersion = mVersion))
+                                                }
+                                            })
+                                        }
+                                    }
+                                } else {
+                                    loadNoticeContent(mNoticeBinding ?: return@doOnResult)
+                                }
+                            }
+                        }*/
+                }
+            }
+        }
+    }
+    private var mIsForce: Boolean = false
+    private fun MainNoticeLayoutBinding.loadForceJob(noticeResp: MainNoticeResp) {
+        title.text = noticeResp.mForceContent
+        val forceTime = noticeResp.mForceTime
+        if (forceTime == 0) {
+            readed.isClickable = true
+            return
+        }
+        lifecycleScope.launch {
+            val config = mVM.getReadedAppConfig() ?: return@launch run { readed.isClickable = true }
+            if (config.mNoticeVersion < noticeResp.mVersion) return@launch run { readed.isClickable = true }
+            readed.isClickable = false
+            repeat(forceTime) {
+                readed.text = "${forceTime - it}"
+                delay(BaseEvent.BASE_FLAG_TIME_1000)
+            }
+            readed.text = noticeResp.mReadedButtonText
+            readed.alpha = 0.5f
+            readed.animate()
+                .setDuration(BASE_ANIM_200L)
+                .alpha(1f)
+                .withEndAction { readed.isClickable = true }
+                .start()
+        }
+    }
+    private fun MainNoticeLayoutBinding.loadContent(noticeResp: MainNoticeResp) {
+        mBinding.apply {
+            author.text = noticeResp.mNewAuthor
+            time.text = noticeResp.mNewTime
+            content.text = noticeResp.mContent
+            readed.text = noticeResp.mReadedButtonText
+            if (icon.isInvisible) {
+                icon.doOnClickInterval {
+                    val tag = Fragments.Image.name
+                    val fragment = get<Fragment>(named(Fragments.Image.name)).also { it.arguments =
+                        bundleOf(
+                            BaseStrings.IMAGE_URL to noticeResp.mAuthorLink,
+                            BaseStrings.NAME to "编辑"
+                        )
+                    }
+                    parentFragmentManager.navigateToWithBackStack(com.crow.mangax.R.id.app_main_fcv, parentFragmentManager.findFragmentByTag(Fragments.Container.name)!!, fragment, tag, tag)
+                }
+                icon.setImageResource(com.crow.mangax.R.drawable.base_icon_app)
+                icon.animateFadeIn()
+            }
+            app.imageLoader.enqueue(
+                ImageRequest.Builder(mContext)
+                    .data(noticeResp.mAuthorLink) // 加载的图片地址或占位符
+                    .decoderFactory { result, option, _-> Decoder { DecodeResult(drawable = android.graphics.BitmapFactory.decodeStream(result.source.source().inputStream()).toDrawable(option.context.resources), false) } }
+                    .target { icon.setImageBitmap((it as BitmapDrawable).bitmap) }
+                    .build()
+            )
+            if (readed.isInvisible) { readed.animateFadeIn() }
+            if (mIsForce) {
+                loadForceJob(noticeResp)
+            }
+        }
+    }
+    private fun MainNoticeLayoutBinding.updateNotice(isForce: Boolean, noticeResp: MainNoticeResp?) {
+        if (loading.tag == null) {
+            loading.tag = Unit
+            loading.animateFadeOut()
+                .withEndAction {
+                    loading.isGone = true
+                    loadContent(noticeResp ?: return@withEndAction)
+                }
+        } else {
+            "log $isForce \t $mIsForce".log()
+            if (isForce != mIsForce) {
+                if (close.isVisible) {
+                    close.isClickable = false
+                    close.animateFadeOut()
+                    loadForceJob(noticeResp ?: return)
+                }
+            }
+        }
+    }
+    private fun showDialog(isForce: Boolean, noticeResp: MainNoticeResp?, onClickButton: (() -> Unit)? = null) {
+        if (mNoticeBinding != null)  {
+            mNoticeBinding!!.updateNotice(isForce, noticeResp ?: return)
+            return
+        } else {
+            mIsForce = isForce
+        }
+        mNoticeBinding = MainNoticeLayoutBinding.inflate(layoutInflater)
+        mNoticeBinding!!.apply {
+            val dialog = mContext.newMaterialDialog { it.setView(root) }
+            val screenHeight = mContext.resources.displayMetrics.heightPixels / 2
+            dialog.setCancelable(false)
+            (scrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = screenHeight.toInt()
+            retry.doOnClickInterval {
+                retry.animateFadeOut()
+                    .withEndAction {
+                        retry.isGone = true
+                        loading.animateFadeIn()
+                            .withEndAction { mVM.input(AppIntent.GetNotice(force = false)) }
+                    }
+            }
+            readed.doOnClickInterval {
+                mNoticeBinding = null
+                onClickButton?.invoke()
+                dialog.dismiss()
+            }
+            close.doOnClickInterval {
+                mNoticeBinding = null
+                dialog.dismiss()
+            }
+            if (isForce) {
+                readed.isClickable = false
+                close.isClickable = false
+                if (readed.isVisible) readed.animateFadeOut()
+                if(close.isVisible) close.animateFadeOut()
+            } else {
+                close.isClickable = true
+                if(close.isInvisible) close.animateFadeIn()
+            }
+        }
+        if (mIsForce) {
+            mNoticeBinding?.updateNotice(isForce, noticeResp ?: return)
         }
     }
 
@@ -510,8 +681,13 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         )
     }
 
-    private fun loadNoticeDialog(clickClose: (() ->Unit)? = null): MainNoticeLayoutBinding {
+    private fun loadNoticeDialog(force: Boolean, clickClose: (() -> Unit)? = null): MainNoticeLayoutBinding {
+        mClickClose = clickClose
         val binding = MainNoticeLayoutBinding.inflate(layoutInflater).also { mNoticeBinding = it }
+        if (!force) {
+            binding.close.isVisible = true
+            binding.close.isClickable = true
+        }
         val dialog = mContext.newMaterialDialog {
             it.setView(binding.root)
         }
@@ -519,7 +695,6 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
         dialog.setCancelable(false)
         (binding.scrollview.layoutParams as ConstraintLayout.LayoutParams).matchConstraintMaxHeight = screenHeight.toInt()
         binding.retry.doOnClickInterval {
-            if (binding.content.isVisible) binding.content.animateFadeOut()
             binding.retry.animateFadeOut()
                 .withEndAction {
                     binding.retry.isGone = true
@@ -527,29 +702,70 @@ class ContainerFragment : BaseMviFragment<MainFragmentContainerBinding>() {
                         .withEndAction { mVM.input(AppIntent.GetNotice(force = false)) }
                 }
         }
+        binding.readed.doOnClickInterval {
+            mNoticeBinding = null
+            mClickClose?.invoke()
+            dialog.dismiss()
+        }
         binding.close.doOnClickInterval {
             mNoticeBinding = null
-            clickClose?.invoke()
+            mClickClose?.invoke()
             dialog.dismiss()
         }
         return binding
     }
 
+    private suspend fun MainNoticeResp.loadForceNotice(binding: MainNoticeLayoutBinding) {
+        binding.readed.let { readed ->
+            loadNoticeContent(binding, true)
+            coroutineScope {
+                if (mForceTime == 0) {
+                    binding.readed.isClickable = true
+                    return@coroutineScope
+                }
+                readed.isClickable = false
+                val max = mForceTime
+                launch {
+                    repeat(max) {
+                        binding.readed.text = "${max - it}"
+                        delay(BaseEvent.BASE_FLAG_TIME_1000)
+                    }
+                    readed.text = mReadedButtonText
+                    readed.alpha = 0.5f
+                    readed.animate()
+                        .setDuration(BASE_ANIM_200L)
+                        .alpha(1f)
+                        .withEndAction { readed.isClickable = true }
+                        .start()
+                }
+            }
+        }
+    }
+
     private fun MainNoticeResp.loadNoticeContent(binding: MainNoticeLayoutBinding, isForce: Boolean = false) {
         fun loadContent() {
-            binding.loading.isInvisible = true
+            binding.author.text = mNewAuthor
+            binding.time.text = mNewTime
+            binding.content.text = mContent
+            binding.loading.isGone = true
             if (binding.content.isInvisible) {
                 binding.author.animateFadeIn()
                 binding.time.animateFadeIn()
-                binding.content.animateFadeIn()
             }
-            binding.author.text = getString(R.string.main_edit, this.mAuthor)
-            binding.time.text = getString(R.string.main_update_time, this.mTime)
-            binding.content.text = this.mContent
+            if (binding.readed.isInvisible) { binding.readed.animateFadeIn() }
+            if (!isForce) {
+                binding.readed.isClickable = true
+                binding.readed.text = mReadedButtonText
+            }
         }
         if (binding.retry.isVisible) binding.retry.animateFadeOutGone()
+        if (!isForce && binding.close.isInvisible) {
+            binding.close.isClickable = true
+            binding.close.animateFadeIn()
+        }
         binding.loading.animateFadeOut()
             .withEndAction {
+                binding.loading.isGone = true
                 if (isForce) { binding.title.text = this.mForceContent }
                 loadContent()
             }

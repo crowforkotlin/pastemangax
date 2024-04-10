@@ -1,28 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.crow.module_main.ui.fragment.ContainerFragment">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
+    <com.crow.base.ui.component.drawerlayout.FullDraggableContainer
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager"
+                style="@style/MangaX.Theme.BG"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:nestedScrollingEnabled="false" />
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottom_navigation"
+                style="@style/MangaX.Theme.BG"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:elevation="5dp"
+                app:labelVisibilityMode="selected"
+                app:menu="@menu/main_container_bottom_menu" />
+
+        </LinearLayout>
+
+    </com.crow.base.ui.component.drawerlayout.FullDraggableContainer>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/drawer_constraint"
         style="@style/MangaX.Theme.BG"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:nestedScrollingEnabled="false" />
+        android:layout_gravity="start"
+        tools:layout_gravity="">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        style="@style/MangaX.Theme.BG"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:elevation="5dp"
-        app:labelVisibilityMode="selected"
-        app:menu="@menu/main_container_bottom_menu" />
+        <androidx.constraintlayout.utils.widget.ImageFilterButton
+            android:id="@+id/user_icon"
+            android:layout_width="@dimen/base_dp74"
+            android:layout_height="@dimen/base_dp74"
+            android:layout_marginStart="@dimen/base_dp20"
+            android:contentDescription="@string/base_todo_textview"
+            android:elevation="@dimen/base_dp1"
+            android:layout_marginTop="@dimen/base_dp20"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:scaleType="centerCrop"
+            android:src="@drawable/base_icon_app"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundPercent="1" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/user_exit"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/base_dp20"
+            android:text="@string/mine_exit"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:icon="@drawable/mine_ic_exit_24dp"
+            app:iconGravity="top"
+            app:iconSize="@dimen/base_dp36"
+            app:iconTint="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/base_dp10"
+            android:elevation="@dimen/base_dp1"
+            android:padding="@dimen/base_dp10"
+            android:text="@string/mine_plese_login"
+            android:textSize="@dimen/base_sp16"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@+id/user_icon"
+            app:layout_constraintTop_toBottomOf="@+id/user_icon" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_rv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/base_dp20"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/user_name"
+            app:layout_constraintTop_toBottomOf="@+id/user_name"
+            tools:listitem="@layout/mine_fragment_rv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.drawerlayout.widget.DrawerLayout>

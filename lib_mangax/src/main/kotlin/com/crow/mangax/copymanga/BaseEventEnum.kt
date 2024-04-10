@@ -8,4 +8,5 @@ enum class BaseEventEnum {
     UpdateApp,
     UpdateChapter,
     GetNotice,
+
 }

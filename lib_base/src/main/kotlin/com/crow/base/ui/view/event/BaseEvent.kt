@@ -23,6 +23,7 @@ open class BaseEvent private constructor(val mFlagTime: Long) {
 
     companion object {
 
+        const val BASE_FLAG_TIME_400 = 400L
         const val BASE_FLAG_TIME_300 = 300L
         const val BASE_FLAG_TIME_1000 = 1000L
 

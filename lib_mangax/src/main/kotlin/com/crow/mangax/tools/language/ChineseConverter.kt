@@ -50,12 +50,7 @@ object ChineseConverter {
      * ⦁ 2023-12-14 01:49:17 周四 上午
      * @author crowforkotlin
      */
-    suspend fun initialize(context: Context) {
-        val lastDataFile = File(app.filesDir.toString() + "/opencc_data/zFinished2")
-        if (!lastDataFile.exists()) {
-            initialize(app)
-            delay(1000L)
-        }
+    fun initialize(context: Context) {
         context.copyFolder("opencc_data")
     }
 

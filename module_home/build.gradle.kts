@@ -81,4 +81,6 @@ dependencies {
 
     // pager for compose
     implementation(compose.accompanist.pager)
+
+
 }

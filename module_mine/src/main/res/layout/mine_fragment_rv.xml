@@ -1,35 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/user_button"
+    style="@style/MangaX.Theme.Button.Icon.Tint.Text"
     android:layout_width="match_parent"
-    android:background="?android:attr/selectableItemBackground"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_marginTop="@dimen/base_dp3"
+    android:layout_marginBottom="@dimen/base_dp3"
+    android:gravity="start|center"
+    android:textSize="@dimen/base_sp15"
+    android:textStyle="bold"
+    app:iconGravity="start"
+    app:iconPadding="@dimen/base_dp15"
+    app:iconSize="@dimen/base_dp24"
+    tools:icon="@drawable/mine_ic_about_24dp"
+    tools:text="关于作者" />
 
-	<ImageView
-		android:id="@+id/user_rv_image"
-		android:layout_width="@dimen/base_dp36"
-		android:layout_marginTop="@dimen/base_dp20"
-		android:layout_marginBottom="@dimen/base_dp20"
-		android:layout_marginStart="@dimen/base_dp20"
-		android:layout_height="@dimen/base_dp36"
-		android:contentDescription="@string/base_todo_textview"
-		android:src="@drawable/mine_ic_usr_24dp" />
-
-	<TextView
-		android:id="@+id/user_rv_text"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:paddingStart="@dimen/base_dp10"
-		android:layout_marginBottom="@dimen/base_dp20"
-		android:layout_marginTop="@dimen/base_dp20"
-		android:gravity="center_vertical"
-		android:layout_marginEnd="@dimen/base_dp20"
-		android:text="@string/base_todo_textview"
-		android:textSize="@dimen/base_sp16"
-		android:textStyle="bold"
-		app:drawableEndCompat="@drawable/mine_ic_enter_24dp"
-		app:drawableTint="@color/mangax_purple_8f6af1" />
-
-
-</androidx.appcompat.widget.LinearLayoutCompat>

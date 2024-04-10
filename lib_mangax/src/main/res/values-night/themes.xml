@@ -11,6 +11,7 @@
     </style>
 
     <style name="MangaX.Theme.Button.Elevated.Icon" parent="Widget.Material3.Button.ElevatedButton.Icon" >
+        <item name="backgroundTint">@color/mangax_black</item>
         <item name="android:textColor">@color/mangax_white</item>
     </style>
 

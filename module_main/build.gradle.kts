@@ -79,6 +79,7 @@ dependencies {
 
     implementation(compose.about.libraries)
     implementation(compose.about.libraries.core)
+    implementation("com.drakeet.drawer:drawer:1.0.3")
 
     api(project(":module_home"))
     api(project(":module_discover"))
