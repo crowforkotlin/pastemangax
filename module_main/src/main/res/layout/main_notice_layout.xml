@@ -185,6 +185,40 @@
                 tools:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/group1"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/base_dp10"
+                android:clickable="false"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:cornerRadius="@dimen/base_dp10"
+                app:layout_constraintEnd_toEndOf="@+id/content"
+                app:layout_constraintStart_toStartOf="@+id/content"
+                app:layout_constraintTop_toBottomOf="@+id/content"
+                tools:visibility="visible" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/group2"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/base_dp10"
+                android:clickable="false"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:cornerRadius="@dimen/base_dp10"
+                app:layout_constraintEnd_toEndOf="@+id/content"
+                app:layout_constraintStart_toStartOf="@+id/content"
+                app:layout_constraintTop_toBottomOf="@+id/group1"
+                tools:visibility="visible" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/readed"
                 style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="0dp"
@@ -200,7 +234,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/content"
                 app:layout_constraintStart_toStartOf="@+id/content"
-                app:layout_constraintTop_toBottomOf="@+id/content"
+                app:layout_constraintTop_toBottomOf="@+id/group2"
                 tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
