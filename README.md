@@ -11,24 +11,18 @@
 <img alt="ViewCount" src="https://views.whatilearened.today/views/github/crowforkotlin/CopyMangaX.svg"/>
 </p>
 
-[![Join Telegram](https://img.shields.io/badge/-telegram-red?color=white&logo=telegram&logoColor=blue)](https://t.me/+kFkVVuDOFsFiMzQ1)
 
-- ### **编译**
-  - **`如果你需要Clone该项目，在Clone完成后请进入到该项目的根目录下并输入以下命令才可正常编译`**
-  - **`rmdir lib_mangax/src/main/jni/OpenCC`**
-  - **`git init`**
-  - **`git submodule add -f --name OpenCC -b master https://github.com/BYVoid/OpenCC.git lib_mangax/src/main/jni/OpenCC`**
+- **Almost no one looks at the problem from your point of view, it's just for their own interests, in the final analysis, the problem is still in yourself!**
 
+- **There are always people who want to steal your stuff and do even more shameless things!**
 
-- ### **关于项目**
-  - **数据来源于拷贝漫画，作者不对其中呈现的任何内容负责。声明：该项目仅用于学习、禁止商用！**
-  - **设计ICON、二次创新ICON、框架 --> crowforkotlin**
-  - **[Dev分支可预览最新的开发进度](https://github.com/crowforkotlin/CopyMangaX/tree/dev)**
-- ### **问题或方案参考及开源贡献**
+- **The project is for learning only, commercial use is prohibited!**
+
+- ### **Question or solution references and open source contributions**
   - **✅[Mihonapp - Author : mihon](https://github.com/mihonapp/mihon)**
   - **✅[Kotatsu - Author : KotatsuApp](https://github.com/KotatsuApp/Kotatsu)**
 <br></br>
-- ### **阅读器（支持屏幕旋转、缩放）**
+- ### **comic reader support screen,rotation,zoom**
 <table>
 	<tr>
 		<td align="center"><img src="docs/images/1.3.2_light_comic.jpg"></td>
@@ -37,14 +31,14 @@
 		<td align="center"><img src="docs/images/1.3.2_light_stript.jpg"></td>
 	</tr>
     <tr>
-		<td align="center">默认状态</td>
-		<td align="center">选项</td>
-        <td align="center">默认经典</td>
-        <td align="center">无限条漫</td>
+		<td align="center">default state</td>
+		<td align="center">options</td>
+        <td align="center">default classic</td>
+        <td align="center">infinite vertical scroll</td>
 	</tr>
 </table>
 
-#### 浅色模式
+#### light mode 
 <table>
 	<tr>
 		<td align="center"><img src="docs/images/1.3.2_light_home.jpg"></td>
@@ -53,10 +47,10 @@
 		<td align="center"><img src="docs/images/1.3.2_light_anime.jpg"></td>
 	</tr>
     <tr>
-		<td align="center">主页</td>
-		<td align="center">漫画</td>
-        <td align="center">书架</td>
-        <td align="center">番剧</td>
+		<td align="center">home page</td>
+		<td align="center">comic</td>
+        <td align="center">bookshelf</td>
+        <td align="center">anime</td>
 	</tr>
 </table>
 <table>
@@ -67,14 +61,14 @@
 		<td align="center"><img src="docs/images/1.3.2_light_comic_info.jpg"></td>
 	</tr>
     <tr>
-		<td align="center">历史记录</td>
-		<td align="center">专题</td>
-        <td align="center">搜索</td>
-        <td align="center">漫画信息</td>
+		<td align="center">history</td>
+		<td align="center">topic</td>
+        <td align="center">search</td>
+        <td align="center">comic information</td>
 	</tr>
 </table>
 
-#### 深色模式
+#### dark mode 
 <table>
 	<tr>
 		<td align="center"><img src="docs/images/1.3.2_dark_home.jpg"></td>
@@ -83,10 +77,10 @@
 		<td align="center"><img src="docs/images/1.3.2_dark_anime.jpg"></td>
 	</tr>
     <tr>
-		<td align="center">主页</td>
-		<td align="center">漫画</td>
-        <td align="center">书架</td>
-        <td align="center">番剧</td>
+		<td align="center">home page</td>
+		<td align="center">comic</td>
+        <td align="center">bookshelf</td>
+        <td align="center">anime</td>
 	</tr>
 </table>
 <table>
@@ -97,9 +91,9 @@
 		<td align="center"><img src="docs/images/1.3.2_dark_comic_info.jpg"></td>
 	</tr>
     <tr>
-		<td align="center">历史记录</td>
-		<td align="center">专题</td>
-        <td align="center">搜索</td>
-        <td align="center">漫画信息</td>
+		<td align="center">history</td>
+		<td align="center">topic</td>
+        <td align="center">search</td>
+        <td align="center">comic information</td>
 	</tr>
 </table>

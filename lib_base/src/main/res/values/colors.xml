@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="base_white">#FFFFFF</color>
-    <color name="base_black">#000000</color>
-    <color name="base_grey_500_75">#BF9E9E9E</color>
-    <color name="base_textColor">#FFFFFF</color>
-    <color name="base_blue_100">#bbdefb</color>
-</resources>

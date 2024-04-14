@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-	<style name="Bookshelf.MaterialButton.IconOnly" parent="Widget.Material3.Button.IconButton">
-		<item name="android:paddingRight">4dp</item>
-	</style>
-</resources>
