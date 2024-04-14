@@ -1,9 +1,0 @@
-<resources>
-	<!-- Base application theme. -->
-	<style name="Bookshelf.Theme.CopyManga" parent="Theme.Material3.DayNight.NoActionBar">
-	</style>
-
-	<style name="Bookshelf.Widget.App.PopupMenu" parent="Widget.Material3.PopupMenu.ListPopupWindow">
-		<item name="android:popupBackground">@drawable/bookshelf_custom_popup_background</item>
-	</style>
-</resources>

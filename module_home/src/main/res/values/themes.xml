@@ -1,6 +1,0 @@
-<resources>
-	<!-- Base application theme. -->
-	<style name="Home.Theme.CopyManga" parent="Theme.Material3.DayNight.NoActionBar">
-	</style>
-
-</resources>
