@@ -1,6 +1,6 @@
 <div align="center">
-  <a href="https://github.com/CrowForKotlin/CopyManga_Crow">
-    <img src="docs/images/logo - 1024px_1.2.5.png" alt="Logo" width="108" height="108">
+  <a href="https://github.com/crowforkotlin/PasteMangaX">
+    <img src="docs/images/PasteMangaX-Radius.png" alt="Logo" width="108" height="108">
   </a>
 
 <h3 align="center">⭐⭐⭐CopyMangaX⭐⭐⭐</h3>
