@@ -23,58 +23,28 @@
   - **✅[Kotatsu - Author : KotatsuApp](https://github.com/KotatsuApp/Kotatsu)**
 <br></br>
 - ### **comic reader support screen,rotation,zoom**
-<table>
-	<tr>
-		<td align="center"><img src="docs/images/2.0.0_light_reader_mode.jpg"></td>
-		<td align="center"><img src="docs/images/2.0.0_light_reader_option.jpg"></td>
-		<td align="center"><img src="docs/images/1.3.2_dark_standard.jpg"></td>
-		<td align="center"><img src="docs/images/1.3.2_light_stript.jpg"></td>
-	</tr>
-    <tr>
-		<td align="center">reader mode</td>
-		<td align="center">options</td>
-        <td align="center">default classic</td>
-        <td align="center">infinite vertical scroll</td>
-	</tr>
-</table>
-
-#### light mode 
-<table>
-	<tr>
-		<td align="center"><img src="docs/images/2.0.0_light_home.jpg"></td>
-		<td align="center"><img src="docs/images/1.3.2_light_discover.jpg"></td>
-		<td align="center"><img src="docs/images/2.0.0_light_shelf.jpg"></td>
-		<td align="center"><img src="docs/images/2.0.0_light_anime.jpg"></td>
-	</tr>
-    <tr>
-		<td align="center">home page</td>
-		<td align="center">comic</td>
-        <td align="center">bookshelf</td>
-        <td align="center">anime</td>
-	</tr>
-</table>
-<table>
-	<tr>
-		<td align="center"><img src="docs/images/2.0.0_light_history.jpg"></td>
-		<td align="center"><img src="docs/images/2.0.0_light_topic.jpg"></td>
-		<td align="center"><img src="docs/images/2.0.0_light_search.jpg"></td>
-		<td align="center"><img src="docs/images/2.0.0_light_comic_info.jpg"></td>
-	</tr>
-    <tr>
-		<td align="center">history</td>
-		<td align="center">topic</td>
-        <td align="center">search</td>
-        <td align="center">comic information</td>
-	</tr>
-</table>
 
 #### dark mode 
 <table>
 	<tr>
-		<td align="center"><img src="docs/images/2.0.0_dark_home.jpg"></td>
-		<td align="center"><img src="docs/images/1.3.2_dark_discover.jpg"></td>
-		<td align="center"><img src="docs/images/2.0.0_dark_shelf.jpg"></td>
-		<td align="center"><img src="docs/images/2.0.0_dark_anime.jpg"></td>
+		<td align="center"><img src="docs/images/manga_comment.png"></td>
+		<td align="center"><img src="docs/images/manga_click_area.jpg"></td>
+		<td align="center"><img src="docs/images/manga_full_comment.png"></td>
+		<td align="center"><img src="docs/images/search_list.png"></td>
+	</tr>
+    <tr>
+		<td align="center">reader mode</td>
+		<td align="center">manga click area.png</td>
+        <td align="center">manga full comment</td>
+        <td align="center">search list</td>
+	</tr>
+</table>
+<table>
+	<tr>
+		<td align="center"><img src="docs/images/home.png"></td>
+		<td align="center"><img src="docs/images/comic_list.png"></td>
+		<td align="center"><img src="docs/images/bookshelf_list.png"></td>
+		<td align="center"><img src="docs/images/anime_list.png"></td>
 	</tr>
     <tr>
 		<td align="center">home page</td>
@@ -85,15 +55,15 @@
 </table>
 <table>
 	<tr>
-		<td align="center"><img src="docs/images/2.0.0_dark_history.jpg"></td>
-		<td align="center"><img src="docs/images/2.0.0_dark_topic.jpg"></td>
-		<td align="center"><img src="docs/images/2.0.0_dark_search.jpg"></td>
-		<td align="center"><img src="docs/images/2.0.0_dark_comic_info.jpg"></td>
+		<td align="center"><img src="docs/images/manga_reader.png"></td>
+		<td align="center"><img src="docs/images/manga_info.png"></td>
+		<td align="center"><img src="docs/images/manga_comment.png"></td>
+		<td align="center"><img src="docs/images/topic_list.png"></td>
 	</tr>
     <tr>
-		<td align="center">history</td>
-		<td align="center">topic</td>
-        <td align="center">search</td>
-        <td align="center">comic information</td>
+		<td align="center">manga reader</td>
+		<td align="center">manga info</td>
+        <td align="center">manga comment</td>
+        <td align="center">topic_list</td>
 	</tr>
 </table>
