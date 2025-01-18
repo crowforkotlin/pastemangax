@@ -28,13 +28,13 @@
 <table>
 	<tr>
 		<td align="center"><img src="docs/images/manga_comment.png"></td>
-		<td align="center"><img src="docs/images/manga_click_area.jpg"></td>
+		<td align="center"><img src="docs/images/manga_click_area.png"></td>
 		<td align="center"><img src="docs/images/manga_full_comment.png"></td>
 		<td align="center"><img src="docs/images/search_list.png"></td>
 	</tr>
     <tr>
 		<td align="center">reader mode</td>
-		<td align="center">manga click area.png</td>
+		<td align="center">manga click area</td>
         <td align="center">manga full comment</td>
         <td align="center">search list</td>
 	</tr>
