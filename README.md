@@ -3,7 +3,7 @@
     <img src="docs/images/icon.svg" alt="Logo" width="108" height="108">
   </a>
 
-<h3 align="center">⭐⭐⭐PasteMangaX⭐⭐⭐</h3>
+<h3 align="center">⭐⭐⭐pastemangax⭐⭐⭐</h3>
 </div>
 
 <p>
