@@ -1,8 +1,7 @@
 name: Bug报告
 description: 提交Bug报告
 title: "[Bug] "
-labels: ["BUG"]
-projects: ["crowforkotlin/2"]
+labels: BUG
 
 body:
   - type: markdown
