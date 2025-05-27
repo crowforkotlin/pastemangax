@@ -1,7 +1,7 @@
 name: 新功能和建议
 description: 提交新功能和改进建议
-title: "[Feature] "
-labels: ["Feature"]
+title: "[Enhancement] "
+labels: ["enhancement"]
 
 body:
   - type: markdown
