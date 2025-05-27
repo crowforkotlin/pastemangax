@@ -1,0 +1,59 @@
+name: Bug报告
+description: 提交Bug报告
+title: "[Bug] "
+labels: ["BUG"]
+projects: ["crowforkotlin/2"]
+type: Bug
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        欢迎提交Bug报告
+        > [!IMPORTANT]
+        > 请在提交Bug前确保最新版本中未被解决，且无issues重复.
+        例如，对于 "无法关闭阅读器提示区域" 问题，请先搜索关键词，若已有人提出，就去那个议题里点赞即可，无需重复提交。
+        > [!IMPORTANT]
+        > 每个 issue 只提交一个问题
+        若有多个问题，请分别提交，否则只有第一个问题会被考虑。
+        
+        ----
+        请尽量提供多的信息，这将帮助问题更快解决。
+
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: 问题描述
+      description: 请详细描述你遇到的问题，建议附加截图或录屏。
+    validations:
+      required: false
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      description: 说明如何让这个问题再次发生，越详细越好。如果不确定如何复现，请留空。
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: 版本号
+      description: 你正在使用的软件版本号，可在 "设置-关于" 中找到，如 `2.1.1`。
+      placeholder: "例如: 2.1.1"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs-system
+    attributes:
+      label: 崩溃日志
+      description: |
+        如果有，请提供
+      placeholder: |
+        拖拽文件到这里。
+        同时说明问题的发生时间，最好精确到分钟。
+      value: "..."
+    validations:
+      required: false
