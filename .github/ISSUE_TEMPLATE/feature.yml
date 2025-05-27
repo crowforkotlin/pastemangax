@@ -25,7 +25,7 @@ body:
     validations:
       required: false
 
-- type: input
+  - type: input
     id: version
     attributes:
       label: 当前软件版本号
@@ -33,30 +33,3 @@ body:
       placeholder: "例如: 2.1.1"
     validations:
       required: true
-
-
-body:
-  - type: markdown
-    attributes:
-      value: |
-        欢迎提交建议！
-        ## 在提交之前，请确保你已经搜索过已有的 issues，确保没有重复问题。
-        例如，对于 "希望能支持投屏"，请先搜索 "投屏"，看看是否已经有人提出过，如果有就去那个议题里点赞即可，无需重复提交。
-        ## 每个 issue 只能提交一个请求
-        多个请求需要分多个 issue 提交，否则只有第一个请求会被考虑。
-        ## 解释为什么需要这个功能
-        以及它如何改善你的使用体验。
-        尽量提供多的描述，这将帮助我们评估建议的可行性，也会让这个功能实现后更符合你的需求。
-
-  - type: textarea
-    id: issue-description
-    attributes:
-      label: 建议内容
-      description: 详细描述你的建议内容，为什么你想要这个功能。可以附加图片等。
-      placeholder: |
-        例如：
-        在播放页面的选择数据源的弹窗中，增加一个“自动选择”的按钮，根据设置中的偏好自动选择。
-        虽然目前有自动选择，但它只会在刚刚加载完数据源的时候自动执行一次，随后如果我修改了筛选，就不会自动选择了。
-    validations:
-      required: true
-
