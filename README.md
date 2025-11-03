@@ -6,6 +6,11 @@
 <h3 align="center">⭐⭐⭐pastemangax⭐⭐⭐</h3>
 </div>
 
+# 2023.2 - 2025.6 (已不再更新)
+- 源码 (仅供学习)：https://github.com/crowforkotlin/pastemangax-source
+> pastemangax 2.1.1 hotfix 6次，最后一次hotfix7次没发布，官群有官方人员，后续更新没有用，三方也全死了，半年前左右停更后，三方有几个作者在更新，但后续也因为拷贝不断打压，目前除了（源佬）的web版可能还活着其他全寄了（
+只能说欢迎调试拷贝漫画和热辣漫画app，热辣和拷贝是一家，之前因为版权炮问题从aws迁移，现在应该在（越南）那边？米恰烂了，广告是懂如何展示给用户的
+
 <p>
 <img alt="Download" src="https://img.shields.io/github/downloads/crowforkotlin/CopyMangaX/total.svg"/>
 <img alt="ViewCount" src="https://views.whatilearened.today/views/github/crowforkotlin/CopyMangaX.svg"/>
