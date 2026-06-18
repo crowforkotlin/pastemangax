@@ -16,11 +16,6 @@
 <img alt="ViewCount" src="https://views.whatilearened.today/views/github/crowforkotlin/CopyMangaX.svg"/>
 </p>
 
-
-- **Almost no one looks at the problem from your point of view, it's just for their own interests, in the final analysis, the problem is still in yourself!**
-
-- **There are always people who want to steal your stuff and do even more shameless things!**
-
 - **The project is for learning only, commercial use is prohibited!**
 
 - ### **Question or solution references and open source contributions**
